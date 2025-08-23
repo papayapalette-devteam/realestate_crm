@@ -1,0 +1,73 @@
+/* #callaction:hover #callaction {
+    background-color:red;
+  } */
+
+  label
+  {
+    /* color: #B85042; */
+    word-break:keep-all;
+    font-size: 12px;
+  }
+
+  .no-activity-flash {
+    color: red; /* You can change this to any color you like */
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    animation: flash 1s infinite; /* Apply flash animation */
+  }
+  
+  /* Keyframes for the flashing effect */
+  @keyframes flash {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3; /* Halfway, it becomes less visible */
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .my-quill-editor .ql-toolbar {
+    margin-top: -15px; /* You can change this value to suit your needs */
+    border: none;
+  }
+  
+  .my-quill-editor .ql-container {
+    width: 100%;  /* To match the editor width */
+    border: none;
+  }
+  
+  
+  .leaddocumentscolomn {
+    position: relative;
+  }
+  
+  .documentsactions {
+    display: none;
+    position: absolute;
+    right: 0;
+   margin-top: -25px;
+  }
+  
+  .leaddocumentscolomn:hover .documentsactions {
+    display: block;
+  }
+
+  .leaddocumentscolomncontact {
+    position: relative;
+  }
+  
+  .documentsactionscontact {
+    display: none;
+    position: absolute;
+    right: 0;
+   margin-top: -25px;
+  }
+  
+  .leaddocumentscolomncontact:hover .documentsactionscontact {
+    display: block;
+  } 
+  

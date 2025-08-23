@@ -1,0 +1,208 @@
+
+*{
+
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+               "Helvetica Neue", Arial, sans-serif;
+}
+
+
+
+.App {
+  text-align: center;
+ 
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.labels
+{
+  font-size: 16px;
+}
+StyledTableCell
+{
+  font-size: 16px;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+@keyframes progressBarMove {
+  0% {
+    left: -20%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.custom-input label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+.custom-input input.form-control {
+  /* border: 1px solid #bbb6eb; */
+  border-radius: 8px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  background-color: #fdfdfd;
+  margin: 0;
+}
+
+.custom-input select.form-control {
+  /* border: 1px solid #bbb6eb; */
+  border-radius: 8px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  background-color: #fdfdfd;
+}
+.custom-input select.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+  background-color: #fff;
+}
+.custom-input input.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+  background-color: #fff;
+}
+
+.custom-input input.form-control::placeholder {
+  color: #999;
+  /* font-style: italic; */
+}
+
+/* app.css */
+
+.custom-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  padding: 6px 12px; /* optional for uniform spacing */
+  cursor: pointer;
+}
+
+.custom-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Cancel or Close Button Style */
+.cancel-btn {
+  background-color: #dc3545; /* Bootstrap-style danger red */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #b52a37;
+}
+
+/* Save Button Style */
+.save-btn {
+  font-weight: 600;
+  border-radius: 8px;
+  background-color: rgb(15, 177, 232);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+/* Hover Effect */
+.save-btn:hover {
+  background-color: #0056b3;
+}
+
+
+.feedback-toast {
+  position: fixed;
+  top: 20px;
+  right: 10px;
+  width: 350px;
+  display: none;
+  animation: none;
+  z-index: 9999;
+}
+
+/* When opening */
+.feedback-toast.show {
+  display: block;
+  animation: slideInRight 0.5s ease forwards;
+}
+
+/* When closing */
+.feedback-toast.hide {
+  display: block;
+  animation: slideOutRight 0.5s ease forwards;
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+              

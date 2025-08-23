@@ -1,0 +1,518 @@
+#projectmessage,#unitmessage{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectmessage:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectdelete{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectdelete:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectedit{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectedit:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectmail{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectmail:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectwhatsapp{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectwhatsapp:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectpreview{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectpreview:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectaddremoveuser{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectaddremoveuser:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectmatchedlead{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectmatchedlead:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectaddtag{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectaddtag:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectpublishon{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectpublishon:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectadddocument{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectadddocument:hover
+{
+    transform: scale(1.1);
+    
+}
+#projectuploadpicture{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#projectuploadpicture:hover
+{
+    transform: scale(1.1);
+    
+}
+
+
+
+
+#dealdelete{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealdelete:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealmail{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealmail:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealwhatsapp{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealwhatsapp:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealmessage{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealmessage:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealedit{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealedit:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealaddtask{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealaddtask:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealcreatebooking{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealcreatebooking:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealaddremoveowner{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealaddremoveowner:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealmatchedlead{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealmatchedlead:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealcall{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealcall:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealaddtag{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealaddtag:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealaddremarks{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealaddremarks:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealpublishon{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealpublishon:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealupdatestage{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealupdatestage:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealpreview{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealpreview:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealadddocument{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealadddocument:hover
+{
+    transform: scale(1.1);
+    
+}
+#dealuploadpicture{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#dealuploadpicture:hover
+{
+    transform: scale(1.1);
+    
+}
+
+
+#unitdelete{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitdelete:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitmail{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitmail:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitwhatsapp{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitwhatsapp:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitmessage{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitmessage:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitedit{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitedit:hover
+{
+    transform: scale(1.1);
+    
+}
+
+#unitaddremoveowner{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitaddremoveowner:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitmatchedlead{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitmatchedlead:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitcall{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitcall:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitaddtag{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitaddtag:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitaddremarks{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitaddremarks:hover
+{
+    transform: scale(1.1);
+    
+}
+
+#unitupdatestage{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitupdatestage:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitpreview{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitpreview:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitadddocument{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitadddocument:hover
+{
+    transform: scale(1.1);
+    
+}
+#unituploadpicture{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unituploadpicture:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitaddunit{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitaddunit:hover
+{
+    transform: scale(1.1);
+    
+}
+#unitcreatedeal{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#unitcreatedeal:hover
+{
+    transform: scale(1.1);
+    
+}
+
+
+
+.suggestion-item {
+    cursor: pointer;
+    padding: 8px 12px;
+    background-color: white;
+  }
+  
+  .suggestion-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+
+/* .feedback-toast {
+  position: fixed;
+  top: 20px;
+  right: 10px;
+  width: 350px;
+  display: none;
+  animation: none;
+  z-index: 9999;
+}
+
+
+.feedback-toast.show {
+  display: block;
+  animation: slideInRight 0.5s ease forwards;
+}
+
+
+.feedback-toast.hide {
+  display: block;
+  animation: slideOutRight 0.5s ease forwards;
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+ */
+
+

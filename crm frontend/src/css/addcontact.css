@@ -1,0 +1,383 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+h4
+{
+    font-family: 'Times New Roman', Times, serif;
+    padding:1%;
+}
+
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #BA68C8
+}
+
+.profile-button {
+    background: rgb(99, 39, 120);
+    box-shadow: none;
+    border: none
+}
+
+.profile-button:hover {
+    background: #682773
+}
+
+.profile-button:focus {
+    background: #682773;
+    box-shadow: none
+}
+
+.profile-button:active {
+    background: #682773;
+    box-shadow: none
+}
+
+.back:hover {
+    color: #682773;
+    cursor: pointer
+}
+
+.labels {
+    font-size: 11px
+}
+
+.add-experience:hover {
+    background: #BA68C8;
+    color: #fff;
+    cursor: pointer;
+    border: solid 1px #BA68C8
+}
+.educationstyle
+{
+    margin-top: 5px;
+}
+button:hover{
+    background-color: #7EC8E3;
+}
+#exporttoexcel
+{
+    font-size: 16;
+    text-align: center;
+}
+#exporttoexcel li:hover
+{
+  cursor: pointer;
+  background-color: gray;
+}
+#delete{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#delete:hover
+{
+    transform: scale(1.1);
+    
+}
+#edit{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#edit:hover
+{
+    transform: scale(1.1);
+    
+}
+#addtask{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#addtask:hover
+{
+    transform: scale(1.2);
+    
+}
+#transferlead{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#transferlead:hover
+{
+    transform: scale(1.6);
+    
+}
+#adduser{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#adduser:hover
+{
+    transform: scale(1.6);
+    
+}
+#removeuser{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#removeuser:hover
+{
+    transform: scale(1.2);
+    
+}
+#call1{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#call1:hover
+{
+    transform: scale(1.2);
+    
+}
+#addtag{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#addtag:hover
+{
+    transform: scale(1.4);
+    
+}
+#addremarks{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#addremarks:hover
+{
+    transform: scale(1.2);
+    
+}
+#adddocument{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#adddocument:hover
+{
+    transform: scale(1.2);
+    
+}
+#updatestage{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#updatestage:hover
+{
+    transform: scale(1.2);
+    
+}
+
+#mail{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#mail:hover
+{
+    transform: scale(1.1);
+    
+}
+#whatsapp{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#whatsapp:hover
+{
+    transform: scale(1.1);
+    
+}
+#message{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#message:hover
+{
+    transform: scale(1.1);
+    
+}
+
+
+
+
+
+/* Flip Card Container */
+.flip-container {
+    width: 100%;
+    height: 200px; 
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s; 
+  }
+  
+  /* When flipped, rotate the card 180 degrees */
+  .flip-container.flipped {
+    transform: rotateY(180deg);
+  }
+  
+
+  
+  /* The back side (Company) */
+  .flip-card-back {
+    transform: rotateY(180deg); 
+ 
+  }
+  
+  /* The front side (Contact) */
+  .flip-card-front { 
+     display: flex; 
+     flex-direction: column;
+    justify-content: space-between; 
+  }
+  
+  /* Optional: Adjust the appearance of the divs */
+   #contactlistview, #companylistview {
+    transition: opacity 1s ease-in-out;
+  }
+  
+  #companylistview {
+    opacity: 1;
+  }
+  
+  #companylistview.flipped {
+    opacity: 1;
+  } 
+  
+
+  #companydelete{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#companydelete:hover
+{
+    transform: scale(1.1);
+    
+}
+
+  #companyedit{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#companyedit:hover
+{
+    transform: scale(1.1);
+    
+}
+#companycall{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#companycall:hover
+{
+    transform: scale(1.1);
+    
+}
+#companymessage{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#companymessage:hover
+{
+    transform: scale(1.1);
+    
+}
+#companywhatsapp{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#companywhatsapp:hover
+{
+    transform: scale(1.1);
+    
+}
+#companymail{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#companymail:hover
+{
+    transform: scale(1.1);
+    
+}
+#companysequence{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#companysequence:hover
+{
+    transform: scale(1.1);
+    
+}
+
+#sendall{
+    transition: transform .2s;
+    background-color: transparent;
+    
+}
+#sendall:hover
+{
+    transform: scale(1.2);
+    
+}
+
+
+.zoom-card {
+    transition: transform 0.3s ease;
+  }
+  
+  .zoom-card:hover {
+    transform: scale(1.05);
+    z-index: 1;
+    color: #007bff;
+  }
+
+  /* for project form aminitis style */
+.amenity-tab {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  background-color: #f1f1f1;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.amenity-tab:hover {
+  background: linear-gradient(135deg, #d1c4e9, #9575cd);
+  color: #fff;
+}
+
+.amenity-tab.active {
+  background: linear-gradient(135deg, #673ab7, #512da8);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(103, 58, 183, 0.4);
+  transform: scale(1.05);
+}
+
+/* for project aminities style */
+
+  
+
+  

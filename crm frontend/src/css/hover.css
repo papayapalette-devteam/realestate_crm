@@ -1,0 +1,15 @@
+#sde :hover #r
+{
+      background-color: red;
+}
+.lead:hover
+{
+      background-color: gray;
+      cursor: pointer;
+}
+.personaldetails:hover
+{
+      background-color: gray;
+      cursor: pointer;
+}
+
