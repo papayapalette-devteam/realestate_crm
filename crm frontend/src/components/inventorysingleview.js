@@ -292,12 +292,12 @@ const navigate=useNavigate()
       useEffect(()=>
         {
           const combinealltask=[...sitevisitdata,...meetingdata,...maildata,...calldata]
-          const ownerNames = lead.owner_details.map(owner => 
-            `${owner.title} ${owner.first_name} ${owner.last_name}`
+          const ownerNames = (Array.isArray(lead.owner_details)?lead.owner_details:[lead.owner_details]).map(owner => 
+            `${owner?.title} ${owner?.first_name} ${owner?.last_name}`
           );
       
-          const associatedNames = lead.associated_contact.map(contact => 
-            `${contact.title} ${contact.first_name} ${contact.last_name}`
+          const associatedNames = (Array.isArray(lead.associated_contact)?lead.associated_contact:[lead.associated_contact]).map(contact => 
+            `${contact?.title} ${contact?.first_name} ${contact?.last_name}`
           );
       
           // Combine both arrays into one array of full names
@@ -3368,7 +3368,9 @@ const [show9, setshow9] = useState(false);
                                                   
                                
                                                 {
-                                                 lead.owner_details.map((item)=>
+                                                  (Array.isArray(lead.owner_details)?lead.owner_details:
+                                                [lead.owner_details])
+                                                 .map((item)=>
                                                  (
                                                    <>
                                                    <div className='col-md-12'><label style={{color:"#B85042"}}>Full Name</label><p style={{marginTop:"-10px",fontWeight:"normal"}}>{item.title} {item.first_name} {item.last_name}</p></div>
@@ -4264,7 +4266,19 @@ const [show9, setshow9] = useState(false);
 
         <div style={{fontWeight:"normal",border:"1px solid gray",borderRadius:"5px",padding:"10px",marginTop:"20px",width:"100%"}}>
   <div className='col-md-12'><img src="https://cdn.iconscout.com/icon/premium/png-256-thumb/associate-2977574-2472890.png" style={{height:"25px",paddingRight:"10px"}}/>
-   Associated Contact (<span className="no-activity-flash" style={{fontSize:"12px",color:"blue"}}>{lead.associated_contact.length})</span>
+  Associated Contact (
+  <span className="no-activity-flash" style={{fontSize:"12px", color:"blue"}}>
+    {
+      (Array.isArray(lead?.associated_contact) 
+        ? lead.associated_contact 
+        : lead?.associated_contact 
+          ? [lead.associated_contact] 
+          : []
+      ).length
+    }
+  </span>
+)
+
         <span 
           onClick={toggleTableVisibility1} 
           style={{ 
@@ -4314,19 +4328,20 @@ const [show9, setshow9] = useState(false);
       </thead> */}
       <tbody>
         {
-         
-        lead.associated_contact.map ((item, index) => (
+         (Array.isArray(lead.associated_contact)?lead.associated_contact:
+         [lead.associated_contact])
+        .map ((item, index) => (
           <StyledTableRow key={index} style={{backgroundColor:"white"}}>
            <StyledTableCell style={{fontSize:"12px",whiteSpace:"nowrap",cursor:"pointer"}} onClick={()=>navigate('/contactsingleview',{state:item})}>
               <span style={{fontSize:"16px",color:"#0086b3",fontWeight:"bold"}}>
               <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCTOqj4skHnCbXKGTKqt5ZRudGOYolS4W8Bg&s' style={{height:"20px",paddingRight:"10px"}}></img>
-                {item.title} {item.first_name} {item.last_name}</span> <span>{item.company_name}</span><br></br>
+                {item?.title} {item?.first_name} {item?.last_name}</span> <span>{item?.company_name}</span><br></br>
                 <div style={{paddingLeft:"38px",color:"#0086b3"}}>
-                {item.mobile_no.map((contact, index) => (
+                {item?.mobile_no.map((contact, index) => (
                          <span key={index} style={{fontSize:"12px",border:"1px solid blue",borderRadius:"5px",padding:"5px",marginLeft:"2px"}}>
                           <img src='https://harrogatebusinesscentre.com/wp-content/uploads/156-1568270_blue-phone-icon-png-clipart-png-download-transparent.png' style={{height:"15px"}}></img>{contact}</span>
                       ))} <span>mobile</span> <br></br><br></br>
-                       {item.email.map((contact, index) => (
+                       {item?.email.map((contact, index) => (
                          <span key={index} style={{fontSize:"12px",border:"1px solid blue",borderRadius:"5px",padding:"5px",marginTop:"20px"}}>
                           <img src='https://cdn2.iconfinder.com/data/icons/basic-thin-line-color/21/19-512.png' style={{height:"15px",marginTop:"2px"}}></img>{contact}<br></br></span> 
                       ))}
@@ -4560,7 +4575,7 @@ const [show9, setshow9] = useState(false);
         <div style={{fontWeight:"normal",border:"1px solid gray",borderRadius:"5px",padding:"10px",marginTop:"20px",width:"100%"}}>
 
 <div className='col-md-12'><img src="https://d1nhio0ox7pgb.cloudfront.net/_img/i_collection_png/512x512/plain/history.png" style={{height:"25px",paddingRight:"10px"}}/>
- History (<span className="no-activity-flash" style={{fontSize:"12px",color:"blue"}}>{lead.previousowner_details.length}</span>)
+ History (<span className="no-activity-flash" style={{fontSize:"12px",color:"blue"}}>{(Array.isArray(lead.previousowner_details)?lead.previousowner_details:[lead.previewUrls]).length}</span>)
 <span 
   onClick={toggleTableVisibility5} 
   style={{ 

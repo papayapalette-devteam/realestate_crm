@@ -910,15 +910,13 @@ function Allunits() {
                     }
                   };
                 
-                  const handleRowSelect3 = (item) => {
-            
-                    if (selectedItems3.includes(item)) {
-                      setSelectedItems3(selectedItems3.filter((itemId) => itemId !== item));
-                    } else {
-                      setSelectedItems3([...selectedItems3, item]);
-                  
-                    }
-                  };
+                 const handleRowSelect3 = (item) => {
+  if (selectedItems3.some((i) => i._id === item._id)) {
+    setSelectedItems3(selectedItems3.filter((i) => i._id !== item._id));
+  } else {
+    setSelectedItems3([...selectedItems3, item]);
+  }
+};
 
 
 
@@ -1043,6 +1041,7 @@ function Allunits() {
   
   }, [currentPage2, itemsPerPage2]);
 
+          console.log(flattenedUnits);
           
  // ===================================search deal via search box start========================================================
 
@@ -3925,16 +3924,26 @@ const [suggestionsunit, setSuggestionsunit] = useState([]);
                                                           seller_price:"",my_price:"",next_call_date:"",no_reason:"",other_no_reason:"",stage:"",remarks:""})
           
         const[ownerlist,setownerlist]=useState([])
-          useEffect(() => {
-          if (selectedItems3[0]?.unit_no) {
-            setfeedbackform(prev => ({
-              ...prev,
-              unit_no: selectedItems3[0]?.unit_no,
-            }));
-            const alllist=[...selectedItems3[0]?.owner_details,...selectedItems3[0]?.associated_contact]
-            setownerlist(alllist)
-          }
-        }, [selectedItems3]);
+        useEffect(() => {
+  if (selectedItems3[0]?.unit_no) {
+    setfeedbackform(prev => ({
+      ...prev,
+      unit_no: selectedItems3[0]?.unit_no,
+    }));
+
+    const ownerArr = selectedItems3[0]?.owner_details
+      ? (Array.isArray(selectedItems3[0].owner_details) ? selectedItems3[0].owner_details : [selectedItems3[0].owner_details])
+      : [];
+
+    const contactArr = selectedItems3[0]?.associated_contact
+      ? (Array.isArray(selectedItems3[0].associated_contact) ? selectedItems3[0].associated_contact : [selectedItems3[0].associated_contact])
+      : [];
+
+    const alllist = [...ownerArr, ...contactArr];
+    setownerlist(alllist);
+  }
+}, [selectedItems3]);
+
         // console.log(ownerlist);
         
 
@@ -5292,22 +5301,33 @@ const excelSerialToDateString = (serial) => {
                           {
                             col.id==='ownerdetails' ?
                             (
-                              <>
-                            { Array.isArray(item.owner_details)?
-                            item.owner_details.map((item)=>
-                            (
-                              <>
-                             {item.title} {item.first_name} {item.last_name}<br></br>
-                             {Array.isArray(item.mobile_no) ? (
-                                item.mobile_no.map((mobile, idx) => (
-                                  <div key={idx}><SvgIcon component={PhoneIphoneIcon} />{mobile}</div>  // Each mobile number gets its own div
-                                ))
-                              ) : (
-                                <div><SvgIcon component={PhoneIphoneIcon} />{item.mobile_no}</div>  // If not an array, just display the mobile_no
-                              )}
-                              </>
-                            )):[]}
-                              </>
+                             <>
+  {(item?.owner_details
+    ? (Array.isArray(item.owner_details) ? item.owner_details : [item.owner_details])
+    : []
+  ).map((owner, idx) => (
+    <div key={idx}>
+      {owner?.title} {owner?.first_name} {owner?.last_name}
+      <br />
+
+      {Array.isArray(owner?.mobile_no) ? (
+        owner.mobile_no.map((mobile, i) => (
+          <div key={i}>
+            <SvgIcon component={PhoneIphoneIcon} /> {mobile}
+          </div>
+        ))
+      ) : (
+        owner?.mobile_no && (
+          <div>
+            <SvgIcon component={PhoneIphoneIcon} /> {owner.mobile_no}
+          </div>
+        )
+      )}
+    </div>
+  ))}
+</>
+
+                             
                             ) : col.id==='stage' ?
                             (
                               <>
@@ -5329,34 +5349,47 @@ const excelSerialToDateString = (serial) => {
                             </>
                             ) :   col.id==='owneraddress' ?
                             (
-                              <>
-                              {Array.isArray(item.owner_details)?
-                              item.owner_details.map((item, index) => (
-                                <div key={index} >
-                                  s/h/o:-{item.father_husband_name}<br></br>
-                                  {item.h_no} {item.area1} {item.location1} <br></br>
-                                  {item.city1} {item.state1} {item.pincode1}
-                                </div>
-                              )):[]}
-                            </>
+                           <>
+  {(item?.owner_details
+    ? (Array.isArray(item.owner_details) ? item.owner_details : [item.owner_details])
+    : []
+  ).map((owner, index) => (
+    <div key={index}>
+      s/h/o:- {owner?.father_husband_name} <br />
+      {owner?.h_no} {owner?.area1} {owner?.location1} <br />
+      {owner?.city1} {owner?.state1} {owner?.pincode1}
+    </div>
+  ))}
+</>
+
                             ) :  col.id==='associatedcontact' ?
                             (
-                              <>
-                              {Array.isArray(item.associated_contact)?
-                              item.associated_contact.map((item)=>
-                              (
-                                <>
-                               {item.title} {item.first_name} {item.last_name}<br></br>
-                               {Array.isArray(item.mobile_no) ? (
-                                  item.mobile_no.map((mobile, idx) => (
-                                    <div key={idx}><SvgIcon component={PhoneIphoneIcon} />{mobile}</div>  // Each mobile number gets its own div
-                                  ))
-                                ) : (
-                                  <div><SvgIcon component={PhoneIphoneIcon} />{item.mobile_no}</div>  // If not an array, just display the mobile_no
-                                )}
-                                </>
-                              )):[]}
-                                </>
+                             <>
+  {(item?.associated_contact
+    ? (Array.isArray(item.associated_contact) ? item.associated_contact : [item.associated_contact])
+    : []
+  ).map((contact, index) => (
+    <div key={index}>
+      {contact?.title} {contact?.first_name} {contact?.last_name}
+      <br />
+
+      {Array.isArray(contact?.mobile_no) ? (
+        contact.mobile_no.map((mobile, idx) => (
+          <div key={idx}>
+            <SvgIcon component={PhoneIphoneIcon} /> {mobile}
+          </div>
+        ))
+      ) : (
+        contact?.mobile_no && (
+          <div>
+            <SvgIcon component={PhoneIphoneIcon} /> {contact.mobile_no}
+          </div>
+        )
+      )}
+    </div>
+  ))}
+</>
+
                             ) :  col.id==='locationbrief' ?
                             (
                               <>
