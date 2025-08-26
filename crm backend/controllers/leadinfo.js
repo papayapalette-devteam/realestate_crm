@@ -80,11 +80,34 @@ const lead_info = async (req, res) => {
 
 const leadinfo_find = async (req, res) => {
   try {
-    const resp = await leadinfo.find().populate("matcheddeals");
-    if (!resp) {
-      return res.send("no lead infomartion available");
-    }
-    res.status(200).send({ message: "lead infomation:", lead: resp });
+     const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+ 
+
+    
+    const allleads=await leadinfo.find()
+    const leads = await leadinfo.find()
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .populate("matcheddeals")
+
+     const total = await leadinfo.countDocuments();
+
+    // const resp = await leadinfo.find().populate("matcheddeals");
+    // if (!resp) {
+    //   return res.send("no lead infomartion available");
+    // }
+    res.status(200).send({
+       message: "lead infomation:", 
+       lead: allleads,
+       total, 
+       totalPages: Math.ceil(total / limit),
+        pagelead:leads
+      });
+       
   } catch (error) {
     console.log(error);
   }

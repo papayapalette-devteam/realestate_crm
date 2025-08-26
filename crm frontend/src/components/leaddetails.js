@@ -5,7 +5,7 @@ import Sidebar1 from "./sidebar1";
 import { toast, ToastContainer } from "react-toastify";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate,useSearchParams } from "react-router-dom";
 import { utils, writeFile } from "xlsx";
 import '../css/hover.css';
 
@@ -30,6 +30,8 @@ import { Details, Try } from "@mui/icons-material";
 import Leadsingleview from "./leadsingleview";
 import * as XLSX from 'xlsx';
 import Lottie from "lottie-react";
+import SidebarWidgetLoader from "../components/loader2";
+import UniqueLoader from "./loader";
 
 
 function Leadfetch() {
@@ -88,9 +90,11 @@ function Leadfetch() {
     "Wallis and Futuna +681","Western Sahara +212","Yemen +967","Zambia +260","Zimbabwe +263"]
 
       const navigate=useNavigate();
+      const [searchParams, setSearchParams] = useSearchParams();
+      
 
 /*-------------------lead crud operations start---------------------------lead crud operations start------------------------------------lead crud operations start*/
-useEffect(()=>{fetchdata()},[])
+// useEffect(()=>{fetchdata()},[])
 useEffect(()=>{fetchdatabystage_incomingcount()},[])  
 useEffect(()=>{fetchdatabystage_prospectcount()},[]) 
 useEffect(()=>{fetchdatabystage_Negotiationcount()},[]) 
@@ -120,17 +124,25 @@ useEffect(()=>{fetchdatabystage_opportunitycount()},[])
 const[countall,setcountall]=useState('')
 const[allleaddataforsearch,setallleaddataforsearch]=useState([])
   const[data,setdata]=useState([]);
-  const fetchdata=async(event)=>
+  const[totalpages,settotalpages]=useState("")
+  const fetchdata=async(page,limit)=>
   {
     
     try {
-      const resp=await api.get('leadinfo')
-      const all=(resp.data.lead)
+      setIsLoading(true)
+      const resp=await api.get(`leadinfo?page=${page}&limit=${limit}`)
+      const all=(resp.data.pagelead)
       setdata(all)
       setallleaddataforsearch(all)
       setcountall(all.length)
+      settotalpages(resp.data.totalPages)
+
+       setSearchParams({ page, limit });
     } catch (error) {
       console.log(error);
+    }finally
+    {
+      setIsLoading(false)
     }
   
   }
@@ -559,14 +571,22 @@ useEffect(()=>
     
   /*-------------------pagination code---------------------------pagination code------------------------------------pagination code*/
  
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(8); // User-defined items per page
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [itemsPerPage, setItemsPerPage] = useState(10); // User-defined items per page
+  const pageFromUrl = parseInt(searchParams.get("page")) || 1;
+  const limitFromUrl = parseInt(searchParams.get("limit")) || 10;
+
+   const [currentPage, setCurrentPage] = useState(pageFromUrl);
+  const [itemsPerPage, setItemsPerPage] = useState(limitFromUrl);
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const filteredData = data.filter(item => item.createdAt && !isNaN(new Date(item.createdAt)));
   const sortedData = [...filteredData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  // const totalPages = Math.ceil(data.length / itemsPerPage);
+   const [windowStartPage, setWindowStartPage] = useState(1);
+      const maxPageNumbersToShow = 3;
   
     // Handle items per page change
     const handleItemsPerPageChange = (e) => {
@@ -579,7 +599,7 @@ useEffect(()=>
   
   // Function to handle "Next" and "Previous" page changes
   const goToNextPage = () => {
-    if (currentPage < totalPages) {
+    if (currentPage < totalpages) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -592,9 +612,9 @@ useEffect(()=>
   
   const renderPageNumbers = () => {
     // Define the range of page numbers to display
-    const maxPageNumbersToShow = 5;
+    const maxPageNumbersToShow = 4;
     const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbersToShow / 2));
-    const endPage = Math.min(totalPages, startPage + maxPageNumbersToShow - 1);
+    const endPage = Math.min(totalpages, startPage + maxPageNumbersToShow - 1);
     
     return (
       <div
@@ -632,7 +652,7 @@ useEffect(()=>
         ))}
   
         {/* Next Button */}
-        {currentPage < totalPages && (
+        {currentPage < totalpages && (
           <button onClick={goToNextPage} style={{ width: '50px', borderRadius: '5px', marginRight: '5px' }}>
             Next
           </button>
@@ -640,6 +660,17 @@ useEffect(()=>
       </div>
     );
   };
+
+  useEffect(() => {
+     fetchdata(currentPage, itemsPerPage);
+ 
+     // If current page moves outside window, adjust windowStartPage
+     if (currentPage < windowStartPage) {
+       setWindowStartPage(currentPage);
+     } else if (currentPage >= windowStartPage + maxPageNumbersToShow) {
+       setWindowStartPage(currentPage - maxPageNumbersToShow + 1);
+     }
+   }, [currentPage, itemsPerPage]);
     /*-------------------pagination code end---------------------------pagination code end------------------------------------pagination code end*/
     
     
@@ -6003,7 +6034,7 @@ const [isHoveringsendmail, setIsHoveringsendmail] = useState(false);
       <tbody>
         {
          
-        currentItems.map ((item, index) => (
+        data.map ((item, index) => (
           <StyledTableRow key={index}>
             <StyledTableCell>
               <input 
@@ -9476,6 +9507,15 @@ const [isHoveringsendmail, setIsHoveringsendmail] = useState(false);
               Deleting Leads...
              </div>
            </div>
+         </div>
+       )}
+     </>
+
+
+     <>
+       {isLoading && (
+         <div>
+          <UniqueLoader/>
          </div>
        )}
      </>
