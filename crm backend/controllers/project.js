@@ -191,8 +191,8 @@ unitDetails={
   const view_project=async(req,res)=>
     {
         try {
-          // const resp = await addproject.find().select( "-add_unit")
-           const resp = await addproject.find()
+          const resp = await addproject.find().select( "-add_unit")
+          //  const resp = await addproject.find()
           .populate({
               path: 'add_unit.owner_details', // Populate the 'owner_details' field inside 'add_unit'
               model: 'add_contact' // Specify the model to populate

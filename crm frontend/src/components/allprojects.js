@@ -16,13 +16,14 @@ import Tooltip from '@mui/material/Tooltip';
 import api from "../api";
 import '../css/deal.css';
 import Swal from "sweetalert2";
+import UniqueLoader from "./loader";
 
 
 function Allprojects() {
 
 
   const navigate=useNavigate()
-   
+  const [isLoading, setIsLoading] = useState(false);
 
 
     // ==========================================fetch all project data start=========================================================
@@ -43,7 +44,7 @@ function Allprojects() {
                       const[totalunderconstruction,settotalunderconstrction]=useState()
                       const fetchcdata=async(event)=>
                       {
-                        
+                        setIsLoading(true)
                         try {
                           const resp=await api.get('viewproject')
                           console.log(resp);
@@ -85,6 +86,10 @@ function Allprojects() {
                         
                         } catch (error) {
                           console.log(error);
+                        }
+                        finally
+                        {
+                          setIsLoading(false)
                         }
                       
                       }
@@ -1005,6 +1010,13 @@ function Allprojects() {
 
           </div>
       <ToastContainer/>
+        <>
+             {isLoading && (
+               <div>
+                <UniqueLoader/>
+               </div>
+             )}
+           </>
     </div>
   )
 }
