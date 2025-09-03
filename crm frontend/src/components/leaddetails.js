@@ -3749,9 +3749,11 @@ const handlepropertyunitstypesChange = (event) => {
                     //   )
                     // ) 
                       if (
-                      deal.available_for === availableFor &&  (unit_type.includes(unittype)) && 
-                       (propertytype && unitData.category && propertytype.some(pt => unitData.category.includes(pt))) &&
-                        (subtype && unitData.sub_category && subtype.includes(unitData.sub_category)) &&
+                         
+                      deal.available_for === availableFor &&  
+                        (propertytype && unitData.category && propertytype.some(pt => unitData.category.includes(pt))) &&
+                        // (subtype && unitData.sub_category && subtype.includes(unitData.sub_category)) &&
+                        // (unit_type.includes(unittype)) &&
                       (
                         (facing && unitData.facing && facing.includes(unitData.facing)) ||
                         (road && unitData.road && road.includes(unitData.road)) ||
@@ -3887,6 +3889,8 @@ const handlepropertyunitstypesChange = (event) => {
                                     
                                                       const handleMatchLeadClick = async (item) => {
                                                         try {
+                                                          console.log(item);
+                                                          
                                                             setIsLoading1(true)
                                                           setMatcheddeals([]);
                                                           handleShow11();
@@ -4087,6 +4091,9 @@ const handlepropertyunitstypesChange = (event) => {
                                                           setIsLoading1(false)
                                                         }
                                                       };
+
+                                                      console.log(lead1);
+                                                      
                                 
                                                       const [showdeals, setshowdeals] = useState([]);
                                                       const [relateddeals, setrelateddeals] = useState([]);
@@ -8040,7 +8047,7 @@ const [isHoveringsendmail, setIsHoveringsendmail] = useState(false);
                 style={{ padding: "10px",fontSize:"12px" }}
                 >
                 {
-                  col.id=='budget'?
+                  col.id==='budget'?
                   (
                   <>
                    Min:  ₹{Number(item.budget_min)?.toLocaleString('en-IN')}/- <br />
@@ -8049,27 +8056,39 @@ const [isHoveringsendmail, setIsHoveringsendmail] = useState(false);
                   </>
                   ) : col.id === 'requirment' ? (
                     <>
-                     {item.property_type.map((ptype, pIndex) =>
-                      item.unit_type.map((utype, uIndex) =>
-                        item.sub_type.map((stype, sIndex) => (
-                          <div key={`${pIndex}-${uIndex}-${sIndex}`}>
-                            {ptype} {utype} {stype}
-                          </div>
-                        ))
-                      )
-                    )}
-                    {item.search_location?item.search_location:item.area_project.join(',')}
-                  </>
+      {/* property_type + unit_type + sub_type */}
+      {item?.property_type?.length > 0 || item?.unit_type?.length > 0 || item?.sub_type?.length > 0 ? (
+        (item?.property_type?.length > 0 ? item.property_type : ['']).map((ptype, pIndex) =>
+          (item?.unit_type?.length > 0 ? item.unit_type : ['']).map((utype, uIndex) =>
+            (item?.sub_type?.length > 0 ? item.sub_type : ['']).map((stype, sIndex) => (
+              <div key={`${pIndex}-${uIndex}-${sIndex}`}>
+                {[ptype, utype, stype].filter(Boolean).join(' ')}
+              </div>
+            ))
+          )
+        )
+      ) : null}
+
+      {/* search_location */}
+      {item?.search_location && (
+        <div>{item.search_location}</div>
+      )}
+
+      {/* area_project */}
+      {item?.area_project?.length > 0 && (
+        <div>{item.area_project.join(', ')}</div>
+      )}
+    </>
                   
                   
-                  ) :  col.id=='size'?
+                  ) :  col.id==='size'?
                   (
                   <>
                    Min:{item.minimum_area} {item.area_metric}<br />
                    Max:{item.maximum_area} {item.area_metric}
 
                   </>
-                  ) :  col.id=='road'?
+                  ) :  col.id==='road'?
                   (
                   <>
                   {
@@ -8080,7 +8099,7 @@ const [isHoveringsendmail, setIsHoveringsendmail] = useState(false);
                   }
 
                   </>
-                  ) : col.id=='facing'?
+                  ) : col.id==='facing'?
                   (
                   <>
                   {

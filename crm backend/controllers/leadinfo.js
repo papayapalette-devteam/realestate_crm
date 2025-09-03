@@ -139,7 +139,8 @@ const searchlead=async (req, res) => {
     const leads = await leadinfo.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .populate("matcheddeals")
 
     // Get total for filtered result
     const total = await leadinfo.countDocuments(filter);

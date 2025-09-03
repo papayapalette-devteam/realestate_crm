@@ -20,7 +20,7 @@ function Sidebar1() {
 
   return (
     <div>
-      <aside className="sidebar">
+      <aside className="sidebar" style={{zIndex:"99999"}}>
         <div className="sidebar__brand">
           <Link to="/dashboard">
             <img
