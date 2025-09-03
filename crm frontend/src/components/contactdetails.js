@@ -3324,7 +3324,7 @@ const[isloading3,setisloading3]=useState(false)
                           const [suggestionscontact, setSuggestionscontact] = useState([]);
                       
                           
-                          const fetchsearchdata = async (page, limit, search) => {
+  const fetchsearchdata = async (page, limit, search) => {
   try {
     // Call backend with search param
     const resp = await api.get(`/searchcontact?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`);

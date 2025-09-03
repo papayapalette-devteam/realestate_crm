@@ -112,6 +112,53 @@ const leadinfo_find = async (req, res) => {
     console.log(error);
   }
 };
+
+const searchlead=async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page)) || 1;
+    const limit = Math.max(1, parseInt(req.query.limit)) || 100;
+    const search = req.query.search || '';
+    const skip = (page - 1) * limit;
+
+    const searchRegex = new RegExp(search, 'i'); // case-insensitive partial match
+
+    // Build filter for searching across fields
+    const filter = search
+      ? {
+          $or: [
+            { title: searchRegex },
+            { first_name: searchRegex },
+            { last_name: searchRegex },
+            { mobile_no: { $elemMatch: { $regex: searchRegex } } },
+            { email: { $elemMatch: { $regex: searchRegex } } },
+          ],
+        }
+      : {};
+
+    // Fetch paginated & searched
+    const leads = await leadinfo.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Get total for filtered result
+    const total = await leadinfo.countDocuments(filter);
+
+    res.status(200).json({
+      message: 'Contacts fetched successfully',
+      lead: leads,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
+
+
 const view_lead_Byleadtype = async (req, res) => {
   try {
     const lead = req.params.lead_type;
@@ -629,5 +676,6 @@ module.exports = {
   delete_leadsingledocument,
   updatemany,
   addbulkleads,
-  update_leadforbulkupload
+  update_leadforbulkupload,
+  searchlead
 };

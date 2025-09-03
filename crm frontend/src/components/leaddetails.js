@@ -134,7 +134,7 @@ const[allleaddataforsearch,setallleaddataforsearch]=useState([])
       const all=(resp.data.pagelead)
       setdata(all)
       setallleaddataforsearch(all)
-      setcountall(all.length)
+      setcountall(resp.data.total)
       settotalpages(resp.data.totalPages)
 
        setSearchParams({ page, limit });
@@ -4798,55 +4798,90 @@ const replaceVariables = (template, lead, property) => {
                           const [searchTermlead, setSearchTermlead] = useState('');
                           const [suggestionslead, setSuggestionslead] = useState([]);
                           
-                                          const handleSearchChangelead = (e) => {
-                                            const value = e.target.value;
-                                            setSearchTermlead(value);
+                                          // const handleSearchChangelead = (e) => {
+                                          //   const value = e.target.value;
+                                          //   setSearchTermlead(value);
                           
-                                            if (value.trim() === '') {
-                                              setSuggestionslead([]);
-                                              fetchdata()
-                                              return;
-                                            }
+                                          //   if (value.trim() === '') {
+                                          //     setSuggestionslead([]);
+                                          //     fetchdata()
+                                          //     return;
+                                          //   }
                           
-                                            const filtered = allleaddataforsearch.filter(item =>
-                                            {
-                                              const titlematch=item.title && item.title.toLowerCase().includes(value.toLowerCase())
-                                              const firstnamematch =item.first_name && item.first_name.toLowerCase().includes(value.toLowerCase());
-                                              const lastnamematch =item.last_name && item.last_name.toLowerCase().includes(value.toLowerCase());
+                                          //   const filtered = allleaddataforsearch.filter(item =>
+                                          //   {
+                                          //     const titlematch=item.title && item.title.toLowerCase().includes(value.toLowerCase())
+                                          //     const firstnamematch =item.first_name && item.first_name.toLowerCase().includes(value.toLowerCase());
+                                          //     const lastnamematch =item.last_name && item.last_name.toLowerCase().includes(value.toLowerCase());
                           
-                                              const mobile_no =
-                                                Array.isArray(item.mobile_no) &&
-                                                item.mobile_no.some(mobile =>
-                                                  String(mobile).toLowerCase().includes(value.toLowerCase())
-                                                );
+                                          //     const mobile_no =
+                                          //       Array.isArray(item.mobile_no) &&
+                                          //       item.mobile_no.some(mobile =>
+                                          //         String(mobile).toLowerCase().includes(value.toLowerCase())
+                                          //       );
 
-                                                const email =
-                                                Array.isArray(item.email) &&
-                                                item.email.some(emailid =>
-                                                  String(emailid).toLowerCase().includes(value.toLowerCase())
-                                                );
+                                          //       const email =
+                                          //       Array.isArray(item.email) &&
+                                          //       item.email.some(emailid =>
+                                          //         String(emailid).toLowerCase().includes(value.toLowerCase())
+                                          //       );
                           
                                               
                           
-                                              return titlematch || firstnamematch || lastnamematch || mobile_no || email;
+                                          //     return titlematch || firstnamematch || lastnamematch || mobile_no || email;
                                               
-                                           } );
+                                          //  } );
                           
-                                            setSuggestionslead(filtered);
-                                              setdata(filtered) // Limit to 5 suggestions
-                                          };
+                                          //   setSuggestionslead(filtered);
+                                          //     setdata(filtered) // Limit to 5 suggestions
+                                          // };
                           
-                                          const handleSuggestionClicklead = (item) => {
+                                          // const handleSuggestionClicklead = (item) => {
                                 
                                           
-                                            setSearchTermlead(`${item.title} ${item.first_name} ${item.last_name} -${item.mobile_no.join(',')} -${item.email.join(',')}`);
-                                            setSuggestionslead([]);
-                                            setdata([item])
+                                          //   setSearchTermlead(`${item.title} ${item.first_name} ${item.last_name} -${item.mobile_no.join(',')} -${item.email.join(',')}`);
+                                          //   setSuggestionslead([]);
+                                          //   setdata([item])
                           
-                                            // You can also do something with the selected item (e.g. set selectedDeal)
-                                          };
+                                          //   // You can also do something with the selected item (e.g. set selectedDeal)
+                                          // };
                           
-                                       
+                             
+                                
+                               
+                                   
+           const fetchsearchdata = async (page, limit, search) => {
+           try {
+             // Call backend with search param
+             const resp = await api.get(`/searchlead?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`);
+             const leads = resp.data.lead || [];
+         
+             setdata(leads);
+             setSuggestionslead(leads); // suggestions can be the current filtered page
+         
+             settotalpages(resp.data.totalPages || 0);
+             setcountall(resp.data.total || 0);
+         
+           } catch (error) {
+             console.error(error);
+           }
+         };
+         
+         const handleSearchChangelead = async (e) => {
+           const value = e.target.value;
+           setSearchTermlead(value);
+           setCurrentPage(1); // reset to first page on new search
+         
+           if (value.trim() === '') {
+             // Empty search - fetch default data (first page, no search)
+             await fetchdata(1, itemsPerPage, '');
+             setSuggestionslead([]); // clear suggestions
+             return;
+           }
+         
+           // Fetch contacts filtered by search term from backend
+           await fetchsearchdata(currentPage, itemsPerPage, value);
+         };                              
 
 
 // ================================================lead search box code end=======================================================
