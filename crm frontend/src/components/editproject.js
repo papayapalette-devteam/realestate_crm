@@ -102,6 +102,7 @@ useEffect(()=>
 viewprojectbyid()
 },[id])
 
+
     const addproject=async(e)=>
     {
       
@@ -2826,13 +2827,17 @@ const normalizeMobile = (mobile) => {
 };
 
 
+
 const checkForDuplicates = async (contacts) => {
   try {
     setIsLoading(true);
 
     // Fetch existing units
-    const response = await api.get("viewproject");
-    const allunits = response.data.project.flatMap(project => project.add_unit);
+    // const response = await api.get("viewproject");
+    const allunits = project.add_unit
+
+    console.log(allunits);
+    
 
     
 
@@ -2940,9 +2945,9 @@ const checkForDuplicates = async (contacts) => {
 
       // Check if unit is duplicate
       const isDuplicate = allunits.some(unit =>
-        unit.project_name == unitDetails.project_name &&
-        unit.unit_no == unitDetails.unit_no &&
-        unit.block == unitDetails.block
+        unit.project_name === unitDetails.project_name &&
+        unit.unit_no === unitDetails.unit_no &&
+        unit.block === unitDetails.block
       );
 
       if (isDuplicate) {
