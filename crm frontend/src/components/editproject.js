@@ -2828,192 +2828,358 @@ const normalizeMobile = (mobile) => {
 
 
 
+// const checkForDuplicates = async (contacts) => {
+//   try {
+//     setIsLoading(true);
+
+//     // Fetch existing units
+//     // const response = await api.get("viewproject");
+//     const allunits = project.add_unit
+
+//     console.log(allunits);
+    
+
+    
+
+//     // Fetch all contacts
+//     const contactResponse = await api.get("viewcontact");
+//     // console.log(contactResponse);
+    
+//     const contactList = contactResponse.data.allcontact; // Existing contacts
+
+//     // Create a mapping of mobile_no to ObjectId
+//     const mobileToIdMap = new Map();
+//     contactList.forEach(contact => {
+//       if (Array.isArray(contact.mobile_no)) {
+//         contact.mobile_no?.forEach(mobile => {
+//           const normalizedMobile = normalizeMobile(mobile);
+//           if (normalizedMobile) {
+//             mobileToIdMap.set(normalizedMobile, contact._id);
+//           }
+//         });
+//       }
+//     });
+
+//     let newContacts = [];
+//     let duplicates = [];
+//     let newContactList = []; // Stores new contacts to be created
+
+//     contacts.forEach((contact) => {
+//       let updatedOwnerDetails = [];
+//       let updatedAssociatedContact = [];
+
+//       // Check and update `owner_details`
+//       if (Array.isArray(contact.owner_details)) {
+//         updatedOwnerDetails = contact.owner_details.map(mobile => {
+//           const normalizedMobile = normalizeMobile(mobile);
+//           return mobileToIdMap.get(normalizedMobile) || null; // Replace with ObjectId if found
+//         }).filter(Boolean);
+//       } else if (contact.owner_details) {
+//         const normalizedMobile = normalizeMobile(contact.owner_details);
+//         const existingId = mobileToIdMap.get(normalizedMobile);
+//         if (existingId) {
+//           updatedOwnerDetails = [existingId];
+//         } else {
+//           // If contact not found, add it to newContactList
+//           newContactList.push({
+//             title:contact.owner_title,
+//             first_name: contact.owner_first_name || "",
+//             last_name:contact.owner_last_name || "",
+//             country_code:contact.owner_country_code || [],
+//              mobile_no: contact.owner_mobile_no || [],
+//              mobile_type: contact.owner_mobile_type || [],
+//              email:contact.owner_email || [],
+//              email_type:contact.owner_email_type || [],
+//              father_husband_name:contact.owner_father_name,
+//              h_no:contact.owner_hno,
+//              area1:contact.owner_area,
+//              location1:contact.owner_location,
+//              city1:contact.owner_city,
+//              pincode1:contact.owner_pincode,
+//              state1:contact.owner_state,
+//              country1:contact.owner_country,
+//           });
+//         }
+//       }
+
+//       // Check and update `associated_contact`
+//       if (Array.isArray(contact.associated_contact)) {
+//         updatedAssociatedContact = contact.associated_contact.map(mobile => {
+//           const normalizedMobile = normalizeMobile(mobile);
+//           return mobileToIdMap.get(normalizedMobile) || null;
+//         }).filter(Boolean);
+//       } else if (contact.associated_contact) {
+//         const normalizedMobile = normalizeMobile(contact.associated_contact);
+//         const existingId = mobileToIdMap.get(normalizedMobile);
+//         if (existingId) {
+//           updatedAssociatedContact = [existingId];
+//         } else {
+//           newContactList.push({
+//             title:contact.associated_title,
+//             first_name: contact.associated_first_name || "",
+//             last_name:contact.associated_last_name || "",
+//              mobile_no: contact.associated_mobile_no || [],
+//              mobile_type: contact.associated_mobile_type || [],
+//              country_code:contact.associated_country_code || [],
+//              email:contact.associated_email || [],
+//              email_type: contact.associated_email_type || [],
+//              father_husband_name:contact.associated_father_name,
+//              h_no:contact.associated_hno,
+//              area1:contact.associated_area,
+//              location1:contact.associated_location,
+//              city1:contact.associated_city,
+//              pincode1:contact.associated_pincode,
+//              state1:contact.associated_state,
+//              country1:contact.associated_country,
+
+//           });
+//         }
+//       }
+
+//       // Create updated unit object **inside the loop**
+//       const unitDetails = {
+//         ...contact,
+//         owner_details: updatedOwnerDetails,
+//         associated_contact: updatedAssociatedContact
+//       };
+
+//       // Check if unit is duplicate
+//       const isDuplicate = allunits.some(unit =>
+//         unit.project_name === unitDetails.project_name &&
+//         unit.unit_no === unitDetails.unit_no &&
+//         unit.block === unitDetails.block
+//       );
+
+//       if (isDuplicate) {
+//         duplicates.push(unitDetails);
+//       } else {
+//         newContacts.push(unitDetails);
+//       }
+//     });
+
+    
+    
+//     // If there are new contacts, stop and prompt the user to re-upload
+//     if (newContactList.length > 0) {
+//       const contactListHtml = newContactList.map(contact => 
+//           `<li>${contact.title} ${contact.first_name} ${contact.last_name}</li>`
+//       ).join("");
+//       Swal.fire({
+//         title: "Are you sure?",
+//         icon: "warning",
+//       html: `
+//         <p>Do you want to add <strong>${newContactList.length}</strong> new contacts?</p>
+//         <details style="text-align: left; margin-top: 10px;">
+//             <summary style="cursor: pointer; font-weight: bold;">View contact list</summary>
+//             <ul style="margin-top: 10px;">
+//                 ${contactListHtml}
+//             </ul>
+//         </details>
+//     `,
+//         showCancelButton: true,
+//         confirmButtonText: "Yes, add them!",
+//         cancelButtonText: "No, cancel",
+//       }).then(async (result) => {
+//         if (result.isConfirmed) {
+//           setIsLoading(true); // Show loading state
+    
+//           try {
+//             await api.post("addbulkcontact", newContactList);
+    
+//             Swal.fire({
+//               title: "Success",
+//               icon: "success",
+//               text: `${newContactList.length} new contacts added. Please refresh the page and re-upload the Excel sheet.`,
+//             }).then(() => {
+//               window.location.reload(); // Reload after user clicks "OK"
+//             });
+//           } catch (error) {
+//             Swal.fire({
+//               title: "Error",
+//               icon: "error",
+//               text: "Something went wrong while adding contacts. plz check your excel file avoid coma(,) if fields are non array and if values are empthy then blabk it ",
+//             });
+//           }
+    
+//           setIsLoading(false); // Hide loading state
+//         }
+//       });
+    
+//       return; // Stop further execution
+//     }
+    
+
+//     // Update state only if no new contacts were found
+//     setDuplicateEntries(duplicates);
+//     setPendingContacts(newContacts);
+//     setallcontacts([...newContacts, ...duplicates]);
+
+//   } catch (error) {
+//     console.error("❌ Error checking for duplicates:", error);
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
+
 const checkForDuplicates = async (contacts) => {
   try {
     setIsLoading(true);
 
-    // Fetch existing units
-    // const response = await api.get("viewproject");
-    const allunits = project.add_unit
+    // Existing project units (indexing for faster lookup)
+    const allunits = project.add_unit || [];
+    const unitKeySet = new Set(
+      allunits.map(
+        (u) => `${u.project_name}|${u.unit_no}|${u.block}`
+      )
+    );
 
-    console.log(allunits);
-    
+    // Fetch all contacts once
+    const { data } = await api.get("viewcontact");
+    const contactList = data.allcontact || [];
 
-    
-
-    // Fetch all contacts
-    const contactResponse = await api.get("viewcontact");
-    console.log(contactResponse);
-    
-    const contactList = contactResponse.data.allcontact; // Existing contacts
-
-    // Create a mapping of mobile_no to ObjectId
+    // Build a lookup: mobile_no → contactId
     const mobileToIdMap = new Map();
-    contactList.forEach(contact => {
-      if (Array.isArray(contact.mobile_no)) {
-        contact.mobile_no?.forEach(mobile => {
-          const normalizedMobile = normalizeMobile(mobile);
-          if (normalizedMobile) {
-            mobileToIdMap.set(normalizedMobile, contact._id);
-          }
-        });
+    for (const c of contactList) {
+      if (Array.isArray(c.mobile_no)) {
+        for (const mobile of c.mobile_no) {
+          const normalized = normalizeMobile(mobile);
+          if (normalized) mobileToIdMap.set(normalized, c._id);
+        }
       }
-    });
+    }
 
-    let newContacts = [];
-    let duplicates = [];
-    let newContactList = []; // Stores new contacts to be created
+    const newContacts = [];
+    const duplicates = [];
+    const newContactList = [];
 
-    contacts.forEach((contact) => {
+    for (const contact of contacts) {
       let updatedOwnerDetails = [];
       let updatedAssociatedContact = [];
 
-      // Check and update `owner_details`
+      // ✅ Owner details
       if (Array.isArray(contact.owner_details)) {
-        updatedOwnerDetails = contact.owner_details.map(mobile => {
-          const normalizedMobile = normalizeMobile(mobile);
-          return mobileToIdMap.get(normalizedMobile) || null; // Replace with ObjectId if found
-        }).filter(Boolean);
+        updatedOwnerDetails = contact.owner_details
+          .map((m) => mobileToIdMap.get(normalizeMobile(m)))
+          .filter(Boolean);
       } else if (contact.owner_details) {
-        const normalizedMobile = normalizeMobile(contact.owner_details);
-        const existingId = mobileToIdMap.get(normalizedMobile);
-        if (existingId) {
-          updatedOwnerDetails = [existingId];
+        const id = mobileToIdMap.get(normalizeMobile(contact.owner_details));
+        if (id) {
+          updatedOwnerDetails = [id];
         } else {
-          // If contact not found, add it to newContactList
           newContactList.push({
-            title:contact.owner_title,
+            title: contact.owner_title,
             first_name: contact.owner_first_name || "",
-            last_name:contact.owner_last_name || "",
-            country_code:contact.owner_country_code || [],
-             mobile_no: contact.owner_mobile_no || [],
-             mobile_type: contact.owner_mobile_type || [],
-             email:contact.owner_email || [],
-             email_type:contact.owner_email_type || [],
-             father_husband_name:contact.owner_father_name,
-             h_no:contact.owner_hno,
-             area1:contact.owner_area,
-             location1:contact.owner_location,
-             city1:contact.owner_city,
-             pincode1:contact.owner_pincode,
-             state1:contact.owner_state,
-             country1:contact.owner_country,
+            last_name: contact.owner_last_name || "",
+            country_code: contact.owner_country_code || [],
+            mobile_no: contact.owner_mobile_no || [],
+            mobile_type: contact.owner_mobile_type || [],
+            email: contact.owner_email || [],
+            email_type: contact.owner_email_type || [],
+            father_husband_name: contact.owner_father_name,
+            h_no: contact.owner_hno,
+            area1: contact.owner_area,
+            location1: contact.owner_location,
+            city1: contact.owner_city,
+            pincode1: contact.owner_pincode,
+            state1: contact.owner_state,
+            country1: contact.owner_country,
           });
         }
       }
 
-      // Check and update `associated_contact`
+      // ✅ Associated contact
       if (Array.isArray(contact.associated_contact)) {
-        updatedAssociatedContact = contact.associated_contact.map(mobile => {
-          const normalizedMobile = normalizeMobile(mobile);
-          return mobileToIdMap.get(normalizedMobile) || null;
-        }).filter(Boolean);
+        updatedAssociatedContact = contact.associated_contact
+          .map((m) => mobileToIdMap.get(normalizeMobile(m)))
+          .filter(Boolean);
       } else if (contact.associated_contact) {
-        const normalizedMobile = normalizeMobile(contact.associated_contact);
-        const existingId = mobileToIdMap.get(normalizedMobile);
-        if (existingId) {
-          updatedAssociatedContact = [existingId];
+        const id = mobileToIdMap.get(
+          normalizeMobile(contact.associated_contact)
+        );
+        if (id) {
+          updatedAssociatedContact = [id];
         } else {
           newContactList.push({
-            title:contact.associated_title,
+            title: contact.associated_title,
             first_name: contact.associated_first_name || "",
-            last_name:contact.associated_last_name || "",
-             mobile_no: contact.associated_mobile_no || [],
-             mobile_type: contact.associated_mobile_type || [],
-             country_code:contact.associated_country_code || [],
-             email:contact.associated_email || [],
-             email_type: contact.associated_email_type || [],
-             father_husband_name:contact.associated_father_name,
-             h_no:contact.associated_hno,
-             area1:contact.associated_area,
-             location1:contact.associated_location,
-             city1:contact.associated_city,
-             pincode1:contact.associated_pincode,
-             state1:contact.associated_state,
-             country1:contact.associated_country,
-
+            last_name: contact.associated_last_name || "",
+            mobile_no: contact.associated_mobile_no || [],
+            mobile_type: contact.associated_mobile_type || [],
+            country_code: contact.associated_country_code || [],
+            email: contact.associated_email || [],
+            email_type: contact.associated_email_type || [],
+            father_husband_name: contact.associated_father_name,
+            h_no: contact.associated_hno,
+            area1: contact.associated_area,
+            location1: contact.associated_location,
+            city1: contact.associated_city,
+            pincode1: contact.associated_pincode,
+            state1: contact.associated_state,
+            country1: contact.associated_country,
           });
         }
       }
 
-      // Create updated unit object **inside the loop**
+      // ✅ Unit key comparison in O(1)
+      const unitKey = `${contact.project_name}|${contact.unit_no}|${contact.block}`;
       const unitDetails = {
         ...contact,
         owner_details: updatedOwnerDetails,
-        associated_contact: updatedAssociatedContact
+        associated_contact: updatedAssociatedContact,
       };
 
-      // Check if unit is duplicate
-      const isDuplicate = allunits.some(unit =>
-        unit.project_name === unitDetails.project_name &&
-        unit.unit_no === unitDetails.unit_no &&
-        unit.block === unitDetails.block
-      );
-
-      if (isDuplicate) {
+      if (unitKeySet.has(unitKey)) {
         duplicates.push(unitDetails);
       } else {
         newContacts.push(unitDetails);
       }
-    });
+    }
 
-    
-    
-    // If there are new contacts, stop and prompt the user to re-upload
+    // ✅ If new contacts need confirmation
     if (newContactList.length > 0) {
-      const contactListHtml = newContactList.map(contact => 
-          `<li>${contact.title} ${contact.first_name} ${contact.last_name}</li>`
-      ).join("");
+      const contactListHtml = newContactList
+        .map((c) => `<li>${c.title} ${c.first_name} ${c.last_name}</li>`)
+        .join("");
+
       Swal.fire({
         title: "Are you sure?",
         icon: "warning",
-      html: `
-        <p>Do you want to add <strong>${newContactList.length}</strong> new contacts?</p>
-        <details style="text-align: left; margin-top: 10px;">
+        html: `
+          <p>Do you want to add <strong>${newContactList.length}</strong> new contacts?</p>
+          <details style="text-align: left; margin-top: 10px;">
             <summary style="cursor: pointer; font-weight: bold;">View contact list</summary>
-            <ul style="margin-top: 10px;">
-                ${contactListHtml}
-            </ul>
-        </details>
-    `,
+            <ul style="margin-top: 10px;">${contactListHtml}</ul>
+          </details>
+        `,
         showCancelButton: true,
         confirmButtonText: "Yes, add them!",
         cancelButtonText: "No, cancel",
       }).then(async (result) => {
         if (result.isConfirmed) {
-          setIsLoading(true); // Show loading state
-    
           try {
             await api.post("addbulkcontact", newContactList);
-    
             Swal.fire({
               title: "Success",
               icon: "success",
-              text: `${newContactList.length} new contacts added. Please refresh the page and re-upload the Excel sheet.`,
-            }).then(() => {
-              window.location.reload(); // Reload after user clicks "OK"
-            });
+              text: `${newContactList.length} new contacts added. Please refresh and re-upload.`,
+            }).then(() => window.location.reload());
           } catch (error) {
             Swal.fire({
               title: "Error",
               icon: "error",
-              text: "Something went wrong while adding contacts. plz check your excel file avoid coma(,) if fields are non array and if values are empthy then blabk it ",
+              text: "Something went wrong while adding contacts. Check your Excel (avoid commas, keep blanks empty).",
             });
           }
-    
-          setIsLoading(false); // Hide loading state
         }
       });
-    
-      return; // Stop further execution
-    }
-    
 
-    // Update state only if no new contacts were found
+      return;
+    }
+
+    // ✅ Final state updates
     setDuplicateEntries(duplicates);
     setPendingContacts(newContacts);
     setallcontacts([...newContacts, ...duplicates]);
-
   } catch (error) {
     console.error("❌ Error checking for duplicates:", error);
   } finally {

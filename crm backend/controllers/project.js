@@ -289,21 +289,32 @@ const view_units = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const search = req.query.search ? req.query.search.trim() : "";
+
+    
+
+    let matchStage = {};
+    if (search) {
+      matchStage = {
+        $or: [
+          { "add_unit.unit_no": { $regex: search, $options: "i" } },
+          { "add_unit.block": { $regex: search, $options: "i" } },
+          { project_name: { $regex: search, $options: "i" } }
+        ]
+      };
+    }
 
     const units = await addproject.aggregate([
       { $unwind: "$add_unit" },
+      ...(search ? [{ $match: matchStage }] : []),   // 🔑 Apply search filter
 
-      // sort by createdAt inside add_unit
-      // { $sort: { "add_unit.createdAt": -1 } },
-
-      // pagination
       { $skip: skip },
       { $limit: limit },
 
-      // lookup for owner_details
+      // lookups
       {
         $lookup: {
-          from: "add_contacts",              // 👈 collection name of owner_details
+          from: "add_contacts",
           localField: "add_unit.owner_details",
           foreignField: "_id",
           as: "add_unit.owner_details"
@@ -311,10 +322,9 @@ const view_units = async (req, res) => {
       },
       { $unwind: { path: "$add_unit.owner_details", preserveNullAndEmptyArrays: true } },
 
-      // lookup for associated_contact
       {
         $lookup: {
-          from: "add_contacts",              // adjust collection name
+          from: "add_contacts",
           localField: "add_unit.associated_contact",
           foreignField: "_id",
           as: "add_unit.associated_contact"
@@ -322,10 +332,9 @@ const view_units = async (req, res) => {
       },
       { $unwind: { path: "$add_unit.associated_contact", preserveNullAndEmptyArrays: true } },
 
-      // lookup for previousowner_details
       {
         $lookup: {
-          from: "add_contacts",              // adjust collection name
+          from: "add_contacts",
           localField: "add_unit.previousowner_details",
           foreignField: "_id",
           as: "add_unit.previousowner_details"
@@ -334,9 +343,10 @@ const view_units = async (req, res) => {
       { $unwind: { path: "$add_unit.previousowner_details", preserveNullAndEmptyArrays: true } },
     ]);
 
-    // get total count of all units
+    // get total count (with search filter)
     const totalCount = await addproject.aggregate([
       { $unwind: "$add_unit" },
+      ...(search ? [{ $match: matchStage }] : []),
       { $count: "count" }
     ]);
 
@@ -345,7 +355,7 @@ const view_units = async (req, res) => {
 
     res.status(200).json({
       message: "Units fetched successfully",
-      units: units.map(u => u.add_unit), // flatten to only units
+      units: units.map(u => u.add_unit),
       total,
       page,
       totalPages
@@ -355,6 +365,7 @@ const view_units = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 

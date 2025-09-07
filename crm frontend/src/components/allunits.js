@@ -1017,23 +1017,27 @@ function Allunits() {
 
 
                         
-                    const fetchunitsdata=async(page,limit)=>
-                  {
-                    setLoading(true)
-                    try {
-                       const resp1=await api.get(`viewallunits?page=${page}&limit=${limit}`)
-                       console.log(resp1);
-                       
-                       settotalinventories(resp1.data.total)
-                       setFlattenedUnits(resp1.data.units)
-                    } catch (error) {
-                      console.log(error);
-                    }finally
-                    {
-                      setLoading(false)
-                    }
-                  
-                  }
+                const fetchunitsdata = async (page, limit, search = "") => {
+                setLoading(true);
+                try {
+                  // build URL: include search param only if search is non-empty
+                  const url =
+                    search && search.trim() !== ""
+                      ? `viewallunits?page=${page}&limit=${limit}&search=${search}`
+                      : `viewallunits?page=${page}&limit=${limit}`;
+
+                  const resp1 = await api.get(url);
+                  console.log(resp1);
+
+                  settotalinventories(resp1.data.total);
+                  setFlattenedUnits(resp1.data.units);
+                } catch (error) {
+                  console.log(error);
+                } finally {
+                  setLoading(false);
+                }
+              };
+
 
  useEffect(() => {
     fetchunitsdata(currentPage2, itemsPerPage2);
@@ -3448,58 +3452,10 @@ const handleallblockchange = (event) => {
                   }
 
 
-                               const sendmailfunction1=()=>
-                                      {
-                                        document.getElementById("sendmail").style.display="flex"
-                                        document.getElementById("sendmessage").style.display="none"
-                                        document.getElementById("sendwhatsapp").style.display="none"
+                               
+                                     
                           
-                                        document.getElementById("sendmessage1").style.color="black"
-                                        document.getElementById("sendmessage1").style.backgroundColor="white"
-                                        document.getElementById("sendwhatsapp1").style.color="black"
-                                        document.getElementById("sendwhatsapp1").style.backgroundColor="white"
-                          
-                                        document.getElementById("sendmail1").style.backgroundColor="black"
-                                        document.getElementById("sendmail1").style.color="white"
-                                        document.getElementById("sendmail1").style.borderRadius="50px"
-                                        document.getElementById("sendmail1").style.width="100px"
-                                        document.getElementById("sendmail1").style.textAlign="center"
-                                      }
-                                      const sendmessagefunction1=()=>
-                                        {
-                                          document.getElementById("sendmail").style.display="none"
-                                          document.getElementById("sendmessage").style.display="flex"
-                                          document.getElementById("sendwhatsapp").style.display="none"
-                            
-                                          document.getElementById("sendmail1").style.color="black"
-                                          document.getElementById("sendmail1").style.backgroundColor="white"
-                                          document.getElementById("sendwhatsapp1").style.color="black"
-                                          document.getElementById("sendwhatsapp1").style.backgroundColor="white"
-                            
-                                          document.getElementById("sendmessage1").style.backgroundColor="black"
-                                          document.getElementById("sendmessage1").style.color="white"
-                                          document.getElementById("sendmessage1").style.borderRadius="50px"
-                                          document.getElementById("sendmessage1").style.width="150px"
-                                          document.getElementById("sendmessage1").style.textAlign="center"
-                                        }
-                          
-                                        const sendwhatsappfunction1=()=>
-                                          {
-                                            document.getElementById("sendmail").style.display="none"
-                                            document.getElementById("sendmessage").style.display="none"
-                                            document.getElementById("sendwhatsapp").style.display="flex"
-                              
-                                            document.getElementById("sendmail1").style.color="black"
-                                            document.getElementById("sendmail1").style.backgroundColor="white"
-                                            document.getElementById("sendmessage1").style.color="black"
-                                            document.getElementById("sendmessage1").style.backgroundColor="white"
-                              
-                                            document.getElementById("sendwhatsapp1").style.backgroundColor="black"
-                                            document.getElementById("sendwhatsapp1").style.color="white"
-                                            document.getElementById("sendwhatsapp1").style.borderRadius="50px"
-                                            document.getElementById("sendwhatsapp1").style.width="150px"
-                                            document.getElementById("sendwhatsapp1").style.textAlign="center"
-                                          }
+                                       
                           const[unitdata,setunitdata]=useState({})
                           const[projectdata,setprojectdata]=useState({})
                         
@@ -3833,47 +3789,47 @@ const handleallblockchange = (event) => {
 const [searchTermunits, setSearchTermunits] = useState('');
 const [suggestionsunit, setSuggestionsunit] = useState([]);
 
-                const handleSearchChangeunit = (e) => {
-                  const value = e.target.value;
-                  setSearchTermunits(value);
+                // const handleSearchChangeunit = (e) => {
+                //   const value = e.target.value;
+                //   setSearchTermunits(value);
 
-                  if (value.trim() === '') {
-                    setSuggestionsunit([]);
-                    fetchcdata()
-                    return;
-                  }
+                //   if (value.trim() === '') {
+                //     setSuggestionsunit([]);
+                //     fetchcdata()
+                //     return;
+                //   }
 
-                  const filtered = allunitsforsearch.filter(item =>
-                  {
-                    const projectmatch =item.project_name && item.project_name.toLowerCase().includes(value.toLowerCase());
+                //   const filtered = allunitsforsearch.filter(item =>
+                //   {
+                //     const projectmatch =item.project_name && item.project_name.toLowerCase().includes(value.toLowerCase());
 
-                    const blockmatch =item.block && item.block.toLowerCase().includes(value.toLowerCase());
+                //     const blockmatch =item.block && item.block.toLowerCase().includes(value.toLowerCase());
 
-                    const unitmatch =item.unit_no && item.unit_no.toLowerCase().includes(value.toLowerCase());
+                //     const unitmatch =item.unit_no && item.unit_no.toLowerCase().includes(value.toLowerCase());
 
-                    const ownermatch =
-                      Array.isArray(item.owner_details) &&
-                      item.owner_details.some(owner =>
-                        (owner.first_name && owner.first_name.toLowerCase().includes(value.toLowerCase())) ||
-                        (owner.last_name && owner.last_name.toLowerCase().includes(value.toLowerCase())) ||
-                        (owner.mobile_no && String(owner.mobile_no).toLowerCase().includes(value.toLowerCase()))
-                      );
+                //     const ownermatch =
+                //       Array.isArray(item.owner_details) &&
+                //       item.owner_details.some(owner =>
+                //         (owner.first_name && owner.first_name.toLowerCase().includes(value.toLowerCase())) ||
+                //         (owner.last_name && owner.last_name.toLowerCase().includes(value.toLowerCase())) ||
+                //         (owner.mobile_no && String(owner.mobile_no).toLowerCase().includes(value.toLowerCase()))
+                //       );
 
-                    const associatematch =
-                      Array.isArray(item.associated_contact) &&
-                      item.associated_contact.some(contact =>
-                        (contact.first_name && contact.first_name.toLowerCase().includes(value.toLowerCase())) ||
-                        (contact.last_name && contact.last_name.toLowerCase().includes(value.toLowerCase())) ||
-                        (contact.mobile_no && String(contact.mobile_no).toLowerCase().includes(value.toLowerCase()))
-                      );
+                //     const associatematch =
+                //       Array.isArray(item.associated_contact) &&
+                //       item.associated_contact.some(contact =>
+                //         (contact.first_name && contact.first_name.toLowerCase().includes(value.toLowerCase())) ||
+                //         (contact.last_name && contact.last_name.toLowerCase().includes(value.toLowerCase())) ||
+                //         (contact.mobile_no && String(contact.mobile_no).toLowerCase().includes(value.toLowerCase()))
+                //       );
 
-                    return projectmatch || blockmatch || unitmatch || ownermatch || associatematch
+                //     return projectmatch || blockmatch || unitmatch || ownermatch || associatematch
                     
-                 } );
+                //  } );
 
-                  setSuggestionsunit(filtered); // Limit to 5 suggestions
-                  setFlattenedUnits(filtered)
-                };
+                //   setSuggestionsunit(filtered); // Limit to 5 suggestions
+                //   setFlattenedUnits(filtered)
+                // };
 
                 const handleSuggestionClickunit = (item) => {
                   const ownerStr = Array.isArray(item.owner_details) ? item.owner_details.map(owner=>`${owner.title || ""} ${owner.first_name || ""} ${owner.last_name || ""}`).join(", ") : "";
@@ -3885,6 +3841,21 @@ const [suggestionsunit, setSuggestionsunit] = useState([]);
 
                   // You can also do something with the selected item (e.g. set selectedDeal)
                 };
+
+
+         const handleSearchChangeunit = async (e) => {
+  const value = e.target.value;
+  setSearchTermunits(value);
+  setCurrentPage2(1); // reset to first page on new search
+
+  if (value.trim() === "") {
+    await fetchunitsdata(1, itemsPerPage, "");
+    setSuggestionsunit([]);
+    return;
+  }
+
+  await fetchunitsdata(currentPage2, itemsPerPage2, value);
+};
 
 
 
