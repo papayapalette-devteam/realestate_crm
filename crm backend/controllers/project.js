@@ -242,47 +242,6 @@ unitDetails={
 
 
 
-// const view_units = async (req, res) => {
-//   try {
-//     const page = parseInt(req.query.page) || 1;
-//     const limit = parseInt(req.query.limit) || 10;
-//     const skip = (page - 1) * limit;
-
-//     // 1. Fetch all projects and populate units
-//     const projects = await addproject.find()
-//       .populate("add_unit.owner_details")
-//       .populate("add_unit.associated_contact")
-//       .populate("add_unit.previousowner_details");
-
-//     // ⚠️ Don't use .lean() here — it sometimes strips populate results
-
-//     // 2. Flatten populated units
-//     let allUnits = [];
-//     projects.forEach(p => {
-//       p.add_unit.forEach(u => {
-//         allUnits.push(u); // u already has populated fields
-//       });
-//     });
-
-//     // 3. Sort + paginate
-//     allUnits = allUnits.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-//     const total = allUnits.length;
-//     const totalPages = Math.ceil(total / limit);
-//     const paginatedUnits = allUnits.slice(skip, skip + limit);
-
-//     res.status(200).json({
-//       message: "Units fetched successfully",
-//       units: paginatedUnits,
-//       total,
-//       page,
-//       totalPages
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
 
 const view_units = async (req, res) => {
   try {
@@ -291,27 +250,76 @@ const view_units = async (req, res) => {
     const skip = (page - 1) * limit;
     const search = req.query.search ? req.query.search.trim() : "";
 
+ 
     
-
-    let matchStage = {};
-    if (search) {
-      matchStage = {
-        $or: [
-          { "add_unit.unit_no": { $regex: search, $options: "i" } },
-          { "add_unit.block": { $regex: search, $options: "i" } },
-          { project_name: { $regex: search, $options: "i" } }
-        ]
-      };
+    // Parse active filters from query (array of objects)
+    let activeFilters = [];
+    if (req.query.activeFilters) {
+      try {
+        activeFilters = JSON.parse(req.query.activeFilters);
+      } catch (e) {
+        console.error("Invalid activeFilters JSON:", e);
+      }
     }
+
+    
+    let matchStage = {};
+
+    // 🔹 If search text exists
+    if (search) {
+      matchStage.$or = [
+        { "add_unit.unit_no": { $regex: search, $options: "i" } },
+        { "add_unit.block": { $regex: search, $options: "i" } },
+        { "add_unit.project_name": { $regex: search, $options: "i" } }
+      ];
+    }
+
+    // 🔹 Apply active filters
+    // 🔹 Apply active filters
+if (activeFilters.length > 0) {
+  activeFilters.forEach((filter) => {
+    const fieldPath = `add_unit.${filter.field}`;
+
+    // 🔹 Case 1: Checked values
+    if (filter.field && Array.isArray(filter.checked) && filter.checked.length > 0) {
+      const cleanValues = filter.checked.filter(
+        (v) => v !== null && v !== undefined && v !== ""
+      );
+
+      if (cleanValues.length > 0) {
+        if (filter.radio === "with") {
+          matchStage[fieldPath] = { $in: cleanValues };
+        } else if (filter.radio === "without") {
+          matchStage[fieldPath] = { $nin: cleanValues };
+        }
+      }
+    }
+
+    // 🔹 Case 2: Text input
+    if (filter.field && filter.input && filter.input.trim() !== "") {
+      if (filter.radio === "with") {
+        matchStage[fieldPath] = {
+          $regex: filter.input.trim(),
+          $options: "i",
+        };
+      } else if (filter.radio === "without") {
+        matchStage[fieldPath] = {
+          $not: new RegExp(filter.input.trim(), "i"),
+        };
+      }
+    }
+  });
+}
+
+
 
     const units = await addproject.aggregate([
       { $unwind: "$add_unit" },
-      ...(search ? [{ $match: matchStage }] : []),   // 🔑 Apply search filter
-
+      Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
       { $skip: skip },
       { $limit: limit },
 
-      // lookups
+      // lookups...
       {
         $lookup: {
           from: "add_contacts",
@@ -341,18 +349,20 @@ const view_units = async (req, res) => {
         }
       },
       { $unwind: { path: "$add_unit.previousowner_details", preserveNullAndEmptyArrays: true } },
-    ]);
+    ].filter(Boolean)); // remove null stages
 
-    // get total count (with search filter)
+    // count query with same matchStage
     const totalCount = await addproject.aggregate([
       { $unwind: "$add_unit" },
-      ...(search ? [{ $match: matchStage }] : []),
+      Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
       { $count: "count" }
-    ]);
+    ].filter(Boolean));
 
     const total = totalCount[0]?.count || 0;
     const totalPages = Math.ceil(total / limit);
 
+   
+    
     res.status(200).json({
       message: "Units fetched successfully",
       units: units.map(u => u.add_unit),
@@ -365,6 +375,7 @@ const view_units = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 

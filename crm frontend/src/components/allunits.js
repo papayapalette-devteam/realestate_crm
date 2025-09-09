@@ -1017,33 +1017,42 @@ function Allunits() {
 
 
                         
-                const fetchunitsdata = async (page, limit, search = "") => {
-                setLoading(true);
-                try {
-                  // build URL: include search param only if search is non-empty
-                  const url =
-                    search && search.trim() !== ""
-                      ? `viewallunits?page=${page}&limit=${limit}&search=${search}`
-                      : `viewallunits?page=${page}&limit=${limit}`;
+              const fetchunitsdata = async (page, limit, search = "", activeFilters = []) => {
+  setLoading(true);
+  try {
+    // Build query params
+    const params = new URLSearchParams();
+    params.append("page", page);
+    params.append("limit", limit);
 
-                  const resp1 = await api.get(url);
-                  console.log(resp1);
+    if (search && search.trim() !== "") {
+      params.append("search", search);
+    }
 
-                  settotalinventories(resp1.data.total);
-                  setFlattenedUnits(resp1.data.units);
-                } catch (error) {
-                  console.log(error);
-                } finally {
-                  setLoading(false);
-                }
-              };
+    if (activeFilters.length > 0) {
+      params.append("activeFilters", JSON.stringify(activeFilters));
+    }
+
+    const resp1 = await api.get(`viewallunits?${params.toString()}`);
+
+    console.log(resp1);
+
+    settotalinventories(resp1.data.total);
+    setFlattenedUnits(resp1.data.units);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoading(false);
+  }
+};
 
 
- useEffect(() => {
-    fetchunitsdata(currentPage2, itemsPerPage2);
+
+//  useEffect(() => {
+//     fetchunitsdata(currentPage2, itemsPerPage2);
 
   
-  }, [currentPage2, itemsPerPage2]);
+//   }, [currentPage2, itemsPerPage2]);
 
           console.log(flattenedUnits);
           
@@ -3843,19 +3852,19 @@ const [suggestionsunit, setSuggestionsunit] = useState([]);
                 };
 
 
-         const handleSearchChangeunit = async (e) => {
+const handleSearchChangeunit = (e) => {
   const value = e.target.value;
   setSearchTermunits(value);
-  setCurrentPage2(1); // reset to first page on new search
+
+  // reset to first page whenever search changes
+  setCurrentPage2(1);
 
   if (value.trim() === "") {
-    await fetchunitsdata(1, itemsPerPage, "");
-    setSuggestionsunit([]);
-    return;
+    setSuggestionsunit([]); // clear suggestions when empty
   }
-
-  await fetchunitsdata(currentPage2, itemsPerPage2, value);
 };
+
+
 
 
 
@@ -4330,6 +4339,7 @@ const buttonStyle = `
                       const toggleToastunit = async() => {
                         // setShowunit(true);
                         openFilterWithDefaults()
+                        
                       };
   
   
@@ -4450,79 +4460,81 @@ function handleCheckbox(idx, val) {
   );
 }
 
+console.log(activeFilters);
+
       
-useEffect(() => {
-  const filteredData = allunitsforsearch.filter(item =>
-    activeFilters.every(filter => {
-      const fieldVal = item[filter.field] ?? "";
+// useEffect(() => {
+//   const filteredData = allunitsforsearch.filter(item =>
+//     activeFilters.every(filter => {
+//       const fieldVal = item[filter.field] ?? "";
 
-      // Checkbox logic
-      if (filter.checked && filter.checked.length > 0) {
-        if (Array.isArray(fieldVal)) {
-          if (filter.radio === 'with') {
-            // keep only if at least one value in fieldVal is in filter.checked
-            if (!fieldVal.some(val => filter.checked.includes(val))) {
-              return false;
-            }
-          }
-          if (filter.radio === 'without') {
-            // remove if any value in fieldVal is in filter.checked
-            if (fieldVal.some(val => filter.checked.includes(val))) {
-              return false;
-            }
-          }
-        } else {
-          // fieldVal is string or other single value
-          if (filter.radio === 'with') {
-            if (!filter.checked.includes(fieldVal)) {
-              return false;
-            }
-          }
-          if (filter.radio === 'without') {
-            if (filter.checked.includes(fieldVal)) {
-              return false;
-            }
-          }
-        }
-      }
+//       // Checkbox logic
+//       if (filter.checked && filter.checked.length > 0) {
+//         if (Array.isArray(fieldVal)) {
+//           if (filter.radio === 'with') {
+//             // keep only if at least one value in fieldVal is in filter.checked
+//             if (!fieldVal.some(val => filter.checked.includes(val))) {
+//               return false;
+//             }
+//           }
+//           if (filter.radio === 'without') {
+//             // remove if any value in fieldVal is in filter.checked
+//             if (fieldVal.some(val => filter.checked.includes(val))) {
+//               return false;
+//             }
+//           }
+//         } else {
+//           // fieldVal is string or other single value
+//           if (filter.radio === 'with') {
+//             if (!filter.checked.includes(fieldVal)) {
+//               return false;
+//             }
+//           }
+//           if (filter.radio === 'without') {
+//             if (filter.checked.includes(fieldVal)) {
+//               return false;
+//             }
+//           }
+//         }
+//       }
 
-      // Input logic
-      if (filter.input) {
-        const inputVal = filter.input.toLowerCase();
+//       // Input logic
+//       if (filter.input) {
+//         const inputVal = filter.input.toLowerCase();
 
-        if (Array.isArray(fieldVal)) {
-          if (filter.radio === 'with') {
-            // keep if any item in array includes the input
-            if (!fieldVal.some(val => String(val).toLowerCase().includes(inputVal))) {
-              return false;
-            }
-          }
-          if (filter.radio === 'without') {
-            // remove if any item in array includes the input
-            if (fieldVal.some(val => String(val).toLowerCase().includes(inputVal))) {
-              return false;
-            }
-          }
-        } else if (typeof fieldVal === 'string') {
-          if (filter.radio === 'with') {
-            if (!fieldVal.toLowerCase().includes(inputVal)) {
-              return false;
-            }
-          }
-          if (filter.radio === 'without') {
-            if (fieldVal.toLowerCase().includes(inputVal)) {
-              return false;
-            }
-          }
-        }
-      }
+//         if (Array.isArray(fieldVal)) {
+//           if (filter.radio === 'with') {
+//             // keep if any item in array includes the input
+//             if (!fieldVal.some(val => String(val).toLowerCase().includes(inputVal))) {
+//               return false;
+//             }
+//           }
+//           if (filter.radio === 'without') {
+//             // remove if any item in array includes the input
+//             if (fieldVal.some(val => String(val).toLowerCase().includes(inputVal))) {
+//               return false;
+//             }
+//           }
+//         } else if (typeof fieldVal === 'string') {
+//           if (filter.radio === 'with') {
+//             if (!fieldVal.toLowerCase().includes(inputVal)) {
+//               return false;
+//             }
+//           }
+//           if (filter.radio === 'without') {
+//             if (fieldVal.toLowerCase().includes(inputVal)) {
+//               return false;
+//             }
+//           }
+//         }
+//       }
 
-      // Pass if neither checkbox nor input logic applies
-      return true;
-    })
-  );
-  setFlattenedUnits(filteredData);
-}, [activeFilters, allunitsforsearch]);
+//       // Pass if neither checkbox nor input logic applies
+//       return true;
+//     })
+//   );
+//   setFlattenedUnits(filteredData);
+// }, [activeFilters, allunitsforsearch]);
 
 
 
@@ -4536,7 +4548,23 @@ useEffect(() => {
 
 //=============================================== deal action buttons toggle start=============================================================
 
-              const [isHoveringDelete, setIsHoveringDelete] = useState(false);
+useEffect(() => {
+  const hasFilters = activeFilters && activeFilters.length > 0;
+  const hasSearch = searchTermunits && searchTermunits.trim() !== "";
+
+  if (hasFilters || hasSearch) {
+    // If either filters or search are active → include both
+    fetchunitsdata(currentPage2, itemsPerPage2, searchTermunits, activeFilters);
+  } else {
+    // No filters, no search → fetch all
+    fetchunitsdata(currentPage2, itemsPerPage2);
+  }
+}, [currentPage2, itemsPerPage2, activeFilters, searchTermunits]);
+
+       
+
+
+const [isHoveringDelete, setIsHoveringDelete] = useState(false);
               const [isHoveringEdit, setIsHoveringEdit] = useState(false);
               const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
               const [isHoveringuploadpicture, setIsHoveringuploadpicture] = useState(false);
@@ -5199,7 +5227,7 @@ const excelSerialToDateString = (serial) => {
         </div>
         
         
-        <div style={{marginLeft:"60px",marginTop:"2px",backgroundColor:"white"}}>
+        <div style={{marginLeft:"60px",marginTop:"2px",backgroundColor:"white"}} >
                   <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
               <TableHead>

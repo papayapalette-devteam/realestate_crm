@@ -4625,7 +4625,7 @@ fontWeight:"lighter"
        </thead> */}
         <tbody>
          {
-          
+          Array.isArray(lead?.previousowner_details) &&
          lead?.previousowner_details?.map ((item, index) => (
            <StyledTableRow key={index} style={{backgroundColor:"white"}}>
              <StyledTableCell style={{fontSize:"12px",whiteSpace:"nowrap",cursor:"pointer"}} onClick={()=>navigate('/contactsingleview',{state:item})}>
