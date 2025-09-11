@@ -87,27 +87,48 @@ const fetchcdata=async(event)=>
 
 }
 
-const[matchedunit,setmatchedunit]=useState([])
-React.useEffect(() => {
-  if (flattenedUnits.length > 0 && deal.project && deal.block && deal.unit_number) {
-    // Look for a unit that matches deal criteria
-    const matchingUnit = flattenedUnits.find(
-      (unit) =>
-        unit.project_name === deal.project &&
-        unit.block === deal.block &&
-        unit.unit_no === deal.unit_number
-    );
+const[matchedunit,setmatchedunit]=useState({})
 
-
-
-
-    // If a matching unit is found, update the deal's ulocality
-
-    if (matchingUnit) {
-      setmatchedunit(matchingUnit)
-    }
+const get_unit_info=async(project,unit,block)=>
+{
+  try {
+    const resp=await api.get(`viewprojectforinventories/${project}/${unit}/${block}`)
+    setmatchedunit(resp.data.project.add_unit[0])
+    
+    
+  } catch (error) {
+    console.log(error);
+    
   }
-}, [flattenedUnits, deal.project, deal.block, deal.unit_number]);
+}
+
+
+React.useEffect(()=>
+{
+  get_unit_info(deal.project,deal.unit_number,deal.block)
+
+},[deal.project,deal.unit_number,deal.block])
+// React.useEffect(() => {
+//   if (flattenedUnits.length > 0 && deal.project && deal.block && deal.unit_number) {
+//     // Look for a unit that matches deal criteria
+//     const matchingUnit = flattenedUnits.find(
+//       (unit) =>
+//         unit.project_name === deal.project &&
+//         unit.block === deal.block &&
+//         unit.unit_no === deal.unit_number
+//     );
+
+
+
+
+//     // If a matching unit is found, update the deal's ulocality
+
+//     if (matchingUnit) {
+//       setmatchedunit(matchingUnit)
+//     }
+//   }
+
+// }, [flattenedUnits, deal.project, deal.block, deal.unit_number]);
 
 // console.log(matchedunit.unit_type);
 React.useEffect(() => {
@@ -127,9 +148,9 @@ React.useEffect(() => {
       : []  // Default to empty array if not an array
   }));
 }, [matchedunit]);
-// console.log(matchedunit);
-// console.log(deal.owner_details);
-// console.log(deal.utype);
+
+
+
 
 
 

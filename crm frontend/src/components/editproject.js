@@ -103,10 +103,10 @@ viewprojectbyid()
 },[id])
 
 
-    const addproject=async(e)=>
+    const addproject=async()=>
     {
       
-        e.preventDefault();
+     
         try {
 
            // Show confirmation message
@@ -124,7 +124,11 @@ viewprojectbyid()
             return; // Stop execution if user cancels
           }
 
+          setIsLoading(true)
+
             const resp= await api.put(`updateproject/${id}`,project,config)
+            console.log(resp);
+            
         if(resp.status===200)
             {
                 toast.success("Project Saved",{ autoClose: 2000 })
@@ -136,6 +140,10 @@ viewprojectbyid()
       
         } catch (error) {
             toast.error(error.response.data.message,{ autoClose: 2000 })
+        }
+        finally
+        {
+          setIsLoading(false)
         }
     }
 
@@ -7354,6 +7362,42 @@ const generateExcelFileunit = () => {
                     </div>
             </div>
         </div>
+
+         {isLoading && (
+      <div style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        background: "rgba(0, 0, 0, 0.6)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 1000,
+      }}>
+        <div style={{
+          background: "rgba(0, 0, 0, 0.8)",
+          padding: "20px 40px",
+          borderRadius: "10px",
+          textAlign: "center",
+          color: "white",
+        }}>
+          <div style={{
+            width: "50px",
+            height: "50px",
+            border: "5px solid white",
+            borderTop: "5px solid transparent",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+            margin: "0 auto 10px",
+          }}></div>
+          <p>Uploading data...</p>
+        </div>
+      </div>
+    )}
+
+
     </div>
 
 

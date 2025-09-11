@@ -65,6 +65,8 @@ function Alldeals() {
               
               try {
                 const resp=await api.get('viewdeal')
+                console.log(resp);
+                
                 const all=(resp.data.deal)
                 setdata(all)
               } catch (error) {
