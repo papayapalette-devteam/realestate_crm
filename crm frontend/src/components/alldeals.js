@@ -5576,6 +5576,307 @@ stage:selectedLead.stage
           </Modal>
 
 {/* ================================================update action modal end======================================================== */}
+    
+    
+    {/*============================= send details modal start=============================== */}
+
+     <Modal  show={show12} onHide={handleClose12} size='xl' style={{transition:"0.5s ease-in"}}>
+                <Modal.Header>
+                  <Modal.Title>Send Details<br></br>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+           
+              <div style={{width:"99%",marginLeft:"1%",marginTop:"2%",border:"1px solid gray",borderRadius:"5px",padding:"50px",backgroundColor:"white"}}>
+                   <div style={{display:"flex", gap:"100px"}}>
+                     <div style={{cursor:"pointer"}} id="sendmail1" onClick={sendmailfunction1}>Send Mail</div> 
+                     <div style={{cursor:"pointer"}} id="sendmessage1" onClick={sendmessagefunction1}>Send Message</div>
+                     <div style={{cursor:"pointer"}} id="sendwhatsapp1" onClick={sendwhatsappfunction1}>Send WhatsApp</div>
+              
+                   </div>
+                   <div className="col-md-12"><hr></hr></div>
+             
+              
+           
+           <div className="row mt-2" id="sendmail" style={{fontSize:"12px",display:"none"}}>
+                 <div className="col-md-12" style={{color:"green",textAlign:"center",fontWeight:"bolder",fontSize:"1vw"}}> Send Mail</div>
+                     <div className="col-md-12" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+                      <input type="text" style={{border:"none",fontSize:"12px",borderBottom:"1px solid gray"}} required="true" className="form-control form-control-sm" placeholder='subject' value={subject1} onChange={(e)=>setsubject1(e.target.value)}/>
+                 
+                     </div>
+                    
+              
+                     <div className="col-md-12" style={{marginTop:"10px"}}>
+                        <ReactQuill
+                      modules={modules11}  // Add the toolbar options for formatting
+                      style={{ height: '200px', width: '100%',fontSize:"12px",marginTop:"5px"}}
+                      className="my-quill-editor"
+                      value={message1}   placeholder="Enter Your Message"  onChange={handlemailmessage1}/>
+                      </div>
+           
+                      <div id="custom-toolbar" className="ql-toolbar ql-snow" style={{ marginTop: "10px" }}>
+             {/* Text formatting */}
+             <span className="ql-formats">
+               <button className="ql-bold" />
+               <button className="ql-italic" />
+               <button className="ql-underline" />
+               <button className="ql-strike" />
+             </span>
+           
+             {/* Font family */}
+             <span className="ql-formats">
+               <select className="ql-font">
+                 <option value="sans-serif">Sans Serif</option>
+                 <option value="serif">Serif</option>
+                 <option value="monospace">Monospace</option>
+               </select>
+             </span>
+           
+             {/* Font size */}
+             <span className="ql-formats">
+               <select className="ql-size">
+                 <option value="small" />
+                 <option value="normal" selected />
+                 <option value="large" />
+                 <option value="huge" />
+               </select>
+             </span>
+           
+             {/* Lists and indent */}
+             <span className="ql-formats">
+               <button className="ql-list" value="ordered" />
+               <button className="ql-list" value="bullet" />
+               <button className="ql-indent" value="-1" />
+               <button className="ql-indent" value="+1" />
+             </span>
+           
+             {/* Alignment */}
+             <span className="ql-formats">
+               <button className="ql-align" value="" />
+               <button className="ql-align" value="center" />
+               <button className="ql-align" value="right" />
+               <button className="ql-align" value="justify" />
+             </span>
+           
+             {/* Colors */}
+             <span className="ql-formats">
+               <button className="ql-color" />
+               <button className="ql-background" />
+             </span>
+           
+             {/* Code, blockquote */}
+             <span className="ql-formats">
+               <button className="ql-blockquote" />
+               <button className="ql-code-block" />
+             </span>
+           
+             {/* Media */}
+             <span className="ql-formats">
+               <button className="ql-link" />
+               <button className="ql-image" />
+             </span>
+           
+             {/* Clear formatting */}
+             <span className="ql-formats">
+               <button className="ql-clean" />
+             </span>
+           </div>
+           
+           
+                     <div className="col-md-4" style={{fontSize:"12px",marginTop:"10px"}}><label className="labels" style={{fontSize:"12px"}}>Templates</label>
+                     <select type="text" required="true" className="form-control form-control-sm" value={selectedTemplate1} onChange={handleTemplateSelect1} style={{fontSize:"12px"}}>
+                        <option value="">---Select Template---</option>
+                        <option value="template1">Template 1</option>
+                        <option value="template2">Template 2</option>
+                        <option value="template3">Template 3</option>
+                      </select>
+                     </div>
+              
+                     <div className="col-md-4" {...getRootProps1()} style={{ border: '1px dashed #ccc',marginTop:"35px", cursor: 'pointer' }}>
+                      <input {...getInputProps1()} />
+                      <p style={{fontSize:"12px"}}>Drag & drop files here, or click to select files</p>
+                      <ul>
+                        {attachments1.length > 0 && attachments1.map((file, index) => (
+                          <li key={index}>{file.name}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  
+                 </div>
+           
+              <div className="row mt-2" id="sendmessage" style={{display:"none"}}>
+              <div className="col-md-12" style={{color:"green",textAlign:"center",fontWeight:"bolder"}}> Send Message</div>
+               </div>
+           
+               <div className="row mt-2" id="sendwhatsapp" style={{display:"none"}}>
+               <div className="col-md-12" style={{color:"green",textAlign:"center",fontWeight:"bolder"}}> Send WhatsApp</div>
+    
+                 <div className="col-md-12" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+                                 <input type="text" style={{border:"none",fontSize:"12px",borderBottom:"1px solid gray"}} required="true" className="form-control form-control-sm" placeholder='subject' value={subject1} onChange={(e)=>setsubject1(e.target.value)}/>
+                            
+                                </div>
+                               
+                         
+                                <div className="col-md-12" style={{marginTop:"10px"}}>
+                                   <ReactQuill
+                                 modules={modules112}  // Add the toolbar options for formatting
+                                 style={{ height: '200px', width: '100%',fontSize:"12px",marginTop:"5px"}}
+                                 className="my-quill-editor"
+                                 value={message1}   placeholder="Enter Your Message"  onChange={handlemailmessage1}/>
+                                 </div>
+                      
+                                 <div id="custom-toolbar1" className="ql-toolbar ql-snow" style={{ marginTop: "10px" }}>
+                        {/* Text formatting */}
+                        <span className="ql-formats">
+                          <button className="ql-bold" />
+                          <button className="ql-italic" />
+                          <button className="ql-underline" />
+                          <button className="ql-strike" />
+                        </span>
+                      
+                       {/* Font family */}
+                       <span className="ql-formats">
+                          <select className="ql-font">
+                            <option value="sans-serif">Sans Serif</option>
+                            <option value="serif">Serif</option>
+                            <option value="monospace">Monospace</option>
+                          </select>
+                        </span>
+                      
+                        {/* Font size */}
+                        <span className="ql-formats">
+                          <select className="ql-size">
+                            <option value="small" />
+                            <option value="normal" selected />
+                            <option value="large" />
+                            <option value="huge" />
+                          </select>
+                        </span>
+                      
+                        {/* Lists and indent */}
+                        <span className="ql-formats">
+                          <button className="ql-list" value="ordered" />
+                          <button className="ql-list" value="bullet" />
+                          <button className="ql-indent" value="-1" />
+                          <button className="ql-indent" value="+1" />
+                        </span>
+                      
+                        {/* Alignment */}
+                        <span className="ql-formats">
+                          <button className="ql-align" value="" />
+                          <button className="ql-align" value="center" />
+                          <button className="ql-align" value="right" />
+                          <button className="ql-align" value="justify" />
+                        </span>
+                      
+                        {/* Colors */}
+                        <span className="ql-formats">
+                          <button className="ql-color" />
+                          <button className="ql-background" />
+                        </span>
+                      
+                        {/* Code, blockquote */}
+                        <span className="ql-formats">
+                          <button className="ql-blockquote" />
+                          <button className="ql-code-block" />
+                        </span>
+                      
+                        {/* Media */}
+                        <span className="ql-formats">
+                          <button className="ql-link" />
+                          <button className="ql-image" />
+                        </span>
+                      
+                        {/* Clear formatting */}
+                        <span className="ql-formats">
+                          <button className="ql-clean" />
+                        </span>
+                      
+                      </div>
+                      
+                      
+                                <div className="col-md-4" style={{fontSize:"12px",marginTop:"10px"}}><label className="labels" style={{fontSize:"12px"}}>Templates</label>
+                                <select type="text" required="true" className="form-control form-control-sm" value={selectedTemplate1} onChange={handleTemplateSelect1} style={{fontSize:"12px"}}>
+                                   <option value="">---Select Template---</option>
+                                   <option value="template1">Template 1</option>
+                                   <option value="template2">Template 2</option>
+                                   <option value="template3">Template 3</option>
+                                 </select>
+                                </div>
+                                 <div className="col-md-4" {...getRootProps1()} style={{ border: '1px dashed #ccc',marginTop:"35px", cursor: 'pointer' }}>
+                      <input {...getInputProps1()} />
+                      <p style={{fontSize:"12px"}}>Drag & drop files here, or click to select files</p>
+                      <ul>
+                        {attachments1.length > 0 && attachments1.map((file, index) => (
+                          <li key={index}>{file.name}</li>
+                        ))}
+                      </ul>
+                    </div>
+                                
+    
+               </div>
+           
+           </div>
+    
+           <>
+        {isLoading1 && (
+          <div style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0, 0, 0, 0.6)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}>
+            <div style={{
+              background: "rgba(0, 0, 0, 0.8)",
+              padding: "20px 40px",
+              borderRadius: "10px",
+              textAlign: "center",
+              color: "white",
+            }}>
+              <div style={{
+                width: "50px",
+                height: "50px",
+                border: "5px solid white",
+                borderTop: "5px solid transparent",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite",
+                margin: "0 auto 10px",
+              }}></div>
+              {/* <p>sending...</p> */}
+              <p style={{ fontWeight: 'bold', marginTop: '10px' }}>
+        {currentSendingType === "whatsapp" && (
+          <>🟢 Sending WhatsApp message {sentProgress} of {number.length}...</>
+        )}
+        {currentSendingType === "email" && (
+          <>✉️ Sending Email  {emails.length}...</>
+        )}
+      </p>
+            </div>
+          </div>
+        )}
+      </>
+    
+                </Modal.Body>
+                <Modal.Footer>
+                <Button variant="secondary" onClick={sendmail1}>
+                    Send Mail
+                  </Button>
+                  <Button variant="secondary" onClick={handleSendwhatsapp}>
+                    Send WhatsApp
+                  </Button>
+                  <Button variant="secondary" onClick={handleClose12}>
+                    Close
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+    
+ {/*============================= send details modal end =====================================   */}
         </div>
 
             <>
