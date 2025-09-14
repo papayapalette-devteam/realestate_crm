@@ -5859,7 +5859,8 @@ stage:selectedLead.stage
       </p>
             </div>
           </div>
-        )}
+        )}npm install recharts
+
       </>
     
                 </Modal.Body>

@@ -1,249 +1,205 @@
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
+import React, { useEffect, useState } from 'react';
+import Header1 from './header1';
+import Sidebar1 from './sidebar1';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line } from 'recharts';
+import { PieChart, Pie, Cell } from 'recharts';
+import api from "../api";
+import UniqueLoader from '../components/loader'
+
+// Sample data for charts (replace with your real data)
+const activityData = [
+  { name: 'Jan', value: 400 },
+  { name: 'Feb', value: 300 },
+  { name: 'Mar', value: 500 },
+  { name: 'Apr', value: 700 },
+  { name: 'May', value: 600 },
+  { name: 'Jun', value: 800 },
+];
+
+const leadTargetData = [
+  { name: 'Achieved', value: 75 },
+  { name: 'Remaining', value: 25 },
+];
+
+
+
+
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
 function Dashboard() {
-	const mousehover=()=>
-		{
-		   document.getElementById("r").style.marginLeft="20%"
-		   
-		}
-		const mouseout=()=>
-			{
-				document.getElementById("r").style.marginLeft="0%"
-			}
-    return ( 
-       
-        <div class="main-container">
-            <div id='h'><Header1/></div>
-            <div onMouseOver={mousehover} onMouseOut={mouseout}><Sidebar1/></div>
-		<div class="pd-ltr-20" id="r" style={{transition:"0.5s"}}>
-			<div class="card-box pd-20 height-100-p mb-30">
-				<div class="row align-items-center">
-					<div class="col-md-4">
-						<img src="vendors/images/banner-img.png" alt=""/>
-					</div>
-					<div class="col-md-8">
-						<h4 class="font-20 weight-500 mb-10 text-capitalize">
-							Welcome back <div class="weight-600 font-30 text-blue">ADMIN</div>
-						</h4>
-						<p class="font-18 max-width-600">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde hic non repellendus debitis iure, doloremque assumenda. Autem modi, corrupti, nobis ea iure fugiat, veniam non quaerat mollitia animi error corporis.</p>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xl-3 mb-30">
-					<div class="card-box height-100-p widget-style1">
-						<div class="d-flex flex-wrap align-items-center">
-							<div class="progress-data">
-								<div id="chart"></div>
-							</div>
-							<div class="widget-data">
-								<div class="h4 mb-0">2020</div>
-								<div class="weight-600 font-14">Contact</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-xl-3 mb-30">
-					<div class="card-box height-100-p widget-style1">
-						<div class="d-flex flex-wrap align-items-center">
-							<div class="progress-data">
-								<div id="chart2"></div>
-							</div>
-							<div class="widget-data">
-								<div class="h4 mb-0">400</div>
-								<div class="weight-600 font-14">Deals</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-xl-3 mb-30">
-					<div class="card-box height-100-p widget-style1">
-						<div class="d-flex flex-wrap align-items-center">
-							<div class="progress-data">
-								<div id="chart3"></div>
-							</div>
-							<div class="widget-data">
-								<div class="h4 mb-0">350</div>
-								<div class="weight-600 font-14">Campaign</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-xl-3 mb-30">
-					<div class="card-box height-100-p widget-style1">
-						<div class="d-flex flex-wrap align-items-center">
-							<div class="progress-data">
-								<div id="chart4"></div>
-							</div>
-							<div class="widget-data">
-								<div class="h4 mb-0">$6060</div>
-								<div class="weight-600 font-14">Worth</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xl-8 mb-30">
-					<div class="card-box height-100-p pd-20">
-						<h2 class="h4 mb-20">Activity</h2>
-						<div id="chart5"></div>
-					</div>
-				</div>
-				<div class="col-xl-4 mb-30">
-					<div class="card-box height-100-p pd-20">
-						<h2 class="h4 mb-20">Lead Target</h2>
-						<div id="chart6"></div>
-					</div>
-				</div>
-			</div>
-			<div class="card-box mb-30">
-				<h2 class="h4 pd-20">Best Selling Products</h2>
-				<table class="data-table table nowrap">
-					<thead>
-						<tr>
-							<th class="table-plus datatable-nosort">Product</th>
-							<th>Name</th>
-							<th>Color</th>
-							<th>Size</th>
-							<th>Price</th>
-							<th>Oty</th>
-							<th class="datatable-nosort">Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td class="table-plus">
-								<img src="vendors/images/product-1.jpg" width="70" height="70" alt=""/>
-							</td>
-							<td>
-								<h5 class="font-16">Shirt</h5>
-								by John Doe
-							</td>
-							<td>Black</td>
-							<td>M</td>
-							<td>$1000</td>
-							<td>1</td>
-							<td>
-								<div class="dropdown">
-									<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-										<i class="dw dw-more"></i>
-									</a>
-									<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-										<a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-										<a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-										<a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td class="table-plus">
-								<img src="vendors/images/product-2.jpg" width="70" height="70" alt=""/>
-							</td>
-							<td>
-								<h5 class="font-16">Boots</h5>
-								by Lea R. Frith
-							</td>
-							<td>brown</td>
-							<td>9UK</td>
-							<td>$900</td>
-							<td>1</td>
-							<td>
-								<div class="dropdown">
-									<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-										<i class="dw dw-more"></i>
-									</a>
-									<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-										<a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-										<a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-										<a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td class="table-plus">
-								<img src="vendors/images/product-3.jpg" width="70" height="70" alt=""/>
-							</td>
-							<td>
-								<h5 class="font-16">Hat</h5>
-								by Erik L. Richards
-							</td>
-							<td>Orange</td>
-							<td>M</td>
-							<td>$100</td>
-							<td>4</td>
-							<td>
-								<div class="dropdown">
-									<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-										<i class="dw dw-more"></i>
-									</a>
-									<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-										<a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-										<a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-										<a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td class="table-plus">
-								<img src="vendors/images/product-4.jpg" width="70" height="70" alt=""/>
-							</td>
-							<td>
-								<h5 class="font-16">Long Dress</h5>
-								by Renee I. Hansen
-							</td>
-							<td>Gray</td>
-							<td>L</td>
-							<td>$1000</td>
-							<td>1</td>
-							<td>
-								<div class="dropdown">
-									<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-										<i class="dw dw-more"></i>
-									</a>
-									<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-										<a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-										<a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-										<a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td class="table-plus">
-								<img src="vendors/images/product-5.jpg" width="70" height="70" alt=""/>
-							</td>
-							<td>
-								<h5 class="font-16">Blazer</h5>
-								by Vicki M. Coleman
-							</td>
-							<td>Blue</td>
-							<td>M</td>
-							<td>$1000</td>
-							<td>1</td>
-							<td>
-								<div class="dropdown">
-									<a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-										<i class="dw dw-more"></i>
-									</a>
-									<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-										<a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-										<a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-										<a class="dropdown-item" link><i class="dw dw-delete-3"></i> Delete</a>
-									</div>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+  const mousehover = () => {
+    document.getElementById('r').style.marginLeft = '10%';
+  };
+
+  const mouseout = () => {
+    document.getElementById('r').style.marginLeft = '0%';
+  };
+
+  const [total_deal, settotal_deal] = useState(0);
+  const [total_lead, settotal_lead] = useState(0);
+
+  const [deal_loading, setdeal_loading] = useState(false);
+  const [lead_loading, setlead_loading] = useState(false);
+
+  const fetch_deal_data = async () => {
+    setdeal_loading(true);
+    try {
+      const resp = await api.get("viewdeal");
+      settotal_deal(resp.data.deal.length);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setdeal_loading(false);
+    }
+  };
+
+  const fetch_lead_data = async (page = 1, limit = 10) => {
+    setlead_loading(true);
+    try {
+      const resp = await api.get(`leadinfo`);
+      settotal_lead(resp.data.total);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setlead_loading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetch_deal_data();
+    fetch_lead_data();
+  }, []);
+
+  const statsData = [
+    { name: "Contacts", value: 2020, loading: false },
+    { name: "Leads", value: total_lead, loading: lead_loading },
+    { name: "Deals", value: total_deal, loading: deal_loading },
+    { name: "Projects", value: 120, loading: false },
+    { name: "Units", value: 850, loading: false },
+    { name: "Tasks", value: 45, loading: false },
+  ];
+
+
+  return (
+    <div className="main-container-dashboard" style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f4f7fa',padding:"10%" }}>
+      <div id="h" style={{ position: 'fixed', top: 0, width: '100%', zIndex: 1000 }}>
+        <Header1 />
+      </div>
+      <div
+        onMouseOver={mousehover}
+        onMouseOut={mouseout}
+        style={{
+          position: 'fixed',
+          left: 0,
+          top: '60px', // Adjust based on header height
+          height: 'calc(100vh - 60px)',
+          transition: 'width 0.3s',
+          zIndex: 9999,
+        }}
+      >
+        <Sidebar1 />
+      </div>
+      <div
+        className="pd-ltr-20"
+        id="r"
+        style={{
+          marginLeft: '0%',
+          transition: 'margin-left 0.5s',
+          padding: '20px 20px 20px', // Padding for header and sidebar
+          flex: 1,
+          overflowY: 'auto',
+        }}
+      >
+        {/* Welcome Banner */}
+        <div className="card-box pd-20 mb-30" style={{ borderRadius: '15px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', background: 'linear-gradient(135deg, #007bff, #00c6ff)' }}>
+          <div className="row align-items-center text-white">
+            <div className="col-md-4">
+              <img src="vendors/images/banner-img.png" alt="Banner" style={{ borderRadius: '10px', maxWidth: '100%' }} />
+            </div>
+            <div className="col-md-8">
+              <h4 className="font-20 weight-500 mb-10 text-capitalize">
+                Welcome back <span className="weight-600 font-30">ADMIN</span>!
+              </h4>
+              <p className="font-18">Manage your real estate empire with real-time insights on leads, deals, and more.</p>
+            </div>
+          </div>
         </div>
+
+        {/* Stats Widgets */}
+        <div className="row">
+      {statsData.map((stat, index) => (
+        <div key={index} className="col-xl-2 col-lg-4 col-md-6 mb-30">
+          <div
+            className="card-box height-100-p widget-style1"
+            style={{
+              borderRadius: "10px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+              transition: "transform 0.2s",
+            }}
+          >
+            <div className="d-flex flex-wrap align-items-center p-3">
+              {stat.loading ? (
+                <div style={{ 
+      display: "flex", 
+      justifyContent: "center", 
+      alignItems: "center", 
+      width: "100%", 
+      height: "50px"  // 👈 fixed height for loader area
+    }}>
+                  <UniqueLoader />
+                </div>
+              ) : (
+                <div className="widget-data text-center w-100">
+                  <div className="h4 mb-0">{stat.value}</div>
+                  <div className="weight-600 font-14">{stat.name}</div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-     );
+      ))}
+    </div>
+
+        {/* Activity and Lead Target Charts */}
+        <div className="row">
+          <div className="col-xl-8 mb-30">
+            <div className="card-box height-100-p pd-20" style={{ borderRadius: '15px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+              <h2 className="h4 mb-20">Activity Overview</h2>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={activityData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="value" stroke="#007bff" activeDot={{ r: 8 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <div className="col-xl-4 mb-30">
+            <div className="card-box height-100-p pd-20" style={{ borderRadius: '15px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+              <h2 className="h4 mb-20">Lead Target</h2>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie data={leadTargetData} cx="50%" cy="50%" labelLine={false} outerRadius={80} fill="#8884d8" dataKey="value">
+                    {leadTargetData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+      
+      </div>
+    </div>
+  );
 }
 
 export default Dashboard;
