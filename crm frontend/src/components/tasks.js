@@ -410,44 +410,43 @@ const renderPageNumbers2 = () => {
 
   // ================================followup task pagination=====================================================
 const[displaytask,setdisplaytask]=useState("")//this is for show follow up ,sitevisit,meeting,today and all task while on click
-const[display_main_task,setdisplay_main_task]=useState("")
+const[display_main_task,setdisplay_main_task]=useState("followup")
+
+ const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
 
    const[total_task,settotal_task]=useState("")
 
   
-    const fetchdata=async(page,limit,display_main_task,displaytask)=>
-    {
-      
-      try {
-        setisloading(true)
-        // const resp=await api.get('viewcalltask')
-        // const callincoming=resp.data.call_task
+const fetchdata = async (page, limit, display_main_task, displaytask, fromDate, toDate) => {
+  try {
+    setisloading(true);
 
-        // const resp1=await api.get('viewmailtask')
-        // const mailincoming=resp1.data.mail_task
+    const params = new URLSearchParams();
+    params.append("page", page);
+    params.append("limit", limit);
+    params.append("maintask", display_main_task ? display_main_task : "");
+    params.append("subtask", displaytask ? displaytask : "");
 
-          const params = new URLSearchParams();
-          params.append("page", page);
-          params.append("limit", limit);
-          params.append("maintask", display_main_task?display_main_task:"");
-          params.append("subtask", displaytask?displaytask:"");
-
-        const resp=await api.get(`view_follow_up_task?${params.toString()}`)
-        console.log(resp);
-        settotal_task(resp.data.total)
-        
-
-        setdata(resp.data.followup_task)
-        // setdata([...callincoming,...mailincoming])
-      } catch (error) {
-        console.log(error);
-      }
-      finally
-      {
-        setisloading(false)
-      }
-    
+    // Only append dates for custom filter
+    if (displaytask === "custom" && fromDate && toDate) {
+      params.append("from", fromDate);
+      params.append("to", toDate);
     }
+
+    const resp = await api.get(`view_follow_up_task?${params.toString()}`);
+    console.log(resp);
+
+    settotal_task(resp.data.total);
+    setdata(resp.data.followup_task);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setisloading(false);
+  }
+};
+
+
 
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -532,20 +531,34 @@ const renderPageNumbers = () => {
 };
 
 
- useEffect(() => {
-  //  const hasFilters = activeFilters && activeFilters.length > 0;
-  //  const hasSearch = searchTermunits && searchTermunits.trim() !== "";
- 
-  //  if (hasFilters || hasSearch) {
-  //    // If either filters or search are active → include both
-  //    fetchunitsdata(currentPage2, itemsPerPage2, searchTermunits, activeFilters);
-  //  } else {
-  //    // No filters, no search → fetch all
-  //    fetchunitsdata(currentPage2, itemsPerPage2);
-  //  }
+useEffect(() => {
+  if(display_main_task==="followup")
+  {
+  if (displaytask === "custom") {
+    if (customFrom && customTo) {
+      fetchdata(currentPage, itemsPerPage, display_main_task, displaytask, customFrom, customTo);
+    }
+  } else {
+    fetchdata(currentPage, itemsPerPage, display_main_task, displaytask);
+  }
+}
+}, [currentPage, itemsPerPage, display_main_task, displaytask]);
 
-  fetchdata(currentPage,itemsPerPage,display_main_task,displaytask)
- }, [currentPage, itemsPerPage,display_main_task,displaytask]);
+
+
+// ========================== fetch data by custom date================================
+
+  
+
+  const handleApplyCustom = () => {
+    if (!customFrom || !customTo) {
+      alert("Please select both From and To date");
+      return;
+    }
+
+    fetchdata(currentPage, itemsPerPage, display_main_task, displaytask, customFrom, customTo); // pass dates also
+  };
+
 
 
 // ===========================================meeting task pagination===========================================================
@@ -2528,7 +2541,86 @@ const renderPageNumberstoday = () => {
         <div style={{width:"100px",textAlign:"center",cursor:"pointer",backgroundColor:displaytask==="overdue"?"green":"",borderRadius:"20px"}} onClick={()=>setdisplaytask("overdue")}>Overdue</div>
         {/* <div style={{width:"120px",textAlign:"center",cursor:"pointer",backgroundColor:displaytask==="noduedate"?"green":"",borderRadius:"20px"}} onClick={()=>setdisplaytask("noduedate")}>No Due Date</div> */}
         <div style={{width:"100px",textAlign:"center",cursor:"pointer",backgroundColor:displaytask==="complete"?"green":"",borderRadius:"20px"}} onClick={()=>setdisplaytask("complete")}>Completed</div>
-        {/* <div style={{width:"50px",textAlign:"center",cursor:"pointer",backgroundColor:displaytask==="all"?"green":"",borderRadius:"20px"}} onClick={()=>setdisplaytask("all")}>All</div> */}
+        <div style={{width:"50px",textAlign:"center",cursor:"pointer",backgroundColor:displaytask==="all"?"green":"",borderRadius:"20px"}} onClick={()=>setdisplaytask("custom")}>Custom</div> 
+
+         {displaytask === "custom" && (
+       <div
+  style={{
+    marginTop: "10px",
+    paddingLeft: "80px",
+    display: "flex",
+    gap: "20px",
+    alignItems: "center",
+    flexWrap: "wrap",
+  }}
+>
+  <label style={{ fontWeight: "500", fontSize: "14px", color: "#333" }}>
+    From:
+    <input
+      type="date"
+      value={customFrom}
+      onChange={(e) => setCustomFrom(e.target.value)}
+      style={{
+        marginLeft: "8px",
+        padding: "8px 12px",
+        borderRadius: "8px",
+        border: "1px solid #ccc",
+        outline: "none",
+        fontSize: "14px",
+        color: "#333",
+        backgroundColor: "#f9f9f9",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        transition: "border-color 0.3s ease",
+      }}
+      onFocus={(e) => (e.target.style.borderColor = "#4CAF50")}
+      onBlur={(e) => (e.target.style.borderColor = "#ccc")}
+    />
+  </label>
+  <label style={{ fontWeight: "500", fontSize: "14px", color: "#333" }}>
+    To:
+    <input
+      type="date"
+      value={customTo}
+      onChange={(e) => setCustomTo(e.target.value)}
+      style={{
+        marginLeft: "8px",
+        padding: "8px 12px",
+        borderRadius: "8px",
+        border: "1px solid #ccc",
+        outline: "none",
+        fontSize: "14px",
+        color: "#333",
+        backgroundColor: "#f9f9f9",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        transition: "border-color 0.3s ease",
+      }}
+      onFocus={(e) => (e.target.style.borderColor = "#4CAF50")}
+      onBlur={(e) => (e.target.style.borderColor = "#ccc")}
+    />
+  </label>
+  <button
+    onClick={handleApplyCustom}
+    style={{
+      background: "linear-gradient(135deg, #4CAF50, #45A049)",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      padding: "8px 18px",
+      cursor: "pointer",
+      fontWeight: "500",
+      fontSize: "14px",
+      boxShadow: "0 3px 6px rgba(0,0,0,0.1)",
+      transition: "all 0.3s ease",
+    }}
+    onMouseEnter={(e) => (e.target.style.background = "linear-gradient(135deg, #45A049, #3e8e41)")}
+    onMouseLeave={(e) => (e.target.style.background = "linear-gradient(135deg, #4CAF50, #45A049)")}
+  >
+    Apply
+  </button>
+</div>
+
+      )}
+
       </div>
       <div style={{marginTop:"10px",backgroundColor:"white",height:"60px",paddingLeft:"80px",display:"flex",gap:"10px",paddingTop:"10px"}}>
       {/* <input type="checkbox" onChange={handleischeckedchange}/>
