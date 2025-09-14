@@ -25,11 +25,12 @@ import'../css/addcontact.css';
 import Tooltip from '@mui/material/Tooltip';
 import { Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
 import Swal from "sweetalert2";
+import UniqueLoader from '../components/loader'
 
 
 function Tasks() {
 
-  
+  const[isloading,setisloading]=useState(true)
 
 // ==============================================fetch data for call fields start=================================================
 
@@ -418,6 +419,7 @@ const[display_main_task,setdisplay_main_task]=useState("")
     {
       
       try {
+        setisloading(true)
         // const resp=await api.get('viewcalltask')
         // const callincoming=resp.data.call_task
 
@@ -439,6 +441,10 @@ const[display_main_task,setdisplay_main_task]=useState("")
         // setdata([...callincoming,...mailincoming])
       } catch (error) {
         console.log(error);
+      }
+      finally
+      {
+        setisloading(false)
       }
     
     }
@@ -2756,6 +2762,9 @@ const renderPageNumberstoday = () => {
             
           </StyledTableRow>
         ))}
+
+        
+
       </tbody>
     </Table>
   </TableContainer>
@@ -2763,6 +2772,9 @@ const renderPageNumberstoday = () => {
           <h5 style={{lineHeight:"50px",color:"GrayText"}}>Summary</h5>
           {/* <h5 style={{lineHeight:"50px"}}>Total Contact <span style={{color:"green",fontSize:"25px"}}>{totalcontact}</span></h5> */}
         </footer>
+
+          
+
       </div>
 
 
@@ -5779,6 +5791,25 @@ sitevisitdata.map((item)=>
 
 
           <ToastContainer/>
+
+              <>
+                 {isloading && (
+                   <div 
+                   style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100vw",
+                    height: "100vh",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 9999,}}>
+                    <UniqueLoader/>
+                   </div>
+                 )}
+               </>
+
         </div>
      );
 }
