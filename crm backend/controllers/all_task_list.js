@@ -26,7 +26,7 @@ const calltask_form=require('../models/call_task_form')
         const subtask=req.query.subtask
         const maintask=req.query.maintask
 
-        if (subtask === "today" && maintask==="followup") {
+        if (subtask === "today") {
         follow_up_task = follow_up_task.filter((item) => {
             const dateString = item.due_date
             if (!dateString) return false;
