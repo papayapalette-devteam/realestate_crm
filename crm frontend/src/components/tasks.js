@@ -4156,7 +4156,7 @@ return (
             <option>{meetingtask.lead}</option>
 <option>---Select---</option>
     {
-        leaddatameeting.map((item)=>
+        leaddatameeting?.map((item)=>
         (
             <option value={item._id}> {item.title} {item.first_name} {item.last_name}</option>
             
@@ -4444,7 +4444,7 @@ sitevisitdata.map((item)=>
                 className="form-control form-control-sm"
                 required
                 onChange={(e) => {
-                const selectedLead = leaddatacall.find(item => item._id === e.target.value);
+                const selectedLead = leaddatacall?.find(item => item._id === e.target.value);
                 if (selectedLead) {
                     const fullName = `${selectedLead.title} ${selectedLead.first_name} ${selectedLead.last_name}`;
                     setcalltask(prevState => ({
@@ -4463,7 +4463,7 @@ sitevisitdata.map((item)=>
                     <option>{calltask.lead}</option>
                     <option>---Select---</option>
                         {
-                            leaddatacall.map((item)=>
+                            leaddatacall?.map((item)=>
                             (
                                 <option value={item._id}> {item.title} {item.first_name} {item.last_name}</option>
                                 
@@ -4638,7 +4638,7 @@ sitevisitdata.map((item)=>
   <option>{mailtask.lead}</option>
 <option>---Select---</option>
     {
-        leaddatacall.map((item)=>
+        leaddatacall?.map((item)=>
         (
             <option value={item._id}> {item.title} {item.first_name} {item.last_name}</option>
             
@@ -4880,7 +4880,7 @@ sitevisitdata.map((item)=>
                     <option>{calltask.lead}</option>
                     <option>---Select---</option>
                         {
-                            leaddatacall.map((item)=>
+                            leaddatacall?.map((item)=>
                             (
                                 <option value={item._id}> {item.title} {item.first_name} {item.last_name}</option>
                                 
@@ -5039,7 +5039,7 @@ sitevisitdata.map((item)=>
       className="form-control form-control-sm"
       required
       onChange={(e) => {
-      const selectedLead = leaddatacall.find(item => item._id === e.target.value);
+      const selectedLead = leaddatacall?.find(item => item._id === e.target.value);
       if (selectedLead) {
       const fullName = `${selectedLead.title} ${selectedLead.first_name} ${selectedLead.last_name}`;
       setmailtask(prevState => ({
@@ -5058,7 +5058,7 @@ sitevisitdata.map((item)=>
   <option>{mailtask.lead}</option>
 <option>---Select---</option>
     {
-        leaddatacall.map((item)=>
+        leaddatacall?.map((item)=>
         (
             <option value={item._id}> {item.title} {item.first_name} {item.last_name}</option>
             
@@ -5670,7 +5670,7 @@ return (
             <option>{meetingtask.lead}</option>
 <option>---Select---</option>
     {
-        leaddatameeting.map((item)=>
+        leaddatameeting?.map((item)=>
         (
             <option value={item._id}> {item.title} {item.first_name} {item.last_name}</option>
             
