@@ -32,6 +32,12 @@ function Tasks() {
 
   const[isloading,setisloading]=useState(true)
 
+   const[displaytask,setdisplaytask]=useState("")//this is for show follow up ,sitevisit,meeting,today and all task while on click
+const[display_main_task,setdisplay_main_task]=useState("followup")
+
+ const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
+
 // ==============================================fetch data for call fields start=================================================
 
            useEffect(()=>{fetchdataforcallfields()},[])
@@ -155,7 +161,7 @@ function Tasks() {
     const navigate=useNavigate()
   
     React.useEffect(()=>{fetchdata1()},[])
-    React.useEffect(()=>{fetchdata2()},[])
+    // React.useEffect(()=>{fetch_site_visit_task()},[])
 
 /*-------------------------------------------------------------------fetching all contact data start---------------------------------------------------------------------------- */                                                     
     const[data,setdata]=useState([]);
@@ -174,27 +180,15 @@ function Tasks() {
     
     }
 
-    const[sitedata,setsitedata]=useState([]);
-    const fetchdata2=async()=>
-    {
-      
-      try {
-        const resp=await api.get('viewsitevisit')
-        const incoming=resp.data.sitevisit
-        setsitedata([...incoming])
-      } catch (error) {
-        console.log(error);
-      }
-    
-    }
+   
 
     const[alltask,setalltask]=useState([])
     
     useEffect(()=>
     {
-      setalltask([...data,...sitedata,...meetingdata])
+      setalltask([...data,...meetingdata])
 
-    },[sitedata,meetingdata,data])
+    },[meetingdata,data])
 
              useEffect(()=>{fetchleadscoredata()},[])
               const[leadscoredata,setleadscoredata]=useState([]);
@@ -326,12 +320,55 @@ function Tasks() {
 
 // ============================site visit task pagination==============================================================
 
+const[total_site_task,settotal_site_task]=useState(0)
+
+ const[sitedata,setsitedata]=useState([]);
+    const fetch_site_visit_task=async(page, limit, display_main_task, displaytask, fromDate, toDate,)=>
+    {
+      
+      try {
+         setisloading(true);
+         console.log(displaytask);
+         
+
+        const params = new URLSearchParams();
+        params.append("page", page);
+        params.append("limit", limit);
+        params.append("maintask", display_main_task ? display_main_task : "");
+        params.append("subtask", displaytask ? displaytask : "");
+
+        // Only append dates for custom filter
+        if (displaytask === "custom" && fromDate && toDate) {
+          params.append("from", fromDate);
+          params.append("to", toDate);
+        }
+        const resp=await api.get(`view_site-visit_task?${params.toString()}`)
+        settotal_site_task(resp.data.total)
+        setsitedata(resp.data.sitevisit_task)
+      } catch (error) {
+        console.log(error);
+      }
+      finally
+      {
+        setisloading(false)
+      }
+    
+    }
+
+console.log(sitedata);
+
+
 const [currentPage2, setCurrentPage2] = useState(1);
-const [itemsPerPage2, setItemsPerPage2] = useState(8); // User-defined items per page
+const [itemsPerPage2, setItemsPerPage2] = useState(10); // User-defined items per page
 const indexOfLastItem2 = currentPage2 * itemsPerPage2;
 const indexOfFirstItem2 = indexOfLastItem2 - itemsPerPage2;
 const currentItems2 = [...sitedata].reverse().slice(indexOfFirstItem2, indexOfLastItem2);
-const totalPages2 = Math.ceil(sitedata.length / itemsPerPage2);
+const totalPages2 = Math.ceil(total_site_task / itemsPerPage2);
+
+
+
+
+
 
 
   // Handle items per page change
@@ -408,12 +445,26 @@ const renderPageNumbers2 = () => {
 };
 
 
-  // ================================followup task pagination=====================================================
-const[displaytask,setdisplaytask]=useState("")//this is for show follow up ,sitevisit,meeting,today and all task while on click
-const[display_main_task,setdisplay_main_task]=useState("followup")
+useEffect(() => {
+  if(display_main_task==="sitevisit")
+  {
+  if (displaytask === "custom") {
+    if (customFrom && customTo) {
+      fetch_site_visit_task(currentPage2, itemsPerPage2, display_main_task, displaytask, customFrom, customTo);
+    }
+  } else {
+    fetch_site_visit_task(currentPage2, itemsPerPage2, display_main_task, displaytask);
+  }
+}
+}, [currentPage2, itemsPerPage2, display_main_task, displaytask]);
 
- const [customFrom, setCustomFrom] = useState("");
-  const [customTo, setCustomTo] = useState("");
+
+
+
+  // ================================followup task pagination=====================================================
+
+
+ 
 
    const[total_task,settotal_task]=useState("")
 
@@ -2541,7 +2592,7 @@ const renderPageNumberstoday = () => {
         <div style={{width:"100px",textAlign:"center",cursor:"pointer",backgroundColor:displaytask==="overdue"?"green":"",borderRadius:"20px"}} onClick={()=>setdisplaytask("overdue")}>Overdue</div>
         {/* <div style={{width:"120px",textAlign:"center",cursor:"pointer",backgroundColor:displaytask==="noduedate"?"green":"",borderRadius:"20px"}} onClick={()=>setdisplaytask("noduedate")}>No Due Date</div> */}
         <div style={{width:"100px",textAlign:"center",cursor:"pointer",backgroundColor:displaytask==="complete"?"green":"",borderRadius:"20px"}} onClick={()=>setdisplaytask("complete")}>Completed</div>
-        <div style={{width:"50px",textAlign:"center",cursor:"pointer",backgroundColor:displaytask==="all"?"green":"",borderRadius:"20px"}} onClick={()=>setdisplaytask("custom")}>Custom</div> 
+        <div style={{width:"100px",textAlign:"center",cursor:"pointer",borderRadius:"20px"}} onClick={()=>setdisplaytask("custom")}>Custom</div> 
 
          {displaytask === "custom" && (
        <div
@@ -2656,7 +2707,7 @@ const renderPageNumberstoday = () => {
      <img id="completetask"  src="https://cdn-icons-png.flaticon.com/512/1632/1632670.png" onClick={handleShow4}   style={{height:"35px",width:"35px",cursor:"pointer",marginTop:"6px",marginLeft:"20px"}} alt=""/>
      </Tooltip>
    
-     
+    
      </div>
 
      <div id="followupaction" style={{position:"absolute",marginLeft:"1%",gap:"20px",display:"none"}}>
@@ -2690,7 +2741,7 @@ const renderPageNumberstoday = () => {
 
     
     
-      <div id="sitevisitpagination" style={{fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"75%",position:"absolute",display:displaytask==="sitevisit"?"flex":"none"}}>
+      <div id="sitevisitpagination" style={{fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"65%",position:"absolute",display:display_main_task==="sitevisit"?"flex":"none"}}>
    
       
       <label htmlFor="itemsPerPage" style={{fontSize:"16px"}}>Items: </label>
@@ -2718,7 +2769,7 @@ const renderPageNumberstoday = () => {
     {renderPageNumbers()}
     </div>
 
-    <div id="meetingpagination" style={{fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"75%",position:"absolute",display:displaytask==="meeting"?"flex":"none"}}>
+    <div id="meetingpagination" style={{fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"65%",position:"absolute",display:displaytask==="meeting"?"flex":"none"}}>
    
       
    <label htmlFor="itemsPerPage" style={{fontSize:"16px"}}>Items: </label>
@@ -2903,7 +2954,7 @@ const renderPageNumberstoday = () => {
       <tbody>
         {
          
-        currentItems2.map ((item, index) => (
+        sitedata.map ((item, index) => (
           <StyledTableRow key={index}>
             <StyledTableCell>
               <input 

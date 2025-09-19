@@ -31,6 +31,7 @@ import ReactQuill from 'react-quill';  // Import ReactQuill
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Swal from 'sweetalert2'; 
+import UniqueLoader from '../components/loader'
 
 
 
@@ -80,6 +81,8 @@ function Fetchcontact() {
 
     const navigate=useNavigate()
   
+    const[loading,setloading]=useState(false)
+
     const [isLoading, setIsLoading] = useState(false);
 /*-------------------------------------------------------------------fetching all contact data start---------------------------------------------------------------------------- */                                                     
     const[data,setdata]=useState([]);
@@ -220,8 +223,10 @@ const totalPages = Math.ceil(data.length / itemsPerPage);
    const fetchdata=async(page, limit)=>
     {
       try {
+        setloading(true)
         const resp=await api.get(`/viewcontact?page=${page}&limit=${limit}`)
-  
+     
+        
         setdata(resp.data.contact)
         setcontacttotalPages(resp.data.totalPages);
         setcontactforsearch(resp.data.contact)
@@ -231,8 +236,15 @@ const totalPages = Math.ceil(data.length / itemsPerPage);
       } catch (error) {
         console.log(error);
       }
+      finally
+      {
+        setloading(false)
+      }
     
     }
+
+
+    
 
     const[cdata,setcdata]=useState([]);
     // const [filteredData, setFilteredData] = useState([]);
@@ -4109,7 +4121,7 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
       <tbody>
         {
          
-        currentItems.map ((item, index) => (
+        data.map ((item, index) => (
           <StyledTableRow key={index} >
             <StyledTableCell >
               <input 
@@ -6707,6 +6719,25 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
       </div>
     )}
   </>
+
+     <>
+                   {loading && (
+                     <div 
+                     style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: "100vw",
+                      height: "100vh",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 9999,}}>
+                      <UniqueLoader/>
+                     </div>
+                   )}
+                 </>
+
 
         </div>
      );

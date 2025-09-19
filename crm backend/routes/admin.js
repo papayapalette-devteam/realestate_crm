@@ -27,7 +27,7 @@ const { add_templete, view_templete } = require('../controllers/addtemplets');
 const { add_instanceid, view_instanceid } = require('../controllers/whatsappinstanceid');
 const { add_feedback } = require('../controllers/feedbackform');
 const { add_user, view_user, update_user, remove_user } = require('../controllers/adduser');
-const { view_followup_task } = require('../controllers/all_task_list');
+const { view_followup_task, view_sitevisit_task } = require('../controllers/all_task_list');
 
 
 
@@ -144,6 +144,7 @@ router.get('/viewsitevisitbyid/:_id',view_sitevisittask_Byid)
 router.put('/updatesitevisittask/:_id',update_sitevisittask)
 
 router.get('/view_follow_up_task',view_followup_task)
+router.get('/view_site-visit_task',view_sitevisit_task)
 
 // =======================================route for all task end=============================================================================
 

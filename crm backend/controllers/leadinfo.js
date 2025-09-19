@@ -87,7 +87,7 @@ const leadinfo_find = async (req, res) => {
  
 
     
-    const allleads=await leadinfo.find()
+    // const allleads=await leadinfo.find()
     const leads = await leadinfo.find()
           .sort({ createdAt: -1 })
           .skip(skip)
@@ -102,7 +102,7 @@ const leadinfo_find = async (req, res) => {
     // }
     res.status(200).send({
        message: "lead infomation:", 
-       lead: allleads,
+      //  lead: allleads,
        total, 
        totalPages: Math.ceil(total / limit),
         pagelead:leads

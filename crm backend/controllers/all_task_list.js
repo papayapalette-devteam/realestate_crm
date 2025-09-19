@@ -1,5 +1,6 @@
 const mailtask_form=require('../models/mail_task_form')
 const calltask_form=require('../models/call_task_form')
+const sitevisit_form=require('../models/site_visit_form')
 
 
 
@@ -95,5 +96,97 @@ const calltask_form=require('../models/call_task_form')
 };
 
 
+ const view_sitevisit_task = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-module.exports={view_followup_task}
+    const resp = await sitevisit_form.find()
+
+    // Merge and sort by createdAt
+    let sitevisit_task = resp.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    console.log(req.query);
+    
+
+    
+    const today = new Date().toLocaleDateString("en-CA");
+   
+    
+    const subtask = req.query.subtask;
+    const maintask = req.query.maintask;
+
+
+
+
+    if (subtask === "today") {
+      sitevisit_task = sitevisit_task.filter((item) => {
+        const dateString = item.start_date;
+        
+        if (!dateString) return false;
+        const dateOnly = new Date(dateString).toISOString().split("T")[0];
+        return dateOnly === today && item.complete !== "true";
+     
+        
+        
+      });
+    } else if (subtask === "upcoming") {
+      sitevisit_task = sitevisit_task.filter((item) => {
+        const dateString = item.start_date;
+        if (!dateString) return false;
+        const dateOnly = new Date(dateString).toISOString().split("T")[0];
+        return dateOnly > today && item.complete !== "true";
+      });
+    } else if (subtask === "overdue") {
+      sitevisit_task = sitevisit_task.filter((item) => {
+        const dateString = item.start_date;
+        if (!dateString) return false;
+        const dateOnly = new Date(dateString).toISOString().split("T")[0];
+        return dateOnly < today && item.complete !== "true";
+      });
+    } else if (subtask === "complete") {
+      sitevisit_task = sitevisit_task.filter(
+        (item) => item.complete === "true"
+      );
+    } else if (subtask === "custom") {
+      const { from, to } = req.query;
+
+      if (from && to) {
+        sitevisit_task = sitevisit_task.filter((item) => {
+          const dateString = item.due_date;
+          if (!dateString) return false;
+
+          const dateOnly = new Date(dateString).toISOString().split("T")[0];
+          return (
+            dateOnly >= from &&
+            dateOnly <= to &&
+            item.complete !== "true"
+          );
+        });
+      }
+    }
+    
+    
+
+    // Apply pagination
+    const paginatedTasks = sitevisit_task.slice(skip, skip + limit);
+
+    res.status(200).send({
+      message: "Sitevisit tasks fetched successfully",
+      total: sitevisit_task.length,
+      page,
+      limit,
+      sitevisit_task: paginatedTasks,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Error fetching follow-up tasks" });
+  }
+};
+
+
+
+module.exports={view_followup_task,view_sitevisit_task}

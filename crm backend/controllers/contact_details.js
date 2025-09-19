@@ -91,13 +91,15 @@ const add_contact = async (req, res) => {
     const view_contact=async(req,res)=>
         {
           try {
+            // console.log(req.query);
+            
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
     
     // Fetch contacts with pagination and sorting by createdAt descending
-    const allcontact=await addcontact.find()
+    // const allcontact=await addcontact.find()
     const contacts = await addcontact.find()
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -113,7 +115,7 @@ const add_contact = async (req, res) => {
       total,
       page,
       totalPages: Math.ceil(total / limit),
-      allcontact:allcontact
+      // allcontact:allcontact
     });
   } catch (error) {
     console.error(error);

@@ -4176,35 +4176,41 @@ const buttonStyle = `
         const [allSuggestions, setAllSuggestions] = useState([]);
         const [selectedContacts, setSelectedContacts] = useState([]);
   
-        React.useEffect(() => {
-          const fetchSuggestions = async () => {
-            try {
-              const response = await api.get('viewcontact');
-              const data = response.data.contact;
-              
-              // Extract the first_name field from the fetched data
-              // const names = data.map(item => item.first_name);
-              setAllSuggestions(data);
-            } catch (error) {
-              console.error('Error fetching suggestions:', error);
-            }
-          };
+
+       
+
       
-          fetchSuggestions();
-        }, []);
+ const fetchSuggestions = async (inputValue) => {
+  try {
+    const resp = await api.get(`/searchcontact?search=${encodeURIComponent(inputValue)}`);
+    console.log(resp);
+    
+    const data = resp.data.contact;
 
-        React.useEffect(() => {
-          if (input) {
-            const results = allSuggestions.filter(contact =>
-              contact.first_name?.toLowerCase().includes(input.toLowerCase())
-            );
-            setFilteredSuggestions(results);
-            setShowSuggestions(true);
-          } else {
-            setShowSuggestions(false)
-          }
-        }, [input,allSuggestions]);
+    // Map to combine first_name + last_name + mobile_no
+    const formattedData = data.map(item => 
+      `${item.first_name || ''} ${item.last_name || ''} (${item.mobile_no || ''})`
+    );
 
+    setFilteredSuggestions(data);
+    setShowSuggestions(true);
+  } catch (error) {
+    console.error('Error fetching suggestions:', error);
+    setShowSuggestions(false);
+  }
+};
+
+console.log(filteredSuggestions);
+
+
+React.useEffect(() => {
+  if (input.trim() !== "") {
+    fetchSuggestions(input);
+  } else {
+    setFilteredSuggestions([]);
+    setShowSuggestions(false);
+  }
+}, [input]);
        
       
         const handleInputChange = (event) => {
@@ -6032,7 +6038,7 @@ const excelSerialToDateString = (serial) => {
                 <div className="row" style={{width:"100%"}}>
                
                         <div className="col-md-9" id="suggestion-box" style={{ position: 'relative' }}><label className="labels" style={{visibility:"hidden"}}>Search</label><input type="search"className="form-control form-control-sm" value={input} placeholder="Type here For Search in Contact" required="true" onChange={handleInputChange}/></div>
-                        {showSuggestions && input && filteredSuggestions.length > 0 && (
+                        {showSuggestions && input && filteredSuggestions?.length > 0 && (
                             <ul className="suggestion-list" style={{width:"100%"}}>
                               {filteredSuggestions.map((suggestion, index) => (
                                 <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
@@ -6570,8 +6576,10 @@ const excelSerialToDateString = (serial) => {
             <div  style={{padding:"5px"}}>
                 <div className="row" style={{width:"100%"}}>
                
-                        <div className="col-md-9" id="suggestion-box" style={{ position: 'relative' }}><label className="labels" style={{visibility:"hidden"}}>Search</label><input type="search"className="form-control form-control-sm" value={input} placeholder="Type here For Search in Contact" required="true" onChange={handleInputChange}/></div>
-                        {showSuggestions && input && filteredSuggestions.length > 0 && (
+                        <div className="col-md-9" id="suggestion-box" style={{ position: 'relative' }}>
+                          <label className="labels" style={{visibility:"hidden"}}>Search</label>
+                          <input type="search"className="form-control form-control-sm" value={input} placeholder="Type here For Search in Contact" required="true" onChange={handleInputChange}/></div>
+                        {showSuggestions && input && filteredSuggestions?.length > 0 && (
                             <ul className="suggestion-list" style={{width:"35%"}}>
                               {filteredSuggestions.map((suggestion, index) => (
                                 <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
