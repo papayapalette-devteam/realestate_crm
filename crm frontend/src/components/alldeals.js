@@ -191,7 +191,7 @@ const numberToIndianWords = (num) => {
                     
                     try {
                       const resp=await api.get('leadinfo')
-                      const all=(resp.data.lead)
+                      const all=(resp.data.pagelead)
                       setleaddata(all)
                 
                     } catch (error) {
@@ -573,11 +573,13 @@ React.useEffect(()=>{fetchalldealdata()},[])
 
 
 const[alldealdata,setalldealdata]=useState([])
-const fetchalldealdata=async(event)=>
+const fetchalldealdata=async()=>
     {
       
       try {
         const resp=await api.get('viewdeal')
+        console.log(resp);
+        
         const all=(resp.data.deal)
         setalldealdata(all)
       } catch (error) {
@@ -2563,7 +2565,7 @@ const [sitevisit,setsitevisit]=useState({activity_type:"SiteVisit",title:"",exec
       
       try {
         const resp=await api.get('leadinfo')
-        setLeaddata(resp.data.lead)
+        setLeaddata(resp.data.pagelead)
       } catch (error) {
         console.log(error);
       }
@@ -3169,7 +3171,7 @@ const fetchleaddatamail=async(event)=>
   
   try {
     const resp=await api.get('leadinfo')
-    const all=(resp.data.lead)
+    const all=(resp.data.pagelead)
     setleaddatamail(all)
 
   } catch (error) {
@@ -4870,7 +4872,7 @@ const handleTimeChangemail = (e) => {
     onChange={handleLeadChange}>
 <option>Select</option>
     {
-        Leaddata.map((item)=>
+        Leaddata?.map((item)=>
         (
             <option value={item._id}> {item.title} {item.first_name} {item.last_name}</option>
             
@@ -5025,7 +5027,7 @@ stage:selectedLead.stage
 >
 <option>Select</option>
     {
-        leaddata.map((item)=>
+        leaddata?.map((item)=>
         (
             <option value={item._id}> {item.title} {item.first_name} {item.last_name}</option>
             

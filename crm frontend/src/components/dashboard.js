@@ -47,6 +47,8 @@ function Dashboard() {
     setdeal_loading(true);
     try {
       const resp = await api.get("viewdeal");
+      console.log(resp);
+      
       settotal_deal(resp.data.deal.length);
     } catch (error) {
       console.error(error);
@@ -59,6 +61,8 @@ function Dashboard() {
     setlead_loading(true);
     try {
       const resp = await api.get(`leadinfo`);
+      console.log(resp);
+      
       settotal_lead(resp.data.total);
     } catch (error) {
       console.error(error);
