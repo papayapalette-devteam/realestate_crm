@@ -22,7 +22,32 @@ function Task_form() {
    const navigate = useNavigate();
    const location1=useLocation()
 
-  const leadoption=location1?.state?.selectedItem
+  const lead_id=location1?.state?.selectedItem
+ 
+const[leadoption,setleadoption]=useState([])
+  const getlead_data=async()=>
+  {
+    try {
+      const resp=await api.get(`viewbyid/${lead_id}`)
+      setleadoption(resp.data.lead)
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+  useEffect(()=>
+  {
+    if(lead_id)
+    {
+       getlead_data()
+    }
+   
+  },[])
+  console.log(leadoption);
+  
+  
 
 
 //============================================ fetch data for call fields start==================================================
@@ -317,7 +342,7 @@ function Task_form() {
 
             // Reload after both operations succeed
             setTimeout(() => {
-                window.location.reload();
+               window.history.back();
             }, 2000); // 2000 milliseconds = 2 seconds
         } else {
             toast.error("failed to create task");
@@ -1734,7 +1759,7 @@ const handleTimeChange = (e) => {
                         <div className="col-md-4 mb-4 custom-input"></div>
                     <div className="col-md-4 mb-4 custom-input"> <label className="form-label">Select Lead</label>
                     <Autocomplete
-                    const options = {leadoption?data.filter(item => item._id === leadoption): data}
+                    const options = {leadoption?.filter(item => item._id === lead_id)}
                     getOptionLabel={(option) =>
                     `${option.title} ${option.first_name} ${option.last_name}`
                   }
@@ -1896,7 +1921,7 @@ const handleTimeChange = (e) => {
                     <div className="col-md-4 mb-4 custom-input">
                 <label className="form-label">Select Lead</label>
                 <Autocomplete
-                   const options = {leadoption?data.filter(item => item._id === leadoption): data}
+                   const options = {leadoption?.filter(item => item._id === lead_id)}
                     getOptionLabel={(option) =>
                     `${option.title} ${option.first_name} ${option.last_name}`
                   }
@@ -2263,7 +2288,7 @@ renderValue={(selected) => selected.map(item => item.split('-')[0]).join(', ')} 
                      <div className="col-md-4 mb-4 custom-input">
                 <label className="form-label">Select Lead</label>
                 <Autocomplete
-                  const options = {leadoption?data.filter(item => item._id === leadoption): data}
+                  const options = {leadoption?.filter(item => item._id === lead_id)}
                     getOptionLabel={(option) =>
                     `${option.title} ${option.first_name} ${option.last_name}`
                   }
@@ -2576,7 +2601,7 @@ renderValue={(selected) => selected.map(item => item.split('-')[0]).join(', ')} 
                              <div className="col-md-4 mb-4 custom-input">
                 <label className="form-label">Select Lead</label>
                 <Autocomplete
-                  const options = {leadoption?data.filter(item => item._id === leadoption): data}
+                const options = {leadoption?.filter(item => item._id === lead_id)}
                     getOptionLabel={(option) =>
                     `${option.title} ${option.first_name} ${option.last_name}`
                   }
