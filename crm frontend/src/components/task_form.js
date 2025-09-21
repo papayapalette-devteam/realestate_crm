@@ -11,14 +11,15 @@ import { Inventory, Try } from "@mui/icons-material";
 import { Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
+import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 
 
 
 function Task_form() {
   
+    const [loading, setLoading] = useState(false);
+
    const navigate = useNavigate();
    const location1=useLocation()
 
@@ -358,6 +359,38 @@ const[leadoption,setleadoption]=useState([])
                     })
         }
     };
+
+
+    //========================= this is select lead drop down list=========================
+    const [suggestionslead, setSuggestionslead] = useState([]);
+
+    const fetchsearchdata = async (search) => {
+  try {
+    setLoading(true)
+    const resp = await api.get(
+      `/searchlead?search=${encodeURIComponent(search)}`
+    );
+    const leads = resp.data.lead || [];
+    setSuggestionslead(leads); // suggestions
+  } catch (error) {
+    console.error(error);
+  }
+  finally
+  {
+    setLoading(false)
+  }
+};
+
+
+  const handleSearchChangelead = async (value) => {
+
+
+  if (value.trim() === '') {
+    setSuggestionslead([]); // clear suggestions
+    return;
+  }
+  await fetchsearchdata( value);
+};
 
 
    
@@ -1759,13 +1792,42 @@ const handleTimeChange = (e) => {
                         <div className="col-md-4 mb-4 custom-input"></div>
                     <div className="col-md-4 mb-4 custom-input"> <label className="form-label">Select Lead</label>
                     <Autocomplete
-                    const options = {leadoption?.filter(item => item._id === lead_id)}
+                    options={
+                      lead_id
+                        ? leadoption?.filter((item) => item._id === lead_id) // if lead_id present
+                        : suggestionslead // else show suggestions
+                    }
                     getOptionLabel={(option) =>
-                    `${option.title} ${option.first_name} ${option.last_name}`
+                    `${option.title} ${option.first_name} ${option.last_name} ${option.mobile_no}`
                   }
 
+                    onInputChange={async (event, value) => {
+                    // only call API if value changes
+                    if (value) {
+                      await handleSearchChangelead(value); // pass typed value
+                    } else {
+                      setSuggestionslead([]); // clear suggestions
+                    }
+                  }}
+
                     renderInput={(params) => (
-                      <TextField {...params} size="small" placeholder="---select---" />
+                       <TextField
+                        {...params}
+                        size="small"
+                        placeholder="---select---"
+                        // 🔹 show circular progress while loading
+                        InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <>
+                              {loading ? (
+                                <CircularProgress color="inherit" size={20} />
+                              ) : null}
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                        }}
+                      />
                     )}
                     openOnFocus
                     onChange={(event, selectedLead) => {
@@ -1920,14 +1982,44 @@ const handleTimeChange = (e) => {
                 
                     <div className="col-md-4 mb-4 custom-input">
                 <label className="form-label">Select Lead</label>
-                <Autocomplete
-                   const options = {leadoption?.filter(item => item._id === lead_id)}
+               <Autocomplete
+                    options={
+                      lead_id
+                        ? leadoption?.filter((item) => item._id === lead_id) // if lead_id present
+                        : suggestionslead // else show suggestions
+                    }
                     getOptionLabel={(option) =>
-                    `${option.title} ${option.first_name} ${option.last_name}`
+                    `${option.title} ${option.first_name} ${option.last_name} ${option.mobile_no}`
                   }
-                  renderInput={(params) => (
-                    <TextField {...params} label="---select---" variant="outlined" size="small" />
-                  )}
+
+                    onInputChange={async (event, value) => {
+                    // only call API if value changes
+                    if (value) {
+                      await handleSearchChangelead(value); // pass typed value
+                    } else {
+                      setSuggestionslead([]); // clear suggestions
+                    }
+                  }}
+
+                    renderInput={(params) => (
+                       <TextField
+                        {...params}
+                        size="small"
+                        placeholder="---select---"
+                        // 🔹 show circular progress while loading
+                        InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <>
+                              {loading ? (
+                                <CircularProgress color="inherit" size={20} />
+                              ) : null}
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                        }}
+                      />
+                    )}
                   onChange={(event, selectedLead) => {
                     if (selectedLead) {
                       const fullName = `${selectedLead.title} ${selectedLead.first_name} ${selectedLead.last_name}`;
@@ -2287,14 +2379,44 @@ renderValue={(selected) => selected.map(item => item.split('-')[0]).join(', ')} 
                       
                      <div className="col-md-4 mb-4 custom-input">
                 <label className="form-label">Select Lead</label>
-                <Autocomplete
-                  const options = {leadoption?.filter(item => item._id === lead_id)}
+               <Autocomplete
+                    options={
+                      lead_id
+                        ? leadoption?.filter((item) => item._id === lead_id) // if lead_id present
+                        : suggestionslead // else show suggestions
+                    }
                     getOptionLabel={(option) =>
-                    `${option.title} ${option.first_name} ${option.last_name}`
+                    `${option.title} ${option.first_name} ${option.last_name} ${option.mobile_no}`
                   }
-                  renderInput={(params) => (
-                    <TextField {...params} label="---select---" variant="outlined" size="small" />
-                  )}
+
+                    onInputChange={async (event, value) => {
+                    // only call API if value changes
+                    if (value) {
+                      await handleSearchChangelead(value); // pass typed value
+                    } else {
+                      setSuggestionslead([]); // clear suggestions
+                    }
+                  }}
+
+                    renderInput={(params) => (
+                       <TextField
+                        {...params}
+                        size="small"
+                        placeholder="---select---"
+                        // 🔹 show circular progress while loading
+                        InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <>
+                              {loading ? (
+                                <CircularProgress color="inherit" size={20} />
+                              ) : null}
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                        }}
+                      />
+                    )}
                   onChange={(event, selectedLead) => {
                     if (selectedLead) {
                       const fullName = `${selectedLead.title} ${selectedLead.first_name} ${selectedLead.last_name}`;
@@ -2600,14 +2722,44 @@ renderValue={(selected) => selected.map(item => item.split('-')[0]).join(', ')} 
                         </div>
                              <div className="col-md-4 mb-4 custom-input">
                 <label className="form-label">Select Lead</label>
-                <Autocomplete
-                const options = {leadoption?.filter(item => item._id === lead_id)}
+             <Autocomplete
+                    options={
+                      lead_id
+                        ? leadoption?.filter((item) => item._id === lead_id) // if lead_id present
+                        : suggestionslead // else show suggestions
+                    }
                     getOptionLabel={(option) =>
-                    `${option.title} ${option.first_name} ${option.last_name}`
+                    `${option.title} ${option.first_name} ${option.last_name} ${option.mobile_no}`
                   }
-                  renderInput={(params) => (
-                    <TextField {...params} label="---select---" variant="outlined" size="small" />
-                  )}
+
+                    onInputChange={async (event, value) => {
+                    // only call API if value changes
+                    if (value) {
+                      await handleSearchChangelead(value); // pass typed value
+                    } else {
+                      setSuggestionslead([]); // clear suggestions
+                    }
+                  }}
+
+                    renderInput={(params) => (
+                       <TextField
+                        {...params}
+                        size="small"
+                        placeholder="---select---"
+                        // 🔹 show circular progress while loading
+                        InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <>
+                              {loading ? (
+                                <CircularProgress color="inherit" size={20} />
+                              ) : null}
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                        }}
+                      />
+                    )}
                   onChange={(event, selectedLead) => {
                     if (selectedLead) {
                       const fullName = `${selectedLead.title} ${selectedLead.first_name} ${selectedLead.last_name}`;
