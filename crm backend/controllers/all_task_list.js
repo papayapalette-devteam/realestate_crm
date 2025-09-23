@@ -1,6 +1,7 @@
 const mailtask_form=require('../models/mail_task_form')
 const calltask_form=require('../models/call_task_form')
 const sitevisit_form=require('../models/site_visit_form')
+const meetingtask_form=require('../models/meeting_task_form')
 
 
 
@@ -109,7 +110,7 @@ const sitevisit_form=require('../models/site_visit_form')
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
     );
 
-    console.log(req.query);
+    // console.log(req.query);
     
 
     
@@ -156,7 +157,7 @@ const sitevisit_form=require('../models/site_visit_form')
 
       if (from && to) {
         sitevisit_task = sitevisit_task.filter((item) => {
-          const dateString = item.due_date;
+          const dateString = item.start_date;
           if (!dateString) return false;
 
           const dateOnly = new Date(dateString).toISOString().split("T")[0];
@@ -183,10 +184,105 @@ const sitevisit_form=require('../models/site_visit_form')
     });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Error fetching follow-up tasks" });
+    res.status(500).send({ message: "Error fetching Sitevisit tasks" });
+  }
+};
+
+
+ const view_meeting_task = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    console.log(req.query);
+    
+    const resp = await meetingtask_form.find()
+
+    // Merge and sort by createdAt
+    let meeting_task = resp.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    console.log(req.query);
+   
+    
+
+    
+    const today = new Date().toLocaleDateString("en-CA");
+   
+    
+    const subtask = req.query.subtask;
+    const maintask = req.query.maintask;
+
+
+
+
+    if (subtask === "today") {
+      meeting_task = meeting_task.filter((item) => {
+        const dateString = item.due_date;
+        
+        if (!dateString) return false;
+        const dateOnly = new Date(dateString).toISOString().split("T")[0];
+        return dateOnly === today && item.complete !== "true";
+     
+        
+        
+      });
+    } else if (subtask === "upcoming") {
+      meeting_task = meeting_task.filter((item) => {
+        const dateString = item.due_date;
+        if (!dateString) return false;
+        const dateOnly = new Date(dateString).toISOString().split("T")[0];
+        return dateOnly > today && item.complete !== "true";
+      });
+    } else if (subtask === "overdue") {
+      meeting_task = meeting_task.filter((item) => {
+        const dateString = item.due_date;
+        if (!dateString) return false;
+        const dateOnly = new Date(dateString).toISOString().split("T")[0];
+        return dateOnly < today && item.complete !== "true";
+      });
+    } else if (subtask === "complete") {
+      meeting_task = meeting_task.filter(
+        (item) => item.complete === "true"
+      );
+    } else if (subtask === "custom") {
+      const { from, to } = req.query;
+
+      if (from && to) {
+        meeting_task = meeting_task.filter((item) => {
+          const dateString = item.due_date;
+          if (!dateString) return false;
+
+          const dateOnly = new Date(dateString).toISOString().split("T")[0];
+          return (
+            dateOnly >= from &&
+            dateOnly <= to &&
+            item.complete !== "true"
+          );
+        });
+      }
+    }
+    
+    
+
+    // Apply pagination
+    const paginatedTasks = meeting_task.slice(skip, skip + limit);
+
+    res.status(200).send({
+      message: "Meetung tasks fetched successfully",
+      total: meeting_task.length,
+      page,
+      limit,
+      meeting_task: paginatedTasks,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Error fetching meeting-task-up tasks" });
   }
 };
 
 
 
-module.exports={view_followup_task,view_sitevisit_task}
+module.exports={view_followup_task,view_sitevisit_task,view_meeting_task}

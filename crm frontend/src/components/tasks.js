@@ -160,25 +160,14 @@ const[display_main_task,setdisplay_main_task]=useState("followup")
 
     const navigate=useNavigate()
   
-    React.useEffect(()=>{fetchdata1()},[])
+    // React.useEffect(()=>{fetchdata1()},[])
     // React.useEffect(()=>{fetch_site_visit_task()},[])
 
 /*-------------------------------------------------------------------fetching all contact data start---------------------------------------------------------------------------- */                                                     
     const[data,setdata]=useState([]);
 
     const[meetingdata,setmeetingdata]=useState([]);
-    const fetchdata1=async()=>
-    {
-      
-      try {
-        const resp=await api.get('viewmeetingtask')
-        const incoming=resp.data.meetingtask
-        setmeetingdata([...incoming])
-      } catch (error) {
-        console.log(error);
-      }
-    
-    }
+  
 
    
 
@@ -469,7 +458,7 @@ useEffect(() => {
    const[total_task,settotal_task]=useState("")
 
   
-const fetchdata = async (page, limit, display_main_task, displaytask, fromDate, toDate) => {
+const fetch_followup_task = async (page, limit, display_main_task, displaytask, fromDate, toDate) => {
   try {
     setisloading(true);
 
@@ -587,40 +576,63 @@ useEffect(() => {
   {
   if (displaytask === "custom") {
     if (customFrom && customTo) {
-      fetchdata(currentPage, itemsPerPage, display_main_task, displaytask, customFrom, customTo);
+      fetch_followup_task(currentPage, itemsPerPage, display_main_task, displaytask, customFrom, customTo);
     }
   } else {
-    fetchdata(currentPage, itemsPerPage, display_main_task, displaytask);
+    fetch_followup_task(currentPage, itemsPerPage, display_main_task, displaytask);
   }
 }
 }, [currentPage, itemsPerPage, display_main_task, displaytask]);
 
 
 
-// ========================== fetch data by custom date================================
+
 
   
 
-  const handleApplyCustom = () => {
-    if (!customFrom || !customTo) {
-      alert("Please select both From and To date");
-      return;
-    }
 
-    fetchdata(currentPage, itemsPerPage, display_main_task, displaytask, customFrom, customTo); // pass dates also
-  };
 
 
 
 // ===========================================meeting task pagination===========================================================
 
+   const[total_meeting_task,settotal_meeting_task]=useState("")
+
+  
+const fetch_meeting_task = async (page, limit, display_main_task, displaytask, fromDate, toDate) => {
+  try {
+    setisloading(true);
+
+    const params = new URLSearchParams();
+    params.append("page", page);
+    params.append("limit", limit);
+    params.append("maintask", display_main_task ? display_main_task : "");
+    params.append("subtask", displaytask ? displaytask : "");
+
+    // Only append dates for custom filter
+    if (displaytask === "custom" && fromDate && toDate) {
+      params.append("from", fromDate);
+      params.append("to", toDate);
+    }
+
+    const resp = await api.get(`view_meeting_task?${params.toString()}`);
+    console.log(resp);
+
+    settotal_meeting_task(resp.data.total);
+    setmeetingdata(resp.data.meeting_task);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setisloading(false);
+  }
+};
 
 const [currentPage1, setCurrentPage1] = useState(1);
 const [itemsPerPage1, setItemsPerPage1] = useState(8); // User-defined items per page
 const indexOfLastItem1 = currentPage1 * itemsPerPage1;
 const indexOfFirstItem1 = indexOfLastItem1 - itemsPerPage1;
 const currentItems1 = [...meetingdata].reverse().slice(indexOfFirstItem1, indexOfLastItem1);
-const totalPages1 = Math.ceil(meetingdata.length / itemsPerPage1);
+const totalPages1 = Math.ceil(total_meeting_task / itemsPerPage1);
 
 
   // Handle items per page change
@@ -698,6 +710,20 @@ const renderPageNumbers1 = () => {
 
 
 
+useEffect(() => {
+  if(display_main_task==="meeting")
+  {
+  if (displaytask === "custom") {
+    if (customFrom && customTo) {
+      fetch_meeting_task(currentPage1, itemsPerPage1, display_main_task, displaytask, customFrom, customTo);
+    }
+  } else {
+    fetch_meeting_task(currentPage1, itemsPerPage1, display_main_task, displaytask);
+  }
+}
+}, [currentPage1, itemsPerPage1, display_main_task, displaytask]);
+
+
       const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
           backgroundColor: 'gray', // use string or valid color code
@@ -737,6 +763,32 @@ const renderPageNumbers1 = () => {
       // Export the workbook to an Excel file
       writeFile(workbook, "table_data.xlsx");
     };
+
+
+
+    //========================== custome date apply for all task================================
+
+      const handleApplyCustom = () => {
+    if (!customFrom || !customTo) {
+      alert("Please select both From and To date");
+      return;
+    }
+
+    if(display_main_task==="followup")
+    {
+      fetch_followup_task(currentPage, itemsPerPage, display_main_task, displaytask, customFrom, customTo); // pass dates also
+    }
+     if(display_main_task==="sitevisit")
+    {
+      fetch_site_visit_task(currentPage2, itemsPerPage2, display_main_task, displaytask, customFrom, customTo); // pass dates also
+    }
+     if(display_main_task==="meeting")
+    {
+      fetch_meeting_task(currentPage1, itemsPerPage1, display_main_task, displaytask, customFrom, customTo); // pass dates also
+    }
+    
+  };
+
 
 /*-------------------------------------------------------------------pagination,mui table and export to excel end---------------------------------------------------------------------------- */                                                     
     
@@ -2769,7 +2821,7 @@ const renderPageNumberstoday = () => {
     {renderPageNumbers()}
     </div>
 
-    <div id="meetingpagination" style={{fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"65%",position:"absolute",display:displaytask==="meeting"?"flex":"none"}}>
+    <div id="meetingpagination" style={{fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"65%",position:"absolute",display:display_main_task==="meeting"?"flex":"none"}}>
    
       
    <label htmlFor="itemsPerPage" style={{fontSize:"16px"}}>Items: </label>
@@ -3081,7 +3133,7 @@ const renderPageNumberstoday = () => {
       <tbody>
         {
          
-        currentItems1.map ((item, index) => (
+        meetingdata.map ((item, index) => (
           <StyledTableRow key={index}>
             <StyledTableCell>
               <input 
@@ -3841,7 +3893,7 @@ renderValue={(selected) => selected.join(', ')}
       <option>{sitevisit.lead}</option>
 <option>---Select---</option>
     {
-        leaddata.map((item)=>
+        leaddata?.map((item)=>
         (
             <option value={item._id}> {item.title} {item.first_name} {item.last_name}</option>
             
@@ -5348,7 +5400,7 @@ renderValue={(selected) => selected.join(', ')}
       <option>{sitevisit.lead}</option>
 <option>---Select---</option>
     {
-        leaddata.map((item)=>
+        leaddata?.map((item)=>
         (
             <option value={item._id}> {item.title} {item.first_name} {item.last_name}</option>
             
