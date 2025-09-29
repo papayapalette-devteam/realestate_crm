@@ -4623,94 +4623,119 @@ const excelSerialToDateString = (serial) => {
               </div>
 
                       
- <div ref={toastRefunit}
-                    className={`feedback-toast ${showunit ? (isClosingunit ? 'hide' : 'show') : ''}`} 
-                    style={{marginTop:"0%", width: 400,height:"100%", background: "#fff", borderRadius: 14,boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)", padding: 10,overflowY:"scroll",overflowX:"scroll"}}>
-     <h3 style={{
-                        fontSize: '16px',
-                        margin: 0,
-                        padding: '16px',
-                        textAlign: 'center',
-                        // background: 'linear-gradient(to right, #00b4db, #0083b0)',
-                        color: 'black',
-                        borderBottom: '1px solid #ddd',
-                        letterSpacing: '0.5px'
-                      }}>
-                        🔍 Filter Units
-                      
-                      <span>
-                          <button
-                            className="btn btn-danger"
-                            style={{
-                              backgroundColor:"white",
-                              padding: '6px 12px',
-                              fontSize: '14px',
-                              border:"none",
-                              marginLeft:"40%"
-                            }}
-                            onClick={handleCancelunit}
-                          >
-                            ❌
-                          </button>
-                      </span>
-                      </h3>
-                      
-  {/* Add Field Section */}
-  <button
-    style={{ padding: "7px 18px", background: "#007bff", color: "#fff", border: "none", borderRadius: 6, fontWeight: 600, marginBottom: 16, cursor: "pointer",marginTop:"20px"}}
-    onClick={() => setShowFieldDropdown(s => !s)}
-  >+ Add Field</button>
-  {showFieldDropdown && (
-    <div style={{ background: "#fff", border: "1px solid #eee", borderRadius: 7, marginBottom: 14,overflow:"auto",height:"200px" }}>
-      {unitfields.filter(f =>
-        !activeFilters.some(af => af.field === f.field)
-      ).map(fieldObj => (
-        <div key={fieldObj.field}
-          style={{ padding: 10, cursor: "pointer" }}
-          onClick={() => handleAddField(fieldObj)}
-        >{fieldObj.label}</div>
-      ))}
-    </div>
-  )}
+<div
+  ref={toastRefunit}
+  className={`feedback-toast ${showunit ? (isClosingunit ? "hide" : "show") : ""}`}
+  style={{
+    marginTop: "0%",
+    width: 300,
+    height: "100%",
+    background: "#fff",
+    borderRadius: 14,
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+    padding: 10,
+    overflowY: "scroll",
+    overflowX: "scroll"
+  }}
+>
+  {/* Header */}
+  <h3
+    style={{
+      fontSize: "14px",
+      margin: 0,
+      padding: "16px",
+      textAlign: "left",
+      color: "black",
+      borderBottom: "1px solid #ddd",
+      letterSpacing: "0.5px"
+    }}
+  >
+    🔍 Filter Units
+    <span>
+      <button
+        className="btn btn-danger"
+        style={{
+          backgroundColor: "white",
+          padding: "6px 12px",
+          fontSize: "14px",
+          border: "none",
+          marginLeft: "30%"
+        }}
+        onClick={handleCancelunit}
+      >
+        ❌
+      </button>
+    </span>
+  </h3>
 
   {/* Active Filter Rows */}
   {activeFilters.map((item, idx) => (
-    <div key={item.field} style={{
-      background: "#e8ebeeff", borderRadius: 8, marginBottom: 14, padding: 12, position: "relative" }}>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <p style={{ flex: 1 }}>{item.label}</p>
-        <button
-          style={{ background: "none", border: "none", color: "#f44", fontSize: 18, fontWeight: 700, cursor: "pointer" }}
-          onClick={() => handleRemoveFilter(idx)}
-        >×</button>
+    <div
+      key={item.field}
+      style={{
+        background: "#f8f9fb",
+        borderRadius: 8,
+        marginBottom: 10,
+        padding: 10
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <p style={{ margin: 0, fontWeight: 400,fontSize:"12px" }}>{item.label}</p>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: 12
+            }}
+            onClick={() => handleToggleDropdown(idx)}
+          >
+            {openDropdownIdx === idx ? "▲" : "▼"}
+          </button>
+          <button
+            style={{
+              background: "none",
+              border: "none",
+              color: "#f44",
+              fontSize: 18,
+              fontWeight: 400,
+              cursor: "pointer"
+            }}
+            onClick={() => handleRemoveFilter(idx)}
+          >
+            ×
+          </button>
+        </div>
       </div>
-      {/* Dropdown toggle */}
-      <button
-        style={{
-          display: "block", width: "100%",
-          background: "#fff", border: "1px solid #d6e0ef",
-          borderRadius: 7, marginTop: 8, padding: "7px 12px",
-          textAlign: "left", cursor: "pointer"
-        }}
-        onClick={() => handleToggleDropdown(idx)}
-      >
-        Open Filter
-      </button>
 
       {/* Dropdown contents */}
       {openDropdownIdx === idx && (
-        <div style={{
-          background: "#fff", border: "1px solid #eee", boxShadow: "0 2px 9px rgba(0,0,0,0.08)",
-          borderRadius: 8, marginTop: 8, padding: 12
-        }}>
+        <div
+          style={{
+            background: "#fff",
+            border: "1px solid #eee",
+            borderRadius: 8,
+            marginTop: 8,
+            padding: 12
+          }}
+        >
           <div style={{ display: "flex", gap: 18, marginBottom: 10 }}>
             <label>
-              <input type="radio" checked={item.radio === "with"} onChange={() => handleRadio(idx, "with")} />
-              {' '}With
+              <input
+                type="radio"
+                checked={item.radio === "with"}
+                onChange={() => handleRadio(idx, "with")}
+              />{" "}
+              With
             </label>
             <label>
-              <input type="radio" checked={item.radio === "without"} onChange={() => handleRadio(idx, "without")} />
-              {' '}Without
+              <input
+                type="radio"
+                checked={item.radio === "without"}
+                onChange={() => handleRadio(idx, "without")}
+              />{" "}
+              Without
             </label>
           </div>
           <input
@@ -4718,16 +4743,38 @@ const excelSerialToDateString = (serial) => {
             value={item.input}
             onChange={e => handleInput(idx, e.target.value)}
             placeholder={`Type for ${item.label}`}
-            style={{ width: "98%", marginBottom: 10, padding: "6px 8px", border: "1px solid #ccd", borderRadius: 6 }}
+            style={{
+              width: "98%",
+              marginBottom: 10,
+              padding: "6px 8px",
+              border: "1px solid #ccd",
+              borderRadius: 6,
+              fontSize:"12px"
+            }}
           />
           {item.values && item.values.length > 0 && (
-            <div style={{ maxHeight: 130, overflowY: "auto", background: "#fcfdff", padding: "6px 8px", borderRadius: 7 }}>
+            <div
+              style={{
+                maxHeight: 130,
+                overflowY: "auto",
+                background: "#fcfdff",
+                padding: "6px 8px",
+                fontSize:"12px",
+                borderRadius: 7
+              }}
+            >
               {item.values.map(val => (
-                <label key={val} style={{ display: "block", margin: "4px 0", fontSize: 15 }}>
-                  <input type="checkbox" checked={item.checked.includes(val)}
+                <label
+                  key={val}
+                  style={{ display: "block", margin: "4px 0", fontSize: 12 }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={item.checked.includes(val)}
                     onChange={() => handleCheckbox(idx, val)}
                     style={{ marginRight: 8 }}
-                  />{val}
+                  />
+                  {val}
                 </label>
               ))}
             </div>
@@ -4737,9 +4784,53 @@ const excelSerialToDateString = (serial) => {
     </div>
   ))}
 
-    
+  {/* Add Field Section - bottom */}
+  <button
+    style={{
+      padding: "7px 18px",
+      background: "#007bff",
+      color: "#fff",
+      border: "none",
+      borderRadius: 6,
+      fontWeight: 400,
+      marginBottom: 16,
+      cursor: "pointer",
+      marginTop: "20px",
+      width: "100%"
+    }}
+    onClick={() => setShowFieldDropdown(s => !s)}
+  >
+    + Add Field
+  </button>
 
-</div> 
+  {showFieldDropdown && (
+    <div
+      style={{
+        background: "#fff",
+        border: "1px solid #eee",
+        borderRadius: 7,
+        marginBottom: 14,
+        overflow: "auto",
+        height: "200px"
+      }}
+    >
+      {unitfields
+        .filter(f => !activeFilters.some(af => af.field === f.field))
+        .map(fieldObj => (
+          <div
+            key={fieldObj.field}
+            style={{ padding: 10, cursor: "pointer" }}
+            onClick={() => handleAddField(fieldObj)}
+          >
+            {fieldObj.label}
+          </div>
+        ))}
+    </div>
+  )}
+</div>
+
+
+
         
               <div style={{marginTop:"2px",backgroundColor:"white",height:"60px",paddingLeft:"80px",display:"flex",gap:"20px"}}>
                 <div className="lead" style={{width:"200px",padding:"10px",borderRadius:"10px"}} onClick={()=>setFlattenedUnits(activeunits)}>

@@ -3167,7 +3167,7 @@ const [project,setproject]=useState({name:"",developer_name:"",joint_venture:"",
         
 
   <div style={{fontWeight:"normal",border:"1px solid gray",borderRadius:"5px",padding:"10px",marginTop:"20px",width:"100%"}}>
-  <div className='col-md-12'><img src={inventories} style={{height:"25px",paddingRight:"10px"}}/> Inventories <span className="no-activity-flash" style={{fontSize:"12px",color:"blue"}}>({lead.add_unit.length})</span>
+  <div className='col-md-12'><img src={inventories} style={{height:"25px",paddingRight:"10px"}} alt=''/> Inventories <span className="no-activity-flash" style={{fontSize:"12px",color:"blue"}}>({lead?.add_unit?.length})</span>
         <span 
           onClick={toggleTableVisibility1} 
           style={{ 
@@ -3219,10 +3219,10 @@ const [project,setproject]=useState({name:"",developer_name:"",joint_venture:"",
       <tbody>
         {
          
-        lead.add_unit.map ((item, index) => (
+        lead?.add_unit?.map ((item, index) => (
           <StyledTableRow key={index}>
                  <StyledTableCell style={{fontSize:"12px",whiteSpace: "nowrap",cursor:"pointer" }} onClick={()=>navigate('/inventorysingleview',{state:item})}>
-              <img src='https://cdn-icons-png.freepik.com/256/7875/7875876.png?semt=ais_hybrid' style={{height:"20px"}}></img>
+              <img src='https://cdn-icons-png.freepik.com/256/7875/7875876.png?semt=ais_hybrid' style={{height:"20px"}} alt=''></img>
             <span style={{fontWeight:"bolder",fontSize:"14px",color:"#0086b3",marginLeft:"5px"}}>{item.unit_no} {item.project_name}</span><br></br>
             <span style={{marginLeft:"30px"}}>{item.block}-{item.size}</span>
             </StyledTableCell>

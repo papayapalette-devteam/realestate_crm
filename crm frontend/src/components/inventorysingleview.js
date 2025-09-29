@@ -3170,11 +3170,11 @@ const [show9, setshow9] = useState(false);
                         alt="call-icon"
                         style={{ height: '25px', marginRight: '4px' }}
                       />
-                  {lead.owner_details[0]?.mobile_no[0]}</InputLabel>
+                  {lead?.owner_details?.[0]?.mobile_no?.[0] || ""}</InputLabel>
                   <Select
                     labelId="mobile-label"
                     id="mobile-select"
-                    value={lead.owner_details[0]?.mobile_no[0]}// Always keep the mobile number as the value
+                    value={lead?.owner_details?.[0]?.mobile_no?.[0] || ""}// Always keep the mobile number as the value
                     style={{ fontSize: '14px', boxShadow: 'none' }}  // Remove outline and any box shadow
                     MenuProps={{
                       PaperProps: {
@@ -3247,7 +3247,7 @@ const [show9, setshow9] = useState(false);
 
                 <div className='col-md-4' ><label style={{color:"#B85042"}}>Category</label>
                     <p style={{fontWeight:"normal",marginTop:"-10px"}}>
-                      {lead.category.map((item)=>
+                      {lead?.category?.map((item)=>
                       (
                        <span>{item}<br></br></span>
                       ))}</p>
@@ -3281,7 +3281,7 @@ const [show9, setshow9] = useState(false);
                           <Table sx={{}} aria-label="customized table">
                           <thead style={{ position: "sticky", top: 0, zIndex: 10 }}>
                               <TableRow  style={{backgroundColor:"gray"}}>
-                                {allColumnsunitdetails.map((col) => (
+                                {allColumnsunitdetails?.map((col) => (
                                   <StyledTableCell
                                     key={col.id}
                                     style={{ fontFamily: "times new roman", cursor: 'pointer',fontSize:"12px", whiteSpace: "nowrap",lineHeight:"2px"}}>
@@ -3358,26 +3358,26 @@ const [show9, setshow9] = useState(false);
                                       <div className='row' style={{border:"1px solid gray",borderRadius:"5px",padding:"10px",margin:"10px",width:"100%"}}> 
                                                    <div className='col-md-9' style={{color:"blue",fontWeight:"normal"}}>Owner Details
                                                      <Tooltip title="Update Owner details..." arrow>
-                                                                                    <img src='https://icons.veryicon.com/png/o/miscellaneous/linear-small-icon/edit-246.png' style={{height:"30px",marginLeft:"5px",marginTop:"-5px",cursor:"pointer"}} ></img>
+                                                                                    <img src='https://icons.veryicon.com/png/o/miscellaneous/linear-small-icon/edit-246.png' style={{height:"30px",marginLeft:"5px",marginTop:"-5px",cursor:"pointer"}} alt='' ></img>
                                                                                   </Tooltip>
                                                    </div>
                                                     <div className='col-md-3'>  <Tooltip title="Change Owner..." arrow>
-                                                                                     <img src='https://static.vecteezy.com/system/resources/thumbnails/020/589/549/small/icon-with-simple-left-arrow-and-right-arrow-vector.jpg' onClick={handleShow9} style={{height:"40px",right:"5px",cursor:"pointer",marginTop:"-5px"}} ></img>
+                                                                                     <img src='https://static.vecteezy.com/system/resources/thumbnails/020/589/549/small/icon-with-simple-left-arrow-and-right-arrow-vector.jpg' onClick={handleShow9} style={{height:"40px",right:"5px",cursor:"pointer",marginTop:"-5px"}} alt='' ></img>
                                                                                    </Tooltip></div> 
                                                    <div className='col-md-12'><hr></hr></div>
                                                   
                                
                                                 {
-                                                  (Array.isArray(lead.owner_details)?lead.owner_details:
-                                                [lead.owner_details])
+                                                  (Array.isArray(lead?.owner_details)?lead.owner_details:
+                                                [lead?.owner_details])
                                                  .map((item)=>
                                                  (
                                                    <>
-                                                   <div className='col-md-12'><label style={{color:"#B85042"}}>Full Name</label><p style={{marginTop:"-10px",fontWeight:"normal"}}>{item.title} {item.first_name} {item.last_name}</p></div>
+                                                   <div className='col-md-12'><label style={{color:"#B85042"}}>Full Name</label><p style={{marginTop:"-10px",fontWeight:"normal"}}>{item?.title} {item?.first_name} {item?.last_name}</p></div>
                                
                                                    <div className='col-md-5'><label style={{color:"#B85042"}}>Contact</label>
                                                    <p style={{ marginTop: "-10px", fontWeight: "normal" }}>
-                                                       {item.mobile_no.map((contact, index) => (
+                                                       {item?.mobile_no?.map((contact, index) => (
                                                         
                                                          <span key={index} style={{fontSize:"12px"}}>  <SvgIcon component={PhoneIphoneIcon} sx={{ fontSize: 14}} />{contact}<br></br></span> 
                                                        ))}
@@ -3386,7 +3386,7 @@ const [show9, setshow9] = useState(false);
                                                    </div>
                                                    <div className='col-md-7'><label style={{color:"#B85042"}}>Email</label>
                                                    <p style={{ marginTop: "-10px", fontWeight: "normal" }}>
-                                                       {item.email.map((email, index) => (
+                                                       {item?.email?.map((email, index) => (
                                                         
                                                          <span key={index} style={{fontSize:"12px"}}>  <SvgIcon component={EmailIcon}  sx={{ fontSize: 14}}/>{email}<br></br></span> 
                                                        ))}
@@ -3396,15 +3396,15 @@ const [show9, setshow9] = useState(false);
                                
                                                      <div className='col-md-6'><label style={{color:"#B85042"}}>Address</label>
                                                    <p style={{ marginTop: "-10px", fontWeight: "normal",fontSize:"12px" }}>
-                                                    {item.location1}<br></br>
-                                                    {item.area1},{item.city1}<br></br>
-                                                    {item.state1},{item.pincode1}
+                                                    {item?.location1}<br></br>
+                                                    {item?.area1},{item?.city1}<br></br>
+                                                    {item?.state1},{item?.pincode1}
                                                      </p>
                                                      </div>
                                
                                                      <div className='col-md-6'><label style={{color:"#B85042"}}>User</label>
                                                    <p style={{ marginTop: "-10px", fontWeight: "normal",fontSize:"12px" }}>
-                                                   {item.owner.map((owner, index) => (
+                                                   {item?.owner.map((owner, index) => (
                                                         
                                                         <span key={index} style={{fontSize:"12px"}}>{owner}({item.team})<br></br></span> 
                                                       ))}
@@ -4329,7 +4329,7 @@ const [show9, setshow9] = useState(false);
       <tbody>
         {
          (Array.isArray(lead.associated_contact)?lead.associated_contact:
-         [lead.associated_contact])
+         [lead?.associated_contact])
         .map ((item, index) => (
           <StyledTableRow key={index} style={{backgroundColor:"white"}}>
            <StyledTableCell style={{fontSize:"12px",whiteSpace:"nowrap",cursor:"pointer"}} onClick={()=>navigate('/contactsingleview',{state:item})}>
@@ -4337,11 +4337,11 @@ const [show9, setshow9] = useState(false);
               <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCTOqj4skHnCbXKGTKqt5ZRudGOYolS4W8Bg&s' style={{height:"20px",paddingRight:"10px"}}></img>
                 {item?.title} {item?.first_name} {item?.last_name}</span> <span>{item?.company_name}</span><br></br>
                 <div style={{paddingLeft:"38px",color:"#0086b3"}}>
-                {item?.mobile_no.map((contact, index) => (
+                {item?.mobile_no?.map((contact, index) => (
                          <span key={index} style={{fontSize:"12px",border:"1px solid blue",borderRadius:"5px",padding:"5px",marginLeft:"2px"}}>
                           <img src='https://harrogatebusinesscentre.com/wp-content/uploads/156-1568270_blue-phone-icon-png-clipart-png-download-transparent.png' style={{height:"15px"}}></img>{contact}</span>
                       ))} <span>mobile</span> <br></br><br></br>
-                       {item?.email.map((contact, index) => (
+                       {item?.email?.map((contact, index) => (
                          <span key={index} style={{fontSize:"12px",border:"1px solid blue",borderRadius:"5px",padding:"5px",marginTop:"20px"}}>
                           <img src='https://cdn2.iconfinder.com/data/icons/basic-thin-line-color/21/19-512.png' style={{height:"15px",marginTop:"2px"}}></img>{contact}<br></br></span> 
                       ))}
@@ -4414,7 +4414,7 @@ const [show9, setshow9] = useState(false);
        <tbody>
         {
          
-        alltask.map ((item, index) => (
+        alltask?.map ((item, index) => (
           <StyledTableRow key={index} style={{backgroundColor:"white"}}>
             <StyledTableCell style={{ fontSize:"12px" }}>
               {/* {index + 1} */}<input type='checkbox'></input>
@@ -4453,7 +4453,7 @@ const [show9, setshow9] = useState(false);
        
 
           <StyledTableCell style={{ fontSize: "12px" }}>
-          {allColumnstask.map((col) => (
+          {allColumnstask?.map((col) => (
         col.id === "status" ? (
       <span>
         {item.complete === "true" ? (
@@ -4518,7 +4518,7 @@ const [show9, setshow9] = useState(false);
     <Table sx={{}} aria-label="customized table">
     <thead style={{ position: "sticky", top: 0, zIndex: 10 }}>
         <TableRow style={{backgroundColor:"gray"}}>
-          {allColumnsdocuments.map((col) => (
+          {allColumnsdocuments?.map((col) => (
             <StyledTableCell
               key={col.id}
               style={{ fontFamily: "times new roman", cursor: 'pointer',fontSize:"12px",lineHeight:"5px" }}
@@ -4531,7 +4531,7 @@ const [show9, setshow9] = useState(false);
       <tbody>
         {
         
-        documents.map ((item, index) => (
+        documents?.map ((item, index) => (
           <StyledTableRow key={index}>
             <StyledTableCell style={{ fontFamily: "times new roman",fontSize:"12px"}}>
               {index + 1}
@@ -4633,11 +4633,11 @@ fontWeight:"lighter"
               <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCTOqj4skHnCbXKGTKqt5ZRudGOYolS4W8Bg&s' style={{height:"20px",paddingRight:"10px"}}></img>
                 {item.title} {item.first_name} {item.last_name}</span> <span>{item.company_name}</span><br></br>
                 <div style={{paddingLeft:"38px",color:"#0086b3"}}>
-                {item.mobile_no.map((contact, index) => (
+                {item?.mobile_no?.map((contact, index) => (
                          <span key={index} style={{fontSize:"12px",border:"1px solid blue",borderRadius:"5px",padding:"5px",marginLeft:"2px"}}>
                           <img src='https://harrogatebusinesscentre.com/wp-content/uploads/156-1568270_blue-phone-icon-png-clipart-png-download-transparent.png' style={{height:"15px"}}></img>{contact}</span>
                       ))} <span>mobile</span> <br></br><br></br>
-                       {item.email.map((contact, index) => (
+                       {item?.email?.map((contact, index) => (
                          <span key={index} style={{fontSize:"12px",border:"1px solid blue",borderRadius:"5px",padding:"5px",marginTop:"20px"}}>
                           <img src='https://cdn2.iconfinder.com/data/icons/basic-thin-line-color/21/19-512.png' style={{height:"15px",marginTop:"2px"}}></img>{contact}<br></br></span> 
                       ))}
@@ -4703,11 +4703,11 @@ fontWeight:"lighter"
               <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCTOqj4skHnCbXKGTKqt5ZRudGOYolS4W8Bg&s' style={{height:"20px",paddingRight:"10px"}}></img>
                 {item.title} {item.first_name} {item.last_name}</span> <span>{item.company_name}</span><br></br>
                 <div style={{paddingLeft:"38px",color:"#0086b3"}}>
-                {item.mobile_no.map((contact, index) => (
+                {item?.mobile_no?.map((contact, index) => (
                          <span key={index} style={{fontSize:"12px",border:"1px solid blue",borderRadius:"5px",padding:"5px",marginLeft:"2px"}}>
                           <img src='https://harrogatebusinesscentre.com/wp-content/uploads/156-1568270_blue-phone-icon-png-clipart-png-download-transparent.png' style={{height:"15px"}}></img>{contact}</span>
                       ))} <span>mobile</span> <br></br><br></br>
-                       {item.email.map((contact, index) => (
+                       {item?.email?.map((contact, index) => (
                          <span key={index} style={{fontSize:"12px",border:"1px solid blue",borderRadius:"5px",padding:"5px",marginTop:"20px"}}>
                           <img src='https://cdn2.iconfinder.com/data/icons/basic-thin-line-color/21/19-512.png' style={{height:"15px",marginTop:"2px"}}></img>{contact}<br></br></span> 
                       ))}
@@ -4755,7 +4755,7 @@ fontWeight:"lighter"
                         <div className="col-md-4"><label className="labels">Status</label><select className="form-control form-control-sm" required="true" onChange={(e)=>setactivity({...activity,status:e.target.value})} >
                          <option>---Select---</option>
                          {
-                            status.map(item=>
+                            status?.map(item=>
                                 (
                                     <option>{item}</option>
                                 )
@@ -4771,7 +4771,7 @@ fontWeight:"lighter"
                 <div className="col-md-4"><label className="labels" style={{width:"120%"}}>Select Intersted Inventory(If any)</label><select className="form-control form-control-sm" required="true" onChange={(e)=>setactivity({...activity,intrested_inventory:e.target.value})}>
                     <option>---Select---</option>
                     {
-                          sitevisitdata1.map((item)=>
+                          sitevisitdata1?.map((item)=>
                           (
                             <option>{item}</option>
                           ))
@@ -4793,7 +4793,7 @@ fontWeight:"lighter"
                         >
                               <option>---Select---</option>
                             {
-                              outcome.map((item)=>
+                              outcome?.map((item)=>
                               (
                                 <option>{item}</option>
                               ))
@@ -4913,7 +4913,7 @@ fontWeight:"lighter"
                     
                     <option>---Select---</option>
                         {
-                          sitevisitdata1.map((item)=>
+                          sitevisitdata1?.map((item)=>
                           (
                             <option>{item}</option>
                           ))
@@ -5095,7 +5095,7 @@ fontWeight:"lighter"
                   onChange={handlesiteprojectchange}
                   renderValue={(selected) => selected.join(', ')}
               >
-                  {sitevisit.project.map((name) => (
+                  {sitevisit?.project?.map((name) => (
                       <MenuItem key={name} value={name}>
                           <Checkbox checked={siteprojects.indexOf(name) > -1} />
                           <ListItemText primary={name} />
@@ -5112,7 +5112,7 @@ fontWeight:"lighter"
           multiple
           value={allblock}  // Value contains the full block.block-project combinations
           onChange={handleallblockchange}  // Handle the change when blocks are selected/deselected
-          renderValue={(selected) => selected.map(item => item.split('-')[0]).join(', ')}  // Display only block.block in the selected value
+          renderValue={(selected) => selected?.map(item => item.split('-')[0]).join(', ')}  // Display only block.block in the selected value
           >
           {alldealblocks
           .filter((value, index, self) =>
@@ -5148,7 +5148,7 @@ fontWeight:"lighter"
           multiple
           value={allunit1} // Holds selected units
           onChange={handleallunitschange1} // Handle changes for unit selection
-          renderValue={(selected) => selected.map(item => item.split('-')[0]).join(', ')} // Display only the unit_number part
+          renderValue={(selected) => selected?.map(item => item.split('-')[0]).join(', ')} // Display only the unit_number part
           >
           {alldealunits
           .filter((value, index, self) =>
@@ -5299,7 +5299,7 @@ fontWeight:"lighter"
                              <div className="col-md-12" style={{display:"flex"}} >
                              <div className="col-md-12" style={{ display: "flex", flexWrap: "wrap" }}>
                                {
-                                 project.category.map((type) => (
+                                 project?.category?.map((type) => (
                                    <div className="col-md-3" key={type}>
                                      <button 
                                        className="form-control form-control-sm"
@@ -5318,7 +5318,7 @@ fontWeight:"lighter"
                              <option>{units.block}</option>
                              <option>choose</option>
                              {
-                                         project.add_block.map((item)=>
+                                         project?.add_block?.map((item)=>
                                          (
                                            <option>{item.block_name}</option>
                                          ))

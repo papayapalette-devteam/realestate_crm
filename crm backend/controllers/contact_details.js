@@ -122,6 +122,22 @@ const add_contact = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
         }
+
+          const view_contact_for_editproject=async(req,res)=>
+          {
+               try {
+                
+            const allcontact= await addcontact.find().select('_id mobile_no');
+          
+            res.status(200).json({
+              message: "Contacts fetched successfully",
+              allcontact:allcontact
+            });
+          } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Server error" });
+          }
+        }
         
 
         // /viewcontact route with search + pagination
@@ -684,4 +700,4 @@ const searchcontact=async (req, res) => {
     module.exports={add_contact,view_contact,view_contact_Byid,remove_contact,update_contact,
                     view_contact_Byemail,view_contact_Bymobile,view_contact_Bytags,view_contact_Bycompany,
                 view_contact_ByName,update_contactsingledocument,delete_contactsingledocument,add_contactdocument,addbulkcontacts,
-            update_contactforbulkupload,searchcontact};
+            update_contactforbulkupload,searchcontact,view_contact_for_editproject};

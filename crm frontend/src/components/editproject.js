@@ -3042,7 +3042,9 @@ const checkForDuplicates = async (contacts) => {
     );
 
     // Fetch all contacts once
-    const { data } = await api.get("viewcontact");
+    const { data } = await api.get("viewcontact-for-edit-project");
+    console.log(data);
+    
     const contactList = data.allcontact || [];
 
     // Build a lookup: mobile_no → contactId
