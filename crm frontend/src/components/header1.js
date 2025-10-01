@@ -83,56 +83,86 @@ function Header1() {
 			  
             }}
           >
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, lineHeight: "1",}}>
-              <li>
-                <Link to={"/addcontact"} className="dropdown-item">
-                  <img
-                    src="https://icons.veryicon.com/png/o/object/life-icon-8/add-a-contact-4.png"
-                    style={{ height: "15px", marginRight: "10px" }}
-                    alt="Contact"
-                  />
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link to={"/addcompany"} className="dropdown-item">
-                  <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0YDoMUcwmWBpTsarrB_1BqT54AR0xldyQ3Q&s"
-                    style={{ height: "15px", marginRight: "10px" }}
-                    alt="Add Company"
-                  />
-                  Add Company
-                </Link>
-              </li>
-              <li>
-                <Link to={"/leadinfo"} className="dropdown-item">
-                  <img src={lead} style={{ height: "15px", marginRight: "10px" }} alt="Lead" />
-                  Lead
-                </Link>
-              </li>
-              <li>
-                <Link to={"/project"} className="dropdown-item">
-                  <img src={project} style={{ height: "15px", marginRight: "10px" }} alt="Project" />
-                  Project
-                </Link>
-              </li>
-              <li>
-                <Link to={"/deal"} className="dropdown-item">
-                  <img src={deal} style={{ height: "15px", marginRight: "10px" }} alt="Deal" />
-                  Deal
-                </Link>
-              </li>
-              <li>
-                <Link to={"/tasksform"} className="dropdown-item">
-                  <img
-                    src="https://static.thenounproject.com/png/396666-200.png"
-                    style={{ height: "15px", marginRight: "10px" }}
-                    alt="Add Tasks"
-                  />
-                  Add Tasks
-                </Link>
-              </li>
-            </ul>
+           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+  <li>
+    <Link
+      to={"/addcontact"}
+      className="dropdown-item"
+      style={{ display: "flex", alignItems: "center", padding: "5px 10px" }}
+    >
+      <img
+        src="https://icons.veryicon.com/png/o/object/life-icon-8/add-a-contact-4.png"
+        style={{ height: "18px", marginRight: "10px" }}
+        alt="Contact"
+      />
+      Contact
+    </Link>
+  </li>
+
+  <li>
+    <Link
+      to={"/addcompany"}
+      className="dropdown-item"
+      style={{ display: "flex", alignItems: "center", padding: "5px 10px" }}
+    >
+      <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0YDoMUcwmWBpTsarrB_1BqT54AR0xldyQ3Q&s"
+        style={{ height: "18px", marginRight: "10px" }}
+        alt="Add Company"
+      />
+      Add Company
+    </Link>
+  </li>
+
+  <li>
+    <Link
+      to={"/leadinfo"}
+      className="dropdown-item"
+      style={{ display: "flex", alignItems: "center", padding: "5px 10px" }}
+    >
+      <img src={lead} style={{ height: "18px", marginRight: "10px" }} alt="Lead" />
+      Lead
+    </Link>
+  </li>
+
+  <li>
+    <Link
+      to={"/project"}
+      className="dropdown-item"
+      style={{ display: "flex", alignItems: "center", padding: "5px 10px" }}
+    >
+      <img src={project} style={{ height: "18px", marginRight: "10px" }} alt="Project" />
+      Project
+    </Link>
+  </li>
+
+  <li>
+    <Link
+      to={"/deal"}
+      className="dropdown-item"
+      style={{ display: "flex", alignItems: "center", padding: "5px 10px" }}
+    >
+      <img src={deal} style={{ height: "18px", marginRight: "10px" }} alt="Deal" />
+      Deal
+    </Link>
+  </li>
+
+  <li>
+    <Link
+      to={"/tasksform"}
+      className="dropdown-item"
+      style={{ display: "flex", alignItems: "center", padding: "5px 10px" }}
+    >
+      <img
+        src="https://static.thenounproject.com/png/396666-200.png"
+        style={{ height: "18px", marginRight: "10px" }}
+        alt="Add Tasks"
+      />
+      Add Tasks
+    </Link>
+  </li>
+</ul>
+
           </div>
         )}
       </div>

@@ -394,17 +394,14 @@ const handleallunitschange = (event) => {
                                                 icon:"success",
                                                 title: '🎉 Success!',
                                                 text:"Deal created successfully...",
-                                                html: `Deal created successfully...<br></br>
-                                        <img src="https://cdn.vectorstock.com/i/500p/63/50/thumbs-up-smiley-face-icon-vector-10176350.jpg"
-                                        alt="Thumbs up" 
-                                              width="80" 
-                                              style="margin-bottom: 0px;"/>`,
+                                                html: `Deal created successfully...`,
+                                      
                                         width: '400px', // makes it small
                                         padding: '1.2em',
                                                 showConfirmButton: true,
                                               }).then((result) => {
                                               if (result.isConfirmed) {
-                                                navigate('/dealdetails');
+                                                navigate('/alldeals');
                                                 }
                                               })
                                  }
@@ -415,7 +412,7 @@ const handleallunitschange = (event) => {
                               html: `
                                 <img src="https://i.pinimg.com/originals/53/3f/f7/533ff77ef582abbfa00ccf9080137304.gif"
                                     alt="Sad face" 
-                                    width="80" 
+                                    width="100" 
                                     style="margin-bottom: 0px;" />
                                 <p style="font-size: 14px; margin: 0;">
                                   ${error.response?.data?.message || 'Something went wrong. Please try again.'}

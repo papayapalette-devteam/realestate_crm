@@ -101,7 +101,7 @@ function Projectform() {
               showConfirmButton: true,
             }).then((result) => {
             if (result.isConfirmed) {
-              navigate('/dealdetails');
+              navigate('/allprojects');
               }
             })
           }

@@ -3756,7 +3756,7 @@ const handleTimeChangemail = (e) => {
             {renderPageNumbers()}
             </div>  */}
         
-            <div style={{display:"flex",fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"60%",position:"absolute"}}>
+            <div style={{display:"flex",fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"50%",position:"absolute"}}>
       <div style={{height:"10px"}}>
        <Box
       sx={{
