@@ -88,40 +88,82 @@ const add_contact = async (req, res) => {
     }
 };
 
-    const view_contact=async(req,res)=>
-        {
-          try {
-            // console.log(req.query);
-            
+   const view_contact = async (req, res) => {
+  try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+  
     
-    // Fetch contacts with pagination and sorting by createdAt descending
-    // const allcontact=await addcontact.find()
-    const contacts = await addcontact.find()
+    // 🔹 Parse filters from query
+    let activeFilters = [];
+    if (req.query.activeFilters) {
+      try {
+        activeFilters = JSON.parse(req.query.activeFilters);
+      } catch (err) {
+        console.error("Invalid activeFilters JSON:", err);
+      }
+    }
+
+    // 🔹 Build MongoDB match query
+    let matchStage = {};
+
+    if (activeFilters.length > 0) {
+      activeFilters.forEach((filter) => {
+        const field = filter.field;
+
+        // ✅ Case 1: Checkbox filters
+        if (Array.isArray(filter.checked) && filter.checked.length > 0) {
+          const cleanValues = filter.checked.filter(
+            (v) => v !== null && v !== undefined && v !== ""
+          );
+
+          if (cleanValues.length > 0) {
+            if (filter.radio === "with") {
+              matchStage[field] = { $in: cleanValues };
+            } else if (filter.radio === "without") {
+              matchStage[field] = { $nin: cleanValues };
+            }
+          }
+        }
+
+        // ✅ Case 2: Text input filters
+        if (filter.input && filter.input.trim() !== "") {
+          const regex = new RegExp(filter.input.trim(), "i");
+          if (filter.radio === "with") {
+            matchStage[field] = regex;
+          } else if (filter.radio === "without") {
+            matchStage[field] = { $not: regex };
+          }
+        }
+      });
+    }
+
+    // 🔹 Fetch contacts with filters + pagination
+    const contacts = await addcontact
+      .find(matchStage)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit)
-      // .select('name phone email createdAt');
+      .limit(limit);
 
-    // Get total count of documents to calculate total pages on frontend
-    const total = await addcontact.countDocuments();
+    // 🔹 Count total for pagination
+    const total = await addcontact.countDocuments(matchStage);
+    const totalPages = Math.ceil(total / limit);
 
     res.status(200).json({
       message: "Contacts fetched successfully",
       contact: contacts,
       total,
       page,
-      totalPages: Math.ceil(total / limit),
-      // allcontact:allcontact
+      totalPages,
     });
   } catch (error) {
-    console.error(error);
+    console.error("view_contact error:", error);
     res.status(500).json({ message: "Server error" });
   }
-        }
+};
+
 
           const view_contact_for_editproject=async(req,res)=>
           {

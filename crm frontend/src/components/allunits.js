@@ -1035,7 +1035,7 @@ function Allunits() {
 
     const resp1 = await api.get(`viewallunits?${params.toString()}`);
 
-    console.log(resp1);
+
 
     settotalinventories(resp1.data.total);
     setFlattenedUnits(resp1.data.units);
@@ -1048,13 +1048,7 @@ function Allunits() {
 
 
 
-//  useEffect(() => {
-//     fetchunitsdata(currentPage2, itemsPerPage2);
 
-  
-//   }, [currentPage2, itemsPerPage2]);
-
-          console.log(flattenedUnits);
           
  // ===================================search deal via search box start========================================================
 
@@ -4357,16 +4351,11 @@ React.useEffect(() => {
                   }, 500); // duration should match animation time
                 };
   
-                const handleResetFiltersunit = () => {
-                setSelectedunitcategory([]);        // Clear profession selections
-                setselectfieldunit({});                // Clear custom field filters
-              };
+               
   
   
           
-    const [selectedunitcategory, setSelectedunitcategory] = useState([]);
-      const filterRefunit = useRef();
-    const [selectfieldunit, setselectfieldunit] = useState([]);
+  
 
 const unitfields = [
   { label: 'City', field: 'ucity', values: allcitis },
@@ -4466,7 +4455,7 @@ function handleCheckbox(idx, val) {
   );
 }
 
-console.log(activeFilters);
+
 
       
 // useEffect(() => {

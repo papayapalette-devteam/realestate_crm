@@ -32,6 +32,7 @@ import * as XLSX from 'xlsx';
 import Lottie from "lottie-react";
 import SidebarWidgetLoader from "../components/loader2";
 import UniqueLoader from "./loader";
+import FilterListIcon from "@mui/icons-material/FilterList";
 
 
 function Leadfetch() {
@@ -125,12 +126,25 @@ const[countall,setcountall]=useState('')
 const[allleaddataforsearch,setallleaddataforsearch]=useState([])
   const[data,setdata]=useState([]);
   const[totalpages,settotalpages]=useState("")
-  const fetchdata=async(page,limit)=>
+
+
+  const fetchdata=async(page,limit,activeFilters=[])=>
   {
     
     try {
+
+       const params = new URLSearchParams();
+            params.append("page", page);
+            params.append("limit", limit);
+
+            if (activeFilters.length > 0) {
+          params.append("activeFilters", JSON.stringify(activeFilters));
+        }
+
       setIsLoading(true)
-      const resp=await api.get(`leadinfo?page=${page}&limit=${limit}`)
+      const resp=await api.get(`leadinfo?${params.toString()}`)
+  
+      
       const all=(resp.data.pagelead)
       setdata(all)
       setallleaddataforsearch(all)
@@ -153,159 +167,149 @@ const[allleaddataforsearch,setallleaddataforsearch]=useState([])
   // ===============================================filter code start==================================================================
   
         const [show, setShow] = useState(false);
-                  const [isClosing, setIsClosing] = useState(false);
-                  const toastRef = useRef(null);
-  
-                      const toggleToast = async() => {
-                        setShow(true);
-                      };
-  
-  
-                const handleCancel = () => {
-                  setIsClosing(true); // trigger slide-out
-                  setTimeout(() => {
-                    setShow(false);     // hide the toast completely
-                    setIsClosing(false); // reset for next open
-                  }, 500); // duration should match animation time
-                };
-  
-                const handleResetFilters = () => {
-                setSelectedProfessions([]);        // Clear profession selections
-                setselectfield({});                // Clear custom field filters
-              };
-  
-  
-  const professions = [
-    'Self Employed', 
-    'Business Man', 
-    'Govt. Employee', 
-    'Private Job', 
-    'Retired', 
-    'Student', 
-    'House Wife'
-  ];
-  
+                      const [isClosing, setIsClosing] = useState(false);
+                      const toastRef = useRef(null);
+      
+                          const toggleToast = async() => {
+                            setShow(true);
+                          };
+      
+      
+                    const handleCancel = () => {
+                      setIsClosing(true); // trigger slide-out
+                      setTimeout(() => {
+                        setShow(false);     // hide the toast completely
+                        setIsClosing(false); // reset for next open
+                      }, 500); // duration should match animation time
+                    };
+      
+                
+      
+      
+      
+      
+        const [showDropdown, setShowDropdown] = useState(false);
+      
+       
+          const filterRef = useRef();
+      
+       
+      
+      
+      
+        useEffect(() => {
+          const handleClickOutside = (event) => {
+            if (filterRef.current && !filterRef.current.contains(event.target)) {
+              setShowDropdown(false); // close the filter box
+            }
+          };
+      
+          document.addEventListener("mousedown", handleClickOutside);
+          return () => document.removeEventListener("mousedown", handleClickOutside);
+        }, []);
+      
+       
+      
+       
+        const contactfields = [
+          { label: 'First Name', field: 'first_name' },
+          { label: 'Last Name', field: 'last_name' },
+          { label: 'Mobile No.', field: 'mobile_no' },
+          { label: 'Email Id', field: 'email' },
+          { label: 'Tags', field: 'tags' },
+          { label: 'Source', field: 'source' },
+          { label: 'Owner', field: 'owner' },
+          { label: 'City', field: 'city1' },
+          { label: 'State', field: 'state1' },
+          { label: 'Pincode', field: 'pincode1' },
+          { label: 'From Date', field: 'from_date' }, // Added field for from date
+          { label: 'To Date', field: 'to_date' }
+        ];
           
-    const [selectedProfessions, setSelectedProfessions] = useState([]);
-    const [showDropdown, setShowDropdown] = useState(false);
-    const [showDropdown1, setShowDropdown1] = useState(false);
-   
-      const filterRef = useRef();
-  
-      const [activeTab, setActiveTab] = useState('profession');
-  
-  
-  const enhancedInputStyle = {
-    display: 'block',
-    marginTop: '6px',
-    marginLeft: '20px',
-    width: '85%',
-    padding: '8px 10px',
-    border: '1px solid #ccc',
-    borderRadius: '6px',
-    fontSize: '14px',
-    transition: '0.3s ease',
-    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)',
-    background: '#fff',
-    color: '#333'
-  };
-  
-  
-  
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (filterRef.current && !filterRef.current.contains(event.target)) {
-          setShowDropdown(false); // close the filter box
-        }
-      };
-  
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-  
-    const handlefilterCheckboxChange = (profession) => {
-      const updatedSelections = selectedProfessions.includes(profession)
-        ? selectedProfessions.filter((p) => p !== profession)
-        : [...selectedProfessions, profession];
-      setSelectedProfessions(updatedSelections);
-      
-      // Filter the data based on selected professions
-     const newFilteredData = allleaddataforsearch.filter((item) =>
-        updatedSelections.length === 0 || updatedSelections.includes(item.profession_category)
-      );
-      setdata(newFilteredData);
-    };
-  
-   
-    const contactfields = [
-      { label: 'First Name', field: 'first_name' },
-      { label: 'Last Name', field: 'last_name' },
-      { label: 'Mobile No.', field: 'mobile_no' },
-      { label: 'Email Id', field: 'email' },
-      { label: 'Tags', field: 'tags' },
-      { label: 'Source', field: 'source' },
-      { label: 'Owner', field: 'owner' },
-      { label: 'City', field: 'city1' },
-      { label: 'State', field: 'state1' },
-      { label: 'Pincode', field: 'pincode1' },
-      { label: 'From Date', field: 'from_date' }, // Added field for from date
-      { label: 'To Date', field: 'to_date' }
-    ];
-
-      const sourceList = [ "Friends","Relative","Website", "Walkin","Magicbricks","Common Floor ","Housing", "99acre","Olx","Square Yard" ,"Real Estate, India","Refrence","Facebook", "Instagram", "Linkdin","Old Client" ,"Google ","Whatsapp"]; 
- const owneroption=[ "Suraj"," Suresh Kumar","Ramesh Singh","Maanav Sharma",  "Sukram"];
-    
-  
-    const [showDropdown2, setShowDropdown2] = useState(false);
-    const [selectfield, setselectfield] = useState([]);
-  
-     // Handle checkbox toggle
-     const handlefilterCheckboxChange1 = (field) => {
-      setselectfield(prev => {
-        if (prev.hasOwnProperty(field)) {
-          // Remove the field
-          const { [field]: _, ...rest } = prev;
-          return rest;
-        } else {
-          // Add the field with empty value
-          return { ...prev, [field]: '' };
-        }
-      });
-    };
-  
-      // Handle input change for filtering values
-      const handleFieldInputChange = (field, value) => {
-        setselectfield((prev) => ({
-          ...prev,
-          [field]: value,
-        }));
-      };
-  
-  
-      useEffect(() => {
-        const formatDate = (date) => new Date(date).toISOString().split("T")[0];
-      
-        const filtered = allleaddataforsearch.filter(contact => {
-          const matchesTextFilters = Object.keys(selectfield).every(field => {
-            if (field === 'from_date' || field === 'to_date') return true;
-            const value = selectfield[field]?.toLowerCase();
-            const contactValue = contact[field]?.toString().toLowerCase() || '';
-            return !value || contactValue.includes(value);
-          });
-      
-          const contactDate = formatDate(contact.createdAt);
-          const from = selectfield.from_date;
-          const to = selectfield.to_date;
-      
-          const isAfterFromDate = !from || contactDate >= from;
-          const isBeforeToDate = !to || contactDate <= to;
-      
-          return matchesTextFilters && isAfterFromDate && isBeforeToDate;
-        });
-      
-        setdata(filtered);
-      }, [selectfield, allleaddataforsearch]);
-      
+        
+          const defaultFields = [
+            contactfields.find(f => f.field === 'tags'),
+            contactfields.find(f => f.field === 'source')
+          ];
+          
+          const [showFieldDropdown, setShowFieldDropdown] = useState(false);
+           const [activeFilters, setActiveFilters] = useState(
+              defaultFields.map(f => ({
+                ...f,
+                radio: "with",
+                input: "",
+                checked: [],
+              }))
+            );
+          
+          
+             // Open filter panel, regenerating the defaults (with current city list)
+            function openFilterWithDefaults() {
+              setActiveFilters(
+                defaultFields.map((f) => ({
+                  ...f,
+                  radio: "with",
+                  input: "",
+                  checked: []
+                }))
+              );
+              setShow(true);
+            }
+          
+          
+          const [openDropdownIdx, setOpenDropdownIdx] = useState(null);
+          
+          // Add new filter row
+          function handleAddField(fieldObj) {
+            setActiveFilters([
+              ...activeFilters,
+              {
+                ...fieldObj,
+                radio: 'with',
+                input: '',
+                checked: [],
+              }
+            ]);
+            setShowFieldDropdown(false);
+            setOpenDropdownIdx(activeFilters.length);
+          }
+          
+          // Remove filter
+          function handleRemoveFilter(idx) {
+            setActiveFilters(activeFilters => activeFilters.filter((_, i) => i !== idx));
+            if (openDropdownIdx === idx) setOpenDropdownIdx(null);
+          }
+          
+          // Toggle dropdown for a row
+          function handleToggleDropdown(idx) {
+            setOpenDropdownIdx(openDropdownIdx === idx ? null : idx);
+          }
+          
+          // Radio/checkbox/text handlers:
+          function handleRadio(idx, value) {
+            setActiveFilters(filters =>
+              filters.map((f,i) => i === idx ? { ...f, radio: value } : f)
+            );
+          }
+          function handleInput(idx, value) {
+            setActiveFilters(filters =>
+              filters.map((f,i) => i === idx ? { ...f, input: value } : f)
+            );
+          }
+          function handleCheckbox(idx, val) {
+            setActiveFilters(filters =>
+              filters.map((f,i) => {
+                if (i !== idx) return f;
+                const checked = f.checked.includes(val)
+                  ? f.checked.filter(v => v !== val)
+                  : [...f.checked, val];
+                return { ...f, checked };
+              })
+            );
+          }
+          
+          
+        
       
       
       
@@ -661,16 +665,24 @@ useEffect(()=>
     );
   };
 
-  useEffect(() => {
-     fetchdata(currentPage, itemsPerPage);
- 
-     // If current page moves outside window, adjust windowStartPage
-     if (currentPage < windowStartPage) {
-       setWindowStartPage(currentPage);
-     } else if (currentPage >= windowStartPage + maxPageNumbersToShow) {
-       setWindowStartPage(currentPage - maxPageNumbersToShow + 1);
-     }
-   }, [currentPage, itemsPerPage]);
+   useEffect(() => {
+      // fetchdata(currentPage, itemsPerPage);
+  
+      // If current page moves outside window, adjust windowStartPage
+      if (currentPage < windowStartPage) {
+        setWindowStartPage(currentPage);
+      } else if (currentPage >= windowStartPage + maxPageNumbersToShow) {
+        setWindowStartPage(currentPage - maxPageNumbersToShow + 1);
+      }
+        const hasFilters = activeFilters && activeFilters.length > 0;
+         if (hasFilters) {
+  
+      fetchdata(currentPage, itemsPerPage, activeFilters);
+    } else {
+      // No filters, no search → fetch all
+      fetchdata(currentPage, itemsPerPage);
+    }
+    }, [currentPage, itemsPerPage,activeFilters]);
     /*-------------------pagination code end---------------------------pagination code end------------------------------------pagination code end*/
     
     
@@ -5273,350 +5285,138 @@ const [isHoveringsendmail, setIsHoveringsendmail] = useState(false);
               
          
      
-            <Tooltip title="Filter here.." arrow>
-             <div   style={{marginLeft:"70%",border:"none",cursor:"pointer"}}>
-              <button
-                // onClick={() => setShowDropdown(!showDropdown)}
-                  onClick={toggleToast}
-                style={{
-                  position: "relative",
-                  marginLeft: '75%',
-                  width: "50px",
-                  padding: '8px',
-                  backgroundColor: '#6366f1', // modern indigo color
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  transition: 'all 0.3s ease',
-                }}
-              >
-                {/* Funnel Icon - SVG (modern look) */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24"
-                  width="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M3 4h18" />
-                  <path d="M6 8h12" />
-                  <path d="M10 12h4" />
-                  <path d="M12 16v4" />
-                </svg>
-              </button>
-
-              </div>
-             </Tooltip>
-
-             <div
-            ref={toastRef}
-            className={`feedback-toast ${show ? (isClosing ? 'hide' : 'show') : ''}`}
-            style={{ zIndex: 9999 }}
-          >
-            <div
-              ref={filterRef}
-              style={{
-                position: 'absolute',
-                top: '100px',
-                right: '25px',
-                width: '380px',
-                background: 'linear-gradient(135deg, #ffffff, #f7f9fb)',
-                border: '1px solid #e0e0e0',
-                borderRadius: '16px',
-                padding: 0,
-                boxShadow: '0 12px 30px rgba(0, 0, 0, 0.15)',
-                zIndex: 1000,
-                fontFamily: 'Segoe UI, sans-serif',
-                overflow: 'hidden',
-              }}
+          <Tooltip title="Filter Leads..." arrow>
+            <button
+              onClick={toggleToast}
+              className="relative ml-[75%] w-[50px] p-2  text-black  hover:bg-indigo-600 transition-all"
             >
-              {/* Header */}
-              <h3 style={{
-                fontSize: '16px',
-                margin: 0,
-                padding: '16px',
-                textAlign: 'center',
-                background: 'linear-gradient(to right, #00b4db, #0083b0)',
-                color: '#fff',
-                borderBottom: '1px solid #ddd',
-                letterSpacing: '0.5px'
-              }}>
-                🔍 Filter Leads
-              </h3>
+              <FilterListIcon style={{ fontSize: 22 }} />
+            </button>
+          </Tooltip>
 
-              {/* Tab Navigation */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                background: '#f2f4f7',
-                borderBottom: '1px solid #ccc'
-              }}>
-                {[
-                  { id: 'profession', label: '📌 Profession' },
-                  { id: 'custom', label: '📋 Custom Fields' }
-                ].map(tab => (
-                  <div
-                    key={tab.id}
-                    style={{
-                      flex: 1,
-                      textAlign: 'center',
-                      cursor: 'pointer',
-                      padding: '10px 0',
-                      fontWeight: 'bold',
-                      color: activeTab === tab.id ? '#007bff' : '#555',
-                      background: activeTab === tab.id ? '#fff' : '#f2f4f7',
-                      borderBottom: activeTab === tab.id ? '3px solid #007bff' : '3px solid transparent',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onClick={() => setActiveTab(tab.id)}
-                  >
-                    {tab.label}
-                  </div>
-                ))}
-              </div>
 
-              {/* Tab Content */}
-              <div style={{ padding: '20px', maxHeight: '400px', overflowY: 'auto' }}>
-                {/* Profession Tab */}
-                {activeTab === 'profession' && (
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '12px',
-                  }}>
-                    {professions.map((profession) => (
-                      <label
-                        key={profession}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          background: '#fff',
-                          border: '1px solid #ddd',
-                          borderRadius: '10px',
-                          padding: '10px 14px',
-                          fontSize: '14px',
-                          color: '#333',
-                          cursor: 'pointer',
-                          boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-                          transition: 'all 0.3s ease',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = '#f0f8ff';
-                          e.currentTarget.style.borderColor = '#007bff';
-                          e.currentTarget.style.boxShadow = '0 3px 8px rgba(0, 123, 255, 0.2)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = '#fff';
-                          e.currentTarget.style.borderColor = '#ddd';
-                          e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.06)';
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedProfessions.includes(profession)}
-                          onChange={() => handlefilterCheckboxChange(profession)}
-                          style={{
-                            marginRight: '10px',
-                            accentColor: '#007bff'
-                          }}
-                        />
-                        {profession}
-                      </label>
-                    ))}
-                  </div>
+{/*================================= filter=============================================== */}
+          <div
+  ref={filterRef}
+  className={`feedback-toast ${show ? (isClosing ? "hide" : "show") : ""} 
+    mt-2 w-[300px] h-screen bg-white rounded-xl shadow-lg p-3 
+    overflow-y-auto overflow-x-auto`}
+>
+  {/* Header */}
+  <h3
+    className="text-sm m-0 px-4 py-3 text-left text-black border-b border-gray-300 tracking-wide flex justify-between items-center"
+  >
+    🔍 Filter Lead
+    <button
+    onClick={handleCancel}
+      className="ml-auto bg-white px-3 py-1 text-sm border-0 text-red-500 hover:text-red-700"
+    >
+      ❌
+    </button>
+  </h3>
 
-                )}
+  {/* Active Filter Rows */}
+  {activeFilters.map((item, idx) => (
+    <div
+      key={item.field}
+      className="bg-[#f8f9fb] rounded-lg mb-3 p-3"
+    >
+      <div className="flex items-center justify-between">
+        <p className="m-0 font-normal text-xs">{item.label}</p>
+        <div className="flex items-center gap-2">
+          <button
+            className="bg-transparent border-0 cursor-pointer text-xs"
+            onClick={() => handleToggleDropdown(idx)}
+          >
+            {openDropdownIdx === idx ? "▲" : "▼"}
+          </button>
+          <button
+            className="bg-transparent border-0 text-red-500 text-lg font-normal cursor-pointer"
+            onClick={() => handleRemoveFilter(idx)}
+          >
+            ×
+          </button>
+        </div>
+      </div>
 
-                {/* Custom Fields Tab */}
-                {activeTab === 'custom' && (
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr',
-                    gap: '14px',
-                  }}>
-                    {contactfields.map(({ label, field }) => (
-                      <div
-                        key={field}
-                        style={{
-                          background: '#fff',
-                          border: '1px solid #ddd',
-                          borderRadius: '10px',
-                          padding: '14px 16px',
-                          boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-                          transition: 'all 0.3s ease',
-                          position: 'relative'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = '#f9fdfc';
-                          e.currentTarget.style.borderColor = '#28a745';
-                          e.currentTarget.style.boxShadow = '0 3px 10px rgba(40,167,69,0.2)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = '#fff';
-                          e.currentTarget.style.borderColor = '#ddd';
-                          e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.06)';
-                        }}
-                      >
-                        <label style={{
-                          fontSize: '14px',
-                          color: '#333',
-                          fontWeight: 500,
-                          display: 'flex',
-                          alignItems: 'center',
-                          marginBottom: field in selectfield ? '10px' : 0
-                        }}>
-                          <input
-                            type="checkbox"
-                            checked={field in selectfield}
-                            onChange={() => handlefilterCheckboxChange1(field)}
-                            style={{
-                              marginRight: '10px',
-                              accentColor: '#28a745'
-                            }}
-                          />
-                          {label}
-                        </label>
-                        
-                            
-                        {field in selectfield && (
-                          
-                            field === 'owner' ? (
-           <div style={{ marginTop: '10px',
-             display: 'grid',
-             gap:'12px',
-             gridTemplateColumns: '1fr 1fr', // 2 columns
-            }}>
-          {owneroption.map((item) => (
-           <label key={item} style={{ display: 'block',
-            marginBottom: '4px', 
-            fontSize: '13px',
-            display: 'flex',
-                alignItems: 'center',
-                background: '#fff',
-                border: '1px solid #ddd',
-                borderRadius: '10px',
-                padding: '10px 14px',
-                fontSize: '14px',
-                color: '#333',
-                cursor: 'pointer',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-                transition: 'all 0.3s ease', }}>
-           <input
-            type="checkbox"
-           checked={selectfield[field]?.includes(item)}
-              onChange={() =>handleFieldInputChange(field, item)}
-             style={{ marginRight: '6px' }}
+      {/* Dropdown contents */}
+      {openDropdownIdx === idx && (
+        <div className="bg-white border border-gray-200 rounded-lg mt-2 p-3">
+          <div className="flex gap-4 mb-2">
+            <label className="text-xs">
+              <input
+                type="radio"
+                checked={item.radio === "with"}
+                onChange={() => handleRadio(idx, "with")}
+                className="mr-1"
               />
-              {item}
+              With
             </label>
-            ))}
-           </div>
-          ) : 
-                              
-         field === 'source' ? (
-           <div style={{ marginTop: '10px' , display: 'grid',
-      gridTemplateColumns: '1fr 1fr', // 2 columns
-      gap: '12px', }}>
-           {sourceList.map((item) => (
-           <label key={item} style={{ display: 'block',   
-                display: 'flex',
-                alignItems: 'center',
-                background: '#fff',
-                border: '1px solid #ddd',
-                borderRadius: '10px',
-                padding: '10px 14px',
-                fontSize: '14px',
-                color: '#333',
-                cursor: 'pointer',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-                transition: 'all 0.3s ease',
-                marginBottom: '4px',
-                fontSize: '13px' }}>
-            <input
-             type="checkbox"
-            checked={selectfield[field]?.includes(item)}
-             onChange={() =>handleFieldInputChange(field, item)}
-            style={{ marginRight: '6px' }}
-           />
-            {item}
-         </label>
-       ))}
-           </div>
-  ) :
-                          field.includes('date') ? (
-                            <input
-                              type="date"
-                              value={selectfield[field]}
-                              onChange={(e) => handleFieldInputChange(field, e.target.value)}
-                              style={enhancedInputStyle}
-                            />
-                          ) : (
-                            <input
-                              type="text"
-                              placeholder={`Search by ${label}`}
-                              value={selectfield[field]}
-                              onChange={(e) => handleFieldInputChange(field, e.target.value)}
-                              style={enhancedInputStyle}
-                            />
-                          )
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                        )}
-                      </div>
-
-              {/* Cancel Button */}
-                  <div style={{
-                  padding: '14px',
-                  borderTop: '1px solid #eee',
-                  background: '#f9f9f9',
-                  display: 'flex',
-                  justifyContent: 'space-around',
-                  gap: '10px'
-                }}>
-                  <button
-                    className="btn btn-secondary"
-                    style={{
-                      width: '45%',
-                      padding: '6px 12px',
-                      fontSize: '14px',
-                      borderRadius: '6px',
-                      backgroundColor: '#6c757d',
-                      border: 'none',
-                      color: '#fff',
-                      boxShadow: '0 3px 8px rgba(0,0,0,0.1)',
-                      transition: 'background 0.3s ease',
-                    }}
-                    onClick={handleResetFilters}
-                  >
-                    🔄 Reset
-                  </button>
-
-                  <button
-                    className="btn btn-danger"
-                    style={{
-                      width: '45%',
-                      padding: '6px 12px',
-                      fontSize: '14px',
-                      borderRadius: '6px',
-                      boxShadow: '0 3px 8px rgba(0,0,0,0.1)'
-                    }}
-                    onClick={handleCancel}
-                  >
-                    ❌ Cancel
-                  </button>
-                </div>
-
-            </div>
+            <label className="text-xs">
+              <input
+                type="radio"
+                checked={item.radio === "without"}
+                onChange={() => handleRadio(idx, "without")}
+                className="mr-1"
+              />
+              Without
+            </label>
           </div>
+          <input
+            type="text"
+            value={item.input}
+            onChange={e => handleInput(idx, e.target.value)}
+            placeholder={`Type for ${item.label}`}
+            className="w-full mb-2 px-2 py-1 border border-gray-300 rounded-md text-xs"
+          />
+          {item.values?.length > 0 && (
+            <div className="max-h-32 overflow-y-auto bg-[#fcfdff] px-2 py-1 rounded-md text-xs">
+              {item.values.map(val => (
+                <label key={val} className="block my-1 text-xs">
+                  <input
+                    type="checkbox"
+                    checked={item.checked.includes(val)}
+                    onChange={() => handleCheckbox(idx, val)}
+                    className="mr-2"
+                  />
+                  {val}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  ))}
+
+  {/* Add Field Section */}
+  <button
+    className="py-2 px-5 bg-blue-600 text-white rounded-md font-normal mb-4 cursor-pointer mt-5 w-full"
+    onClick={() => setShowFieldDropdown(s => !s)}
+  >
+    + Add Field
+  </button>
+
+  {showFieldDropdown && (
+    <div className="bg-white border border-gray-200 rounded-md mb-4 overflow-auto h-52">
+      {contactfields
+        .filter(f => !activeFilters.some(af => af.field === f.field))
+        .map(fieldObj => (
+          <div
+            key={fieldObj.field}
+            className="p-2 cursor-pointer hover:bg-gray-100 text-sm"
+            onClick={() => handleAddField(fieldObj)}
+          >
+            {fieldObj.label}
+          </div>
+        ))}
+    </div>
+  )}
+</div>
+
+
+
+
              <button onClick={handleAddColumnClick} className="form-control form-control-sm form-control form-control-sm-sm" style={{width:"120px",marginLeft:"3%"}}>Add Fields</button>
       </div>
       <div style={{marginTop:"2px",backgroundColor:"white",height:"60px",paddingLeft:"80px",display:"flex",gap:"20px"}}>

@@ -84,11 +84,54 @@ const leadinfo_find = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
- 
+  // 🔹 Parse filters from query
+    let activeFilters = [];
+    if (req.query.activeFilters) {
+      try {
+        activeFilters = JSON.parse(req.query.activeFilters);
+      } catch (err) {
+        console.error("Invalid activeFilters JSON:", err);
+      }
+    }
+
+    // 🔹 Build MongoDB match query
+    let matchStage = {};
+
+    if (activeFilters.length > 0) {
+      activeFilters.forEach((filter) => {
+        const field = filter.field;
+
+        // ✅ Case 1: Checkbox filters
+        if (Array.isArray(filter.checked) && filter.checked.length > 0) {
+          const cleanValues = filter.checked.filter(
+            (v) => v !== null && v !== undefined && v !== ""
+          );
+
+          if (cleanValues.length > 0) {
+            if (filter.radio === "with") {
+              matchStage[field] = { $in: cleanValues };
+            } else if (filter.radio === "without") {
+              matchStage[field] = { $nin: cleanValues };
+            }
+          }
+        }
+
+        // ✅ Case 2: Text input filters
+        if (filter.input && filter.input.trim() !== "") {
+          const regex = new RegExp(filter.input.trim(), "i");
+          if (filter.radio === "with") {
+            matchStage[field] = regex;
+          } else if (filter.radio === "without") {
+            matchStage[field] = { $not: regex };
+          }
+        }
+      });
+    }
+
 
     
     // const allleads=await leadinfo.find()
-    const leads = await leadinfo.find()
+    const leads = await leadinfo.find(matchStage)
           .sort({ createdAt: -1 })
           .skip(skip)
           .limit(limit)
