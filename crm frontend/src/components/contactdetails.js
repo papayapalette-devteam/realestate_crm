@@ -219,6 +219,7 @@ function Fetchcontact() {
 
                     const toggleToast = async() => {
                       setShow(true);
+                     
                     };
 
 
@@ -231,8 +232,27 @@ function Fetchcontact() {
               };
 
           
+  //============================== get group data===================================
 
+  const[groupdata,setgroupdata]=useState([])
+  const get_group_data=async()=>
+  {
+    try {
+      const resp=await api.get('contact-getgroupdata')
+      setgroupdata(resp.data)
+      
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
 
+   useEffect(() => {
+    get_group_data();
+  }, []);
+
+ 
 
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -257,26 +277,28 @@ function Fetchcontact() {
 
  
 
- 
   const contactfields = [
+    
     { label: 'First Name', field: 'first_name' },
     { label: 'Last Name', field: 'last_name' },
     { label: 'Mobile No.', field: 'mobile_no' },
     { label: 'Email Id', field: 'email' },
     { label: 'Tags', field: 'tags' },
-    { label: 'Source', field: 'source' },
-    { label: 'Owner', field: 'owner' },
-    { label: 'City', field: 'city1' },
-    { label: 'State', field: 'state1' },
-    { label: 'Pincode', field: 'pincode1' },
-    { label: 'From Date', field: 'from_date' }, // Added field for from date
-    { label: 'To Date', field: 'to_date' }
+    { label: 'Profession', field: 'profession_category',values: groupdata?.profession_categories || [],},
+    { label: 'Profession Sub Category', field: 'profession_subcategory',values:groupdata?.profession_subcategories},
+    { label: 'Owner', field: 'owner',values:groupdata?.owners },
+    { label: 'City', field: 'city1',values:groupdata?.cities },
+    { label: 'State', field: 'state1',values:groupdata?.states },
+    { label: 'Country', field: 'country1',values:groupdata?.countries },
+    { label: 'Industry', field: 'industry',values:groupdata?.industries },
+    { label: 'Team', field: 'team',values:groupdata?.teams },
   ];
     
+
   
     const defaultFields = [
-      contactfields.find(f => f.field === 'tags'),
-      contactfields.find(f => f.field === 'source')
+      contactfields.find(f => f.field === 'first_name'),
+      contactfields.find(f => f.field === 'mobile_no')
     ];
     
     const [showFieldDropdown, setShowFieldDropdown] = useState(false);

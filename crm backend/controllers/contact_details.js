@@ -735,11 +735,58 @@ const searchcontact=async (req, res) => {
                                                 }
                                               };
                                               
-                                              
+                   
+
+// Aggregate to get grouped data
+const getGroupedData = async (req, res) => {
+  try {
+    const groupedData = await addcontact.aggregate([
+      { $unwind: { path: "$owner", preserveNullAndEmptyArrays: true } }, // Flatten owner array
+      {
+        $group: {
+          _id: null,
+          profession_categories: { $addToSet: "$profession_category" },
+          profession_subcategories: { $addToSet: "$profession_subcategory" },
+          owners: { $addToSet: "$owner" },
+          teams: { $addToSet: "$team" },
+          sources: { $addToSet: "$source" },
+          cities: { $addToSet: "$city1" },
+          states: { $addToSet: "$state1" },
+          countries: { $addToSet: "$country1" },
+          industries: { $addToSet: "$industry" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          profession_categories: 1,
+          profession_subcategories: 1,
+          owners: 1,
+          teams: 1,
+          sources: 1,
+          cities: 1,
+          states: 1,
+          countries: 1,
+          industries: 1,
+        },
+      },
+    ]);
+
+    // Ensure we send just the single object, not an array with one element
+    res.status(200).json(groupedData[0] || {});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+
+                        
                                               
                 
 
     module.exports={add_contact,view_contact,view_contact_Byid,remove_contact,update_contact,
                     view_contact_Byemail,view_contact_Bymobile,view_contact_Bytags,view_contact_Bycompany,
                 view_contact_ByName,update_contactsingledocument,delete_contactsingledocument,add_contactdocument,addbulkcontacts,
-            update_contactforbulkupload,searchcontact,view_contact_for_editproject};
+            update_contactforbulkupload,searchcontact,view_contact_for_editproject,getGroupedData};
