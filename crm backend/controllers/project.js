@@ -250,9 +250,6 @@ const view_units = async (req, res) => {
     const skip = (page - 1) * limit;
     const search = req.query.search ? req.query.search.trim() : "";
 
- 
-    
-    // Parse active filters from query (array of objects)
     let activeFilters = [];
     if (req.query.activeFilters) {
       try {
@@ -262,10 +259,9 @@ const view_units = async (req, res) => {
       }
     }
 
-    
     let matchStage = {};
 
-    // 🔹 If search text exists
+    // 🔹 Search
     if (search) {
       matchStage.$or = [
         { "add_unit.unit_no": { $regex: search, $options: "i" } },
@@ -274,52 +270,73 @@ const view_units = async (req, res) => {
       ];
     }
 
-    // 🔹 Apply active filters
-    // 🔹 Apply active filters
-if (activeFilters.length > 0) {
-  activeFilters.forEach((filter) => {
-    const fieldPath = `add_unit.${filter.field}`;
+    // 🔹 Filters
+    if (activeFilters.length > 0) {
+      activeFilters.forEach((filter) => {
+        const fieldPath = `add_unit.${filter.field}`;
 
-    // 🔹 Case 1: Checked values
-    if (filter.field && Array.isArray(filter.checked) && filter.checked.length > 0) {
-      const cleanValues = filter.checked.filter(
-        (v) => v !== null && v !== undefined && v !== ""
-      );
-
-      if (cleanValues.length > 0) {
-        if (filter.radio === "with") {
-          matchStage[fieldPath] = { $in: cleanValues };
-        } else if (filter.radio === "without") {
-          matchStage[fieldPath] = { $nin: cleanValues };
+        if (filter.field && Array.isArray(filter.checked) && filter.checked.length > 0) {
+          const cleanValues = filter.checked.filter(v => v !== null && v !== undefined && v !== "");
+          if (cleanValues.length > 0) {
+            if (filter.radio === "with") {
+              matchStage[fieldPath] = { $in: cleanValues };
+            } else if (filter.radio === "without") {
+              matchStage[fieldPath] = { $nin: cleanValues };
+            }
+          }
         }
-      }
+
+        if (filter.field && filter.input && filter.input.trim() !== "") {
+          if (filter.radio === "with") {
+            matchStage[fieldPath] = {
+              $regex: filter.input.trim(),
+              $options: "i",
+            };
+          } else if (filter.radio === "without") {
+            matchStage[fieldPath] = {
+              $not: new RegExp(filter.input.trim(), "i"),
+            };
+          }
+        }
+      });
     }
-
-    // 🔹 Case 2: Text input
-    if (filter.field && filter.input && filter.input.trim() !== "") {
-      if (filter.radio === "with") {
-        matchStage[fieldPath] = {
-          $regex: filter.input.trim(),
-          $options: "i",
-        };
-      } else if (filter.radio === "without") {
-        matchStage[fieldPath] = {
-          $not: new RegExp(filter.input.trim(), "i"),
-        };
-      }
-    }
-  });
-}
-
-
 
     const units = await addproject.aggregate([
       { $unwind: "$add_unit" },
       Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
+
+      // ✅ Safe numeric extraction from unit_no
+      {
+        $addFields: {
+          numericUnitNo: {
+            $toInt: {
+              $ifNull: [
+                {
+                  $getField: {
+                    field: "match",
+                    input: {
+                      $regexFind: {
+                        input: { $ifNull: ["$add_unit.unit_no", ""] },
+                        regex: "\\d+"
+                      }
+                    }
+                  }
+                },
+                "0"
+              ]
+            }
+          }
+        }
+      },
+
+      // ✅ Sort by numeric part only
+      { $sort: { numericUnitNo: 1 } },
+
+      // Pagination
       { $skip: skip },
       { $limit: limit },
 
-      // lookups...
+      // Lookups
       {
         $lookup: {
           from: "add_contacts",
@@ -329,7 +346,6 @@ if (activeFilters.length > 0) {
         }
       },
       { $unwind: { path: "$add_unit.owner_details", preserveNullAndEmptyArrays: true } },
-
       {
         $lookup: {
           from: "add_contacts",
@@ -339,7 +355,6 @@ if (activeFilters.length > 0) {
         }
       },
       { $unwind: { path: "$add_unit.associated_contact", preserveNullAndEmptyArrays: true } },
-
       {
         $lookup: {
           from: "add_contacts",
@@ -349,9 +364,9 @@ if (activeFilters.length > 0) {
         }
       },
       { $unwind: { path: "$add_unit.previousowner_details", preserveNullAndEmptyArrays: true } },
-    ].filter(Boolean)); // remove null stages
+    ].filter(Boolean));
 
-    // count query with same matchStage
+    // Count total
     const totalCount = await addproject.aggregate([
       { $unwind: "$add_unit" },
       Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
@@ -361,8 +376,6 @@ if (activeFilters.length > 0) {
     const total = totalCount[0]?.count || 0;
     const totalPages = Math.ceil(total / limit);
 
-   
-    
     res.status(200).json({
       message: "Units fetched successfully",
       units: units.map(u => u.add_unit),
@@ -375,6 +388,7 @@ if (activeFilters.length > 0) {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 
