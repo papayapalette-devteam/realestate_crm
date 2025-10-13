@@ -308,12 +308,16 @@ const add_deal = async (req, res) => {
                         try {
                             const { deals } = req.body;
 
+
                             const unitDetails = await Promise.all(
                             deals.map(async (deal) => {
+                               
                                 try {
                                 const response = await axios.get(
                                     `${process.env.API_URL}/viewprojectforinventories/${deal.project}/${deal.unit_number}/${deal.block}`
                                 );
+                               
+                                
                                 const unitData = response.data?.project?.add_unit?.[0] || null;
 
                                 return {

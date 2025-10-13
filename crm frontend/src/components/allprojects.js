@@ -17,6 +17,7 @@ import api from "../api";
 import '../css/deal.css';
 import Swal from "sweetalert2";
 import UniqueLoader from "./loader";
+import FilterListIcon from "@mui/icons-material/FilterList";
 
 
 function Allprojects() {
@@ -434,7 +435,7 @@ function Allprojects() {
 
     // ==========================================toggle action buttons start=================================================
 
-       useEffect(()=>
+                  useEffect(()=>
                               {
                             
                                 if(selectedItems2.length===0)
@@ -530,6 +531,177 @@ function Allprojects() {
                   const [isHoveringunitcustomerfeedback, setIsHoveringunitcustomerfeedback] = useState(false);
     
     // =============================================================project action button toggle end==================================================
+
+     const [show, setShow] = useState(false);
+                    const [isClosing, setIsClosing] = useState(false);
+                    const toastRef = useRef(null);
+    
+                        const toggleToast = async() => {
+                          setShow(true);
+                         
+                        };
+    
+    
+                  const handleCancel = () => {
+                    setIsClosing(true); // trigger slide-out
+                    setTimeout(() => {
+                      setShow(false);     // hide the toast completely
+                      setIsClosing(false); // reset for next open
+                    }, 500); // duration should match animation time
+                  };
+    
+              
+      //============================== get group data===================================
+    
+      const[groupdata,setgroupdata]=useState([])
+      const get_group_data=async()=>
+      {
+        try {
+          const resp=await api.get('contact-getgroupdata')
+          setgroupdata(resp.data)
+          
+          
+        } catch (error) {
+          console.log(error);
+          
+        }
+      }
+    
+       useEffect(() => {
+        get_group_data();
+      }, []);
+    
+     
+    
+    
+      const [showDropdown, setShowDropdown] = useState(false);
+    
+     
+        const filterRef = useRef();
+    
+     
+    
+    
+    
+      useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (filterRef.current && !filterRef.current.contains(event.target)) {
+            setShowDropdown(false); // close the filter box
+          }
+        };
+    
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+      }, []);
+    
+     
+    
+      const contactfields = [
+        
+        { label: 'First Name', field: 'first_name' },
+        { label: 'Last Name', field: 'last_name' },
+        { label: 'Mobile No.', field: 'mobile_no' },
+        { label: 'Email Id', field: 'email' },
+        { label: 'Tags', field: 'tags' },
+        { label: 'Profession', field: 'profession_category',values: groupdata?.profession_categories || [],},
+        { label: 'Profession Sub Category', field: 'profession_subcategory',values:groupdata?.profession_subcategories},
+        { label: 'Owner', field: 'owner',values:groupdata?.owners },
+        { label: 'City', field: 'city1',values:groupdata?.cities },
+        { label: 'State', field: 'state1',values:groupdata?.states },
+        { label: 'Country', field: 'country1',values:groupdata?.countries },
+        { label: 'Industry', field: 'industry',values:groupdata?.industries },
+        { label: 'Team', field: 'team',values:groupdata?.teams },
+      ];
+        
+    
+      
+        const defaultFields = [
+          contactfields.find(f => f.field === 'first_name'),
+          contactfields.find(f => f.field === 'mobile_no')
+        ];
+        
+        const [showFieldDropdown, setShowFieldDropdown] = useState(false);
+         const [activeFilters, setActiveFilters] = useState(
+            defaultFields.map(f => ({
+              ...f,
+              radio: "with",
+              input: "",
+              checked: [],
+            }))
+          );
+        
+        
+           // Open filter panel, regenerating the defaults (with current city list)
+          function openFilterWithDefaults() {
+            setActiveFilters(
+              defaultFields.map((f) => ({
+                ...f,
+                radio: "with",
+                input: "",
+                checked: []
+              }))
+            );
+            setShow(true);
+          }
+        
+        
+        const [openDropdownIdx, setOpenDropdownIdx] = useState(null);
+        
+        // Add new filter row
+        function handleAddField(fieldObj) {
+          setActiveFilters([
+            ...activeFilters,
+            {
+              ...fieldObj,
+              radio: 'with',
+              input: '',
+              checked: [],
+            }
+          ]);
+          setShowFieldDropdown(false);
+          setOpenDropdownIdx(activeFilters.length);
+        }
+        
+        // Remove filter
+        function handleRemoveFilter(idx) {
+          setActiveFilters(activeFilters => activeFilters.filter((_, i) => i !== idx));
+          if (openDropdownIdx === idx) setOpenDropdownIdx(null);
+        }
+        
+        // Toggle dropdown for a row
+        function handleToggleDropdown(idx) {
+          setOpenDropdownIdx(openDropdownIdx === idx ? null : idx);
+        }
+        
+        // Radio/checkbox/text handlers:
+        function handleRadio(idx, value) {
+          setActiveFilters(filters =>
+            filters.map((f,i) => i === idx ? { ...f, radio: value } : f)
+          );
+        }
+        function handleInput(idx, value) {
+          setActiveFilters(filters =>
+            filters.map((f,i) => i === idx ? { ...f, input: value } : f)
+          );
+        }
+        function handleCheckbox(idx, val) {
+          setActiveFilters(filters =>
+            filters.map((f,i) => {
+              if (i !== idx) return f;
+              const checked = f.checked.includes(val)
+                ? f.checked.filter(v => v !== val)
+                : [...f.checked, val];
+              return { ...f, checked };
+            })
+          );
+        }
+        
+        
+    // ============================filter code end===============================================
+
+
+
+
   return (
     <div>
            <Header1/>
@@ -550,7 +722,138 @@ function Allprojects() {
             </ul>
             
 
-            <button  className="form-control form-control-sm form-control form-control-sm-sm" style={{width:"150px",marginLeft:"65%"}}>Filter</button>
+             <Tooltip title="Filter contacts..." arrow>
+                <button
+                  onClick={toggleToast}
+                  className="relative ml-[75%] w-[50px] p-2  text-black  hover:bg-indigo-600 transition-all"
+                >
+                  <FilterListIcon style={{ fontSize: 22 }} />
+                </button>
+              </Tooltip>
+
+  {/*===================================== filter================================================== */}
+
+
+<div
+  ref={filterRef}
+  className={`feedback-toast ${show ? (isClosing ? "hide" : "show") : ""} 
+    mt-2 w-[300px] h-screen bg-white rounded-xl shadow-lg p-3 
+    overflow-y-auto overflow-x-auto`}
+>
+  {/* Header */}
+  <h3
+    className="text-sm m-0 px-4 py-3 text-left text-black border-b border-gray-300 tracking-wide flex justify-between items-center"
+  >
+    🔍 Filter Projects
+    <button
+    onClick={handleCancel}
+      className="ml-auto bg-white px-3 py-1 text-sm border-0 text-red-500 hover:text-red-700"
+    >
+      ❌
+    </button>
+  </h3>
+
+  {/* Active Filter Rows */}
+  {activeFilters.map((item, idx) => (
+    <div
+      key={item.field}
+      className="bg-[#f8f9fb] rounded-lg mb-3 p-3"
+    >
+      <div className="flex items-center justify-between">
+        <p className="m-0 font-normal text-xs">{item.label}</p>
+        <div className="flex items-center gap-2">
+          <button
+            className="bg-transparent border-0 cursor-pointer text-xs"
+            onClick={() => handleToggleDropdown(idx)}
+          >
+            {openDropdownIdx === idx ? "▲" : "▼"}
+          </button>
+          <button
+            className="bg-transparent border-0 text-red-500 text-lg font-normal cursor-pointer"
+            onClick={() => handleRemoveFilter(idx)}
+          >
+            ×
+          </button>
+        </div>
+      </div>
+
+      {/* Dropdown contents */}
+      {openDropdownIdx === idx && (
+        <div className="bg-white border border-gray-200 rounded-lg mt-2 p-3">
+          <div className="flex gap-4 mb-2">
+            <label className="text-xs">
+              <input
+                type="radio"
+                checked={item.radio === "with"}
+                onChange={() => handleRadio(idx, "with")}
+                className="mr-1"
+              />
+              With
+            </label>
+            <label className="text-xs">
+              <input
+                type="radio"
+                checked={item.radio === "without"}
+                onChange={() => handleRadio(idx, "without")}
+                className="mr-1"
+              />
+              Without
+            </label>
+          </div>
+          <input
+            type="text"
+            value={item.input}
+            onChange={e => handleInput(idx, e.target.value)}
+            placeholder={`Type for ${item.label}`}
+            className="w-full mb-2 px-2 py-1 border border-gray-300 rounded-md text-xs"
+          />
+          {item.values?.length > 0 && (
+            <div className="max-h-32 overflow-y-auto bg-[#fcfdff] px-2 py-1 rounded-md text-xs">
+              {item.values.map(val => (
+                <label key={val} className="block my-1 text-xs">
+                  <input
+                    type="checkbox"
+                    checked={item.checked.includes(val)}
+                    onChange={() => handleCheckbox(idx, val)}
+                    className="mr-2"
+                  />
+                  {val}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  ))}
+
+  {/* Add Field Section */}
+  <button
+    className="py-2 px-5 bg-blue-600 text-white rounded-md font-normal mb-4 cursor-pointer mt-5 w-full"
+    onClick={() => setShowFieldDropdown(s => !s)}
+  >
+    + Add Field
+  </button>
+
+  {showFieldDropdown && (
+    <div className="bg-white border border-gray-200 rounded-md mb-4 overflow-auto h-52">
+      {contactfields
+        .filter(f => !activeFilters.some(af => af.field === f.field))
+        .map(fieldObj => (
+          <div
+            key={fieldObj.field}
+            className="p-2 cursor-pointer hover:bg-gray-100 text-sm"
+            onClick={() => handleAddField(fieldObj)}
+          >
+            {fieldObj.label}
+          </div>
+        ))}
+    </div>
+  )}
+</div>
+
+
+
             <button onClick={handleAddColumnClick1} className="form-control form-control-sm form-control form-control-sm-sm" style={{width:"150px",marginLeft:"1%"}}>Add Fields</button>
         
        

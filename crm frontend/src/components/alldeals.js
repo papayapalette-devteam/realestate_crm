@@ -2,7 +2,6 @@
 import Header1 from "./header1";
 import Sidebar1 from "./sidebar1";
 import {  useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useEffect, useState,useRef } from "react";
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -13,13 +12,11 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { ToastContainer,toast } from "react-toastify";
 import React from "react";
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { utils, writeFile } from "xlsx";
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import {  SvgIcon } from "@mui/material";
-import EmailIcon from '@mui/icons-material/Email';
 import Tooltip from '@mui/material/Tooltip';
 import api from "../api";
 import '../css/deal.css';
@@ -29,12 +26,10 @@ import Swal from "sweetalert2";
 import { useDropzone } from 'react-dropzone';
 import ReactQuill from 'react-quill';  // Import ReactQuill
 import Lottie from "lottie-react";
-import deallogo from '../icons/deal.jpg'
-import { Percent } from "@mui/icons-material";
-import numWords from 'num-words';
 import { FormControl, InputLabel, Select, MenuItem,IconButton} from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import FilterListIcon from "@mui/icons-material/FilterList";
 
 
 
@@ -3334,6 +3329,177 @@ const handleTimeChangemail = (e) => {
               const [isHoveringunitcustomerfeedback, setIsHoveringunitcustomerfeedback] = useState(false);
 
 // =============================================================deal action button toggle end==================================================
+
+
+// =======================================filter code============================================
+
+
+  const [show, setShow] = useState(false);
+                const [isClosing, setIsClosing] = useState(false);
+                const toastRef = useRef(null);
+
+                    const toggleToast = async() => {
+                      setShow(true);
+                     
+                    };
+
+
+              const handleCancel = () => {
+                setIsClosing(true); // trigger slide-out
+                setTimeout(() => {
+                  setShow(false);     // hide the toast completely
+                  setIsClosing(false); // reset for next open
+                }, 500); // duration should match animation time
+              };
+
+          
+  //============================== get group data===================================
+
+  const[groupdata,setgroupdata]=useState([])
+  const get_group_data=async()=>
+  {
+    try {
+      const resp=await api.get('contact-getgroupdata')
+      setgroupdata(resp.data)
+      
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+   useEffect(() => {
+    get_group_data();
+  }, []);
+
+ 
+
+
+  const [showDropdown, setShowDropdown] = useState(false);
+
+ 
+    const filterRef = useRef();
+
+ 
+
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowDropdown(false); // close the filter box
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+ 
+
+  const dealfields = [
+    
+    { label: 'Available For', field: 'available_for' },
+    { label: 'Category', field: 'ucategory' },
+    { label: 'Sub Category', field: 'usub_category' },
+    { label: 'Unit Type', field: 'utype' },
+    { label: 'Size', field: 'usize' },
+    { label: 'Expected Price', field: 'expected_price',values: groupdata?.profession_categories || [],},
+    { label: 'Quote Price', field: 'quote_price',values:groupdata?.profession_subcategories},
+    { label: 'Project', field: 'project',values:groupdata?.owners },
+    { label: 'Block', field: 'block',values:groupdata?.cities },
+    { label: 'Location', field: 'location',values:groupdata?.states },
+    { label: 'Deal Type', field: 'deal_type',values:groupdata?.countries },
+  ];
+    
+
+  
+    const defaultFields = [
+      dealfields.find(f => f.field === 'available_for'),
+      dealfields.find(f => f.field === 'ucategory')
+    ];
+    
+    const [showFieldDropdown, setShowFieldDropdown] = useState(false);
+     const [activeFilters, setActiveFilters] = useState(
+        defaultFields.map(f => ({
+          ...f,
+          radio: "with",
+          input: "",
+          checked: [],
+        }))
+      );
+    
+    
+       // Open filter panel, regenerating the defaults (with current city list)
+      function openFilterWithDefaults() {
+        setActiveFilters(
+          defaultFields.map((f) => ({
+            ...f,
+            radio: "with",
+            input: "",
+            checked: []
+          }))
+        );
+        setShow(true);
+      }
+    
+    
+    const [openDropdownIdx, setOpenDropdownIdx] = useState(null);
+    
+    // Add new filter row
+    function handleAddField(fieldObj) {
+      setActiveFilters([
+        ...activeFilters,
+        {
+          ...fieldObj,
+          radio: 'with',
+          input: '',
+          checked: [],
+        }
+      ]);
+      setShowFieldDropdown(false);
+      setOpenDropdownIdx(activeFilters.length);
+    }
+    
+    // Remove filter
+    function handleRemoveFilter(idx) {
+      setActiveFilters(activeFilters => activeFilters.filter((_, i) => i !== idx));
+      if (openDropdownIdx === idx) setOpenDropdownIdx(null);
+    }
+    
+    // Toggle dropdown for a row
+    function handleToggleDropdown(idx) {
+      setOpenDropdownIdx(openDropdownIdx === idx ? null : idx);
+    }
+    
+    // Radio/checkbox/text handlers:
+    function handleRadio(idx, value) {
+      setActiveFilters(filters =>
+        filters.map((f,i) => i === idx ? { ...f, radio: value } : f)
+      );
+    }
+    function handleInput(idx, value) {
+      setActiveFilters(filters =>
+        filters.map((f,i) => i === idx ? { ...f, input: value } : f)
+      );
+    }
+    function handleCheckbox(idx, val) {
+      setActiveFilters(filters =>
+        filters.map((f,i) => {
+          if (i !== idx) return f;
+          const checked = f.checked.includes(val)
+            ? f.checked.filter(v => v !== val)
+            : [...f.checked, val];
+          return { ...f, checked };
+        })
+      );
+    }
+    
+    
+// ============================filter code end===============================================
+  
+
   return (
     <div>
             <Header1/>
@@ -3351,24 +3517,139 @@ const handleTimeChangemail = (e) => {
                     <li  onClick={exportToExcel} >Export Data</li>
                       
                     </ul>
-                {/* <button className="form-control" style={{width:"200px",marginLeft:"10px"}}>Select Team</button>
-                <button className="form-control" style={{width:"300px",marginLeft:"10px"}}>Select Sales Manager</button>
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{color:"black",backgroundColor:"transparent",marginLeft:"40%"}}>
-                    Add Inventory
-                </button>
-                    <ul class="dropdown-menu">
-                      <li><Link to={'/addinventory'} class="dropdown-item">Add Inventory</Link></li>
-                    </ul> */}
-                    <div style={{borderTopRightRadius:"10px",borderBottomRightRadius:"10px",padding:"10px",marginLeft:"70%"}}>
-                    <button  class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{marginLeft:"5px",color:"black",backgroundColor:"transparent",width:"120px"}}>
-                    Filter
-                </button>
-                    {/* <ul class="dropdown-menu">
-                      <li>
-                        <label className="labels">By developer</label><input type="text" className="form-control form-control-sm" placeholder="filter from developer" /></li>
-                      <li><label className="labels">By location</label><input type="text" className="form-control form-control-sm" placeholder="filter from location" onChange={(e)=>setlocation(e.target.value)} onKeyDown={handlepress2}/></li>
-                    </ul> */}
-                </div>  
+  
+  <Tooltip title="Filter contacts..." arrow>
+    <button
+      onClick={toggleToast}
+      className="relative ml-[75%] w-[50px] p-2  text-black  hover:bg-indigo-600 transition-all"
+    >
+      <FilterListIcon style={{ fontSize: 22 }} />
+    </button>
+  </Tooltip>
+
+  {/*===================================== filter================================================== */}
+
+
+<div
+  ref={filterRef}
+  className={`feedback-toast ${show ? (isClosing ? "hide" : "show") : ""} 
+    mt-2 w-[300px] h-screen bg-white rounded-xl shadow-lg p-3 
+    overflow-y-auto overflow-x-auto`}
+>
+  {/* Header */}
+  <h3
+    className="text-sm m-0 px-4 py-3 text-left text-black border-b border-gray-300 tracking-wide flex justify-between items-center"
+  >
+    🔍 Filter Deals
+    <button
+    onClick={handleCancel}
+      className="ml-auto bg-white px-3 py-1 text-sm border-0 text-red-500 hover:text-red-700"
+    >
+      ❌
+    </button>
+  </h3>
+
+  {/* Active Filter Rows */}
+  {activeFilters.map((item, idx) => (
+    <div
+      key={item.field}
+      className="bg-[#f8f9fb] rounded-lg mb-3 p-3"
+    >
+      <div className="flex items-center justify-between">
+        <p className="m-0 font-normal text-xs">{item.label}</p>
+        <div className="flex items-center gap-2">
+          <button
+            className="bg-transparent border-0 cursor-pointer text-xs"
+            onClick={() => handleToggleDropdown(idx)}
+          >
+            {openDropdownIdx === idx ? "▲" : "▼"}
+          </button>
+          <button
+            className="bg-transparent border-0 text-red-500 text-lg font-normal cursor-pointer"
+            onClick={() => handleRemoveFilter(idx)}
+          >
+            ×
+          </button>
+        </div>
+      </div>
+
+      {/* Dropdown contents */}
+      {openDropdownIdx === idx && (
+        <div className="bg-white border border-gray-200 rounded-lg mt-2 p-3">
+          <div className="flex gap-4 mb-2">
+            <label className="text-xs">
+              <input
+                type="radio"
+                checked={item.radio === "with"}
+                onChange={() => handleRadio(idx, "with")}
+                className="mr-1"
+              />
+              With
+            </label>
+            <label className="text-xs">
+              <input
+                type="radio"
+                checked={item.radio === "without"}
+                onChange={() => handleRadio(idx, "without")}
+                className="mr-1"
+              />
+              Without
+            </label>
+          </div>
+          <input
+            type="text"
+            value={item.input}
+            onChange={e => handleInput(idx, e.target.value)}
+            placeholder={`Type for ${item.label}`}
+            className="w-full mb-2 px-2 py-1 border border-gray-300 rounded-md text-xs"
+          />
+          {item.values?.length > 0 && (
+            <div className="max-h-32 overflow-y-auto bg-[#fcfdff] px-2 py-1 rounded-md text-xs">
+              {item.values.map(val => (
+                <label key={val} className="block my-1 text-xs">
+                  <input
+                    type="checkbox"
+                    checked={item.checked.includes(val)}
+                    onChange={() => handleCheckbox(idx, val)}
+                    className="mr-2"
+                  />
+                  {val}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  ))}
+
+  {/* Add Field Section */}
+  <button
+    className="py-2 px-5 bg-blue-600 text-white rounded-md font-normal mb-4 cursor-pointer mt-5 w-full"
+    onClick={() => setShowFieldDropdown(s => !s)}
+  >
+    + Add Field
+  </button>
+
+  {showFieldDropdown && (
+    <div className="bg-white border border-gray-200 rounded-md mb-4 overflow-auto h-52">
+      {dealfields
+        .filter(f => !activeFilters.some(af => af.field === f.field))
+        .map(fieldObj => (
+          <div
+            key={fieldObj.field}
+            className="p-2 cursor-pointer hover:bg-gray-100 text-sm"
+            onClick={() => handleAddField(fieldObj)}
+          >
+            {fieldObj.label}
+          </div>
+        ))}
+    </div>
+  )}
+</div>
+
+{/*============================== filter end ============================================*/}
+
               </div>
               <div style={{marginTop:"2px",backgroundColor:"white",height:"60px",paddingLeft:"80px",display:"flex",gap:"20px"}}>
                 <div className="lead" style={{width:"200px",padding:"10px",borderRadius:"10px"}} onClick={fetchdatabystage_open}>

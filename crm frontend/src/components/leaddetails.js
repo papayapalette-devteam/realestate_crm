@@ -3044,10 +3044,12 @@ const handlepropertyunitstypesChange = (event) => {
               setIsLoading(true)
               // 1. Fetch all unit details for all deals in one API call
               const res = await api.post('/getUnitDetails', { deals: dealdata });
+            
               const unitDetails = res.data;
               setallunitsdetails(res.data)
         
               
+             
               
               // 2. Process all leads
               const updatedleads = await Promise.all(
@@ -3057,6 +3059,8 @@ const handlepropertyunitstypesChange = (event) => {
                   const leadscoretaskdata = alltaskdata.filter((item) => {
                     return fullname === item.lead;
                   });
+
+                 
              
                   const availableFor = singlelead.requirment === 'Buy' ? 'Sale' : singlelead.requirment;
                   const minprice = parseFloat(singlelead.budget_min);
@@ -3076,6 +3080,7 @@ const handlepropertyunitstypesChange = (event) => {
                   const direction = singlelead.direction;
                   const range = singlelead.range;
 
+               
                   const matcheddeals = [];
                   let score = 0;
                   let leadstage=""
@@ -3718,8 +3723,11 @@ const handlepropertyunitstypesChange = (event) => {
                   }
 
 
+
+
                   for (const deal of dealdata) {
-                 
+                
+                  
                     const unitInfo = unitDetails.find(
                       (u) =>
                         u.unitData?.project_name?.toLowerCase().trim() === deal.project?.toLowerCase().trim() &&
@@ -3727,10 +3735,13 @@ const handlepropertyunitstypesChange = (event) => {
                         u.unitData?.block?.toLowerCase().trim() === deal.block?.toLowerCase().trim()
                     );
                     
-                   
+                
                     
                     const unitData = unitInfo?.unitData;
                     if (!unitData) continue;
+
+                    console.log(unitData);
+                    
         
                     const distance = getDistanceFromLatLonInKm(unitData.lattitude, unitData.langitude, leadlat, leadlong);
                     const unitsize = unitData.size;
@@ -3742,7 +3753,7 @@ const handlepropertyunitstypesChange = (event) => {
                       unittype = match[1] + " " + match[2].trim();
                       size = parseFloat(match[3]);
                     }
-        
+    
                     // if (
                     //   deal.available_for === availableFor &&
                     //   (
@@ -3760,6 +3771,9 @@ const handlepropertyunitstypesChange = (event) => {
                     //     (distance <= range)
                     //   )
                     // ) 
+
+                 
+                  
                       if (
                          
                       deal.available_for === availableFor &&  
@@ -3780,6 +3794,8 @@ const handlepropertyunitstypesChange = (event) => {
                     )
                     {
                       matcheddeals.push(deal);
+                    
+                      
                      
                     }
                   }
@@ -3795,6 +3811,7 @@ const handlepropertyunitstypesChange = (event) => {
                   };
                 })
               );
+    
     
               // 3. Update all leads (PUT)
              

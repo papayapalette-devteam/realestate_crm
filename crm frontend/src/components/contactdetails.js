@@ -3757,7 +3757,7 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
      
 
       
-            <button onClick={handleAddColumnClick} className="form-control form-control-sm form-control form-control-sm-sm" style={{width:"150px",marginLeft:"1%"}}>Add Fields</button>
+    <button onClick={handleAddColumnClick} className="form-control form-control-sm form-control form-control-sm-sm" style={{width:"150px",marginLeft:"1%"}}>Add Fields</button>
         
        
        
