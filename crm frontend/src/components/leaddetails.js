@@ -616,7 +616,7 @@ useEffect(()=>
   
   const renderPageNumbers = () => {
     // Define the range of page numbers to display
-    const maxPageNumbersToShow = 4;
+    const maxPageNumbersToShow = 3;
     const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbersToShow / 2));
     const endPage = Math.min(totalpages, startPage + maxPageNumbersToShow - 1);
     
@@ -683,6 +683,8 @@ useEffect(()=>
       fetchdata(currentPage, itemsPerPage);
     }
     }, [currentPage, itemsPerPage,activeFilters]);
+
+    
     /*-------------------pagination code end---------------------------pagination code end------------------------------------pagination code end*/
     
     

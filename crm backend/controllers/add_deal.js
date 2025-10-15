@@ -14,53 +14,7 @@ cloudinary.config({
     api_secret:process.env.API_SECRET
 })
 
-// const add_deal=async(req,res)=>
-//     {
-//         try {
-//             const{project_category,project_subcategory,location,available_for,stage,project,block,unit_number,floors,expected_price,quote_price,security_deposite,
-//                     maintainence_charge,rent_escltion,rent_period,fitout_perioud,deal_type,transaction_type,source,white_portion,
-//                     team,user,visible_to,owner_details,associated_contact,relation,document_details,s_no,descriptions,category,s_no1,url,
-//                     website,social_media,send_matchedlead,matchedleads,matchinglead,remarks}=req.body;
-                    
-   
-//                     //  if (req.files.pic) {
-//                     //             // Upload files to Cloudinary and get the URLs
-//                     //             for (let file of req.files.pic) {
-//                     //               const result = await cloudinary.uploader.upload(file.path);
-//                     //               newDocumentPic1.push(result.secure_url);  // Store the URL of the uploaded image
-//                     //               // Optionally, you could delete the file from the server after uploading (uncomment below if needed)
-//                     //               // fs.unlinkSync(file.path);
-//                     //             }
-//                     //           }
-//                     const images=[];
-//                     if (req.files) {
-//                                for (let file of req.files) {
-//                                             const result = await cloudinary.uploader.upload(file.path);
-//                                   images.push(result.secure_url);
-//                                 }
-//                             }
-                    
-                    
 
-                   
-                 
-                    
-//                     // const updatedDocumentDetails = document_details ? document_details.map((doc, index) => ({
-//                     //     ...doc,
-//                     //     pic: pics[index] || doc.pic // Add pic from files if available
-//                     // })):[];
-           
-//                 const new_add_deal= new adddeal({project_category,project_subcategory,location,available_for,stage,project,block,unit_number,floors,expected_price,quote_price,security_deposite,
-//                     maintainence_charge,rent_escltion,rent_period,fitout_perioud,deal_type,transaction_type,source,white_portion,
-//                     team,user,visible_to,owner_details,associated_contact,relation,document_details,
-//                     s_no,preview:images,descriptions,category,s_no1,url,website,social_media,send_matchedlead,matchedleads,matchinglead,remarks})
-            
-//             const resp=await new_add_deal.save()
-//             res.status(200).send({message:"deal added ",deal:resp})
-//         } catch (error) {
-//             console.log(error)
-//         }
-//     }
 
 const add_deal = async (req, res) => {
     try {
@@ -104,9 +58,65 @@ const add_deal = async (req, res) => {
     const view_deal=async(req,res)=>
         {
             try {
-                const resp=await adddeal.find() .populate('owner_details')  // Populate owner_details with contact data
-                .populate('associated_contact').populate('matchedleads');  // Populate associated_contact with contact data
-                res.status(200).send({message:"deal details fetch successfully",deal:resp})
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+        // 🔹 Parse filters from query
+    let activeFilters = [];
+    if (req.query.activeFilters) {
+      try {
+        activeFilters = JSON.parse(req.query.activeFilters);
+      } catch (err) {
+        console.error("Invalid activeFilters JSON:", err);
+      }
+    }
+
+    // 🔹 Build MongoDB match query
+    let matchStage = {};
+
+    if (activeFilters.length > 0) {
+      activeFilters.forEach((filter) => {
+        const field = filter.field;
+
+        // ✅ Case 1: Checkbox filters
+        if (Array.isArray(filter.checked) && filter.checked.length > 0) {
+          const cleanValues = filter.checked.filter(
+            (v) => v !== null && v !== undefined && v !== ""
+          );
+
+          if (cleanValues.length > 0) {
+            if (filter.radio === "with") {
+              matchStage[field] = { $in: cleanValues };
+            } else if (filter.radio === "without") {
+              matchStage[field] = { $nin: cleanValues };
+            }
+          }
+        }
+
+        // ✅ Case 2: Text input filters
+        if (filter.input && filter.input.trim() !== "") {
+          const regex = new RegExp(filter.input.trim(), "i");
+          if (filter.radio === "with") {
+            matchStage[field] = regex;
+          } else if (filter.radio === "without") {
+            matchStage[field] = { $not: regex };
+          }
+        }
+      });
+    }
+
+                const resp=await adddeal.find(matchStage)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                 .populate('owner_details')  
+                .populate('associated_contact').populate('matchedleads'); 
+    
+      const total = await adddeal.countDocuments(matchStage);
+    const totalPages = Math.ceil(total / limit);
+              
+                res.status(200).send({message:"deal details fetch successfully",deal:resp,total:total,totalpages:totalPages})
             } catch (error) {
                 console.log(error)
             }
@@ -362,9 +372,61 @@ const add_deal = async (req, res) => {
                                                     }
                               
                  
+// Aggregate to get grouped data
+// Get grouped data for dropdowns
+const getGroupedDatadeal = async (req, res) => {
+  try {
+    const groupedData = await adddeal.aggregate([
+      {
+        $group: {
+          _id: null,
+          available_for: { $addToSet: "$available_for" },
+          ucategory: { $addToSet: "$ucategory" },
+          usub_category: { $addToSet: "$usub_category" },
+          utype: { $addToSet: "$utype" },
+          usize: { $addToSet: "$usize" },
+          expected_price: { $addToSet: "$expected_price" },
+          quote_price: { $addToSet: "$quote_price" },
+          project: { $addToSet: "$project" },
+          block: { $addToSet: "$block" },
+          location: { $addToSet: "$ulocality" }, // renamed for clarity
+          deal_type: { $addToSet: "$deal_type" },
+          team: { $addToSet: "$team" },
+          source: { $addToSet: "$source" },
+          user: { $addToSet: "$user" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          available_for: 1,
+          ucategory: 1,
+          usub_category: 1,
+          utype: 1,
+          usize: 1,
+          expected_price: 1,
+          quote_price: 1,
+          project: 1,
+          block: 1,
+          location: 1,
+          deal_type: 1,
+          team: 1,
+          source: 1,
+          user: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json(groupedData[0] || {});
+  } catch (err) {
+    console.error("Error fetching grouped data:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
 
 
     
     module.exports={add_deal,view_deal,view_deal_Bystage,remove_deal,update_deal,view_deal_Byid,update_dealbysingle,update_dealbyowner,
-        update_dealbyprojectandunit,view_deal_Byproject,update_dealbyprojectandunitforownerdetails,getUnitDetails,dealupdatemany
+        update_dealbyprojectandunit,view_deal_Byproject,update_dealbyprojectandunitforownerdetails,getUnitDetails,dealupdatemany,
+        getGroupedDatadeal
     };

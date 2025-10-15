@@ -38,6 +38,8 @@ function Alldeals() {
 
     const navigate=useNavigate()
 
+    const[data,setdata]=useState([])
+
     //========================================= loader code start============================================================
 
      const [animationData, setAnimationData] = useState(null);
@@ -51,24 +53,7 @@ function Alldeals() {
 
        //===================================== fetch deal data start============================================================
 
-       React.useEffect(()=>{fetchdata()},[])
-    
-    
-        const[data,setdata]=useState([])
-        const fetchdata=async(event)=>
-            {
-              
-              try {
-                const resp=await api.get('viewdeal')
-                console.log(resp);
-                
-                const all=(resp.data.deal)
-                setdata(all)
-              } catch (error) {
-                console.log(error);
-              }
-            
-            }
+     
 
 
 const numberToIndianWords = (num) => {
@@ -684,12 +669,187 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       }));
 
 
+    // =================================filter==============================================
+  const[groupdata,setgroupdata]=useState([])
+  const get_group_data=async()=>
+  {
+    try {
+      const resp=await api.get('deal-getgroupdata')
+      setgroupdata(resp.data)
+      
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+   useEffect(() => {
+    get_group_data();
+  }, []);
+
+ console.log(groupdata);
+ 
+
+
+  const [showDropdown, setShowDropdown] = useState(false);
+
+ 
+    const filterRef = useRef();
+
+ 
+
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowDropdown(false); // close the filter box
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+ 
+
+  const dealfields = [
+    
+    { label: 'Available For', field: 'available_for',values: groupdata?.available_for || [] },
+    { label: 'Category', field: 'ucategory',values: groupdata?.ucategory || []  },
+    { label: 'Sub Category', field: 'usub_category',values: groupdata?.usub_category || []  },
+    { label: 'Unit Type', field: 'utype',values: groupdata?.utype || [] },
+    { label: 'Size', field: 'usize',values: groupdata?.usize || []  },
+    { label: 'Expected Price', field: 'expected_price',values: groupdata?.expected_price || [],},
+    { label: 'Quote Price', field: 'quote_price',values:groupdata?.quote_price || []},
+    { label: 'Project', field: 'project',values:groupdata?.project || [] },
+    { label: 'Block', field: 'block',values:groupdata?.block || [] },
+    { label: 'Location', field: 'location',values:groupdata?.location || [] },
+    { label: 'Deal Type', field: 'deal_type',values:groupdata?.deal_type || [] },
+  ];
+    
+
+  
+    const defaultFields = [
+      // dealfields.find(f => f.field === 'available_for'),
+      // dealfields.find(f => f.field === 'ucategory')
+    ];
+    
+    const [showFieldDropdown, setShowFieldDropdown] = useState(false);
+     const [activeFilters, setActiveFilters] = useState(
+        defaultFields.map(f => ({
+          ...f,
+          radio: "with",
+          input: "",
+          checked: [f.values],
+        }))
+      );
+    
+    
+       // Open filter panel, regenerating the defaults (with current city list)
+      function openFilterWithDefaults() {
+        setActiveFilters(
+          defaultFields.map((f) => ({
+            ...f,
+            radio: "with",
+            input: "",
+            checked: []
+          }))
+        );
+        setShow(true);
+      }
+    
+    
+    const [openDropdownIdx, setOpenDropdownIdx] = useState(null);
+    
+    // Add new filter row
+    function handleAddField(fieldObj) {
+      setActiveFilters([
+        ...activeFilters,
+        {
+          ...fieldObj,
+          radio: 'with',
+          input: '',
+          checked: [],
+        }
+      ]);
+      setShowFieldDropdown(false);
+      setOpenDropdownIdx(activeFilters.length);
+    }
+    
+    // Remove filter
+    function handleRemoveFilter(idx) {
+      setActiveFilters(activeFilters => activeFilters.filter((_, i) => i !== idx));
+      if (openDropdownIdx === idx) setOpenDropdownIdx(null);
+    }
+    
+    // Toggle dropdown for a row
+    function handleToggleDropdown(idx) {
+      setOpenDropdownIdx(openDropdownIdx === idx ? null : idx);
+    }
+    
+    // Radio/checkbox/text handlers:
+    function handleRadio(idx, value) {
+      setActiveFilters(filters =>
+        filters.map((f,i) => i === idx ? { ...f, radio: value } : f)
+      );
+    }
+    function handleInput(idx, value) {
+      setActiveFilters(filters =>
+        filters.map((f,i) => i === idx ? { ...f, input: value } : f)
+      );
+    }
+    function handleCheckbox(idx, val) {
+      setActiveFilters(filters =>
+        filters.map((f,i) => {
+          if (i !== idx) return f;
+          const checked = f.checked.includes(val)
+            ? f.checked.filter(v => v !== val)
+            : [...f.checked, val];
+          return { ...f, checked };
+        })
+      );
+    }
+    
+    
+// ============================filter code end===============================================
+    
+    
+      const[total_data,settotal_data]=useState()
+
+        const fetchdata=async(page, limit,activeFilters=[])=>
+            {
+              
+              try {
+                 const params = new URLSearchParams();
+                    params.append("page", page);
+                    params.append("limit", limit);
+                if (activeFilters.length > 0) {
+                  params.append("activeFilters", JSON.stringify(activeFilters));
+                }
+
+                const resp=await api.get(`viewdeal?${params.toString()}`)
+                const all=(resp.data.deal)
+                settotal_data(resp.data.total)
+                setdata(all)
+              } catch (error) {
+                console.log(error);
+              }
+            
+            }
+
+       
+
+
       const [currentPage, setCurrentPage] = useState(1);
       const [itemsPerPage, setItemsPerPage] = useState(10); // User-defined items per page
       const indexOfLastItem = currentPage * itemsPerPage;
       const indexOfFirstItem = indexOfLastItem - itemsPerPage;
       const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-      const totalPages = Math.ceil(data.length / itemsPerPage);
+      const totalPages = Math.ceil(total_data/ itemsPerPage);
+      const [windowStartPage, setWindowStartPage] = useState(1);
+      const maxPageNumbersToShow = 3;
       
         // Handle items per page change
         const handleItemsPerPageChange = (e) => {
@@ -715,7 +875,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       
       const renderPageNumbers = () => {
         // Define the range of page numbers to display
-        const maxPageNumbersToShow = 5;
         const startPage = Math.max(1, currentPage - Math.floor(maxPageNumbersToShow / 2));
         const endPage = Math.min(totalPages, startPage + maxPageNumbersToShow - 1);
         
@@ -764,6 +923,26 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
           </div>
         );
       };
+
+
+useEffect(() => {
+      // fetchdata(currentPage, itemsPerPage);
+  
+      // If current page moves outside window, adjust windowStartPage
+      if (currentPage < windowStartPage) {
+        setWindowStartPage(currentPage);
+      } else if (currentPage >= windowStartPage + maxPageNumbersToShow) {
+        setWindowStartPage(currentPage - maxPageNumbersToShow + 1);
+      }
+        const hasFilters = activeFilters && activeFilters.length > 0;
+         if (hasFilters) {
+  
+      fetchdata(currentPage, itemsPerPage, activeFilters);
+    } else {
+      // No filters, no search → fetch all
+      fetchdata(currentPage, itemsPerPage);
+    }
+    }, [currentPage, itemsPerPage,activeFilters]);
       
 
       const allColumns = [
@@ -3355,149 +3534,7 @@ const handleTimeChangemail = (e) => {
           
   //============================== get group data===================================
 
-  const[groupdata,setgroupdata]=useState([])
-  const get_group_data=async()=>
-  {
-    try {
-      const resp=await api.get('contact-getgroupdata')
-      setgroupdata(resp.data)
-      
-      
-    } catch (error) {
-      console.log(error);
-      
-    }
-  }
 
-   useEffect(() => {
-    get_group_data();
-  }, []);
-
- 
-
-
-  const [showDropdown, setShowDropdown] = useState(false);
-
- 
-    const filterRef = useRef();
-
- 
-
-
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (filterRef.current && !filterRef.current.contains(event.target)) {
-        setShowDropdown(false); // close the filter box
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
- 
-
-  const dealfields = [
-    
-    { label: 'Available For', field: 'available_for' },
-    { label: 'Category', field: 'ucategory' },
-    { label: 'Sub Category', field: 'usub_category' },
-    { label: 'Unit Type', field: 'utype' },
-    { label: 'Size', field: 'usize' },
-    { label: 'Expected Price', field: 'expected_price',values: groupdata?.profession_categories || [],},
-    { label: 'Quote Price', field: 'quote_price',values:groupdata?.profession_subcategories},
-    { label: 'Project', field: 'project',values:groupdata?.owners },
-    { label: 'Block', field: 'block',values:groupdata?.cities },
-    { label: 'Location', field: 'location',values:groupdata?.states },
-    { label: 'Deal Type', field: 'deal_type',values:groupdata?.countries },
-  ];
-    
-
-  
-    const defaultFields = [
-      dealfields.find(f => f.field === 'available_for'),
-      dealfields.find(f => f.field === 'ucategory')
-    ];
-    
-    const [showFieldDropdown, setShowFieldDropdown] = useState(false);
-     const [activeFilters, setActiveFilters] = useState(
-        defaultFields.map(f => ({
-          ...f,
-          radio: "with",
-          input: "",
-          checked: [],
-        }))
-      );
-    
-    
-       // Open filter panel, regenerating the defaults (with current city list)
-      function openFilterWithDefaults() {
-        setActiveFilters(
-          defaultFields.map((f) => ({
-            ...f,
-            radio: "with",
-            input: "",
-            checked: []
-          }))
-        );
-        setShow(true);
-      }
-    
-    
-    const [openDropdownIdx, setOpenDropdownIdx] = useState(null);
-    
-    // Add new filter row
-    function handleAddField(fieldObj) {
-      setActiveFilters([
-        ...activeFilters,
-        {
-          ...fieldObj,
-          radio: 'with',
-          input: '',
-          checked: [],
-        }
-      ]);
-      setShowFieldDropdown(false);
-      setOpenDropdownIdx(activeFilters.length);
-    }
-    
-    // Remove filter
-    function handleRemoveFilter(idx) {
-      setActiveFilters(activeFilters => activeFilters.filter((_, i) => i !== idx));
-      if (openDropdownIdx === idx) setOpenDropdownIdx(null);
-    }
-    
-    // Toggle dropdown for a row
-    function handleToggleDropdown(idx) {
-      setOpenDropdownIdx(openDropdownIdx === idx ? null : idx);
-    }
-    
-    // Radio/checkbox/text handlers:
-    function handleRadio(idx, value) {
-      setActiveFilters(filters =>
-        filters.map((f,i) => i === idx ? { ...f, radio: value } : f)
-      );
-    }
-    function handleInput(idx, value) {
-      setActiveFilters(filters =>
-        filters.map((f,i) => i === idx ? { ...f, input: value } : f)
-      );
-    }
-    function handleCheckbox(idx, val) {
-      setActiveFilters(filters =>
-        filters.map((f,i) => {
-          if (i !== idx) return f;
-          const checked = f.checked.includes(val)
-            ? f.checked.filter(v => v !== val)
-            : [...f.checked, val];
-          return { ...f, checked };
-        })
-      );
-    }
-    
-    
-// ============================filter code end===============================================
   
 
   return (
@@ -4162,7 +4199,7 @@ const handleTimeChangemail = (e) => {
               <tbody>
                 {
                  
-                currentItems.map ((item, index) => (
+                data.map ((item, index) => (
                   <StyledTableRow key={index}>
                     <StyledTableCell>
                       <input 
