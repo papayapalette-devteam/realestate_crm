@@ -191,7 +191,62 @@ unitDetails={
   const view_project=async(req,res)=>
     {
         try {
-          const resp = await addproject.find().select( "-add_unit")
+
+            const page = parseInt(req.query.page) || 1;
+              const limit = parseInt(req.query.limit) || 10;
+              const skip = (page - 1) * limit;
+          
+                  // 🔹 Parse filters from query
+              let activeFilters = [];
+              if (req.query.activeFilters) {
+                try {
+                  activeFilters = JSON.parse(req.query.activeFilters);
+                } catch (err) {
+                  console.error("Invalid activeFilters JSON:", err);
+                }
+              }
+     
+          
+              // 🔹 Build MongoDB match query
+              let matchStage = {};
+          
+              if (activeFilters.length > 0) {
+                activeFilters.forEach((filter) => {
+                  const field = filter.field;
+          
+                  // ✅ Case 1: Checkbox filters
+                  if (Array.isArray(filter.checked) && filter.checked.length > 0) {
+                    const cleanValues = filter.checked.filter(
+                      (v) => v !== null && v !== undefined && v !== ""
+                    );
+          
+                    if (cleanValues.length > 0) {
+                      if (filter.radio === "with") {
+                        matchStage[field] = { $in: cleanValues };
+                      } else if (filter.radio === "without") {
+                        matchStage[field] = { $nin: cleanValues };
+                      }
+                    }
+                  }
+          
+                  // ✅ Case 2: Text input filters
+                  if (filter.input && filter.input.trim() !== "") {
+                    const regex = new RegExp(filter.input.trim(), "i");
+                    if (filter.radio === "with") {
+                      matchStage[field] = regex;
+                    } else if (filter.radio === "without") {
+                      matchStage[field] = { $not: regex };
+                    }
+                  }
+                });
+              }
+
+
+          const resp = await addproject.find(matchStage)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+              .select( "-add_unit")
           //  const resp = await addproject.find()
           .populate({
               path: 'add_unit.owner_details', // Populate the 'owner_details' field inside 'add_unit'
@@ -210,6 +265,9 @@ unitDetails={
             model: 'add_developer' // Specify the model to populate
         })
 
+            const total = await addproject.countDocuments(matchStage);
+            const totalPages = Math.ceil(total / limit);
+
           const allprojectwithoutunitdetails = await addproject.find()
             .select("-add_unit")
             .populate({
@@ -217,7 +275,7 @@ unitDetails={
               model: 'add_developer'
             });
 
-            res.status(200).send({message:"project details fetch successfully",project:resp,allprojectwithoutunitdetails})
+            res.status(200).send({message:"project details fetch successfully",project:resp,allprojectwithoutunitdetails,total:total,totalpages:totalPages})
         } catch (error) {
             console.log(error)
         }
@@ -1312,8 +1370,66 @@ const view_units = async (req, res) => {
               };
               
 
+
+
+
+const getGroupedDataproject = async (req, res) => {
+  try {
+    const groupedData = await addproject.aggregate([
+      {
+        $group: {
+          _id: null,
+          categories: { $addToSet: "$category" },
+          subcategories: { $addToSet: "$sub_category" },
+          statuses: { $addToSet: "$status" },
+          locations: { $addToSet: "$location" },
+          users: { $addToSet: "$owner" }, // assuming 'user' corresponds to 'owner'
+          amenities: { $addToSet: "$basic_aminities" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          categories: 1,
+          subcategories: 1,
+          statuses: 1,
+          locations: 1,
+          users: 1,
+          amenities: 1,
+        },
+      },
+    ]);
+
+    const data = groupedData[0] || {};
+
+    // ✅ Flatten nested arrays & remove duplicates/null/empty
+    const flatten = (arr) =>
+      [...new Set(arr.flat(Infinity).filter((v) => v && v !== ""))];
+
+    const cleanedData = {
+      categories: flatten(data.categories || []),
+      subcategories: flatten(data.subcategories || []),
+      statuses: flatten(data.statuses || []),
+      locations: flatten(data.locations || []),
+      users: flatten(data.users || []),
+      amenities: flatten(data.amenities || []),
+    };
+
+    res.status(200).json(cleanedData);
+  } catch (err) {
+    console.error("Error fetching grouped project data:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+
+
+
+
               
 
    module.exports={createProject,view_project,view_projectbyname,view_projectbycityname,remove_project,view_project_Byid,
     update_project,view_projectforinventories,update_projectforinventories,update_projectaddunit,
-    delete_projectforinventories,update_projectforinventoriesbulk,view_units,view_projectforadddeal}
+    delete_projectforinventories,update_projectforinventoriesbulk,view_units,view_projectforadddeal,
+  getGroupedDataproject}

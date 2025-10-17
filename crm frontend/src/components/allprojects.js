@@ -29,7 +29,7 @@ function Allprojects() {
 
     // ==========================================fetch all project data start=========================================================
 
-       React.useEffect(()=>{fetchcdata()},[])
+      //  React.useEffect(()=>{fetchcdata()},[])
     
                       const[allprojectforsearch,setallprojectforsearch]=useState([])
                       const[cdata,setcdata]=useState([]);
@@ -43,15 +43,179 @@ function Allprojects() {
                       const[totalprelaunch,settotalprelaunch]=useState()
                       const[totalreadytomove,settotalreadytomove]=useState()
                       const[totalunderconstruction,settotalunderconstrction]=useState()
-                      const fetchcdata=async(event)=>
+
+                    
+
+    //============================================= fetch all project data end===========================================================
+
+
+      //============================== get group data===================================
+    
+      const[groupdata,setgroupdata]=useState([])
+      const get_group_data=async()=>
+      {
+        try {
+          const resp=await api.get('project-getgroupdata')
+          setgroupdata(resp.data)
+          console.log(resp);
+          
+          
+        } catch (error) {
+          console.log(error);
+          
+        }
+      }
+    
+       useEffect(() => {
+        get_group_data();
+      }, []);
+    
+     
+    
+    
+      const [showDropdown, setShowDropdown] = useState(false);
+    
+     
+        const filterRef = useRef();
+    
+     
+    
+    
+    
+      useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (filterRef.current && !filterRef.current.contains(event.target)) {
+            setShowDropdown(false); // close the filter box
+          }
+        };
+    
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+      }, []);
+    
+     
+    
+      const project_fields = [
+        { label: 'Category', field: 'category',values: groupdata?.categories || [],},
+        { label: 'Sub Category', field: 'sub_category',values:groupdata?.subcategories},
+        { label: 'Status', field: 'status',values:groupdata?.statuses },
+        { label: 'Location', field: 'location',values:groupdata?.locations },
+        { label: 'User', field: 'owner',values:groupdata?.users },
+        { label: 'Amenities', field: 'basic_aminities',values:groupdata?.amenities },
+      ];
+     
+        
+    
+      
+        const defaultFields = [
+          // project_fields.find(f => f.field === 'first_name'),
+          // project_fields.find(f => f.field === 'mobile_no')
+        ];
+        
+        const [showFieldDropdown, setShowFieldDropdown] = useState(false);
+         const [activeFilters, setActiveFilters] = useState(
+            defaultFields.map(f => ({
+              ...f,
+              radio: "with",
+              input: "",
+              checked: [],
+            }))
+          );
+        
+             console.log(activeFilters);
+        
+           // Open filter panel, regenerating the defaults (with current city list)
+          function openFilterWithDefaults() {
+            setActiveFilters(
+              defaultFields.map((f) => ({
+                ...f,
+                radio: "with",
+                input: "",
+                checked: []
+              }))
+            );
+            setShow(true);
+          }
+        
+        
+        const [openDropdownIdx, setOpenDropdownIdx] = useState(null);
+        
+        // Add new filter row
+        function handleAddField(fieldObj) {
+          setActiveFilters([
+            ...activeFilters,
+            {
+              ...fieldObj,
+              radio: 'with',
+              input: '',
+              checked: [],
+            }
+          ]);
+          setShowFieldDropdown(false);
+          setOpenDropdownIdx(activeFilters.length);
+        }
+        
+        // Remove filter
+        function handleRemoveFilter(idx) {
+          setActiveFilters(activeFilters => activeFilters.filter((_, i) => i !== idx));
+          if (openDropdownIdx === idx) setOpenDropdownIdx(null);
+        }
+        
+        // Toggle dropdown for a row
+        function handleToggleDropdown(idx) {
+          setOpenDropdownIdx(openDropdownIdx === idx ? null : idx);
+        }
+        
+        // Radio/checkbox/text handlers:
+        function handleRadio(idx, value) {
+          setActiveFilters(filters =>
+            filters.map((f,i) => i === idx ? { ...f, radio: value } : f)
+          );
+        }
+        function handleInput(idx, value) {
+          setActiveFilters(filters =>
+            filters.map((f,i) => i === idx ? { ...f, input: value } : f)
+          );
+        }
+        function handleCheckbox(idx, val) {
+          setActiveFilters(filters =>
+            filters.map((f,i) => {
+              if (i !== idx) return f;
+              const checked = f.checked.includes(val)
+                ? f.checked.filter(v => v !== val)
+                : [...f.checked, val];
+              return { ...f, checked };
+            })
+          );
+        }
+        
+        
+    // ============================filter code end===============================================
+
+
+
+    //========================================== pagination code start===========================================================
+
+    const[total_project,settotal_project]=useState("")
+
+      const fetchcdata=async(page,limit)=>
                       {
                         setIsLoading(true)
                         try {
-                          const resp=await api.get('viewproject')
+
+                           const params = new URLSearchParams();
+                                params.append("page", page);
+                                params.append("limit", limit);
+                            if (activeFilters.length > 0) {
+                              params.append("activeFilters", JSON.stringify(activeFilters));
+                            }
+
+                          const resp=await api.get(`viewproject?${params.toString()}`)
                           console.log(resp);
                           
                           // setcdata(resp.data.project)
-                          setcdata(resp.data.allprojectwithoutunitdetails)
+                          setcdata(resp.data.project)
+                          settotal_project(resp.data.total)
                           setallprojectforsearch(resp.data.project)
                           const countproject=Array.isArray(resp.data.project) ? resp.data.project : [resp.data.project]
                           settotalproject(countproject.length)
@@ -95,17 +259,15 @@ function Allprojects() {
                       
                       }
 
-    //============================================= fetch all project data end===========================================================
-
-    //========================================== pagination code start===========================================================
-
     
                       const [currentPage1, setCurrentPage1] = useState(1);
                       const [itemsPerPage1, setItemsPerPage1] = useState(10); // User-defined items per page
                       const indexOfLastItem1 = currentPage1 * itemsPerPage1;
                       const indexOfFirstItem1 = indexOfLastItem1 - itemsPerPage1;
                       const currentItems2 = cdata?.slice(indexOfFirstItem1, indexOfLastItem1);
-                      const totalPages1 = Math.ceil(cdata?.length / itemsPerPage1);
+                      const totalPages1 = Math.ceil(total_project / itemsPerPage1);
+                       const [windowStartPage, setWindowStartPage] = useState(1);
+                        const maxPageNumbersToShow = 3;
                       
                         // Handle items per page change
                         const handleItemsPerPageChange1 = (e) => {
@@ -131,9 +293,9 @@ function Allprojects() {
                       
                       const renderPageNumbers1 = () => {
                         // Define the range of page numbers to display
-                        const maxPageNumbersToShow1 = 5;
-                        const startPage1 = Math.max(1, currentPage1 - Math.floor(maxPageNumbersToShow1 / 2));
-                        const endPage1 = Math.min(totalPages1, startPage1 + maxPageNumbersToShow1 - 1);
+                       
+                        const startPage1 = Math.max(1, currentPage1 - Math.floor(maxPageNumbersToShow / 2));
+                        const endPage1 = Math.min(totalPages1, startPage1 + maxPageNumbersToShow - 1);
                         
                         return (
                           <div
@@ -180,7 +342,26 @@ function Allprojects() {
                         );
                       };
     
-                     
+                  
+                      
+                  useEffect(() => {
+                        // fetchdata(currentPage, itemsPerPage);
+                    
+                        // If current page moves outside window, adjust windowStartPage
+                        if (currentPage1 < windowStartPage) {
+                          setWindowStartPage(currentPage1);
+                        } else if (currentPage1 >= windowStartPage + maxPageNumbersToShow) {
+                          setWindowStartPage(currentPage1 - maxPageNumbersToShow + 1);
+                        }
+                          const hasFilters = activeFilters && activeFilters.length > 0;
+                           if (hasFilters) {
+                    
+                        fetchcdata(currentPage1, itemsPerPage1, activeFilters);
+                      } else {
+                        // No filters, no search → fetch all
+                        fetchcdata(currentPage1, itemsPerPage1);
+                      }
+                      }, [currentPage1, itemsPerPage1,activeFilters]);
     
 
     //================================================== pagination code end=======================================================
@@ -551,153 +732,7 @@ function Allprojects() {
                   };
     
               
-      //============================== get group data===================================
     
-      const[groupdata,setgroupdata]=useState([])
-      const get_group_data=async()=>
-      {
-        try {
-          const resp=await api.get('contact-getgroupdata')
-          setgroupdata(resp.data)
-          
-          
-        } catch (error) {
-          console.log(error);
-          
-        }
-      }
-    
-       useEffect(() => {
-        get_group_data();
-      }, []);
-    
-     
-    
-    
-      const [showDropdown, setShowDropdown] = useState(false);
-    
-     
-        const filterRef = useRef();
-    
-     
-    
-    
-    
-      useEffect(() => {
-        const handleClickOutside = (event) => {
-          if (filterRef.current && !filterRef.current.contains(event.target)) {
-            setShowDropdown(false); // close the filter box
-          }
-        };
-    
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-      }, []);
-    
-     
-    
-      const contactfields = [
-        
-        { label: 'First Name', field: 'first_name' },
-        { label: 'Last Name', field: 'last_name' },
-        { label: 'Mobile No.', field: 'mobile_no' },
-        { label: 'Email Id', field: 'email' },
-        { label: 'Tags', field: 'tags' },
-        { label: 'Profession', field: 'profession_category',values: groupdata?.profession_categories || [],},
-        { label: 'Profession Sub Category', field: 'profession_subcategory',values:groupdata?.profession_subcategories},
-        { label: 'Owner', field: 'owner',values:groupdata?.owners },
-        { label: 'City', field: 'city1',values:groupdata?.cities },
-        { label: 'State', field: 'state1',values:groupdata?.states },
-        { label: 'Country', field: 'country1',values:groupdata?.countries },
-        { label: 'Industry', field: 'industry',values:groupdata?.industries },
-        { label: 'Team', field: 'team',values:groupdata?.teams },
-      ];
-        
-    
-      
-        const defaultFields = [
-          contactfields.find(f => f.field === 'first_name'),
-          contactfields.find(f => f.field === 'mobile_no')
-        ];
-        
-        const [showFieldDropdown, setShowFieldDropdown] = useState(false);
-         const [activeFilters, setActiveFilters] = useState(
-            defaultFields.map(f => ({
-              ...f,
-              radio: "with",
-              input: "",
-              checked: [],
-            }))
-          );
-        
-        
-           // Open filter panel, regenerating the defaults (with current city list)
-          function openFilterWithDefaults() {
-            setActiveFilters(
-              defaultFields.map((f) => ({
-                ...f,
-                radio: "with",
-                input: "",
-                checked: []
-              }))
-            );
-            setShow(true);
-          }
-        
-        
-        const [openDropdownIdx, setOpenDropdownIdx] = useState(null);
-        
-        // Add new filter row
-        function handleAddField(fieldObj) {
-          setActiveFilters([
-            ...activeFilters,
-            {
-              ...fieldObj,
-              radio: 'with',
-              input: '',
-              checked: [],
-            }
-          ]);
-          setShowFieldDropdown(false);
-          setOpenDropdownIdx(activeFilters.length);
-        }
-        
-        // Remove filter
-        function handleRemoveFilter(idx) {
-          setActiveFilters(activeFilters => activeFilters.filter((_, i) => i !== idx));
-          if (openDropdownIdx === idx) setOpenDropdownIdx(null);
-        }
-        
-        // Toggle dropdown for a row
-        function handleToggleDropdown(idx) {
-          setOpenDropdownIdx(openDropdownIdx === idx ? null : idx);
-        }
-        
-        // Radio/checkbox/text handlers:
-        function handleRadio(idx, value) {
-          setActiveFilters(filters =>
-            filters.map((f,i) => i === idx ? { ...f, radio: value } : f)
-          );
-        }
-        function handleInput(idx, value) {
-          setActiveFilters(filters =>
-            filters.map((f,i) => i === idx ? { ...f, input: value } : f)
-          );
-        }
-        function handleCheckbox(idx, val) {
-          setActiveFilters(filters =>
-            filters.map((f,i) => {
-              if (i !== idx) return f;
-              const checked = f.checked.includes(val)
-                ? f.checked.filter(v => v !== val)
-                : [...f.checked, val];
-              return { ...f, checked };
-            })
-          );
-        }
-        
-        
-    // ============================filter code end===============================================
 
 
 
@@ -730,8 +765,7 @@ function Allprojects() {
                   <FilterListIcon style={{ fontSize: 22 }} />
                 </button>
               </Tooltip>
-
-  {/*===================================== filter================================================== */}
+{/*===================================== filter================================================== */}
 
 
 <div
@@ -837,7 +871,7 @@ function Allprojects() {
 
   {showFieldDropdown && (
     <div className="bg-white border border-gray-200 rounded-md mb-4 overflow-auto h-52">
-      {contactfields
+      {project_fields
         .filter(f => !activeFilters.some(af => af.field === f.field))
         .map(fieldObj => (
           <div
@@ -1157,7 +1191,7 @@ function Allprojects() {
 </div>
 
 
-<div style={{display:"flex",fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"75%",position:"absolute"}}>
+<div style={{display:"flex",fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"65%",position:"absolute"}}>
 
 <label htmlFor="itemsPerPage" style={{fontSize:"16px"}}>Items: </label>
 <select id="itemsPerPage" value={itemsPerPage1} onChange={handleItemsPerPageChange1} style={{fontSize:"16px",height:"30px"}}>
@@ -1238,7 +1272,7 @@ function Allprojects() {
       <tbody>
         {
          
-        currentItems2.map ((item, index) => (
+        cdata.map ((item, index) => (
           <StyledTableRow key={index}>
             <StyledTableCell >
               <input 
@@ -1301,7 +1335,7 @@ function Allprojects() {
   </TableContainer>
     <footer style={{height:"50px",width:"100%",position:"sticky",display:"flex",gap:"50px",bottom:"0",backgroundColor:"#f8f9fa",marginLeft:"10px"}}>
           <h5 style={{lineHeight:"50px",color:"GrayText"}}>Summary</h5>
-          <h6 style={{lineHeight:"50px"}}>Total Project <span style={{color:"green",fontSize:"20px"}}>{totalproject}</span></h6>
+          <h6 style={{lineHeight:"50px"}}>Total Project <span style={{color:"green",fontSize:"20px"}}>{total_project}</span></h6>
           <h6 style={{lineHeight:"50px"}}>Ready To Move <span style={{color:"blue",fontSize:"20px"}}>{totalreadytomove}</span></h6>
           <h6 style={{lineHeight:"50px"}}>Under Construction <span style={{color:"red",fontSize:"20px"}}>{totalunderconstruction}</span></h6>
           <h6 style={{lineHeight:"50px"}}>Pre Launch <span style={{color:"gray",fontSize:"20px"}}>{totalprelaunch}</span></h6>
@@ -1313,13 +1347,23 @@ function Allprojects() {
 
           </div>
       <ToastContainer/>
-        <>
-             {isLoading && (
-               <div>
-                <UniqueLoader/>
-               </div>
-             )}
-           </>
+       <>
+                   {isLoading && (
+                     <div 
+                     style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: "100vw",
+                      height: "100vh",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 9999,}}>
+                      <UniqueLoader/>
+                     </div>
+                   )}
+                 </>
     </div>
   )
 }

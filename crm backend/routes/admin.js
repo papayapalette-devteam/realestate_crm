@@ -15,7 +15,7 @@ const {booking_details,view_booking} = require('../controllers/booking_details')
 const {addpayment_details,view_payment} = require('../controllers/addpayment_details');
 const {inventory_details,view_inventory, remove_inventory, view_inventory_Bydeveloper, view_inventory_Bylocation, update_inventory}=require('../controllers/addinventory');
 const send_mail = require('../controllers/sendmail');
-const {createProject,view_project, view_projectbyname, view_projectbycityname, remove_project, view_project_Byid, update_project, view_projectforinventories, update_projectforinventories, update_projectaddunit, delete_projectforinventories, update_projectforinventoriesbulk, view_units, view_projectforadddeal} = require('../controllers/project');
+const {createProject,view_project, view_projectbyname, view_projectbycityname, remove_project, view_project_Byid, update_project, view_projectforinventories, update_projectforinventories, update_projectaddunit, delete_projectforinventories, update_projectforinventoriesbulk, view_units, view_projectforadddeal, getGroupedDataproject} = require('../controllers/project');
 const { add_deal, view_deal, view_deal_Bystage, remove_deal, update_deal, view_deal_Byid, update_dealbysingle, update_dealbyowner, update_dealbyprojectandunit, view_deal_Byproject, update_dealbyprojectandunitforownerdetails, getUnitDetails,updateMany, dealupdatemany,getGroupedDatadeal } = require('../controllers/add_deal');
  const uploadFields = require('../middlewares/multifile');
 const upload1 = require('../middlewares/multifile');
@@ -89,6 +89,9 @@ router.get('/viewprojectbyid/:_id',view_project_Byid)
 router.get('/viewprojectbyname/:name',view_projectbyname)
 router.get('/viewprojectbycityname/:city',view_projectbycityname)
 router.get('/viewprojectforinventories/:project_name/:unit_no/:block', view_projectforinventories);
+
+router.get('/project-getgroupdata',getGroupedDataproject)
+
 router.put('/updateprojectforinventories/:project_name/:unit_no/:block',uploadFields, update_projectforinventories);
 router.put('/updateprojectforinventoriesbulk',uploadFields, update_projectforinventoriesbulk);
 router.delete('/deleteprojectforinventories/:project_name/:unit_no/:block', delete_projectforinventories);
