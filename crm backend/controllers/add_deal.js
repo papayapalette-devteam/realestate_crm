@@ -55,14 +55,13 @@ const add_deal = async (req, res) => {
   
 
 
-    const view_deal=async(req,res)=>
-        {
-            try {
+const view_deal = async (req, res) => {
+  try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-        // 🔹 Parse filters from query
+    // 🔹 Parse filters from query
     let activeFilters = [];
     if (req.query.activeFilters) {
       try {
@@ -72,15 +71,96 @@ const add_deal = async (req, res) => {
       }
     }
 
-    // 🔹 Build MongoDB match query
+    // 🔹 Define static label mappings
+    const priceLabelMap = {
+      "₹0 - ₹10 Lakh": { min: 0, max: 1000000 },
+      "₹10 Lakh - ₹25 Lakh": { min: 1000001, max: 2500000 },
+      "₹25 Lakh - ₹50 Lakh": { min: 2500001, max: 5000000 },
+      "₹50 Lakh - ₹1 Crore": { min: 5000001, max: 10000000 },
+      "₹1 Crore - ₹2 Crore": { min: 10000001, max: 20000000 },
+      "₹2 Crore+": { min: 20000001, max: Infinity },
+    };
+
+const sizeLabelMap = [
+  { label: "0 - 100 Sq Yard", min: 0, max: 100 },
+  { label: "101 - 200 Sq Yard", min: 101, max: 200 },
+  { label: "201 - 300 Sq Yard", min: 201, max: 300 },
+  { label: "301 - 500 Sq Yard", min: 301, max: 500 },
+  { label: "500+ Sq Yard", min: 501, max: Infinity },
+];
+
+
+    console.log(activeFilters);
+    
     let matchStage = {};
 
     if (activeFilters.length > 0) {
+      const orConditions = [];
+
       activeFilters.forEach((filter) => {
         const field = filter.field;
 
-        // ✅ Case 1: Checkbox filters
-        if (Array.isArray(filter.checked) && filter.checked.length > 0) {
+        // ✅ Handle Expected / Quote Price
+        if (
+          (field === "expected_price" || field === "quote_price") &&
+          Array.isArray(filter.checked) &&
+          filter.checked.length > 0
+        ) {
+          const rangeFilters = filter.checked
+            .map((label) => priceLabelMap[label])
+            .filter(Boolean);
+
+          rangeFilters.forEach((range) => {
+            const min = Number(range.min);
+            const max = Number(range.max);
+
+            if (max === Infinity) {
+              orConditions.push({
+                $expr: {
+                  $gte: [
+                    { $convert: { input: `$${field}`, to: "double", onError: 0, onNull: 0 } },
+                    min,
+                  ],
+                },
+              });
+            } else {
+              orConditions.push({
+                $expr: {
+                  $and: [
+                    { $gte: [{ $convert: { input: `$${field}`, to: "double", onError: 0, onNull: 0 } }, min] },
+                    { $lte: [{ $convert: { input: `$${field}`, to: "double", onError: 0, onNull: 0 } }, max] },
+                  ],
+                },
+              });
+            }
+          });
+        }
+
+        // ✅ Handle Size Range (usize)
+else if (field === "usize" && Array.isArray(filter.checked) && filter.checked.length > 0) {
+  const rangeFilters = filter.checked
+    .map((label) => sizeLabelMap[label])
+    .filter(Boolean);
+
+  rangeFilters.forEach((range) => {
+    const min = Number(range.min);
+    const max = Number(range.max);
+
+    if (max === Infinity) {
+      orConditions.push({
+        $expr: { $gte: ["$usize_num", min] }
+      });
+    } else {
+      orConditions.push({
+        $expr: { $and: [{ $gte: ["$usize_num", min] }, { $lte: ["$usize_num", max] }] }
+      });
+    }
+  });
+}
+
+
+        // ✅ Normal checkbox filters
+        else if (Array.isArray(filter.checked) && filter.checked.length > 0) {
           const cleanValues = filter.checked.filter(
             (v) => v !== null && v !== undefined && v !== ""
           );
@@ -94,7 +174,7 @@ const add_deal = async (req, res) => {
           }
         }
 
-        // ✅ Case 2: Text input filters
+        // ✅ Text filters
         if (filter.input && filter.input.trim() !== "") {
           const regex = new RegExp(filter.input.trim(), "i");
           if (filter.radio === "with") {
@@ -104,23 +184,40 @@ const add_deal = async (req, res) => {
           }
         }
       });
+
+      // Merge all $or conditions (price + size)
+      if (orConditions.length > 0) {
+        matchStage.$or = orConditions;
+      }
     }
 
-                const resp=await adddeal.find(matchStage)
-                .sort({ createdAt: -1 })
-                .skip(skip)
-                .limit(limit)
-                 .populate('owner_details')  
-                .populate('associated_contact').populate('matchedleads'); 
-    
-      const total = await adddeal.countDocuments(matchStage);
+    // 🔹 Query data
+    const resp = await adddeal
+      .find(matchStage)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("owner_details")
+      .populate("associated_contact")
+      .populate("matchedleads");
+
+    const total = await adddeal.countDocuments(matchStage);
     const totalPages = Math.ceil(total / limit);
-              
-                res.status(200).send({message:"deal details fetch successfully",deal:resp,total:total,totalpages:totalPages})
-            } catch (error) {
-                console.log(error)
-            }
-        }
+
+    res.status(200).send({
+      message: "Deal details fetched successfully",
+      deal: resp,
+      total,
+      totalpages: totalPages,
+    });
+  } catch (error) {
+    console.error("Error in view_deal:", error);
+    res.status(500).send({ success: false, message: error.message });
+  }
+};
+
+
+
 
         const view_deal_Bystage=async(req,res)=>
             {
@@ -372,11 +469,24 @@ const add_deal = async (req, res) => {
                                                     }
                               
                  
-// Aggregate to get grouped data
-// Get grouped data for dropdowns
+
+
 const getGroupedDatadeal = async (req, res) => {
   try {
     const groupedData = await adddeal.aggregate([
+      {
+        $addFields: {
+          expected_price_num: {
+            $convert: { input: { $ifNull: ["$expected_price", "0"] }, to: "double", onError: 0, onNull: 0 },
+          },
+          quote_price_num: {
+            $convert: { input: { $ifNull: ["$quote_price", "0"] }, to: "double", onError: 0, onNull: 0 },
+          },
+          usize_num: {
+            $convert: { input: { $ifNull: ["$usize", "0"] }, to: "double", onError: 0, onNull: 0 },
+          },
+        },
+      },
       {
         $group: {
           _id: null,
@@ -389,11 +499,18 @@ const getGroupedDatadeal = async (req, res) => {
           quote_price: { $addToSet: "$quote_price" },
           project: { $addToSet: "$project" },
           block: { $addToSet: "$block" },
-          location: { $addToSet: "$ulocality" }, // renamed for clarity
+          location: { $addToSet: "$ulocality" },
           deal_type: { $addToSet: "$deal_type" },
           team: { $addToSet: "$team" },
           source: { $addToSet: "$source" },
           user: { $addToSet: "$user" },
+          // ✅ Numeric min & max
+          minExpectedPrice: { $min: "$expected_price_num" },
+          maxExpectedPrice: { $max: "$expected_price_num" },
+          minQuotePrice: { $min: "$quote_price_num" },
+          maxQuotePrice: { $max: "$quote_price_num" },
+          minSize: { $min: "$usize_num" },
+          maxSize: { $max: "$usize_num" },
         },
       },
       {
@@ -413,19 +530,55 @@ const getGroupedDatadeal = async (req, res) => {
           team: 1,
           source: 1,
           user: 1,
+          minExpectedPrice: 1,
+          maxExpectedPrice: 1,
+          minQuotePrice: 1,
+          maxQuotePrice: 1,
+          minSize: 1,
+          maxSize: 1,
         },
       },
     ]);
 
-    res.status(200).json(groupedData[0] || {});
+    const data = groupedData[0] || {};
+
+    // ✅ Static ranges
+    const priceRanges = [
+      { label: "₹0 - ₹10 Lakh", min: 0, max: 1000000 },
+      { label: "₹10 Lakh - ₹25 Lakh", min: 1000001, max: 2500000 },
+      { label: "₹25 Lakh - ₹50 Lakh", min: 2500001, max: 5000000 },
+      { label: "₹50 Lakh - ₹1 Crore", min: 5000001, max: 10000000 },
+      { label: "₹1 Crore - ₹2 Crore", min: 10000001, max: 20000000 },
+      { label: "₹2 Crore+", min: 20000001, max: Infinity },
+    ];
+
+    const sizeRanges = [
+      { label: "0 - 500 sq.ft", min: 0, max: 500 },
+      { label: "500 - 1000 sq.ft", min: 500, max: 1000 },
+      { label: "1000 - 2000 sq.ft", min: 1000, max: 2000 },
+      { label: "2000 - 3000 sq.ft", min: 2000, max: 3000 },
+      { label: "3000+", min: 3000, max: Infinity },
+    ];
+
+    // ✅ Attach static ranges
+    data.expected_price_ranges = priceRanges;
+    data.quote_price_ranges = priceRanges;
+    data.usize_ranges = sizeRanges;
+
+    res.status(200).json(data);
   } catch (err) {
     console.error("Error fetching grouped data:", err);
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Error fetching grouped data",
+      error: err.message,
+    });
   }
 };
 
 
-    
+
+
     module.exports={add_deal,view_deal,view_deal_Bystage,remove_deal,update_deal,view_deal_Byid,update_dealbysingle,update_dealbyowner,
         update_dealbyprojectandunit,view_deal_Byproject,update_dealbyprojectandunitforownerdetails,getUnitDetails,dealupdatemany,
         getGroupedDatadeal

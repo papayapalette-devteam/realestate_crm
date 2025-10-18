@@ -676,6 +676,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     try {
       const resp=await api.get('deal-getgroupdata')
       setgroupdata(resp.data)
+      console.log(resp);
       
       
     } catch (error) {
@@ -688,7 +689,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     get_group_data();
   }, []);
 
- console.log(groupdata);
+
  
 
 
@@ -714,20 +715,32 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
  
 
-  const dealfields = [
-    
-    { label: 'Available For', field: 'available_for',values: groupdata?.available_for || [] },
-    { label: 'Category', field: 'ucategory',values: groupdata?.ucategory || []  },
-    { label: 'Sub Category', field: 'usub_category',values: groupdata?.usub_category || []  },
-    { label: 'Unit Type', field: 'utype',values: groupdata?.utype || [] },
-    { label: 'Size', field: 'usize',values: groupdata?.usize || []  },
-    { label: 'Expected Price', field: 'expected_price',values: groupdata?.expected_price || [],},
-    { label: 'Quote Price', field: 'quote_price',values:groupdata?.quote_price || []},
-    { label: 'Project', field: 'project',values:groupdata?.project || [] },
-    { label: 'Block', field: 'block',values:groupdata?.block || [] },
-    { label: 'Location', field: 'location',values:groupdata?.location || [] },
-    { label: 'Deal Type', field: 'deal_type',values:groupdata?.deal_type || [] },
-  ];
+const dealfields = [
+  { label: 'Available For', field: 'available_for', values: groupdata?.available_for || [] },
+  { label: 'Category', field: 'ucategory', values: groupdata?.ucategory || [] },
+  { label: 'Sub Category', field: 'usub_category', values: groupdata?.usub_category || [] },
+  { label: 'Unit Type', field: 'utype', values: groupdata?.utype || [] },
+  {
+    label: 'Size',
+    field: 'usize',
+    values: groupdata?.usize_ranges?.map(r => r.label) || [],
+  },
+  {
+    label: 'Expected Price',
+    field: 'expected_price',
+    values: groupdata?.expected_price_ranges?.map(r => r.label) || [],
+  },
+  {
+    label: 'Quote Price',
+    field: 'quote_price',
+    values: groupdata?.quote_price_ranges?.map(r => r.label) || [],
+  },
+  { label: 'Project', field: 'project', values: groupdata?.project || [] },
+  { label: 'Block', field: 'block', values: groupdata?.block || [] },
+  { label: 'Location', field: 'location', values: groupdata?.location || [] },
+  { label: 'Deal Type', field: 'deal_type', values: groupdata?.deal_type || [] },
+];
+
     
 
   
@@ -4300,7 +4313,7 @@ const handleTimeChangemail = (e) => {
           </TableContainer>
             <footer style={{height:"50px",width:"100%",position:"sticky",display:"flex",gap:"40px",bottom:"0",backgroundColor:"#f8f9fa",marginLeft:"10px"}}>
                   <h5 style={{lineHeight:"50px",color:"GrayText"}}>Summary</h5>
-                  <h6 style={{lineHeight:"50px"}}>Total Deals <span style={{color:"green",fontSize:"20px"}}>{data.length}</span></h6>
+                  <h6 style={{lineHeight:"50px"}}>Total Deals <span style={{color:"green",fontSize:"20px"}}>{total_data}</span></h6>
                 </footer>
               </div>
             {/* <div style={{height:"100px"}}>
