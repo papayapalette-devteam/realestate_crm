@@ -88,14 +88,12 @@ const add_contact = async (req, res) => {
     }
 };
 
-   const view_contact = async (req, res) => {
+const view_contact = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-  
-    
     // 🔹 Parse filters from query
     let activeFilters = [];
     if (req.query.activeFilters) {
@@ -106,6 +104,8 @@ const add_contact = async (req, res) => {
       }
     }
 
+   
+    
     // 🔹 Build MongoDB match query
     let matchStage = {};
 
@@ -137,8 +137,38 @@ const add_contact = async (req, res) => {
             matchStage[field] = { $not: regex };
           }
         }
+
+        // ✅ Case 3: Date range filters
+        if (
+          filter.type === "date-range" &&
+          filter.dateRange &&
+          (filter.dateRange.from || filter.dateRange.to)
+        ) {
+          const fromDate = filter.dateRange.from
+            ? new Date(filter.dateRange.from)
+            : null;
+          const toDate = filter.dateRange.to
+            ? new Date(filter.dateRange.to)
+            : null;
+
+          // Ensure valid date range query
+          if (fromDate && toDate) {
+            matchStage[field] = {
+              $gte: fromDate,
+              $lte: new Date(toDate.setHours(23, 59, 59, 999)), // include full day
+            };
+          } else if (fromDate) {
+            matchStage[field] = { $gte: fromDate };
+          } else if (toDate) {
+            matchStage[field] = {
+              $lte: new Date(toDate.setHours(23, 59, 59, 999)),
+            };
+          }
+        }
       });
     }
+
+     
 
     // 🔹 Fetch contacts with filters + pagination
     const contacts = await addcontact
@@ -163,6 +193,7 @@ const add_contact = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
           const view_contact_for_editproject=async(req,res)=>

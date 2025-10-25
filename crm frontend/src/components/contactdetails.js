@@ -277,28 +277,38 @@ function Fetchcontact() {
 
  
 
-  const contactfields = [
-    
-    { label: 'First Name', field: 'first_name' },
-    { label: 'Last Name', field: 'last_name' },
-    { label: 'Mobile No.', field: 'mobile_no' },
-    { label: 'Email Id', field: 'email' },
-    { label: 'Tags', field: 'tags' },
-    { label: 'Profession', field: 'profession_category',values: groupdata?.profession_categories || [],},
-    { label: 'Profession Sub Category', field: 'profession_subcategory',values:groupdata?.profession_subcategories},
-    { label: 'Owner', field: 'owner',values:groupdata?.owners },
-    { label: 'City', field: 'city1',values:groupdata?.cities },
-    { label: 'State', field: 'state1',values:groupdata?.states },
-    { label: 'Country', field: 'country1',values:groupdata?.countries },
-    { label: 'Industry', field: 'industry',values:groupdata?.industries },
-    { label: 'Team', field: 'team',values:groupdata?.teams },
+   const contactfields = [
+
+    {
+      label: "Profession",
+      field: "profession_category",
+      values: groupdata?.profession_categories || [],
+    },
+    {
+      label: "Profession Sub Category",
+      field: "profession_subcategory",
+      values: groupdata?.profession_subcategories,
+    },
+    { label: "Owner", field: "owner", values: groupdata?.owners },
+    { label: "City", field: "city1", values: groupdata?.cities },
+    { label: "State", field: "state1", values: groupdata?.states },
+    { label: "Country", field: "country1", values: groupdata?.countries },
+    { label: "Industry", field: "industry", values: groupdata?.industries },
+    { label: "Team", field: "team", values: groupdata?.teams },
+
+    // === Added Date Range Fields ===
+    { label: "Add Date", field: "createdAt", type: "date-range" },
+    { label: "Communication Date", field: "communication_date", type: "date-range" },
+    { label: "Assigned Date", field: "assigned_date", type: "date-range" },
+    { label: "Last Activity Date", field: "last_activity_date", type: "date-range" },
+    { label: "Converted Contact Date", field: "converted_contact_date", type: "date-range" },
   ];
     
 
   
     const defaultFields = [
-      contactfields.find(f => f.field === 'first_name'),
-      contactfields.find(f => f.field === 'mobile_no')
+      contactfields.find(f => f.field === 'createdAt'),
+      contactfields.find(f => f.field === 'last_activity_date')
     ];
     
     const [showFieldDropdown, setShowFieldDropdown] = useState(false);
@@ -308,6 +318,7 @@ function Fetchcontact() {
           radio: "with",
           input: "",
           checked: [],
+          dateRange: { from: "", to: "" },
         }))
       );
     
@@ -377,6 +388,14 @@ function Fetchcontact() {
       );
     }
     
+
+    const handleDateRangeChange = (idx, field, value) => {
+    setActiveFilters((filters) =>
+      filters.map((f, i) =>
+        i === idx ? { ...f, dateRange: { ...f.dateRange, [field]: value } } : f
+      )
+    );
+  };
     
   
 
@@ -3632,123 +3651,155 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
 {/* ==================================filter ===============================================*/}
 
 
-<div
-  ref={filterRef}
-  className={`feedback-toast ${show ? (isClosing ? "hide" : "show") : ""} 
-    mt-2 w-[300px] h-screen bg-white rounded-xl shadow-lg p-3 
-    overflow-y-auto overflow-x-auto`}
->
-  {/* Header */}
-  <h3
-    className="text-sm m-0 px-4 py-3 text-left text-black border-b border-gray-300 tracking-wide flex justify-between items-center"
-  >
-    🔍 Filter Contact
-    <button
-    onClick={handleCancel}
-      className="ml-auto bg-white px-3 py-1 text-sm border-0 text-red-500 hover:text-red-700"
+ <div
+      ref={filterRef}
+      className={`feedback-toast ${
+        show ? (isClosing ? "hide" : "show") : ""
+      } mt-2 w-[300px] h-screen bg-white rounded-xl shadow-lg p-3 overflow-y-auto overflow-x-auto`}
     >
-      ❌
-    </button>
-  </h3>
+      {/* Header */}
+      <h3 className="text-sm m-0 px-4 py-3 text-left text-black border-b border-gray-300 tracking-wide flex justify-between items-center">
+        🔍 Filter Contact
+        <button
+          onClick={handleCancel}
+          className="ml-auto bg-white px-3 py-1 text-sm border-0 text-red-500 hover:text-red-700"
+        >
+          ❌
+        </button>
+      </h3>
 
-  {/* Active Filter Rows */}
-  {activeFilters.map((item, idx) => (
-    <div
-      key={item.field}
-      className="bg-[#f8f9fb] rounded-lg mb-3 p-3"
-    >
-      <div className="flex items-center justify-between">
-        <p className="m-0 font-normal text-xs">{item.label}</p>
-        <div className="flex items-center gap-2">
-          <button
-            className="bg-transparent border-0 cursor-pointer text-xs"
-            onClick={() => handleToggleDropdown(idx)}
-          >
-            {openDropdownIdx === idx ? "▲" : "▼"}
-          </button>
-          <button
-            className="bg-transparent border-0 text-red-500 text-lg font-normal cursor-pointer"
-            onClick={() => handleRemoveFilter(idx)}
-          >
-            ×
-          </button>
-        </div>
-      </div>
-
-      {/* Dropdown contents */}
-      {openDropdownIdx === idx && (
-        <div className="bg-white border border-gray-200 rounded-lg mt-2 p-3">
-          <div className="flex gap-4 mb-2">
-            <label className="text-xs">
-              <input
-                type="radio"
-                checked={item.radio === "with"}
-                onChange={() => handleRadio(idx, "with")}
-                className="mr-1"
-              />
-              With
-            </label>
-            <label className="text-xs">
-              <input
-                type="radio"
-                checked={item.radio === "without"}
-                onChange={() => handleRadio(idx, "without")}
-                className="mr-1"
-              />
-              Without
-            </label>
+      {/* Active Filters */}
+      {activeFilters.map((item, idx) => (
+        <div key={item.field} className="bg-[#f8f9fb] rounded-lg mb-3 p-3">
+          <div className="flex items-center justify-between">
+            <p className="m-0 font-normal text-xs">{item.label}</p>
+            <div className="flex items-center gap-2">
+              <button
+                className="bg-transparent border-0 cursor-pointer text-xs"
+                onClick={() => handleToggleDropdown(idx)}
+              >
+                {openDropdownIdx === idx ? "▲" : "▼"}
+              </button>
+              <button
+                className="bg-transparent border-0 text-red-500 text-lg font-normal cursor-pointer"
+                onClick={() => handleRemoveFilter(idx)}
+              >
+                ×
+              </button>
+            </div>
           </div>
-          <input
-            type="text"
-            value={item.input}
-            onChange={e => handleInput(idx, e.target.value)}
-            placeholder={`Type for ${item.label}`}
-            className="w-full mb-2 px-2 py-1 border border-gray-300 rounded-md text-xs"
-          />
-          {item.values?.length > 0 && (
-            <div className="max-h-32 overflow-y-auto bg-[#fcfdff] px-2 py-1 rounded-md text-xs">
-              {item.values.map(val => (
-                <label key={val} className="block my-1 text-xs">
+
+          {/* Dropdown Contents */}
+          {openDropdownIdx === idx && (
+            <div className="bg-white border border-gray-200 rounded-lg mt-2 p-3">
+              {/* Radio Options */}
+              {item.type !== "date-range" && (
+                <div className="flex gap-4 mb-2">
+                  <label className="text-xs">
+                    <input
+                      type="radio"
+                      checked={item.radio === "with"}
+                      onChange={() => handleRadio(idx, "with")}
+                      className="mr-1"
+                    />
+                    With
+                  </label>
+                  <label className="text-xs">
+                    <input
+                      type="radio"
+                      checked={item.radio === "without"}
+                      onChange={() => handleRadio(idx, "without")}
+                      className="mr-1"
+                    />
+                    Without
+                  </label>
+                </div>
+              )}
+
+              {/* Text or Checkbox Filter */}
+              {item.type !== "date-range" && (
+                <>
                   <input
-                    type="checkbox"
-                    checked={item.checked.includes(val)}
-                    onChange={() => handleCheckbox(idx, val)}
-                    className="mr-2"
+                    type="text"
+                    value={item.input}
+                    onChange={(e) => handleInput(idx, e.target.value)}
+                    placeholder={`Type for ${item.label}`}
+                    className="w-full mb-2 px-2 py-1 border border-gray-300 rounded-md text-xs"
                   />
-                  {val}
-                </label>
-              ))}
+                  {item.values?.length > 0 && (
+                    <div className="max-h-32 overflow-y-auto bg-[#fcfdff] px-2 py-1 rounded-md text-xs">
+                      {item.values.map((val) => (
+                        <label key={val} className="block my-1 text-xs">
+                          <input
+                            type="checkbox"
+                            checked={item.checked.includes(val)}
+                            onChange={() => handleCheckbox(idx, val)}
+                            className="mr-2"
+                          />
+                          {val}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Date Range Picker */}
+              {item.type === "date-range" && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <label>
+                    From:
+                    <input
+                      type="date"
+                      value={item.dateRange?.from || ""}
+                      onChange={(e) =>
+                        handleDateRangeChange(idx, "from", e.target.value)
+                      }
+                      className="ml-2 px-2 py-1 border border-gray-300 rounded-md text-xs w-full"
+                    />
+                  </label>
+                  <label>
+                    To:
+                    <input
+                      type="date"
+                      value={item.dateRange?.to || ""}
+                      onChange={(e) =>
+                        handleDateRangeChange(idx, "to", e.target.value)
+                      }
+                      className="ml-2 px-2 py-1 border border-gray-300 rounded-md text-xs w-full"
+                    />
+                  </label>
+                </div>
+              )}
             </div>
           )}
         </div>
+      ))}
+
+      {/* Add Field Section */}
+      <button
+        className="py-2 px-5 bg-blue-600 text-white rounded-md font-normal mb-4 cursor-pointer mt-5 w-full"
+        onClick={() => setShowFieldDropdown((s) => !s)}
+      >
+        + Add Field
+      </button>
+
+      {showFieldDropdown && (
+        <div className="bg-white border border-gray-200 rounded-md mb-4 overflow-auto h-52">
+          {contactfields
+            .filter((f) => !activeFilters.some((af) => af.field === f.field))
+            .map((fieldObj) => (
+              <div
+                key={fieldObj.field}
+                className="p-2 cursor-pointer hover:bg-gray-100 text-sm"
+                onClick={() => handleAddField(fieldObj)}
+              >
+                {fieldObj.label}
+              </div>
+            ))}
+        </div>
       )}
     </div>
-  ))}
-
-  {/* Add Field Section */}
-  <button
-    className="py-2 px-5 bg-blue-600 text-white rounded-md font-normal mb-4 cursor-pointer mt-5 w-full"
-    onClick={() => setShowFieldDropdown(s => !s)}
-  >
-    + Add Field
-  </button>
-
-  {showFieldDropdown && (
-    <div className="bg-white border border-gray-200 rounded-md mb-4 overflow-auto h-52">
-      {contactfields
-        .filter(f => !activeFilters.some(af => af.field === f.field))
-        .map(fieldObj => (
-          <div
-            key={fieldObj.field}
-            className="p-2 cursor-pointer hover:bg-gray-100 text-sm"
-            onClick={() => handleAddField(fieldObj)}
-          >
-            {fieldObj.label}
-          </div>
-        ))}
-    </div>
-  )}
-</div>
 
 
 
