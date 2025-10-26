@@ -115,6 +115,8 @@ const {
   getGroupedDataproject,
   getGroupedUnitData,
   view_project_units,
+  checkDuplicatesController,
+  addUnitsToProject,
 } = require("../controllers/project");
 const {
   add_deal,
@@ -250,6 +252,8 @@ router.get("/searchlead", searchlead);
 //============================================= all routing for lead end=======================================================
 
 router.post("/project", uploadFields, createProject);
+router.post("/check-duplicates",  checkDuplicatesController);
+router.post("/add-units",  addUnitsToProject);
 router.get("/viewproject", view_project);
 router.get("/viewprojectforadddeal", view_projectforadddeal);
 router.get("/viewallunits", view_units);

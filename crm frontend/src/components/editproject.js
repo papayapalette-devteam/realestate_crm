@@ -3071,287 +3071,460 @@ const normalizeMobile = (mobile) => {
 //   }
 // };
 
+// const checkForDuplicates = async (contacts) => {
+//   try {
+//     setIsLoading(true);
+
+//     // Existing project units (indexing for faster lookup)
+//     const allUnitsResp = await api.get(`viewprojectunits/${id}`); // 👈 no limit or page
+//     console.log(allUnitsResp);
+    
+//     const allunits = allUnitsResp.data.project || [];
+//     const unitKeySet = new Set(
+//       allunits.map(
+//         (u) => `${u.project_name}|${u.unit_no}|${u.block}`
+//       )
+//     );
+
+//     console.log(allunits);
+    
+
+//     // Fetch all contacts once
+//     const { data } = await api.get("viewcontact-for-edit-project");
+  
+//     const contactList = data.allcontact || [];
+
+//     // Build a lookup: mobile_no → contactId
+//     const mobileToIdMap = new Map();
+//     for (const c of contactList) {
+//       if (Array.isArray(c.mobile_no)) {
+//         for (const mobile of c.mobile_no) {
+//           const normalized = normalizeMobile(mobile);
+//           if (normalized) mobileToIdMap.set(normalized, c._id);
+//         }
+//       }
+//     }
+
+//     const newContacts = [];
+//     const duplicates = [];
+//     const newContactList = [];
+
+//     for (const contact of contacts) {
+//       let updatedOwnerDetails = [];
+//       let updatedAssociatedContact = [];
+
+//       // ✅ Owner details
+//       if (Array.isArray(contact.owner_details)) {
+//         updatedOwnerDetails = contact.owner_details
+//           .map((m) => mobileToIdMap.get(normalizeMobile(m)))
+//           .filter(Boolean);
+//       } else if (contact.owner_details) {
+//         const id = mobileToIdMap.get(normalizeMobile(contact.owner_details));
+//         if (id) {
+//           updatedOwnerDetails = [id];
+//         } else {
+//           newContactList.push({
+//             title: contact.owner_title,
+//             first_name: contact.owner_first_name || "",
+//             last_name: contact.owner_last_name || "",
+//             country_code: contact.owner_country_code || [],
+//             mobile_no: contact.owner_mobile_no || [],
+//             mobile_type: contact.owner_mobile_type || [],
+//             email: contact.owner_email || [],
+//             email_type: contact.owner_email_type || [],
+//             father_husband_name: contact.owner_father_name,
+//             h_no: contact.owner_hno,
+//             area1: contact.owner_area,
+//             location1: contact.owner_location,
+//             city1: contact.owner_city,
+//             pincode1: contact.owner_pincode,
+//             state1: contact.owner_state,
+//             country1: contact.owner_country,
+//           });
+//         }
+//       }
+
+//       // ✅ Associated contact
+//       if (Array.isArray(contact.associated_contact)) {
+//         updatedAssociatedContact = contact.associated_contact
+//           .map((m) => mobileToIdMap.get(normalizeMobile(m)))
+//           .filter(Boolean);
+//       } else if (contact.associated_contact) {
+//         const id = mobileToIdMap.get(
+//           normalizeMobile(contact.associated_contact)
+//         );
+//         if (id) {
+//           updatedAssociatedContact = [id];
+//         } else {
+//           newContactList.push({
+//             title: contact.associated_title,
+//             first_name: contact.associated_first_name || "",
+//             last_name: contact.associated_last_name || "",
+//             mobile_no: contact.associated_mobile_no || [],
+//             mobile_type: contact.associated_mobile_type || [],
+//             country_code: contact.associated_country_code || [],
+//             email: contact.associated_email || [],
+//             email_type: contact.associated_email_type || [],
+//             father_husband_name: contact.associated_father_name,
+//             h_no: contact.associated_hno,
+//             area1: contact.associated_area,
+//             location1: contact.associated_location,
+//             city1: contact.associated_city,
+//             pincode1: contact.associated_pincode,
+//             state1: contact.associated_state,
+//             country1: contact.associated_country,
+//           });
+//         }
+//       }
+
+//       // ✅ Unit key comparison in O(1)
+//       const unitKey = `${contact.project_name}|${contact.unit_no}|${contact.block}`;
+//       const unitDetails = {
+//         ...contact,
+//         owner_details: updatedOwnerDetails,
+//         associated_contact: updatedAssociatedContact,
+//       };
+
+//       if (unitKeySet.has(unitKey)) {
+//         duplicates.push(unitDetails);
+//       } else {
+//         newContacts.push(unitDetails);
+//       }
+//     }
+
+//     // ✅ If new contacts need confirmation
+//     if (newContactList.length > 0) {
+//       const contactListHtml = newContactList
+//         .map((c) => `<li>${c.title} ${c.first_name} ${c.last_name}</li>`)
+//         .join("");
+
+//       Swal.fire({
+//         title: "Are you sure?",
+//         icon: "warning",
+//         html: `
+//           <p>Do you want to add <strong>${newContactList.length}</strong> new contacts?</p>
+//           <details style="text-align: left; margin-top: 10px;">
+//             <summary style="cursor: pointer; font-weight: bold;">View contact list</summary>
+//             <ul style="margin-top: 10px;">${contactListHtml}</ul>
+//           </details>
+//         `,
+//         showCancelButton: true,
+//         confirmButtonText: "Yes, add them!",
+//         cancelButtonText: "No, cancel",
+//       }).then(async (result) => {
+//         if (result.isConfirmed) {
+//           try {
+//             await api.post("addbulkcontact", newContactList);
+//             Swal.fire({
+//               title: "Success",
+//               icon: "success",
+//               text: `${newContactList.length} new contacts added. Please refresh and re-upload.`,
+//             }).then(() => window.location.reload());
+//           } catch (error) {
+//             Swal.fire({
+//               title: "Error",
+//               icon: "error",
+//               text: "Something went wrong while adding contacts. Check your Excel (avoid commas, keep blanks empty).",
+//             });
+//           }
+//         }
+//       });
+
+//       return;
+//     }
+
+//     // ✅ Final state updates
+//     setDuplicateEntries(duplicates);
+//     setPendingContacts(newContacts);
+//     setallcontacts([...newContacts, ...duplicates]);
+//   } catch (error) {
+//     console.error("❌ Error checking for duplicates:", error);
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
+
 const checkForDuplicates = async (contacts) => {
   try {
     setIsLoading(true);
 
-    // Existing project units (indexing for faster lookup)
-    const allunits = project.add_unit || [];
-    const unitKeySet = new Set(
-      allunits.map(
-        (u) => `${u.project_name}|${u.unit_no}|${u.block}`
-      )
-    );
+    // Send contacts and projectId to backend
+    const response = await api.post("/check-duplicates", {
+      projectId: id, // your current project id
+      contacts,      // array of uploaded contacts/units
+    });
 
-    // Fetch all contacts once
-    const { data } = await api.get("viewcontact-for-edit-project");
-    console.log(data);
-    
-    const contactList = data.allcontact || [];
+    const { duplicates, newContacts, addedContacts } = response.data;
 
-    // Build a lookup: mobile_no → contactId
-    const mobileToIdMap = new Map();
-    for (const c of contactList) {
-      if (Array.isArray(c.mobile_no)) {
-        for (const mobile of c.mobile_no) {
-          const normalized = normalizeMobile(mobile);
-          if (normalized) mobileToIdMap.set(normalized, c._id);
-        }
-      }
-    }
-
-    const newContacts = [];
-    const duplicates = [];
-    const newContactList = [];
-
-    for (const contact of contacts) {
-      let updatedOwnerDetails = [];
-      let updatedAssociatedContact = [];
-
-      // ✅ Owner details
-      if (Array.isArray(contact.owner_details)) {
-        updatedOwnerDetails = contact.owner_details
-          .map((m) => mobileToIdMap.get(normalizeMobile(m)))
-          .filter(Boolean);
-      } else if (contact.owner_details) {
-        const id = mobileToIdMap.get(normalizeMobile(contact.owner_details));
-        if (id) {
-          updatedOwnerDetails = [id];
-        } else {
-          newContactList.push({
-            title: contact.owner_title,
-            first_name: contact.owner_first_name || "",
-            last_name: contact.owner_last_name || "",
-            country_code: contact.owner_country_code || [],
-            mobile_no: contact.owner_mobile_no || [],
-            mobile_type: contact.owner_mobile_type || [],
-            email: contact.owner_email || [],
-            email_type: contact.owner_email_type || [],
-            father_husband_name: contact.owner_father_name,
-            h_no: contact.owner_hno,
-            area1: contact.owner_area,
-            location1: contact.owner_location,
-            city1: contact.owner_city,
-            pincode1: contact.owner_pincode,
-            state1: contact.owner_state,
-            country1: contact.owner_country,
-          });
-        }
-      }
-
-      // ✅ Associated contact
-      if (Array.isArray(contact.associated_contact)) {
-        updatedAssociatedContact = contact.associated_contact
-          .map((m) => mobileToIdMap.get(normalizeMobile(m)))
-          .filter(Boolean);
-      } else if (contact.associated_contact) {
-        const id = mobileToIdMap.get(
-          normalizeMobile(contact.associated_contact)
-        );
-        if (id) {
-          updatedAssociatedContact = [id];
-        } else {
-          newContactList.push({
-            title: contact.associated_title,
-            first_name: contact.associated_first_name || "",
-            last_name: contact.associated_last_name || "",
-            mobile_no: contact.associated_mobile_no || [],
-            mobile_type: contact.associated_mobile_type || [],
-            country_code: contact.associated_country_code || [],
-            email: contact.associated_email || [],
-            email_type: contact.associated_email_type || [],
-            father_husband_name: contact.associated_father_name,
-            h_no: contact.associated_hno,
-            area1: contact.associated_area,
-            location1: contact.associated_location,
-            city1: contact.associated_city,
-            pincode1: contact.associated_pincode,
-            state1: contact.associated_state,
-            country1: contact.associated_country,
-          });
-        }
-      }
-
-      // ✅ Unit key comparison in O(1)
-      const unitKey = `${contact.project_name}|${contact.unit_no}|${contact.block}`;
-      const unitDetails = {
-        ...contact,
-        owner_details: updatedOwnerDetails,
-        associated_contact: updatedAssociatedContact,
-      };
-
-      if (unitKeySet.has(unitKey)) {
-        duplicates.push(unitDetails);
-      } else {
-        newContacts.push(unitDetails);
-      }
-    }
-
-    // ✅ If new contacts need confirmation
-    if (newContactList.length > 0) {
-      const contactListHtml = newContactList
-        .map((c) => `<li>${c.title} ${c.first_name} ${c.last_name}</li>`)
-        .join("");
-
-      Swal.fire({
-        title: "Are you sure?",
-        icon: "warning",
-        html: `
-          <p>Do you want to add <strong>${newContactList.length}</strong> new contacts?</p>
-          <details style="text-align: left; margin-top: 10px;">
-            <summary style="cursor: pointer; font-weight: bold;">View contact list</summary>
-            <ul style="margin-top: 10px;">${contactListHtml}</ul>
-          </details>
-        `,
-        showCancelButton: true,
-        confirmButtonText: "Yes, add them!",
-        cancelButtonText: "No, cancel",
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            await api.post("addbulkcontact", newContactList);
-            Swal.fire({
-              title: "Success",
-              icon: "success",
-              text: `${newContactList.length} new contacts added. Please refresh and re-upload.`,
-            }).then(() => window.location.reload());
-          } catch (error) {
-            Swal.fire({
-              title: "Error",
-              icon: "error",
-              text: "Something went wrong while adding contacts. Check your Excel (avoid commas, keep blanks empty).",
-            });
-          }
-        }
-      });
-
-      return;
-    }
-
-    // ✅ Final state updates
-    setDuplicateEntries(duplicates);
-    setPendingContacts(newContacts);
+    // Set frontend states
+    setDuplicateEntries(duplicates);      // units already in project
+    setPendingContacts(newContacts);      // new units not duplicates
     setallcontacts([...newContacts, ...duplicates]);
+
+    // Optional: alert user about new contacts added
+    if (addedContacts > 0) {
+      Swal.fire({
+        title: "Success",
+        icon: "success",
+        text: `${addedContacts} new contacts were added to your database.`,
+      });
+    }
+
   } catch (error) {
-    console.error("❌ Error checking for duplicates:", error);
+    console.error("Error checking duplicates:", error);
+    Swal.fire({
+      title: "Error",
+      icon: "error",
+      text: "Something went wrong while checking duplicates.",
+    });
   } finally {
     setIsLoading(false);
   }
 };
 
 
-const addunits = () => {
-  // Step 1: Identify duplicates within pendingContacts
-  const seen = new Set();
-  const uniqueUnits = [];
-  const allUnitsWithColor = [];
 
-  pendingContacts.forEach((unit) => {
-    const unitIdentifier = `${unit.project_name}-${unit.unit_no}-${unit.block}`; // Unique identifier for each unit
+
+// const addunits = () => {
+//   // Step 1: Identify duplicates within pendingContacts
+//   const seen = new Set();
+//   const allUnitsWithColor = [];
+
+//   pendingContacts.forEach((unit) => {
+//     const unitIdentifier = `${unit.project_name}-${unit.unit_no}-${unit.block}`; // Unique identifier for each unit
+
+//     if (seen.has(unitIdentifier)) {
+//       unit.isDuplicate = true;
+//     } else {
+//       seen.add(unitIdentifier);
+//       unit.isDuplicate = false;
+//     }
+
+//     allUnitsWithColor.push(unit); // Add both unique and duplicate units
+//   });
+
+//   // Step 2: Update state safely
+//   setunit((prevUnit) => [...(prevUnit || []), ...allUnitsWithColor]);
+
+//   setproject((prevState) => ({
+//     ...prevState,
+//     add_unit: [...(prevState?.add_unit || []), ...allUnitsWithColor], // ✅ Safe spread even if add_unit is undefined
+//   }));
+// };
+
+
+// const updateunits=async()=>
+//           {
+//             try {
+
+//                // Show confirmation message
+//             const result = await Swal.fire({
+//               title: "Are you sure?",
+//               text: "You won't be able to revert this!",
+//               icon: "warning",
+//               showCancelButton: true,
+//               confirmButtonColor: "#d33",
+//               cancelButtonColor: "#3085d6",
+//               confirmButtonText: "Yes, update it!",
+//             });
+        
+//             if (!result.isConfirmed) {
+//               return; // Stop execution if user cancels
+//             }
+        
+//                 setIsLoading(true);
+
+//                     const total = duplicateEntries.length;
+//                       let successCount = 0;
+//                       let failCount = 0;
+//                       const batchSize = 50;
+
+
+
+//                           for (let i = 0; i < total; i += batchSize) {
+//                             const batch = duplicateEntries.slice(i, i + batchSize);
+//                       console.log(batch);
+                      
+//                             try {
+//                               const [resp1] = await Promise.all([
+//                                 api.put('updateprojectforinventoriesbulk', batch, config),
+//                               ]);
+                      
+//                               if (resp1.status === 200) {
+//                                 successCount += batch.length;
+//                                 toast.success(`Updated ${successCount}/${total} units`, { autoClose: 2000 });
+//                               } else {
+//                                 failCount += batch.length;
+//                                 toast.error(`Batch ${i + 1}-${i + batch.length} failed`, { autoClose: 2000 });
+//                               }
+                      
+//                             } catch (batchError) {
+//                               failCount += batch.length;
+//                               toast.error(`Error updating batch ${i + 1}-${i + batch.length}`, { autoClose: 3000 });
+//                             }
+//                           }
+
+//                            if (successCount === total) {
+//                                 Swal.fire({
+//                                   icon: 'success',
+//                                   title: 'Updated Complete',
+//                                   html: `All <b>${successCount}</b> units updated successfully.`,
+//                                 });
+//                               } else {
+//                                 Swal.fire({
+//                                   icon: 'warning',
+//                                   title: 'Partial Updated Complete',
+//                                   html: `<b>${successCount}</b> uunits updated successfully.<br><b>${failCount}</b> failed.`,
+//                                 });
+//                               }
+
+//                            } 
+//             catch (error) {
+//               Swal.fire({
+//                 title: "not found?",
+//                 text: "The project is not found plz check !",
+//                 icon: "warning",
+//                 showCancelButton: true,
+//                 confirmButtonColor: "#d33",
+//                 cancelButtonColor: "#3085d6",
+//                 confirmButtonText: "ok",
+//               });
+//               console.log(error);
+              
+//             }finally
+//             {
+//               setIsLoading(false)
+//             }
+//           }
+
+
+
+
+const addunits = async () => {
+  if (!pendingContacts?.length) {
+    Swal.fire("Info", "No units to add", "info");
+    return;
+  }
+
+  try {
+    setloading_unit(true)
+    const res = await api.post("/add-units", {
+      project_id: project._id,
+      pendingContacts,
+    });
+
+    if (res.data.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Units Added",
+        html: `<b>${res.data.addedCount}</b> new units added.`,
+      });
+
     
-    if (seen.has(unitIdentifier)) {
-      // If the unit is a duplicate, mark it as duplicate and set color
-      unit.isDuplicate = true;
-      allUnitsWithColor.push(unit); // Add duplicate unit
     } else {
-      // Otherwise, add to the unique units list and mark as non-duplicate
-      seen.add(unitIdentifier);
-      unit.isDuplicate = false;
-      allUnitsWithColor.push(unit); // Add unique unit
+      Swal.fire("Error", res.data.message, "error");
     }
-  });
-
-  // Step 2: Update state with all units (including duplicates)
-  setunit((prevUnit) => [...prevUnit, ...allUnitsWithColor]); // Append all units (unique + duplicate) to the unit list
-  setproject((prevState) => ({
-    ...prevState,
-    add_unit: [...prevState.add_unit, ...allUnitsWithColor], // Add all units to the project state
-  }));
-
-
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error", "Something went wrong", "error");
+  }
+  finally
+  {
+    setloading_unit(false)
+  }
 };
 
-const updateunits=async()=>
-          {
-            try {
 
-               // Show confirmation message
-            const result = await Swal.fire({
-              title: "Are you sure?",
-              text: "You won't be able to revert this!",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#d33",
-              cancelButtonColor: "#3085d6",
-              confirmButtonText: "Yes, update it!",
-            });
+
+
+
+
+const updateunits = async () => {
+  try {
+    // Show confirmation
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, update it!",
+    });
+    if (!result.isConfirmed) return;
+
+    setIsLoading(true);
+
+    const total = duplicateEntries.length;
+    let successCount = 0;
+    let failCount = 0;
+    const batchSize = 10; // Split into smaller batches
+
+    for (let i = 0; i < total; i += batchSize) {
+      const batch = duplicateEntries.slice(i, i + batchSize);
+
+      // 1️⃣ Upload images first (if any)
+      // const batchWithUrls = await Promise.all(
+      //   batch.map(async (unit) => {
+      //     const previewUrls = [];
+      //     const imageUrls = [];
+
+      //     if (unit.previewFiles) {
+      //       for (let file of unit.previewFiles) {
+      //         const formData = new FormData();
+      //         formData.append("file", file);
+      //         const res = await api.post("/upload/cloudinary", formData);
+      //         previewUrls.push(res.data.url);
+      //       }
+      //     }
+
+      //     if (unit.imageFiles) {
+      //       for (let file of unit.imageFiles) {
+      //         const formData = new FormData();
+      //         formData.append("file", file);
+      //         const res = await api.post("/upload/cloudinary", formData);
+      //         imageUrls.push(res.data.url);
+      //       }
+      //     }
+
+      //     return { ...unit, preview: previewUrls, image: imageUrls };
+      //   })
+      // );
+
+      // 2️⃣ Send batch to backend
+      try {
+        const resp = await api.put("updateprojectforinventoriesbulk", batch, config);
+        console.log(resp);
         
-            if (!result.isConfirmed) {
-              return; // Stop execution if user cancels
-            }
-        
-                setIsLoading(true);
+        if (resp.status === 200) {
+          successCount += batch.length;
+          toast.success(`Updated ${successCount}/${total} units`, { autoClose: 2000 });
+        } else {
+          failCount += batch.length;
+          toast.error(`Batch ${i + 1}-${i + batch.length} failed`, { autoClose: 2000 });
+        }
+      } catch (batchError) {
+        failCount += batch.length;
+        toast.error(`Error updating batch ${i + 1}-${i + batch.length}`, { autoClose: 3000 });
+        console.error(batchError);
+      }
+    }
 
-                    const total = duplicateEntries.length;
-                      let successCount = 0;
-                      let failCount = 0;
-                      const batchSize = 50;
+    // Final message
+    if (successCount === total) {
+      Swal.fire({ icon: "success", title: "Updated Complete", html: `All <b>${successCount}</b> units updated successfully.` });
+    } else {
+      Swal.fire({ icon: "warning", title: "Partial Updated Complete", html: `<b>${successCount}</b> units updated successfully.<br><b>${failCount}</b> failed.` });
+    }
+  } catch (error) {
+    console.error(error);
+    Swal.fire({ icon: "error", title: "Error", text: "Something went wrong!" });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
 
-                          for (let i = 0; i < total; i += batchSize) {
-                            const batch = duplicateEntries.slice(i, i + batchSize);
-                      
-                            try {
-                              const [resp1] = await Promise.all([
-                                api.put('updateprojectforinventoriesbulk', batch, config),
-                              ]);
-                      
-                              if (resp1.status === 200) {
-                                successCount += batch.length;
-                                toast.success(`Updated ${successCount}/${total} units`, { autoClose: 2000 });
-                              } else {
-                                failCount += batch.length;
-                                toast.error(`Batch ${i + 1}-${i + batch.length} failed`, { autoClose: 2000 });
-                              }
-                      
-                            } catch (batchError) {
-                              failCount += batch.length;
-                              toast.error(`Error updating batch ${i + 1}-${i + batch.length}`, { autoClose: 3000 });
-                            }
-                          }
-
-                           if (successCount === total) {
-                                Swal.fire({
-                                  icon: 'success',
-                                  title: 'Updated Complete',
-                                  html: `All <b>${successCount}</b> units updated successfully.`,
-                                });
-                              } else {
-                                Swal.fire({
-                                  icon: 'warning',
-                                  title: 'Partial Updated Complete',
-                                  html: `<b>${successCount}</b> uunits updated successfully.<br><b>${failCount}</b> failed.`,
-                                });
-                              }
-
-                           } 
-            catch (error) {
-              Swal.fire({
-                title: "not found?",
-                text: "The project is not found plz check !",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "ok",
-              });
-              console.log(error);
-              
-            }finally
-            {
-              setIsLoading(false)
-            }
-          }
 
 const headerSuggestions = {
   owner_details: "Suggestion: Enter owner mobile no",
@@ -7502,7 +7675,7 @@ const generateExcelFileunit = () => {
             animation: "spin 1s linear infinite",
             margin: "0 auto 10px",
           }}></div>
-          <p>Uploading data...</p>
+          <p>Loading...</p>
         </div>
       </div>
     )}
