@@ -29,7 +29,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Tooltip from '@mui/material/Tooltip';
 import Swal from 'sweetalert2';
-
+import UniqueLoader from '../components/loader'
 
 
 
@@ -97,10 +97,52 @@ const viewprojectbyid=async()=>
         
     }
 }
+
 useEffect(()=>
 {
 viewprojectbyid()
 },[id])
+
+
+const [allunits_ofproject, setAllUnitsOfProject] = useState([]);
+const [page, setPage] = useState(1);
+const [limit] = useState(10); // number of units per page
+const [totalPages, setTotalPages] = useState(0);
+const [totalUnits, setTotalUnits] = useState(0);
+
+
+
+const[loading_unit,setloading_unit]=useState(false)
+const view_units_byid = async (pageNo = 1) => {
+  try {
+    setloading_unit(true)
+    // Call API with pagination query params
+    const resp = await api.get(`viewprojectunits/${id}?page=${pageNo}&limit=${limit}`);
+  
+    if (resp.data && resp.data.units) {
+      setAllUnitsOfProject(resp.data.units);
+      setTotalPages(resp.data.totalPages);
+      setTotalUnits(resp.data.totalUnits);
+    }
+  } catch (error) {
+    console.error("Error fetching units:", error);
+  }
+  finally
+  {
+    setloading_unit(false)
+  }
+};
+
+
+useEffect(() => {
+  if (id) {
+    view_units_byid(page);
+  }
+}, [id, page]);
+
+
+
+
 
 
     const addproject=async()=>
@@ -1791,7 +1833,7 @@ const unit_type = {
                                             setunit(newunit)
                                           };
 
-                                          const uniqueUnits = project.add_unit.filter((value, index, self) => 
+                                          const uniqueUnits = project?.add_unit?.filter((value, index, self) => 
                                             index === self.findIndex((t) => (
                                               t.unit_no === value.unit_no
                                             ))
@@ -5025,10 +5067,10 @@ const generateExcelFileunit = () => {
 
 {/*---------------------------------=========================== unit details start-------------------===================================== */}
 
-<div className="col-md-12" id='unitdetails' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
+<div className="col-md-12" id='unitdetails' style={{display:"none",marginTop:"-80px",lineHeight:"30px",overflow:"scroll"}}>
             <div className="p-3 py-5">
                 <div className="row " >
-                <div className="col-md-7"></div>
+              
                   <div className="col-md-2">
                     <button
                       onClick={handleShow3}
@@ -5102,13 +5144,31 @@ const generateExcelFileunit = () => {
                         Import Unit
                       </button>
                     </div>
-
+  <div className="col-md-7"></div>
          
                      <Tooltip title="Download Data.." arrow>
                                         <div className="col-md-1"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFileunit} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
                                         </Tooltip>
-                    <TableContainer component={Paper} style={{height:"400px",width:"1100px",overflowY:"scroll",marginTop:"40px",marginLeft:"10px"}}>
+                    <TableContainer component={Paper} style={{height:"400px",width:"100%",overflowX:"scroll",overflowY:"scroll",marginTop:"40px",marginLeft:"10px"}}>
     <Table sx={{ minWidth: 700 }} aria-label="customized table">
+
+         <>
+                         {loading_unit && (
+                           <div 
+                           style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            width: "100vw",
+                            height: "100vh",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            zIndex: 9999,}}>
+                            <UniqueLoader/>
+                           </div>
+                         )}
+                       </>
      
     <TableHead>
         <TableRow >
@@ -5130,7 +5190,7 @@ const generateExcelFileunit = () => {
       <tbody>
         {
 
-      project.add_unit.map ((item, index) => (
+      allunits_ofproject?.map ((item, index) => (
           <StyledTableRow key={index}  style={{ color: item.isDuplicate ? "red" : "black",  }}   className={item.isDuplicate ? 'no-activity-flash' : ''}>
             <StyledTableCell style={{ fontSize:"12px" }}>
              {item.unit_no}
@@ -5180,7 +5240,55 @@ const generateExcelFileunit = () => {
         ))}
       </tbody>
     </Table>
+
+   
+
+
     </TableContainer>
+
+   {/* ✅ Pagination Controls */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "50%",
+          margin: "20px 0 0 10px",
+        }}
+      >
+        <Button
+          variant="contained"
+          size="small"
+          disabled={page === 1}
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+        >
+          Prev
+        </Button>
+
+        <span>
+          Page {page} of {totalPages} | Total Units: {totalUnits}
+        </span>
+
+        <Button
+          variant="contained"
+          size="small"
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+        >
+          Next
+        </Button>
+      </div>
+   
+
+
+
+
+
+
+
+
+
+
 
     <Modal show={show3} onHide={handleClose3} size={modalSize}>
             <Modal.Header>

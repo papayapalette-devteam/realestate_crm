@@ -4354,13 +4354,30 @@ React.useEffect(() => {
                
   
   
-          
+     const[groupdata,setgroupdata]=useState([])
+     const get_group_data=async()=>
+     {
+       try {
+         const resp=await api.get('unit-getgroupdata')
+         setgroupdata(resp.data)
+         console.log(resp);
+         
+         
+       } catch (error) {
+         console.log(error);
+         
+       }
+     }
+   
+      useEffect(() => {
+       get_group_data();
+     }, []);       
   
 
 const unitfields = [
-  { label: 'City', field: 'ucity', values: allcitis },
+  { label: 'City', field: 'ucity', values: groupdata.allcitis },
   { label: 'Location', field: 'location', values: alllocation },
-  { label: 'Project Name', field: 'project_name',values: all_project },
+  { label: 'Project Name', field: 'project_name',values: groupdata.all_project },
   { label: 'Block/Tower', field: 'block',values: allblock },
   { label: 'Category', field: 'category', values: allcategories},
   { label: 'Sub Category', field: 'sub_category', values: allsubcategories },
