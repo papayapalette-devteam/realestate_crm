@@ -1048,6 +1048,8 @@ const update_projectforinventories = async (req, res) => {
     // Retrieve project_name, block, and unit_no from the URL parameters (params)
     const { project_name, block, unit_no } = req.params;
 
+    
+
     let dealproject = req.params.project_name;
     let dealblock = req.params.block;
     let dealunit = req.params.unit_no;

@@ -2094,12 +2094,17 @@ const [show9, setshow9] = useState(false);
                   // const[fetchunit,setfetchunit]=useState([])
                   const handleShow9=async()=>
                   {
+               
+                    
+                    
                     setshow9(true);
                     const project=selectedItems3[0].project_name
                     const block=selectedItems3[0].block
                     const unit=selectedItems3[0].unit_no
 
                     const resp=await api.get(`viewprojectforinventories/${project}/${unit}/${block}`)
+                    console.log(resp);
+                    
                     setunits(resp.data.project.add_unit[0])
                    fetchdatabyprojectname(project)
                   }
@@ -2115,6 +2120,7 @@ const [show9, setshow9] = useState(false);
           const updateinventories=async()=>
           {
             const project=selectedItems3[0].project_name
+            // const project = selectedItems3[0].project_name.trim().replace(/\s+/g, " ");
             const block=selectedItems3[0].block
             const unit=selectedItems3[0].unit_no
             try {
@@ -2718,8 +2724,8 @@ const [show9, setshow9] = useState(false);
                           };
                           
                           
-                          const states = Object.keys(statesAndCities);
-                          const cities = statesAndCities[project.state] || [];
+                          // const states = Object.keys(statesAndCities);
+                          // const cities = statesAndCities[project.state] || [];
                           
                           const ustates = Object.keys(statesAndCities);
                           const ucities = statesAndCities[units.ustate] || [];

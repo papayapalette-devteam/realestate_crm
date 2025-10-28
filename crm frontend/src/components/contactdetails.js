@@ -3622,20 +3622,53 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
             <div id="contactlistview" className="flip-card-front">
       <div style={{marginTop:"52px",paddingLeft:"80px",backgroundColor:"white",display:"flex",paddingTop:"10px",paddingBottom:"10px"}}>
         
-        <h3 style={{marginLeft:"10px",cursor:"pointer"}} onClick={pagereload}>Contact </h3>
+          <h3
+    onClick={pagereload}
+    className="text-2xl font-semibold cursor-pointer hover:text-blue-600 transition-colors"
+  >
+    Contact
+  </h3>
        
             <button  class="btn btn-secondary " type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{color:"black",backgroundColor:"transparent",border:"none"}}>
             <img src="https://static.thenounproject.com/png/61783-200.png" style={{height:"25px"}} alt=""/>
         </button>
             <ul class="dropdown-menu" id="exporttoexcel" style={{textAlign:"left",padding:"0px",boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",fontFamily:"arial",fontSize:"14px",lineHeight:"30px"}}> 
             
-            <li  onClick={exportToExcel} ><img src="https://static.thenounproject.com/png/1960252-200.png" style={{height:"20px",marginTop:"5px"}}></img>
-            Export Data
-            </li>
-            <li  onClick={handleShow7}><img src="https://www.svgrepo.com/show/447311/database-import.svg" style={{height:"20px",marginTop:"5px"}}></img>
-            Import Data</li>
-            <li  onClick={generateExcelFileunit}><img src="https://static.thenounproject.com/png/2406231-200.png"  style={{height:"20px",marginTop:"5px"}}></img>
-            Download Data(sample)</li>
+         <li
+        onClick={exportToExcel}
+        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer transition"
+      >
+        <img
+          src="https://static.thenounproject.com/png/1960252-200.png"
+          alt="Export"
+          className="h-5 w-5"
+        />
+        <span>Export Data</span>
+      </li>
+
+      <li
+        onClick={handleShow7}
+        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer transition"
+      >
+        <img
+          src="https://www.svgrepo.com/show/447311/database-import.svg"
+          alt="Import"
+          className="h-5 w-5"
+        />
+        <span>Import Data</span>
+      </li>
+
+      <li
+        onClick={generateExcelFileunit}
+        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer transition"
+      >
+        <img
+          src="https://static.thenounproject.com/png/2406231-200.png"
+          alt="Download"
+          className="h-5 w-5"
+        />
+        <span>Download Data (sample)</span>
+      </li>
             </ul>
             
 <Tooltip title="Filter contacts..." arrow>

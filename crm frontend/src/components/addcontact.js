@@ -85,11 +85,7 @@ function Addcontact() {
                       icon:"success",
                       title: '🎉 Success!',
                       text:"Contact created successfully...",
-                      html: `Contact created successfully...<br></br>
-              <img src="https://cdn.vectorstock.com/i/500p/63/50/thumbs-up-smiley-face-icon-vector-10176350.jpg"
-              alt="Thumbs up" 
-                    width="80" 
-                    style="margin-bottom: 0px;"/>`,
+           
               width: '400px', // makes it small
               padding: '1.2em',
                       showConfirmButton: true,
@@ -107,10 +103,6 @@ function Addcontact() {
                 title: 'Oops creating contact failed!',
                 icon:"error",
                 html: `
-                  <img src="https://i.pinimg.com/originals/53/3f/f7/533ff77ef582abbfa00ccf9080137304.gif"
-                      alt="Sad face" 
-                      width="80" 
-                      style="margin-bottom: 0px;" />
                   <p style="font-size: 14px; margin: 0;">
                     ${error.response?.data?.message || 'Something went wrong. Please try again.'}
                   </p>
