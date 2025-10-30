@@ -97,7 +97,7 @@ const leadinfo_find = async (req, res) => {
     // 🔹 Build MongoDB match query
     let matchStage = {};
 
-    if (activeFilters.length > 0) {
+   if (activeFilters.length > 0) {
       activeFilters.forEach((filter) => {
         const field = filter.field;
 
@@ -125,6 +125,34 @@ const leadinfo_find = async (req, res) => {
             matchStage[field] = { $not: regex };
           }
         }
+
+        // ✅ Case 3: Date range filters
+        if (
+          filter.type === "date-range" &&
+          filter.dateRange &&
+          (filter.dateRange.from || filter.dateRange.to)
+        ) {
+          const fromDate = filter.dateRange.from
+            ? new Date(filter.dateRange.from)
+            : null;
+          const toDate = filter.dateRange.to
+            ? new Date(filter.dateRange.to)
+            : null;
+
+          // Ensure valid date range query
+          if (fromDate && toDate) {
+            matchStage[field] = {
+              $gte: fromDate,
+              $lte: new Date(toDate.setHours(23, 59, 59, 999)), // include full day
+            };
+          } else if (fromDate) {
+            matchStage[field] = { $gte: fromDate };
+          } else if (toDate) {
+            matchStage[field] = {
+              $lte: new Date(toDate.setHours(23, 59, 59, 999)),
+            };
+          }
+        }
       });
     }
 
@@ -137,7 +165,7 @@ const leadinfo_find = async (req, res) => {
           .limit(limit)
           .populate("matcheddeals")
 
-     const total = await leadinfo.countDocuments();
+     const total = await leadinfo.countDocuments(matchStage);
 
     // const resp = await leadinfo.find().populate("matcheddeals");
     // if (!resp) {
@@ -702,6 +730,187 @@ const update_leadforbulkupload = async (req, res) => {
   }
 };
 
+
+
+
+
+const getGroupedDataLead = async (req, res) => {
+  try {
+    const groupedData = await leadinfo.aggregate([
+      { $unwind: { path: "$owner", preserveNullAndEmptyArrays: true } },
+
+      {
+        $group: {
+          _id: null,
+
+          // Professional Info
+          profession_categories: { $addToSet: "$profession_category" },
+          profession_subcategories: { $addToSet: "$profession_subcategory" },
+          industries: { $addToSet: "$industry" },
+          designations: { $addToSet: "$designation" },
+          company_names: { $addToSet: "$company_name" },
+
+          // Lead Classification
+          lead_stages: { $addToSet: "$stage" },
+          lead_types: { $addToSet: "$lead_type" },
+          requirements: { $addToSet: "$requirment" },
+          property_types: { $addToSet: "$property_type" },
+          sub_types: { $addToSet: "$sub_type" },
+          purposes: { $addToSet: "$purpose" },
+          campaigns: { $addToSet: "$campaign" },
+          sources: { $addToSet: "$source" },
+          sub_sources: { $addToSet: "$sub_source" },
+          channel_partners: { $addToSet: "$channel_partner" },
+
+          // Ownership & Team
+          owners: { $addToSet: "$owner" },
+          teams: { $addToSet: "$team" },
+          visible_to: { $addToSet: "$visible_to" },
+
+          // Location Info
+          cities: { $addToSet: "$city1" },
+          states: { $addToSet: "$state1" },
+          countries: { $addToSet: "$country1" },
+          locations: { $addToSet: "$location1" },
+
+          // Safe numeric range aggregation
+          min_budget: {
+            $min: {
+              $cond: [
+                {
+                  $regexMatch: {
+                    input: "$budget_min",
+                    regex: /^[0-9.]+$/
+                  }
+                },
+                { $toDouble: "$budget_min" },
+                null
+              ]
+            }
+          },
+          max_budget: {
+            $max: {
+              $cond: [
+                {
+                  $regexMatch: {
+                    input: "$budget_max",
+                    regex: /^[0-9.]+$/
+                  }
+                },
+                { $toDouble: "$budget_max" },
+                null
+              ]
+            }
+          },
+          min_size: {
+            $min: {
+              $cond: [
+                {
+                  $regexMatch: {
+                    input: "$minimum_area",
+                    regex: /^[0-9.]+$/
+                  }
+                },
+                { $toDouble: "$minimum_area" },
+                null
+              ]
+            }
+          },
+          max_size: {
+            $max: {
+              $cond: [
+                {
+                  $regexMatch: {
+                    input: "$maximum_area",
+                    regex: /^[0-9.]+$/
+                  }
+                },
+                { $toDouble: "$maximum_area" },
+                null
+              ]
+            }
+          },
+          area_metrics: { $addToSet: "$area_metric" },
+        },
+      },
+
+      // Create human-readable "range" strings
+      {
+        $addFields: {
+          budget_range: {
+            $cond: [
+              { $and: [{ $ne: ["$min_budget", null] }, { $ne: ["$max_budget", null] }] },
+              {
+                $concat: [
+                  { $toString: { $round: ["$min_budget", 0] } },
+                  " - ",
+                  { $toString: { $round: ["$max_budget", 0] } }
+                ]
+              },
+              null
+            ]
+          },
+          size_range: {
+            $cond: [
+              { $and: [{ $ne: ["$min_size", null] }, { $ne: ["$max_size", null] }] },
+              {
+                $concat: [
+                  { $toString: { $round: ["$min_size", 0] } },
+                  " - ",
+                  { $toString: { $round: ["$max_size", 0] } }
+                ]
+              },
+              null
+            ]
+          }
+        }
+      },
+
+      {
+        $project: {
+          _id: 0,
+          profession_categories: 1,
+          profession_subcategories: 1,
+          industries: 1,
+          designations: 1,
+          company_names: 1,
+          lead_stages: 1,
+          lead_types: 1,
+          requirements: 1,
+          property_types: 1,
+          sub_types: 1,
+          purposes: 1,
+          campaigns: 1,
+          sources: 1,
+          sub_sources: 1,
+          channel_partners: 1,
+          owners: 1,
+          teams: 1,
+          visible_to: 1,
+          cities: 1,
+          states: 1,
+          countries: 1,
+          locations: 1,
+          area_metrics: 1,
+          budget_range: 1,
+          size_range: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json(groupedData[0] || {});
+  } catch (err) {
+    console.error("Error in getGroupedData:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+
+
+
+
+
 module.exports = {
   lead_info,
   leadinfo_find,
@@ -721,5 +930,6 @@ module.exports = {
   updatemany,
   addbulkleads,
   update_leadforbulkupload,
-  searchlead
+  searchlead,
+  getGroupedDataLead
 };

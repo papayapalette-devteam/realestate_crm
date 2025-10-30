@@ -3255,6 +3255,8 @@ const checkForDuplicates = async (contacts) => {
     });
 
     const { duplicates, newContacts, addedContacts } = response.data;
+  
+    
 
     // Set frontend states
     setDuplicateEntries(duplicates);      // units already in project

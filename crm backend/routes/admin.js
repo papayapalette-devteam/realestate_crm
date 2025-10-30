@@ -39,6 +39,7 @@ const {
   addbulkleads,
   update_leadforbulkupload,
   searchlead,
+  getGroupedDataLead,
 } = require("../controllers/leadinfo");
 const lead_info_personal = require("../controllers/leadinfo_personal");
 const upload = require("../middlewares/file");
@@ -248,6 +249,8 @@ router.get("/viewleadbystage/:stage", view_lead_Bystage);
 router.get("/viewleadbyemail/:email", view_lead_Byemail);
 router.get("/viewleadbymobile/:mobile_no", view_lead_Bymobile);
 router.get("/searchlead", searchlead);
+
+router.get("/get-grouped-data", getGroupedDataLead);
 
 //============================================= all routing for lead end=======================================================
 

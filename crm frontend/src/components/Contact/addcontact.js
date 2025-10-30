@@ -1,10 +1,10 @@
 import {React, useState,useEffect} from 'react';
-import'../css/addcontact.css';
-import Header1 from './header1';
-import Sidebar1 from './sidebar1';
+import'../../css/addcontact.css';
+import Header1 from '../header1';
+import Sidebar1 from '../sidebar1';
 import { ToastContainer, toast} from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import api from "../api";
+import api from "../../api";
 import { event } from 'jquery'; 
 import { Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
 import axios from 'axios';
