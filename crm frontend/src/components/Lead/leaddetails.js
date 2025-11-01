@@ -1,15 +1,15 @@
 import axios from "axios";
 import {React, useState,useEffect,useRef} from "react";
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
+import Header1 from "../header1";
+import Sidebar1 from "../sidebar1";
 import { toast, ToastContainer } from "react-toastify";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Link, useLocation, useNavigate,useSearchParams } from "react-router-dom";
 import { utils, writeFile } from "xlsx";
-import '../css/hover.css';
+import '../../css/hover.css';
 
-import api from "../api";
+import api from "../../api";
 import EmailIcon from '@mui/icons-material/Email';
 import { SvgIcon } from "@mui/material";
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
@@ -30,8 +30,8 @@ import { Details, Try } from "@mui/icons-material";
 import Leadsingleview from "./leadsingleview";
 import * as XLSX from 'xlsx';
 import Lottie from "lottie-react";
-import SidebarWidgetLoader from "../components/loader2";
-import UniqueLoader from "./loader";
+import SidebarWidgetLoader from "../loader2";
+import UniqueLoader from "../loader";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 

@@ -381,8 +381,7 @@ const update_lead = async (req, res) => {
 const update_leadstage = async (req, res) => {
   try {
     const id = req.params._id;
-    console.log(req.body);
-
+    
     const user = await leadinfo.findOne({ _id: id });
     if (!user) {
       return res.send({ message: "lead not found" });

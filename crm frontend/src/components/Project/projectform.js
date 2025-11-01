@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import'../css/addcontact.css';
-import Header1 from './header1';
-import Sidebar1 from './sidebar1';
+import'../../css/addcontact.css';
+import Header1 from '../header1';
+import Sidebar1 from '../sidebar1';
 import { ToastContainer, toast} from 'react-toastify';
-import { useLocation, useNavigate } from 'react-router-dom';
-import api from "../api";
+import { useNavigate } from 'react-router-dom';
+import api from "../../api";
 import axios from 'axios';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
 import { styled } from '@mui/material/styles';
@@ -24,23 +24,21 @@ import { Select, MenuItem, Checkbox, ListItemText  } from '@mui/material';
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import { SvgIcon } from "@mui/material";
 import EmailIcon from '@mui/icons-material/Email';
-import { Factory, House, School } from '@mui/icons-material';
+// import { Factory, School } from '@mui/icons-material';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Tooltip from '@mui/material/Tooltip';
 import Swal from 'sweetalert2';
-import UniqueLoader from '../components/loader'
+import { icon } from '@fortawesome/fontawesome-svg-core';
+import { Factory, Hotel, School, Warehouse } from '@mui/icons-material';
 
 
 
 
-function EditProjectform() {
+
+function Projectform() {
   
-  const location=useLocation()
-  const id=location.state.id[0]
-
-   const [isLoading, setIsLoading] = useState(false);
-  
+    const [isLoading, setIsLoading] = useState(false);
     
        
      useEffect(()=>{fetchdeveloper()},[])
@@ -87,107 +85,44 @@ function EditProjectform() {
             }
         }
       
-const viewprojectbyid=async()=>
-{
-    try {
-        const resp=await api.get(`viewprojectbyid/${id}`)
-        setproject(resp.data.project)
-    } catch (error) {
-        console.log(error);
-        
-    }
-}
 
-useEffect(()=>
-{
-viewprojectbyid()
-},[id])
-
-
-const [allunits_ofproject, setAllUnitsOfProject] = useState([]);
-const [page, setPage] = useState(1);
-const [limit] = useState(10); // number of units per page
-const [totalPages, setTotalPages] = useState(0);
-const [totalUnits, setTotalUnits] = useState(0);
-
-
-
-const[loading_unit,setloading_unit]=useState(false)
-const view_units_byid = async (pageNo = 1) => {
-  try {
-    setloading_unit(true)
-    // Call API with pagination query params
-    const resp = await api.get(`viewprojectunits/${id}?page=${pageNo}&limit=${limit}`);
-  
-    if (resp.data && resp.data.units) {
-      setAllUnitsOfProject(resp.data.units);
-      setTotalPages(resp.data.totalPages);
-      setTotalUnits(resp.data.totalUnits);
-    }
-  } catch (error) {
-    console.error("Error fetching units:", error);
-  }
-  finally
-  {
-    setloading_unit(false)
-  }
-};
-
-
-useEffect(() => {
-  if (id) {
-    view_units_byid(page);
-  }
-}, [id, page]);
-
-
-
-
-
-
-    const addproject=async()=>
-    {
-      
      
-        try {
-
-           // Show confirmation message
-           const result = await Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, update it!",
-          });
-      
-          if (!result.isConfirmed) {
-            return; // Stop execution if user cancels
+        const addproject = async (e) => {
+          // e.preventDefault();
+        
+          try {
+            const resp = await api.post('project', project,config);
+            // Handle the response
+            if (resp.status === 200) {
+              Swal.fire({
+              title: '🎉 Success!',
+              text: `Project "${project.name}" was added successfully!`,
+              icon: 'success',
+              showConfirmButton: true,
+            }).then((result) => {
+            if (result.isConfirmed) {
+              navigate('/allprojects');
+              }
+            })
           }
 
-          setIsLoading(true)
+        
+          } catch (error) {
+            // Handle error
+          Swal.fire({
+            title: '❌ Error',
+            text: error.response?.data?.message || 'Something went wrong!',
+            icon: 'error',
+            showConfirmButton: true,
+          });
+            console.log(error);
+        
+          }
+        };
+        
 
-            const resp= await api.put(`updateproject/${id}`,project,config)
-            console.log(resp);
-            
-        if(resp.status===200)
-            {
-                toast.success("Project Saved",{ autoClose: 2000 })
-                setTimeout(() => {
-                  navigate('/project')
-                }, 2000);
-            }
-            
-      
-        } catch (error) {
-            toast.error(error.response.data.message,{ autoClose: 2000 })
-        }
-        finally
-        {
-          setIsLoading(false)
-        }
-    }
+
+  
 
     const time=new Date()
     
@@ -394,67 +329,35 @@ useEffect(() => {
                           document.getElementById("prices").style.color="black"
                     }
 
-                                    const basicaminities=()=>
-                                      {
-                                        document.getElementById("basicaminities").style.display="flex"
-                                        document.getElementById("featuredaminities").style.display="none"
-                                        document.getElementById("nearbyaminities").style.display="none"
-                                    
-                                          
-                                        document.getElementById("featuredaminities1").style.color="black"
-                                        document.getElementById("featuredaminities1").style.backgroundColor="white"
-                                        document.getElementById("nearbyaminities1").style.color="black"
-                                        document.getElementById("nearbyaminities1").style.backgroundColor="white"
-                      
-                                        document.getElementById("basicaminities1").style.backgroundColor="black"
-                                        document.getElementById("basicaminities1").style.color="white"
-                                        document.getElementById("basicaminities1").style.borderRadius="50px"
-                                        document.getElementById("basicaminities1").style.width="80px"
-                                        document.getElementById("basicaminities1").style.textAlign="center"
-                                      
-                                      
-                                  
-                                        
-                                      }
-                                      const featuredaminities=()=>
-                                        {
-                                          document.getElementById("basicaminities").style.display="none"
-                                          document.getElementById("featuredaminities").style.display="flex"
-                                          document.getElementById("nearbyaminities").style.display="none"
-                                      
-                                        
-                                          document.getElementById("basicaminities1").style.color="black"
-                                          document.getElementById("basicaminities1").style.backgroundColor="white"
-                                          document.getElementById("nearbyaminities1").style.color="black"
-                                          document.getElementById("nearbyaminities1").style.backgroundColor="white"
-                      
-                                          document.getElementById("featuredaminities1").style.backgroundColor="black"
-                                          document.getElementById("featuredaminities1").style.color="white"
-                                          document.getElementById("featuredaminities1").style.borderRadius="50px"
-                                          document.getElementById("featuredaminities1").style.width="80px"
-                                          document.getElementById("featuredaminities1").style.textAlign="center"
-                                          
-                                        }
-                                        const nearbyaminities=()=>
-                                          {
-                                            
-                                            document.getElementById("basicaminities").style.display="none"
-                                            document.getElementById("featuredaminities").style.display="none"
-                                            document.getElementById("nearbyaminities").style.display="flex"
-                                        
-                                          
-                                            document.getElementById("basicaminities1").style.color="black"
-                                            document.getElementById("basicaminities1").style.backgroundColor="white"
-                                            document.getElementById("featuredaminities1").style.color="black"
-                                            document.getElementById("featuredaminities1").style.backgroundColor="white"
-                      
-                                            document.getElementById("nearbyaminities1").style.backgroundColor="black"
-                                            document.getElementById("nearbyaminities1").style.color="white"
-                                            document.getElementById("nearbyaminities1").style.borderRadius="50px"
-                                            document.getElementById("nearbyaminities1").style.width="80px"
-                                            document.getElementById("nearbyaminities1").style.textAlign="center"
-                                            
-                                          }
+                                   const activateTab = (activeId) => {
+                                    const allTabs = ["basicaminities1", "featuredaminities1", "nearbyaminities1"];
+                                    allTabs.forEach((id) => {
+                                      document.getElementById(id).classList.remove("active");
+                                    });
+                                    document.getElementById(activeId).classList.add("active");
+                                  };
+
+                                  const basicaminities = () => {
+                                    document.getElementById("basicaminities").style.display = "flex";
+                                    document.getElementById("featuredaminities").style.display = "none";
+                                    document.getElementById("nearbyaminities").style.display = "none";
+                                    activateTab("basicaminities1");
+                                  };
+
+                                  const featuredaminities = () => {
+                                    document.getElementById("basicaminities").style.display = "none";
+                                    document.getElementById("featuredaminities").style.display = "flex";
+                                    document.getElementById("nearbyaminities").style.display = "none";
+                                    activateTab("featuredaminities1");
+                                  };
+
+                                  const nearbyaminities = () => {
+                                    document.getElementById("basicaminities").style.display = "none";
+                                    document.getElementById("featuredaminities").style.display = "none";
+                                    document.getElementById("nearbyaminities").style.display = "flex";
+                                    activateTab("nearbyaminities1");
+                                  };
+
                     const pricedetails=()=>
                       {
                             document.getElementById("basicdetails1").style.display="none"
@@ -485,7 +388,7 @@ useEffect(() => {
                       registration_no: [...project.registration_no, ''],
                       date: [...project.date, ''],
                       pic: [...project.pic, ''],
-                      action1: Array.isArray(project.action1)? [...project.action1, '']: ['']
+                      action1: [...project.action1, '']
                     });
                   };
 
@@ -534,7 +437,10 @@ useEffect(() => {
             const handlepicchange = (index, event) => {
               const newpic = [...project.pic];
               const files = Array.from(event.target.files);
-              newpic[index] = {files:files}
+              newpic[index] = files.map(file => ({
+                                                  file,
+                                                  preview: URL.createObjectURL(file)
+                                                }));
               setproject({
                 ...project,
                 pic: newpic
@@ -800,7 +706,7 @@ useEffect(() => {
     //==================----------------- add delete and onchange event of array end---------------------------===============================
 
 // ==============---------------------------google location code start-----------------====================================================
-const [mapLoaded, setMapLoaded] = useState(false);  // Tracks if the first map is loaded
+// const [mapLoaded, setMapLoaded] = useState(false);  // Tracks if the first map is loaded
 const [mapLoaded1, setMapLoaded1] = useState(false);
                         const [coordinates, setCoordinates] = useState('');
                       //   const handleSubmit = async (e) => {
@@ -917,39 +823,39 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                         }
                       };
 
-                      const mapStyles = {
-                        height: "500px",
-                        width: "100%"
-                      }
+                      // const mapStyles = {
+                      //   height: "500px",
+                      //   width: "100%"
+                      // }
                     
-                      const defaultCenter = {
-                        lat: coordinates.lat || 37.7749, lng: coordinates.lng || -122.4194
-                      };
+                      // const defaultCenter = {
+                      //   lat: coordinates.lat || 37.7749, lng: coordinates.lng || -122.4194
+                      // };
 
-                      const handleMarkerDragEnd = async (e) => {
-                        const newLat = e.latLng.lat();
-                        const newLng = e.latLng.lng();
-                        setCoordinates({ lat: newLat, lng: newLng });
+                      // const handleMarkerDragEnd = async (e) => {
+                      //   const newLat = e.latLng.lat();
+                      //   const newLng = e.latLng.lng();
+                      //   setCoordinates({ lat: newLat, lng: newLng });
                     
-                        // Reverse geocoding to get the location name from lat/lng
-                        try {
-                          const response = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
-                            params: {
-                              latlng: `${newLat},${newLng}`,
-                              key: "AIzaSyACfBzaJSVH8eur7U9JxdjI1bAeTLXsUJc",  // Replace with your API key
-                            },
-                          });
+                      //   // Reverse geocoding to get the location name from lat/lng
+                      //   try {
+                      //     const response = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+                      //       params: {
+                      //         latlng: `${newLat},${newLng}`,
+                      //         key: "AIzaSyACfBzaJSVH8eur7U9JxdjI1bAeTLXsUJc",  // Replace with your API key
+                      //       },
+                      //     });
                     
-                          if (response.data.results.length > 0) {
-                            const locationName = response.data.results[0].formatted_address;
-                            setproject({ ...project, location: locationName, lattitude: newLat, langitude: newLng });
-                          } else {
-                            console.log("No location name found");
-                          }
-                        } catch (error) {
-                          console.error("Error fetching location name:", error);
-                        }
-                      };
+                      //     if (response.data.results.length > 0) {
+                      //       const locationName = response.data.results[0].formatted_address;
+                      //       setproject({ ...project, location: locationName, lattitude: newLat, langitude: newLng });
+                      //     } else {
+                      //       console.log("No location name found");
+                      //     }
+                      //   } catch (error) {
+                      //     console.error("Error fetching location name:", error);
+                      //   }
+                      // };
 
 
                       const [coordinates1, setCoordinates1] = useState('');
@@ -963,6 +869,7 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                             key: 'AIzaSyACfBzaJSVH8eur7U9JxdjI1bAeTLXsUJc'
                           }
                         });
+               
                     
                         if (response.data.results.length > 0) {
                           const { lat, lng } = response.data.results[0].geometry.location;
@@ -973,7 +880,7 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                             langitude: lng
                           }));
                           const addressComponents = response.data.results[0].address_components;
-                          let uaddress = '';
+                          let uaddress = response.data.results[0].formatted_address                          ;;
                           let ustreet = '';
                           let ulocality = '';
                           let ucity = '';
@@ -984,9 +891,9 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                           // Extract address components
                           addressComponents.forEach(component => {
                             const types = component.types;
-                            if (types.includes('administrative_area_level_3')) uaddress += component.long_name + ' ';
-                            if (types.includes('sublocality_level_1')) ustreet += component.long_name + ' ';
-                            if (types.includes('administrative_area_level_2')) ulocality = component.long_name;
+                            // if (types.includes('administrative_area_level_3')) uaddress += component.long_name + ' ';
+                            if (types.includes('sublocality_level_1')) ulocality += component.long_name + ' ';
+                            if (types.includes('administrative_area_level_2'))ustreet  = component.long_name;
                             if (types.includes('administrative_area_level_1')) ustate = component.long_name;
                             if (types.includes('locality')) ucity = component.long_name;
                             if (types.includes('postal_code')) uzip = component.long_name;
@@ -1015,6 +922,9 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                         console.error('Error fetching coordinates:', error);
                       }
                     };
+
+                    
+                    
                     
                     const handleMarkerDragEnd1 = async (e) => {
                       const newLat = e.latLng.lat();
@@ -1031,7 +941,7 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                     
                         if (response.data.results.length > 0) {
                           const addressComponents = response.data.results[0].address_components;
-                          let uaddress = '';
+                          let uaddress = response.data.results[0].formatted_address  ;
                           let ustreet = '';
                           let ulocality = '';
                           let ucity = '';
@@ -1041,7 +951,7 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                     
                           addressComponents.forEach(component => {
                             const types = component.types;
-                            if (types.includes('administrative_area_level_3')) uaddress += component.long_name + ' ';
+                            // if (types.includes('administrative_area_level_3')) uaddress += component.long_name + ' ';
                             if (types.includes('sublocality_level_1')) ustreet += component.long_name + ' ';
                             if (types.includes('administrative_area_level_2')) ulocality = component.long_name;
                             if (types.includes('administrative_area_level_1')) ustate = component.long_name;
@@ -1075,7 +985,8 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                       width: "100%"
                     }
                   
-                    const defaultCenter1 = {
+                    const 
+                    defaultCenter1 = {
                       lat: coordinates1.lat || 37.7749, lng: coordinates1.lng || -122.4194
                     };
 // ================================----------------------google location code end-----------------------------================================
@@ -1091,7 +1002,6 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                         },
                         [`&.${tableCellClasses.body}`]: {
                           fontSize: 14,
-                          
                         },
                       }));
                       
@@ -1210,14 +1120,6 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                       const [checkedItems, setCheckedItems] = useState(Array(checkboxItems.length).fill(false));
                       const [selectAll, setSelectAll] = useState(false);
                     
-                      useEffect(() => {
-                        const initialCheckedItems = checkboxItems.map(item => project.basic_aminities.includes(item));
-                        setCheckedItems(initialCheckedItems);
-                        // Update selectAll based on whether all items are selected
-                        setSelectAll(initialCheckedItems.every(checked => checked));
-                      }, [project.basic_aminities]); 
-
-
                       // Toggle individual checkboxes
                       const handleCheckboxChange = (index) => {
                         const updatedCheckedItems = [...checkedItems];
@@ -1283,16 +1185,6 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                       const [checkedItems1, setCheckedItems1] = useState(Array(checkboxItems1.length).fill(false));
                       const [selectAll1, setSelectAll1] = useState(false);
                     
-
-                        
-                      useEffect(() => {
-                        const initialCheckedItems = checkboxItems1.map(item => project.features_aminities.includes(item));
-                        setCheckedItems1(initialCheckedItems);
-                        // Update selectAll based on whether all items are selected
-                        setSelectAll1(initialCheckedItems.every(checked => checked));
-                      }, [project.features_aminities]); 
-
-
                       // Toggle individual checkboxes
                       const handleCheckboxChange1 = (index) => {
                         const updatedCheckedItems1 = [...checkedItems1];
@@ -1347,7 +1239,7 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                                             if (block.block_name ) 
                                               {
                                                  
-                                                const updateblocks= [...project.add_block, block];
+                                                const updateblocks= [...blocks, block];
                                                 setblocks(updateblocks);
                                                 setproject(prevState => ({
                                                   ...prevState,
@@ -1404,7 +1296,7 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                                                     if (sizes.size_name ) 
                                                       {
                                                        
-                                                        const updatesizes= [...project.add_size, sizes];
+                                                        const updatesizes= [...size, sizes];
                                                         setsize(updatesizes);
                                                         setproject(prevState => ({
                                                           ...prevState,
@@ -1434,64 +1326,67 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
                                               setsize(newsizes)
                                             };
 
-                                             const convertToSquareUnit = (area, fromUnit, toUnit) => {
-                                                                                        const conversionFactors = {
-                                                                                          Yard: { 'Sq Yard': 1, 'Sq Meter': 0.836127, 'Sq Feet': 9, 'Sq Inch': 1296 },
-                                                                                          Meter: { 'Sq Yard': 1.19599, 'Sq Meter': 1, 'Sq Feet': 10.7639, 'Sq Inch': 1550.0031 },
-                                                                                          Feet: { 'Sq Yard': 0.111111, 'Sq Meter': 0.092903, 'Sq Feet': 1, 'Sq Inch': 144 },
-                                                                                          Inch: { 'Sq Yard': 0.000771605, 'Sq Meter': 0.00064516, 'Sq Feet': 0.00694444, 'Sq Inch': 1 },
-                                                                                        };
-                                                                                      
-                                                                                        if (!conversionFactors[fromUnit] || !conversionFactors[fromUnit][toUnit]) {
-                                                                                          console.error(`Invalid conversion from ${fromUnit} to ${toUnit}`);
-                                                                                          return area;
-                                                                                        }
-                                                                                      
-                                                                                        return area * conversionFactors[fromUnit][toUnit];
-                                                                                      };
-                                                                                      
-                                                                                      const calculateTotalArea = () => {
-                                                                                        const length = parseFloat(sizes.length);
-                                                                                        const bredth = parseFloat(sizes.bredth);
-                                                                                      
-                                                                                        // Check if length, bredth, yard1, and yard3 are valid
-                                                                                        if (!isNaN(length) && !isNaN(bredth) && sizes.yard1 && sizes.yard3) {
-                                                                                          const area = length * bredth;
-                                                                                          const fromUnit = sizes.yard1.replace('Sq ', ''); // Remove "Sq " to get the unit (Yard, Meter, etc.)
-                                                                                          const toUnit = sizes.yard3; // The unit we want to convert to (Sq Yard, Sq Meter, etc.)
-                                                                                      
-                                                                                          // Perform the conversion
-                                                                                          const convertedArea = convertToSquareUnit(area, fromUnit, toUnit);
-                                                                                      
-                                                                                          // Update the total_area first
-                                                                                          setsizes(prev => ({
-                                                                                            ...prev,
-                                                                                            total_area: convertedArea.toFixed(2),  // Format the area to 2 decimal places
-                                                                                          }));
-                                                                                        } else {
-                                                                                          setsizes(prev => ({ ...prev, total_area: '' }));
-                                                                                        }
-                                                                                      };
-                                                                                      
-                                                                                      // Separate useEffect to update size_name based on the total_area
-                                                                                      useEffect(() => {
-                                                                                        if (sizes.total_area && sizes.yard3) {
-                                                                                          // Calculate the size_name based on the updated total_area
-                                                                                          const sizeName = `${sizes.type} ${sizes.unit_type} (${sizes.total_area} ${sizes.yard3})`;
-                                                                                          setsizes(prev => ({
-                                                                                            ...prev,
-                                                                                            size_name: sizeName,
-                                                                                          }));
-                                                                                        }
-                                                                                      }, [sizes.total_area, sizes.yard3]);  // Run when total_area or yard3 changes
-                                                                                      
-                                                                                      // Main useEffect to handle changes in length, breadth, yard1, and yard3
-                                                                                      useEffect(() => {
-                                                                                        // Recalculate the total area when any relevant value changes
-                                                                                        calculateTotalArea();
-                                                                                      }, [sizes.length, sizes.bredth, sizes.yard1, sizes.yard3]); // Include yard3 here to trigger recalculation
-                                                                                      
-                                                                                      
+                                            const convertToSquareUnit = (area, fromUnit, toUnit) => {
+                                              const conversionFactors = {
+                                                Yard: { 'Sq Yard': 1, 'Sq Meter': 0.836127, 'Sq Feet': 9, 'Sq Inch': 1296 },
+                                                Meter: { 'Sq Yard': 1.19599, 'Sq Meter': 1, 'Sq Feet': 10.7639, 'Sq Inch': 1550.0031 },
+                                                Feet: { 'Sq Yard': 0.111111, 'Sq Meter': 0.092903, 'Sq Feet': 1, 'Sq Inch': 144 },
+                                                Inch: { 'Sq Yard': 0.000771605, 'Sq Meter': 0.00064516, 'Sq Feet': 0.00694444, 'Sq Inch': 1 },
+                                              };
+                                            
+                                              if (!conversionFactors[fromUnit] || !conversionFactors[fromUnit][toUnit]) {
+                                                console.error(`Invalid conversion from ${fromUnit} to ${toUnit}`);
+                                                return area;
+                                              }
+                                            
+                                              return area * conversionFactors[fromUnit][toUnit];
+                                            };
+                                            
+                                            const calculateTotalArea = () => {
+                                              const length = parseFloat(sizes.length);
+                                              const bredth = parseFloat(sizes.bredth);
+                                            
+                                              // Check if length, bredth, yard1, and yard3 are valid
+                                              if (!isNaN(length) && !isNaN(bredth) && sizes.yard1 && sizes.yard3) {
+                                                const area = length * bredth;
+                                                const fromUnit = sizes.yard1.replace('Sq ', ''); // Remove "Sq " to get the unit (Yard, Meter, etc.)
+                                                const toUnit = sizes.yard3; // The unit we want to convert to (Sq Yard, Sq Meter, etc.)
+                                            
+                                                // Perform the conversion
+                                                const convertedArea = convertToSquareUnit(area, fromUnit, toUnit);
+                                            
+                                                // Update the total_area first
+                                                setsizes(prev => ({
+                                                  ...prev,
+                                                  total_area: convertedArea.toFixed(2),  // Format the area to 2 decimal places
+                                                }));
+                                              } else {
+                                                setsizes(prev => ({ ...prev, total_area: '' }));
+                                              }
+                                            };
+                                            
+                                            // Separate useEffect to update size_name based on the total_area
+                                            useEffect(() => {
+                                              if (sizes.total_area && sizes.yard3) {
+                                                // Calculate the size_name based on the updated total_area
+                                                const sizeName = `${sizes.type} ${sizes.unit_type} (${sizes.total_area} ${sizes.yard3})`;
+                                                setsizes(prev => ({
+                                                  ...prev,
+                                                  size_name: sizeName,
+                                                }));
+                                              }
+                                            }, [sizes.total_area, sizes.yard3]);  // Run when total_area or yard3 changes
+                                            
+                                            // Main useEffect to handle changes in length, breadth, yard1, and yard3
+                                            useEffect(() => {
+                                              // Recalculate the total area when any relevant value changes
+                                              calculateTotalArea();
+                                            }, [sizes.length, sizes.bredth, sizes.yard1, sizes.yard3]); // Include yard3 here to trigger recalculation
+                                            
+                                            
+                                            
+                                            
+                                            
 
                                       
 
@@ -1516,50 +1411,48 @@ const [mapLoaded1, setMapLoaded1] = useState(false);
 
 // ==============================----------------------add unit start===========================================---------------------------
                                           const[unit,setunit]=useState([])
-                                          const[units,setunits]=useState({project_name:project?.name || "",unit_no:"",unit_type:"",category:"",
-                                                                          sub_category:[],block:"",
+                                          const[units,setunits]=useState({project_name:project?.name || "", unit_no:"",unit_type:"",category:"",
+                                                                            sub_category:[],block:"",
                                                                           size:"",land_type:"",khewat_no:[''],killa_no:[''],share:[''],action5:[],
                                                                           total_land_area:"",
                                                                           water_source:[''],water_level:[''],water_pump_type:[''],action6:[],
-                                                                          direction:"",side_open:"",fornt_on_road:"",total_owner:"",facing:"",road:"",ownership:"",stage:"",builtup_type:"",floor:[''],
+                                                                          direction:"",side_open:"",fornt_on_road:"",total_owner:"",facing:"",road:"",ownership:"",stage:"",type:"",floor:[''],
                                                                           cluter_details:[''],length:[''],bredth:[''],total_area:[''],measurment2:['sqfeet'],
                                                                           action3:[],ocupation_date:"",age_of_construction:"",furnishing_details:"",enter_furnishing_details:"",
                                                                           furnished_item:"",location:"",lattitude:"",langitude:"",uaddress:"",ustreet:"",
                                                                           ulocality:"",ucity:"",uzip:"",ustate:"",ucountry:"",owner_details:[],associated_contact:[],
                                                                           relation:"",s_no:[],preview:[],descriptions:[],category:[],action10:[],s_no1:[],url:[],action11:[],
                                                                           document_name:[''],document_no:[''],document_Date:[''],linkded_contact:[''],image:[''],action12:[]})
-const unit_type = {
-  Plot: ["Vacant", "25% Built Up", "40% Built Up", "Fenced", "Boundry Wall"],
-  'Independent House': ["Single Storey", "Duplex", "Triplex", "Double Storey", "Bunglow", "Courtyard", "Villa", "2.5 Storey", "Triple Storey"],
-  'Flat/Apartment': ["Studio", "Penthouse", "Duplex", "Triplex", "Simplex"],
-  'Builder Floor': ["Studio","Duplex", "Penthouse", "Simplex"],
 
-  Shop: ["Booth With Basement", "Booth With First Floor","Booth With Basement & First Floor","Triple Storey","Double Storey"],
-  Showroom: ["Ground Floor Builtup", "Ground Floor Builtup With Basement", "Double Storey","Double Storey With Basement","Double Height","Triple Storey Builtup","Triple Storey Builtup With Basement"],
-  'Office Space': ["Locable Office", "Virtual Office"],
-  'Retail Store': ["Hyper Market", "Departmetal Store"],
-  Soho: ["Soho"],
-  'Excutive Room': ["Room"],
-
-  Land: ["Cropland", "Woodland", "Pasture", "Commercial"],
-  'Farm House': ["Farm"],
-  Plots: ["1 Kanal", "10 Marla", "2 Kanal", "1 Acre", "2 Kanal"],
-  'Ware House': ["Wrhse"],
-  'Cold Storage': ["Cldstrg"],
-  'Rice Seller': ["Rcslr"],
-  Building: ["Bldg"],
-  Factory: ["Fctry"],
-
-  School: ["Nursery School", "Crech", "High School", "Primery School"],
-  Hotel: ["Hotel", "Guest House", "Homestays"],
-  Universities: ["Deemed", "Private"],
-  Hospital: ["Nursing Home", "Clinic"],
-  College: ["Art College", "Technical College", "Medical College"]
-};
-
-
-
-                                                                          useEffect(() => {
+                       
+                       const unit_type = {
+                         Plot: ["Vacant", "25% Built Up", "40% Built Up", "Fenced", "Boundry Wall"],
+                         'Independent House': ["Single Storey", "Duplex", "Triplex", "Double Storey", "Bunglow", "Courtyard", "Villa", "2.5 Storey", "Triple Storey"],
+                         'Flat/Apartment': ["Studio", "Penthouse", "Duplex", "Triplex", "Simplex"],
+                         'Builder Floor': ["Studio","Duplex", "Penthouse", "Simplex"],
+                       
+                         Shop: ["Booth With Basement", "Booth With First Floor","Booth With Basement & First Floor","Triple Storey","Double Storey"],
+                         Showroom: ["Ground Floor Builtup", "Ground Floor Builtup With Basement", "Double Storey","Double Storey With Basement","Double Height","Triple Storey Builtup","Triple Storey Builtup With Basement"],
+                         'Office Space': ["Locable Office", "Virtual Office"],
+                         'Retail Store': ["Hyper Market", "Departmetal Store"],
+                         Soho: ["Soho"],
+                         'Excutive Room': ["Room"],
+                       
+                         Land: ["Cropland", "Woodland", "Pasture", "Commercial"],
+                         'Farm House': ["Farm"],
+                         Plots: ["1 Kanal", "10 Marla", "2 Kanal", "1 Acre", "2 Kanal"],
+                         'Ware House': ["Wrhse"],
+                         'Cold Storage': ["Cldstrg"],
+                         'Rice Seller': ["Rcslr"],
+                         Building: ["Bldg"],
+                         Factory: ["Fctry"],
+                       
+                         School: ["Nursery School", "Crech", "High School", "Primery School"],
+                         Hotel: ["Hotel", "Guest House", "Homestays"],
+                         Universities: ["Deemed", "Private"],
+                         Hospital: ["Nursing Home", "Clinic"],
+                         College: ["Art College", "Technical College", "Medical College"]
+                       };                                                   useEffect(() => {
                                                                             if (project?.name) {
                                                                               setunits(prevState => ({
                                                                                 ...prevState,
@@ -1568,6 +1461,8 @@ const unit_type = {
                                                                             }
                                                                           }, [project]); // Only re-run this effect if project changes
                                                                           
+
+
                                                                           function addFnunit1() {
                                                                             setunits({
                                                                               ...units,
@@ -1653,6 +1548,10 @@ const unit_type = {
                                                                             });
                                                                           };
 
+                                                                      
+                                                                        
+         
+                                                                          
                                                                           const handlepreviewchange = (index, event) => {
                                                                             
                                                                             const newpreview = [...units.preview];
@@ -1664,21 +1563,6 @@ const unit_type = {
                                                                               preview: newpreview
                                                                             })
                                                                           };
-                                                                          
-                                                                          // const handlepreviewchange = (index, event) => {
-                                                                            
-                                                                          //   const newpreview = [...units.preview];
-                                                                          //   const files = Array.from(event.target.files);
-                                                                          //   const previewUrls = files.map(file => URL.createObjectURL(file));
-                                                                          //   newpreview[index] = {
-                                                                          //     files: files,
-                                                                          //     previewUrls: previewUrls
-                                                                          //   };
-                                                                          //   setunits({
-                                                                          //     ...units,
-                                                                          //     preview: newpreview
-                                                                          //   });
-                                                                          // };
                                                                           
                                                                           
                                                                           const handledescriptionchange = (index, event) => {
@@ -1697,7 +1581,6 @@ const unit_type = {
                                                                               category: newcategory
                                                                             });
                                                                           };
-                                                                          
                                                                           
                                                                           function addFn12() {
                   
@@ -1756,14 +1639,14 @@ const unit_type = {
                                                                                 document_Date: newdocumentdate
                                                                               });
                                                                             };
-                                                                            const handlelinkedcontactchange = (index, event) => {
-                                                                              const newlinkedcontact = [...units.linkded_contact];
-                                                                              newlinkedcontact[index] = event.target.value;
-                                                                              setunits({
-                                                                                ...units,
-                                                                                linkded_contact: newlinkedcontact
-                                                                              });
-                                                                            };
+                                                                            // const handlelinkedcontactchange = (index, event) => {
+                                                                            //   const newlinkedcontact = [...units.linkded_contact];
+                                                                            //   newlinkedcontact[index] = event.target.value;
+                                                                            //   setunits({
+                                                                            //     ...units,
+                                                                            //     linkded_contact: newlinkedcontact
+                                                                            //   });
+                                                                            // };
                                                                             const handlepicchange1 = (index, event) => {
                                                                               const newpic1 = [...units.image];
                                                                               const files = Array.from(event.target.files);
@@ -1773,7 +1656,7 @@ const unit_type = {
                                                                                 image: newpic1
                                                                               });
                                                                             };
-                                                                     
+                                                                          
                                                                             const handleSubCategoryChange1 = (event) => {
                                                                               const {
                                                                                 target: { value },
@@ -1803,12 +1686,19 @@ const unit_type = {
 
                                                   if (units.unit_no ) 
                                                     {
-                                                      const updateunit= [...project.add_unit, units];
+                                                      console.log(units.preview);
+                                                      
+                                                      const updateunit= [...unit, units];
                                                       setunit(updateunit);
                                                       setproject(prevState => ({
                                                         ...prevState,
-                                                        add_unit: updateunit
+                                                        add_unit: updateunit,
+                                                        
                                                       }));
+                                                      setselectedcontact1([])
+                                                      setselectedcontact2([])
+                                                    
+                                                  
                                                       
                                                       handleClose3()
 
@@ -1833,11 +1723,7 @@ const unit_type = {
                                             setunit(newunit)
                                           };
 
-                                          const uniqueUnits = project?.add_unit?.filter((value, index, self) => 
-                                            index === self.findIndex((t) => (
-                                              t.unit_no === value.unit_no
-                                            ))
-                                          );
+
 
 
 // ================================------------------------add unit end========================================----------------------------
@@ -2242,20 +2128,21 @@ const handleTypeClick3 = (type) => {
                 };
                 const bankOptions = [ 'State Bank of India','HDFC Bank','ICICI Bank','Axis Bank','Punjab National Bank',
                   'Bank of Baroda','Union Bank of India','Kotak Mahindra Bank'];
-              const [selectedBanks, setSelectedBanks] = useState([]);
-
-              const handleChange = (event) => {
-                const value = event.target.value;
+               const [selectedBanks, setSelectedBanks] = useState([]);
               
-                // Update selectedBanks with the new selection
-                setSelectedBanks(value);
-              
-                // Update the approved_bank state (just store the names of selected banks)
-                setproject((prevState) => ({
-                  ...prevState,
-                  approved_bank: value, // Only store the bank names
-                }));
-              };
+                            const handleChange = (event) => {
+                              const value = event.target.value;
+                            
+                              // Update selectedBanks with the new selection
+                              setSelectedBanks(value);
+                            
+                              // Update the approved_bank state (just store the names of selected banks)
+                              setproject((prevState) => ({
+                                ...prevState,
+                                approved_bank: value, // Only store the bank names
+                              }));
+                            };
+          
         
               
               const zoneslist = [
@@ -2464,9 +2351,11 @@ useEffect(() => {
       ...prevContacts,
       newcontact // Add the new contact (assumed to be an object)
     ]);
+    console.log(newcontact._id);
+    
     setunits(prevDeal => ({
       ...prevDeal,
-      owner_details: [...prevDeal.owner_details, newcontact._id] // Append new contact to the existing owner_details array
+      owner_details:[...(prevDeal.owner_details || []), newcontact._id] // Append new contact to the existing owner_details array
     }));
    
   }
@@ -2479,13 +2368,16 @@ useEffect(() => {
     setunits(prevDeal => ({ ...prevDeal, relation: relation }));
     setunits(prevDeal => ({
       ...prevDeal,
-      associated_contact: [...prevDeal.associated_contact, newcontact._id] // Append new contact to the existing owner_details array
+      associated_contact: [...(prevDeal.associated_contact || []), newcontact._id] // Append new contact to the existing owner_details array
     }));
     // setrelation1(relation)
     setrelation("")
   }
 }, [relation,newcontact]);
-// console.log(units.associated_contact);
+
+
+console.log(units.owner_details);
+console.log(units.associated_contact);
 
 
 const handleSuggestionClick = (contact) => {
@@ -2611,17 +2503,17 @@ const ustates = Object.keys(statesAndCities);
 const ucities = statesAndCities[units.ustate] || [];
 
 
-const asianCountries = [
-  "Afghanistan", "Armenia", "Azerbaijan", "Bahrain", "Bangladesh", "Bhutan", 
-  "Brunei", "Burma (Myanmar)", "Cambodia", "China", "Cyprus", "Georgia", 
-  "India", "Indonesia", "Iran", "Iraq", "Israel", "Japan", "Jordan", 
-  "Kazakhstan", "Kuwait", "Kyrgyzstan", "Laos", "Lebanon", "Malaysia", 
-  "Maldives", "Mongolia", "Nepal", "North Korea", "Oman", "Pakistan", 
-  "Palestine", "Philippines", "Qatar", "Saudi Arabia", "Singapore", 
-  "South Korea", "Sri Lanka", "Syria", "Tajikistan", "Thailand", 
-  "Timor-Leste", "Turkmenistan", "United Arab Emirates", "Uzbekistan", 
-  "Vietnam", "Yemen"
-];
+// const asianCountries = [
+//   "Afghanistan", "Armenia", "Azerbaijan", "Bahrain", "Bangladesh", "Bhutan", 
+//   "Brunei", "Burma (Myanmar)", "Cambodia", "China", "Cyprus", "Georgia", 
+//   "India", "Indonesia", "Iran", "Iraq", "Israel", "Japan", "Jordan", 
+//   "Kazakhstan", "Kuwait", "Kyrgyzstan", "Laos", "Lebanon", "Malaysia", 
+//   "Maldives", "Mongolia", "Nepal", "North Korea", "Oman", "Pakistan", 
+//   "Palestine", "Philippines", "Qatar", "Saudi Arabia", "Singapore", 
+//   "South Korea", "Sri Lanka", "Syria", "Tajikistan", "Thailand", 
+//   "Timor-Leste", "Turkmenistan", "United Arab Emirates", "Uzbekistan", 
+//   "Vietnam", "Yemen"
+// ];
 
 
 const handleSuggestionClick1 = (contact, index) => {
@@ -2656,8 +2548,8 @@ const handleSuggestionClick1 = (contact, index) => {
 // }, [units.linkded_contact, allSuggestions]);
 
 useEffect(() => {
-  // console.log('Checking units.linkded_contact:', units.linkded_contact);
-  // console.log('Checking allSuggestions:', allSuggestions);
+  console.log('Checking units.linkded_contact:', units.linkded_contact);
+  console.log('Checking allSuggestions:', allSuggestions);
 
   // Ensure that units.linkded_contact is an array before proceeding
   if (Array.isArray(units.linkded_contact)) {
@@ -2751,11 +2643,10 @@ const handleShow7=async()=>
 //   reader.readAsArrayBuffer(file); // Use readAsArrayBuffer instead of readAsBinaryString
 // };
 
-// ===========================================add to unit start=================================================================
-
+// ============================================add unit in project start=============================================================
 
 const databasefieldsunit = [
-    'project_name', 'unit_no', 'unit_type','category','sub_category','block','size','land_type',
+    'project_name', 'unit_no', 'unit_type','category','block','size','land_type',
     'khewat_no','killa_no','share','total_land_area','water_source','water_level','water_pump_type','direction',
     'side_open','fornt_on_road','total_owner','facing','road','ownership','stage','type','floor','cluter_details',
     'length','bredth','total_area','measurment2','ocupation_date','age_of_construction','furnishing_details',
@@ -2774,8 +2665,6 @@ const [pendingContacts, setPendingContacts] = useState([]);
 // 🔹 Step 1: Extract Headers from Excel File
 const handleFileChange = (event) => {
   const file = event.target.files[0];
- 
-  
   if (!file) return;
 
   setIsLoading(true); // Start loading
@@ -2790,9 +2679,8 @@ const handleFileChange = (event) => {
       const sheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(sheet,{ header: 1 });
 
-
       if (data.length > 0) {
-        const headers = data[0].map((cell, index) => cell || `Column${index + 1}`);
+        const headers = data[0].map((cell, index) => cell || `Column${index + 1}`).slice(0,-32);;
         setExcelHeaders(headers); // Set headers manually
       } else {
         toast.error("No data found in the Excel file.");
@@ -2877,31 +2765,202 @@ const normalizeMobile = (mobile) => {
 };
 
 
+const checkForDuplicates = async (contacts) => {
+  try {
+    setIsLoading(true);
+
+    // Fetch existing units
+    const response = await api.get("viewproject");
+    const allunits = response.data.project.flatMap(project => project.add_unit);
+
+    // Fetch all contacts
+    const contactResponse = await api.get("viewcontact");
+    const contactList = contactResponse.data.contact; // Existing contacts
+
+    // Create a mapping of mobile_no to ObjectId
+    const mobileToIdMap = new Map();
+    contactList.forEach(contact => {
+      if (Array.isArray(contact.mobile_no)) {
+        contact.mobile_no.forEach(mobile => {
+          const normalizedMobile = normalizeMobile(mobile);
+          if (normalizedMobile) {
+            mobileToIdMap.set(normalizedMobile, contact._id);
+          }
+        });
+      }
+    });
+
+    let newContacts = [];
+    let duplicates = [];
+    let newContactList = []; // Stores new contacts to be created
+
+    contacts.forEach((contact) => {
+      let updatedOwnerDetails = [];
+      let updatedAssociatedContact = [];
+
+      // Check and update `owner_details`
+      if (Array.isArray(contact.owner_details)) {
+        updatedOwnerDetails = contact.owner_details.map(mobile => {
+          const normalizedMobile = normalizeMobile(mobile);
+          return mobileToIdMap.get(normalizedMobile) || null; // Replace with ObjectId if found
+        }).filter(Boolean);
+      } else if (contact.owner_details) {
+        const normalizedMobile = normalizeMobile(contact.owner_details);
+        const existingId = mobileToIdMap.get(normalizedMobile);
+        if (existingId) {
+          updatedOwnerDetails = [existingId];
+        } else {
+          // If contact not found, add it to newContactList
+          newContactList.push({
+            title:contact.owner_title,
+            first_name: contact.owner_first_name || "Unknown Owner",
+            last_name:contact.owner_last_name || "Unknown Owner",
+            country_code:contact.owner_country_code || [],
+             mobile_no: contact.owner_mobile_no || [],
+             mobile_type: contact.owner_mobile_type || [],
+             email:contact.owner_email || [],
+             email_type:contact.owner_email_type || [],
+             father_husband_name:contact.owner_father_name,
+             h_no:contact.owner_hno,
+             area1:contact.owner_area,
+             location1:contact.owner_location,
+             city1:contact.owner_city,
+             pincode1:contact.owner_pincode,
+             state1:contact.owner_state,
+             country1:contact.owner_country,
+          });
+        }
+      }
+
+      // Check and update `associated_contact`
+      if (Array.isArray(contact.associated_contact)) {
+        updatedAssociatedContact = contact.associated_contact.map(mobile => {
+          const normalizedMobile = normalizeMobile(mobile);
+          return mobileToIdMap.get(normalizedMobile) || null;
+        }).filter(Boolean);
+      } else if (contact.associated_contact) {
+        const normalizedMobile = normalizeMobile(contact.associated_contact);
+        const existingId = mobileToIdMap.get(normalizedMobile);
+        if (existingId) {
+          updatedAssociatedContact = [existingId];
+        } else {
+          newContactList.push({
+            title:contact.associated_title,
+            first_name: contact.associated_first_name || "Unknown Owner",
+            last_name:contact.associated_last_name || "Unknown Owner",
+             mobile_no: contact.associated_mobile_no || [],
+             mobile_type: contact.associated_mobile_type || [],
+             country_code:contact.associated_country_code || [],
+             email:contact.associated_email || [],
+             email_type: contact.associated_email_type || [],
+             father_husband_name:contact.associated_father_name,
+             h_no:contact.associated_hno,
+             area1:contact.associated_area,
+             location1:contact.associated_location,
+             city1:contact.associated_city,
+             pincode1:contact.associated_pincode,
+             state1:contact.associated_state,
+             country1:contact.associated_country,
+
+          });
+        }
+      }
+
+      // Create updated unit object **inside the loop**
+      const unitDetails = {
+        ...contact,
+        owner_details: updatedOwnerDetails,
+        associated_contact: updatedAssociatedContact
+      };
+
+      // Check if unit is duplicate
+      const isDuplicate = allunits.some(unit =>
+        unit.project_name === contact.project_name &&
+        unit.unit_no === contact.unit_no &&
+        unit.block === contact.block
+      );
+
+      if (isDuplicate) {
+        duplicates.push(unitDetails);
+      } else {
+        newContacts.push(unitDetails);
+      }
+    });
+
+    
+    
+    // If there are new contacts, stop and prompt the user to re-upload
+    if (newContactList.length > 0) {
+      Swal.fire({
+        title: "Are you sure?",
+        icon: "warning",
+        text: `Do you want to add ${newContactList.length} new contacts?`,
+        showCancelButton: true,
+        confirmButtonText: "Yes, add them!",
+        cancelButtonText: "No, cancel",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          setIsLoading(true); // Show loading state
+    
+          try {
+            await api.post("addbulkcontact", newContactList);
+    
+            Swal.fire({
+              title: "Success",
+              icon: "success",
+              text: `${newContactList.length} new contacts added. Please refresh the page and re-upload the Excel sheet.`,
+            }).then(() => {
+              window.location.reload(); // Reload after user clicks "OK"
+            });
+          } catch (error) {
+            Swal.fire({
+              title: "Error",
+              icon: "error",
+              text: "Something went wrong while adding contacts.",
+            });
+          }
+    
+          setIsLoading(false); // Hide loading state
+        }
+      });
+    
+      return; // Stop further execution
+    }
+    
+
+    // Update state only if no new contacts were found
+    setDuplicateEntries(duplicates);
+    setPendingContacts(newContacts);
+    setallcontacts([...newContacts, ...duplicates]);
+
+  } catch (error) {
+    console.error("❌ Error checking for duplicates:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
 
 // const checkForDuplicates = async (contacts) => {
 //   try {
 //     setIsLoading(true);
 
 //     // Fetch existing units
-//     // const response = await api.get("viewproject");
-//     const allunits = project.add_unit
-
-//     console.log(allunits);
-    
-
-    
+//     const response = await api.get("viewproject");
+//     const allunits = response.data.project.flatMap(project => project.add_unit);
 
 //     // Fetch all contacts
 //     const contactResponse = await api.get("viewcontact");
-//     // console.log(contactResponse);
-    
-//     const contactList = contactResponse.data.allcontact; // Existing contacts
+//     const contactList = contactResponse.data.contact; // Assuming [{_id, mobile_no: []}]
+
+
 
 //     // Create a mapping of mobile_no to ObjectId
 //     const mobileToIdMap = new Map();
 //     contactList.forEach(contact => {
 //       if (Array.isArray(contact.mobile_no)) {
-//         contact.mobile_no?.forEach(mobile => {
+//         contact.mobile_no.forEach(mobile => {
 //           const normalizedMobile = normalizeMobile(mobile);
 //           if (normalizedMobile) {
 //             mobileToIdMap.set(normalizedMobile, contact._id);
@@ -2910,94 +2969,54 @@ const normalizeMobile = (mobile) => {
 //       }
 //     });
 
+   
+
 //     let newContacts = [];
 //     let duplicates = [];
-//     let newContactList = []; // Stores new contacts to be created
 
-//     contacts.forEach((contact) => {
+//     contacts.forEach((contact, index) => {
+
+
+//       // Ensure `owner_details` is an array
 //       let updatedOwnerDetails = [];
-//       let updatedAssociatedContact = [];
-
-//       // Check and update `owner_details`
 //       if (Array.isArray(contact.owner_details)) {
 //         updatedOwnerDetails = contact.owner_details.map(mobile => {
 //           const normalizedMobile = normalizeMobile(mobile);
-//           return mobileToIdMap.get(normalizedMobile) || null; // Replace with ObjectId if found
-//         }).filter(Boolean);
+//           return mobileToIdMap.get(normalizedMobile) || []; // Replace with ObjectId if found
+//         });
 //       } else if (contact.owner_details) {
+//         // If single string, convert to an array
 //         const normalizedMobile = normalizeMobile(contact.owner_details);
-//         const existingId = mobileToIdMap.get(normalizedMobile);
-//         if (existingId) {
-//           updatedOwnerDetails = [existingId];
-//         } else {
-//           // If contact not found, add it to newContactList
-//           newContactList.push({
-//             title:contact.owner_title,
-//             first_name: contact.owner_first_name || "",
-//             last_name:contact.owner_last_name || "",
-//             country_code:contact.owner_country_code || [],
-//              mobile_no: contact.owner_mobile_no || [],
-//              mobile_type: contact.owner_mobile_type || [],
-//              email:contact.owner_email || [],
-//              email_type:contact.owner_email_type || [],
-//              father_husband_name:contact.owner_father_name,
-//              h_no:contact.owner_hno,
-//              area1:contact.owner_area,
-//              location1:contact.owner_location,
-//              city1:contact.owner_city,
-//              pincode1:contact.owner_pincode,
-//              state1:contact.owner_state,
-//              country1:contact.owner_country,
-//           });
-//         }
+//         updatedOwnerDetails = [mobileToIdMap.get(normalizedMobile) || []];
 //       }
 
-//       // Check and update `associated_contact`
-//       if (Array.isArray(contact.associated_contact)) {
-//         updatedAssociatedContact = contact.associated_contact.map(mobile => {
-//           const normalizedMobile = normalizeMobile(mobile);
-//           return mobileToIdMap.get(normalizedMobile) || null;
-//         }).filter(Boolean);
-//       } else if (contact.associated_contact) {
-//         const normalizedMobile = normalizeMobile(contact.associated_contact);
-//         const existingId = mobileToIdMap.get(normalizedMobile);
-//         if (existingId) {
-//           updatedAssociatedContact = [existingId];
-//         } else {
-//           newContactList.push({
-//             title:contact.associated_title,
-//             first_name: contact.associated_first_name || "",
-//             last_name:contact.associated_last_name || "",
-//              mobile_no: contact.associated_mobile_no || [],
-//              mobile_type: contact.associated_mobile_type || [],
-//              country_code:contact.associated_country_code || [],
-//              email:contact.associated_email || [],
-//              email_type: contact.associated_email_type || [],
-//              father_husband_name:contact.associated_father_name,
-//              h_no:contact.associated_hno,
-//              area1:contact.associated_area,
-//              location1:contact.associated_location,
-//              city1:contact.associated_city,
-//              pincode1:contact.associated_pincode,
-//              state1:contact.associated_state,
-//              country1:contact.associated_country,
-
+//         // Ensure `owner_details` is an array
+//         let updatedassociatedcontact = [];
+//         if (Array.isArray(contact.associated_contact)) {
+//           updatedassociatedcontact = contact.associated_contact.map(mobile => {
+//             const normalizedMobile = normalizeMobile(mobile);
+//             return mobileToIdMap.get(normalizedMobile) || []; // Replace with ObjectId if found
 //           });
+//         } else if (contact.associated_contact) {
+//           // If single string, convert to an array
+//           const normalizedMobile = normalizeMobile(contact.associated_contact);
+//           updatedassociatedcontact = [mobileToIdMap.get(normalizedMobile) || []];
 //         }
-//       }
 
-//       // Create updated unit object **inside the loop**
+  
+
+//       // Create updated unitDetails object
 //       const unitDetails = {
 //         ...contact,
-//         owner_details: updatedOwnerDetails,
-//         associated_contact: updatedAssociatedContact
+//         owner_details: updatedOwnerDetails, 
+//         associated_contact:updatedassociatedcontact
 //       };
 
-//       // Check if unit is duplicate
+//       // Check if duplicate
 //       const isDuplicate = allunits.some(unit =>
-//         unit.project_name === unitDetails.project_name &&
-//         unit.unit_no === unitDetails.unit_no &&
-//         unit.block === unitDetails.block
+//         unit.project_name === contact.project_name &&
+//         unit.unit_no === contact.unit_no &&
+//         unit.block === contact.block
 //       );
 
 //       if (isDuplicate) {
@@ -3007,59 +3026,7 @@ const normalizeMobile = (mobile) => {
 //       }
 //     });
 
-    
-    
-//     // If there are new contacts, stop and prompt the user to re-upload
-//     if (newContactList.length > 0) {
-//       const contactListHtml = newContactList.map(contact => 
-//           `<li>${contact.title} ${contact.first_name} ${contact.last_name}</li>`
-//       ).join("");
-//       Swal.fire({
-//         title: "Are you sure?",
-//         icon: "warning",
-//       html: `
-//         <p>Do you want to add <strong>${newContactList.length}</strong> new contacts?</p>
-//         <details style="text-align: left; margin-top: 10px;">
-//             <summary style="cursor: pointer; font-weight: bold;">View contact list</summary>
-//             <ul style="margin-top: 10px;">
-//                 ${contactListHtml}
-//             </ul>
-//         </details>
-//     `,
-//         showCancelButton: true,
-//         confirmButtonText: "Yes, add them!",
-//         cancelButtonText: "No, cancel",
-//       }).then(async (result) => {
-//         if (result.isConfirmed) {
-//           setIsLoading(true); // Show loading state
-    
-//           try {
-//             await api.post("addbulkcontact", newContactList);
-    
-//             Swal.fire({
-//               title: "Success",
-//               icon: "success",
-//               text: `${newContactList.length} new contacts added. Please refresh the page and re-upload the Excel sheet.`,
-//             }).then(() => {
-//               window.location.reload(); // Reload after user clicks "OK"
-//             });
-//           } catch (error) {
-//             Swal.fire({
-//               title: "Error",
-//               icon: "error",
-//               text: "Something went wrong while adding contacts. plz check your excel file avoid coma(,) if fields are non array and if values are empthy then blabk it ",
-//             });
-//           }
-    
-//           setIsLoading(false); // Hide loading state
-//         }
-//       });
-    
-//       return; // Stop further execution
-//     }
-    
-
-//     // Update state only if no new contacts were found
+//     // Update state with new contacts and duplicates
 //     setDuplicateEntries(duplicates);
 //     setPendingContacts(newContacts);
 //     setallcontacts([...newContacts, ...duplicates]);
@@ -3071,639 +3038,15 @@ const normalizeMobile = (mobile) => {
 //   }
 // };
 
-// const checkForDuplicates = async (contacts) => {
-//   try {
-//     setIsLoading(true);
 
-//     // Existing project units (indexing for faster lookup)
-//     const allUnitsResp = await api.get(`viewprojectunits/${id}`); // 👈 no limit or page
-//     console.log(allUnitsResp);
-    
-//     const allunits = allUnitsResp.data.project || [];
-//     const unitKeySet = new Set(
-//       allunits.map(
-//         (u) => `${u.project_name}|${u.unit_no}|${u.block}`
-//       )
-//     );
-
-//     console.log(allunits);
-    
-
-//     // Fetch all contacts once
-//     const { data } = await api.get("viewcontact-for-edit-project");
-  
-//     const contactList = data.allcontact || [];
-
-//     // Build a lookup: mobile_no → contactId
-//     const mobileToIdMap = new Map();
-//     for (const c of contactList) {
-//       if (Array.isArray(c.mobile_no)) {
-//         for (const mobile of c.mobile_no) {
-//           const normalized = normalizeMobile(mobile);
-//           if (normalized) mobileToIdMap.set(normalized, c._id);
-//         }
-//       }
-//     }
-
-//     const newContacts = [];
-//     const duplicates = [];
-//     const newContactList = [];
-
-//     for (const contact of contacts) {
-//       let updatedOwnerDetails = [];
-//       let updatedAssociatedContact = [];
-
-//       // ✅ Owner details
-//       if (Array.isArray(contact.owner_details)) {
-//         updatedOwnerDetails = contact.owner_details
-//           .map((m) => mobileToIdMap.get(normalizeMobile(m)))
-//           .filter(Boolean);
-//       } else if (contact.owner_details) {
-//         const id = mobileToIdMap.get(normalizeMobile(contact.owner_details));
-//         if (id) {
-//           updatedOwnerDetails = [id];
-//         } else {
-//           newContactList.push({
-//             title: contact.owner_title,
-//             first_name: contact.owner_first_name || "",
-//             last_name: contact.owner_last_name || "",
-//             country_code: contact.owner_country_code || [],
-//             mobile_no: contact.owner_mobile_no || [],
-//             mobile_type: contact.owner_mobile_type || [],
-//             email: contact.owner_email || [],
-//             email_type: contact.owner_email_type || [],
-//             father_husband_name: contact.owner_father_name,
-//             h_no: contact.owner_hno,
-//             area1: contact.owner_area,
-//             location1: contact.owner_location,
-//             city1: contact.owner_city,
-//             pincode1: contact.owner_pincode,
-//             state1: contact.owner_state,
-//             country1: contact.owner_country,
-//           });
-//         }
-//       }
-
-//       // ✅ Associated contact
-//       if (Array.isArray(contact.associated_contact)) {
-//         updatedAssociatedContact = contact.associated_contact
-//           .map((m) => mobileToIdMap.get(normalizeMobile(m)))
-//           .filter(Boolean);
-//       } else if (contact.associated_contact) {
-//         const id = mobileToIdMap.get(
-//           normalizeMobile(contact.associated_contact)
-//         );
-//         if (id) {
-//           updatedAssociatedContact = [id];
-//         } else {
-//           newContactList.push({
-//             title: contact.associated_title,
-//             first_name: contact.associated_first_name || "",
-//             last_name: contact.associated_last_name || "",
-//             mobile_no: contact.associated_mobile_no || [],
-//             mobile_type: contact.associated_mobile_type || [],
-//             country_code: contact.associated_country_code || [],
-//             email: contact.associated_email || [],
-//             email_type: contact.associated_email_type || [],
-//             father_husband_name: contact.associated_father_name,
-//             h_no: contact.associated_hno,
-//             area1: contact.associated_area,
-//             location1: contact.associated_location,
-//             city1: contact.associated_city,
-//             pincode1: contact.associated_pincode,
-//             state1: contact.associated_state,
-//             country1: contact.associated_country,
-//           });
-//         }
-//       }
-
-//       // ✅ Unit key comparison in O(1)
-//       const unitKey = `${contact.project_name}|${contact.unit_no}|${contact.block}`;
-//       const unitDetails = {
-//         ...contact,
-//         owner_details: updatedOwnerDetails,
-//         associated_contact: updatedAssociatedContact,
-//       };
-
-//       if (unitKeySet.has(unitKey)) {
-//         duplicates.push(unitDetails);
-//       } else {
-//         newContacts.push(unitDetails);
-//       }
-//     }
-
-//     // ✅ If new contacts need confirmation
-//     if (newContactList.length > 0) {
-//       const contactListHtml = newContactList
-//         .map((c) => `<li>${c.title} ${c.first_name} ${c.last_name}</li>`)
-//         .join("");
-
-//       Swal.fire({
-//         title: "Are you sure?",
-//         icon: "warning",
-//         html: `
-//           <p>Do you want to add <strong>${newContactList.length}</strong> new contacts?</p>
-//           <details style="text-align: left; margin-top: 10px;">
-//             <summary style="cursor: pointer; font-weight: bold;">View contact list</summary>
-//             <ul style="margin-top: 10px;">${contactListHtml}</ul>
-//           </details>
-//         `,
-//         showCancelButton: true,
-//         confirmButtonText: "Yes, add them!",
-//         cancelButtonText: "No, cancel",
-//       }).then(async (result) => {
-//         if (result.isConfirmed) {
-//           try {
-//             await api.post("addbulkcontact", newContactList);
-//             Swal.fire({
-//               title: "Success",
-//               icon: "success",
-//               text: `${newContactList.length} new contacts added. Please refresh and re-upload.`,
-//             }).then(() => window.location.reload());
-//           } catch (error) {
-//             Swal.fire({
-//               title: "Error",
-//               icon: "error",
-//               text: "Something went wrong while adding contacts. Check your Excel (avoid commas, keep blanks empty).",
-//             });
-//           }
-//         }
-//       });
-
-//       return;
-//     }
-
-//     // ✅ Final state updates
-//     setDuplicateEntries(duplicates);
-//     setPendingContacts(newContacts);
-//     setallcontacts([...newContacts, ...duplicates]);
-//   } catch (error) {
-//     console.error("❌ Error checking for duplicates:", error);
-//   } finally {
-//     setIsLoading(false);
-//   }
-// };
-
-const checkForDuplicates = async (contacts) => {
-  try {
-    setIsLoading(true);
-
-    // Send contacts and projectId to backend
-    const response = await api.post("/check-duplicates", {
-      projectId: id, // your current project id
-      contacts,      // array of uploaded contacts/units
-    });
-
-    const { duplicates, newContacts, addedContacts } = response.data;
-  
-    
-
-    // Set frontend states
-    setDuplicateEntries(duplicates);      // units already in project
-    setPendingContacts(newContacts);      // new units not duplicates
-    setallcontacts([...newContacts, ...duplicates]);
-
-    // Optional: alert user about new contacts added
-    if (addedContacts > 0) {
-      Swal.fire({
-        title: "Success",
-        icon: "success",
-        text: `${addedContacts} new contacts were added to your database.`,
-      });
-    }
-
-  } catch (error) {
-    console.error("Error checking duplicates:", error);
-    Swal.fire({
-      title: "Error",
-      icon: "error",
-      text: "Something went wrong while checking duplicates.",
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-
-
-// const addunits = () => {
-//   // Step 1: Identify duplicates within pendingContacts
-//   const seen = new Set();
-//   const allUnitsWithColor = [];
-
-//   pendingContacts.forEach((unit) => {
-//     const unitIdentifier = `${unit.project_name}-${unit.unit_no}-${unit.block}`; // Unique identifier for each unit
-
-//     if (seen.has(unitIdentifier)) {
-//       unit.isDuplicate = true;
-//     } else {
-//       seen.add(unitIdentifier);
-//       unit.isDuplicate = false;
-//     }
-
-//     allUnitsWithColor.push(unit); // Add both unique and duplicate units
-//   });
-
-//   // Step 2: Update state safely
-//   setunit((prevUnit) => [...(prevUnit || []), ...allUnitsWithColor]);
-
-//   setproject((prevState) => ({
-//     ...prevState,
-//     add_unit: [...(prevState?.add_unit || []), ...allUnitsWithColor], // ✅ Safe spread even if add_unit is undefined
-//   }));
-// };
-
-
-// const updateunits=async()=>
-//           {
-//             try {
-
-//                // Show confirmation message
-//             const result = await Swal.fire({
-//               title: "Are you sure?",
-//               text: "You won't be able to revert this!",
-//               icon: "warning",
-//               showCancelButton: true,
-//               confirmButtonColor: "#d33",
-//               cancelButtonColor: "#3085d6",
-//               confirmButtonText: "Yes, update it!",
-//             });
-        
-//             if (!result.isConfirmed) {
-//               return; // Stop execution if user cancels
-//             }
-        
-//                 setIsLoading(true);
-
-//                     const total = duplicateEntries.length;
-//                       let successCount = 0;
-//                       let failCount = 0;
-//                       const batchSize = 50;
-
-
-
-//                           for (let i = 0; i < total; i += batchSize) {
-//                             const batch = duplicateEntries.slice(i, i + batchSize);
-//                       console.log(batch);
-                      
-//                             try {
-//                               const [resp1] = await Promise.all([
-//                                 api.put('updateprojectforinventoriesbulk', batch, config),
-//                               ]);
-                      
-//                               if (resp1.status === 200) {
-//                                 successCount += batch.length;
-//                                 toast.success(`Updated ${successCount}/${total} units`, { autoClose: 2000 });
-//                               } else {
-//                                 failCount += batch.length;
-//                                 toast.error(`Batch ${i + 1}-${i + batch.length} failed`, { autoClose: 2000 });
-//                               }
-                      
-//                             } catch (batchError) {
-//                               failCount += batch.length;
-//                               toast.error(`Error updating batch ${i + 1}-${i + batch.length}`, { autoClose: 3000 });
-//                             }
-//                           }
-
-//                            if (successCount === total) {
-//                                 Swal.fire({
-//                                   icon: 'success',
-//                                   title: 'Updated Complete',
-//                                   html: `All <b>${successCount}</b> units updated successfully.`,
-//                                 });
-//                               } else {
-//                                 Swal.fire({
-//                                   icon: 'warning',
-//                                   title: 'Partial Updated Complete',
-//                                   html: `<b>${successCount}</b> uunits updated successfully.<br><b>${failCount}</b> failed.`,
-//                                 });
-//                               }
-
-//                            } 
-//             catch (error) {
-//               Swal.fire({
-//                 title: "not found?",
-//                 text: "The project is not found plz check !",
-//                 icon: "warning",
-//                 showCancelButton: true,
-//                 confirmButtonColor: "#d33",
-//                 cancelButtonColor: "#3085d6",
-//                 confirmButtonText: "ok",
-//               });
-//               console.log(error);
-              
-//             }finally
-//             {
-//               setIsLoading(false)
-//             }
-//           }
-
-
-
-
-const addunits = async () => {
-  if (!pendingContacts?.length) {
-    Swal.fire("Info", "No units to add", "info");
-    return;
-  }
-
-  try {
-    setloading_unit(true)
-    const res = await api.post("/add-units", {
-      project_id: project._id,
-      pendingContacts,
-    });
-
-    if (res.data.success) {
-      Swal.fire({
-        icon: "success",
-        title: "Units Added",
-        html: `<b>${res.data.addedCount}</b> new units added.`,
-      });
-
-    
-    } else {
-      Swal.fire("Error", res.data.message, "error");
-    }
-  } catch (err) {
-    console.error(err);
-    Swal.fire("Error", "Something went wrong", "error");
-  }
-  finally
-  {
-    setloading_unit(false)
-  }
-};
-
-
-
-
-
-
-const updateunits = async () => {
-  try {
-    // Show confirmation
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, update it!",
-    });
-    if (!result.isConfirmed) return;
-
-    setIsLoading(true);
-
-    const total = duplicateEntries.length;
-    let successCount = 0;
-    let failCount = 0;
-    const batchSize = 10; // Split into smaller batches
-
-    for (let i = 0; i < total; i += batchSize) {
-      const batch = duplicateEntries.slice(i, i + batchSize);
-
-      // 1️⃣ Upload images first (if any)
-      // const batchWithUrls = await Promise.all(
-      //   batch.map(async (unit) => {
-      //     const previewUrls = [];
-      //     const imageUrls = [];
-
-      //     if (unit.previewFiles) {
-      //       for (let file of unit.previewFiles) {
-      //         const formData = new FormData();
-      //         formData.append("file", file);
-      //         const res = await api.post("/upload/cloudinary", formData);
-      //         previewUrls.push(res.data.url);
-      //       }
-      //     }
-
-      //     if (unit.imageFiles) {
-      //       for (let file of unit.imageFiles) {
-      //         const formData = new FormData();
-      //         formData.append("file", file);
-      //         const res = await api.post("/upload/cloudinary", formData);
-      //         imageUrls.push(res.data.url);
-      //       }
-      //     }
-
-      //     return { ...unit, preview: previewUrls, image: imageUrls };
-      //   })
-      // );
-
-      // 2️⃣ Send batch to backend
-      try {
-        const resp = await api.put("updateprojectforinventoriesbulk", batch, config);
-        console.log(resp);
-        
-        if (resp.status === 200) {
-          successCount += batch.length;
-          toast.success(`Updated ${successCount}/${total} units`, { autoClose: 2000 });
-        } else {
-          failCount += batch.length;
-          toast.error(`Batch ${i + 1}-${i + batch.length} failed`, { autoClose: 2000 });
-        }
-      } catch (batchError) {
-        failCount += batch.length;
-        toast.error(`Error updating batch ${i + 1}-${i + batch.length}`, { autoClose: 3000 });
-        console.error(batchError);
-      }
-    }
-
-    // Final message
-    if (successCount === total) {
-      Swal.fire({ icon: "success", title: "Updated Complete", html: `All <b>${successCount}</b> units updated successfully.` });
-    } else {
-      Swal.fire({ icon: "warning", title: "Partial Updated Complete", html: `<b>${successCount}</b> units updated successfully.<br><b>${failCount}</b> failed.` });
-    }
-  } catch (error) {
-    console.error(error);
-    Swal.fire({ icon: "error", title: "Error", text: "Something went wrong!" });
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-
-const headerSuggestions = {
-  owner_details: "Suggestion: Enter owner mobile no",
-  associated_contact: "Suggestion: Enter associated mobile no",
-  unit_no: "Suggestion: Enter unit no",
-  block: "Suggestion: Enter Block",
-  project_name: "Suggestion: Project Name",
-  unit_type:"Suggestion: Select unit type",
-  size:"Suggestion: Size of unit"
-  // Add more as needed
-};
-
-// ========================================add unit in project end===================================================================
-
-// ===========================================add to size start=================================================================
-
-const [show10, setshow10] = useState(false);
-const handleClose10 = () => setshow10(false);
-const handleShow10=async()=>
-{
-  setshow10(true);
-
-}
-
-const databasefieldsize = [
-    'size_name', 'block1', 'category','sub_category','unit_type','total_sealable_area','sq_feet1',
-    'covered_area','sq_feet2','carpet_area','sq_feet3','loading','percentage','length','yard1',
-    'bredth','yard2','total_area','yard3'];
-  
-const [excelHeaderssize, setExcelHeaderssize] = useState([]); // Store Excel headers
-const [mappedFieldssize, setMappedFieldssize] = useState({}); // Store user-selected mapping
-const [selectedFilesize, setSelectedFilesize] = useState(null); // Store uploaded file
-
-const [duplicateEntriessize, setDuplicateEntriessize] = useState([]);
-const [pendingContactssize, setPendingContactssize] = useState([]);
-
-// 🔹 Step 1: Extract Headers from Excel File
-const handleFileChangesize1 = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  setIsLoading(true); // Start loading
-  setSelectedFilesize
-  (file); // Store file for later use
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const arrayBuffer = e.target.result;
-      const workbook = XLSX.read(arrayBuffer, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const data = XLSX.utils.sheet_to_json(sheet,{ header: 1 });
-
-      if (data.length > 0) {
-        const headers = data[0].map((cell, index) => cell || `Column${index + 1}`);
-        setExcelHeaderssize(headers); // Set headers manually
-      } else {
-        toast.error("No data found in the Excel file.");
-      }
-    } catch (error) {
-      toast.error("Error processing the Excel file.");
-    } finally {
-      setIsLoading(false); // Stop loading
-    }
-  };
-
-  reader.readAsArrayBuffer(file);
-};
-
-
-
-
-
-// 🔹 Step 2: Process & Map Data Based on User Selection
-const handleProcessFilesize = () => {
-  try {
-    
-  setIsLoading(true);
-  if (!selectedFilesize) {
-    toast.error("No file selected. Please upload a file first.");
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const arrayBuffer = e.target.result;
-    const workbook = XLSX.read(arrayBuffer, { type: "array" });
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const data = XLSX.utils.sheet_to_json(sheet);
-
-    if (data.length > 0) {
-      const updatedsize = data.map((row) => {
-        let newcontact = {};
-
-        Object.keys(row).forEach((key) => {
-          let mappedKey = mappedFieldssize[key] || key; // Use mapped key or original key
-          let value = row[key];
-
-          // Automatically detect and convert CSV-style values to arrays
-          if (typeof value === "string" && value.includes(",")) {
-            newcontact[mappedKey] = value.split(",").map((v) => v.trim());
-          } else {
-            newcontact[mappedKey] = value;
-          }
-        });
-
-        return newcontact;
-      });
-
- 
-      checkForDuplicatessize(updatedsize); // Call duplicate check after mapping
-    } else {
-      toast.error("No data found in the Excel file.");
-    }
-  };
-
-  reader.readAsArrayBuffer(selectedFilesize);
-} catch (error) {
-    console.log(error);
-    
-}finally {
-  setIsLoading(false); // Hide loader after API call
-}
-};
-
-
-const [allcontactssize, setallcontactssize] = useState([]);
-const checkForDuplicatessize = async (contacts) => {
-  try {
-    setIsLoading(true);
-
-    // Fetch existing units
-    const response = await api.get("viewproject");
-    const allsize = response.data.project.flatMap(project => project.add_size);
-
-    let newContacts = [];
-    let duplicates = [];
-
-    contacts.forEach((contact) => {
-   
-   // Check if unit is duplicate (case-insensitive and trimmed)
-        const isDuplicate = allsize.some(unit =>
-          unit.category.trim().toLowerCase() === contact.category.trim().toLowerCase() &&
-          unit.size_name.trim().toLowerCase() === contact.size_name.trim().toLowerCase()
-        );
-
-
-      if (isDuplicate) {
-        duplicates.push(contact);
-      } else {
-        newContacts.push(contact);
-      }
-    });
-
-    
-    setDuplicateEntriessize(duplicates);
-    setPendingContactssize(newContacts);
-    setallcontactssize([...newContacts, ...duplicates]);
-
-  } catch (error) {
-    console.error("❌ Error checking for duplicates:", error);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-const addbulksize = () => {
+const addunits = () => {
   // Step 1: Identify duplicates within pendingContacts
   const seen = new Set();
   const uniqueUnits = [];
   const allUnitsWithColor = [];
 
-  pendingContactssize.forEach((unit) => {
-    const unitIdentifier = `${unit.size_name}-${unit.category}`; // Unique identifier for each unit
+  pendingContacts.forEach((unit) => {
+    const unitIdentifier = `${unit.project_name}-${unit.unit_no}-${unit.block}`; // Unique identifier for each unit
     
     if (seen.has(unitIdentifier)) {
       // If the unit is a duplicate, mark it as duplicate and set color
@@ -3717,234 +3060,18 @@ const addbulksize = () => {
     }
   });
 
-
   // Step 2: Update state with all units (including duplicates)
-  setsize((prevUnit) => [...prevUnit, ...allUnitsWithColor]); // Append all units (unique + duplicate) to the unit list
+  setunit((prevUnit) => [...prevUnit, ...allUnitsWithColor]); // Append all units (unique + duplicate) to the unit list
   setproject((prevState) => ({
     ...prevState,
-    add_size: [...prevState.add_size, ...allUnitsWithColor], // Add all units to the project state
+    add_unit: [...prevState.add_unit, ...allUnitsWithColor], // Add all units to the project state
   }));
 
 
 };
 
-const headerSuggestionssize = {
-  owner_details: "Suggestion: Enter owner mobile no",
-  associated_contact: "Suggestion: Enter associated mobile no",
-  unit_no: "Suggestion: Enter unit no",
-  block: "Suggestion: Enter Block",
-  project_name: "Suggestion: Project Name",
-  unit_type:"Suggestion: Select unit type",
-  size:"Suggestion: Size of unit"
-  // Add more as needed
-};
 
-// ========================================add size in project end===================================================================
-
-// ===========================================add to size start=================================================================
-
-const [show11, setshow11] = useState(false);
-const handleClose11 = () => setshow11(false);
-const handleShow11=async()=>
-{
-  setshow11(true);
-
-}
-
-const databasefieldblock = [
-    'block_name', 'category', 'sub_category','land_area','measurment','total_blocks','total_floors',
-    'total_units','status','launched_on','expected_competion','possession','parking_type','rera_no'];
-  
-const [excelHeadersblock, setExcelHeadersblock] = useState([]); // Store Excel headers
-const [mappedFieldsblock, setMappedFieldsblock] = useState({}); // Store user-selected mapping
-const [selectedFileblock, setSelectedFileblock] = useState(null); // Store uploaded file
-
-const [duplicateEntriesblock, setDuplicateEntriesblock] = useState([]);
-const [pendingContactsblock, setPendingContactsblock] = useState([]);
-
-// 🔹 Step 1: Extract Headers from Excel File
-const handleFileChangeblock1 = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  setIsLoading(true); // Start loading
-  setSelectedFileblock(file); // Store file for later use
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const arrayBuffer = e.target.result;
-      const workbook = XLSX.read(arrayBuffer, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const data = XLSX.utils.sheet_to_json(sheet,{ header: 1 });
-
-      if (data.length > 0) {
-        const headers = data[0].map((cell, index) => cell || `Column${index + 1}`);
-        setExcelHeadersblock(headers); // Set headers manually
-      } else {
-        toast.error("No data found in the Excel file.");
-      }
-    } catch (error) {
-      toast.error("Error processing the Excel file.");
-    } finally {
-      setIsLoading(false); // Stop loading
-    }
-  };
-
-  reader.readAsArrayBuffer(file);
-};
-
-
-
-
-
-// 🔹 Step 2: Process & Map Data Based on User Selection
-const handleProcessFileblock = () => {
-  try {
-    
-  setIsLoading(true);
-  if (!selectedFileblock) {
-    toast.error("No file selected. Please upload a file first.");
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const arrayBuffer = e.target.result;
-    const workbook = XLSX.read(arrayBuffer, { type: "array" });
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const data = XLSX.utils.sheet_to_json(sheet);
-
-    if (data.length > 0) {
-      const updatedblock = data.map((row) => {
-        let newcontact = {};
-
-        Object.keys(row).forEach((key) => {
-          let mappedKey = mappedFieldsblock[key] || key; // Use mapped key or original key
-          let value = row[key];
-
-          // Automatically detect and convert CSV-style values to arrays
-          if (typeof value === "string" && value.includes(",")) {
-            newcontact[mappedKey] = value.split(",").map((v) => v.trim());
-          } else {
-            newcontact[mappedKey] = value;
-          }
-        });
-
-        return newcontact;
-      });
-
- 
-      checkForDuplicatesblock(updatedblock); // Call duplicate check after mapping
-    } else {
-      toast.error("No data found in the Excel file.");
-    }
-  };
-
-  reader.readAsArrayBuffer(selectedFileblock);
-} catch (error) {
-    console.log(error);
-    
-}finally {
-  setIsLoading(false); // Hide loader after API call
-}
-};
-
-
-const [allcontactsblock, setallcontactsblock] = useState([]);
-const checkForDuplicatesblock = async (contacts) => {
-  try {
-    setIsLoading(true);
-
-    // Fetch existing units
-    const response = await api.get("viewproject");
-    const allblock = response.data.project.flatMap(project => project.add_block);
-
-    let newContacts = [];
-    let duplicates = [];
-
-    contacts.forEach((contact) => {
-   
-   // Check if unit is duplicate (case-insensitive and trimmed)
-       const isDuplicate = allblock.some(unit =>
-        String(unit.block_name).trim().toLowerCase() === String(contact.block_name).trim().toLowerCase() &&
-        Array.isArray(unit.category) &&
-        Array.isArray(contact.category) &&
-        unit.category.map(item => item.trim().toLowerCase()).join(',') === contact.category.map(item => item.trim().toLowerCase()).join(',') &&
-        Array.isArray(unit.sub_category) &&
-        Array.isArray(contact.sub_category) &&
-        unit.sub_category.map(item => item.trim().toLowerCase()).join(',') === contact.sub_category.map(item => item.trim().toLowerCase()).join(',')
-      );
-
-
-
-      if (isDuplicate) {
-        duplicates.push(contact);
-      } else {
-        newContacts.push(contact);
-      }
-    });
-
-    
-    setDuplicateEntriesblock(duplicates);
-    setPendingContactsblock(newContacts);
-    setallcontactsblock([...newContacts, ...duplicates]);
-
-  } catch (error) {
-    console.error("❌ Error checking for duplicates:", error);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-
-const addbulkblock = () => {
-  // Step 1: Identify duplicates within pendingContacts
-  const seen = new Set();
-  const uniqueUnits = [];
-  const allUnitsWithColor = [];
-
-  pendingContactsblock.forEach((unit) => {
-    const unitIdentifier = `${unit.block_name}-${unit.category}-${unit.sub_category}`; // Unique identifier for each unit
-    
-    if (seen.has(unitIdentifier)) {
-      // If the unit is a duplicate, mark it as duplicate and set color
-      unit.isDuplicate = true;
-      allUnitsWithColor.push(unit); // Add duplicate unit
-    } else {
-      // Otherwise, add to the unique units list and mark as non-duplicate
-      seen.add(unitIdentifier);
-      unit.isDuplicate = false;
-      allUnitsWithColor.push(unit); // Add unique unit
-    }
-  });
-
-
-  // Step 2: Update state with all units (including duplicates)
-  setblocks((prevUnit) => [...prevUnit, ...allUnitsWithColor]); // Append all units (unique + duplicate) to the unit list
-  setproject((prevState) => ({
-    ...prevState,
-    add_block: [...prevState.add_block, ...allUnitsWithColor], // Add all units to the project state
-  }));
-
-
-};
-
-const headerSuggestionsblock = {
-  owner_details: "Suggestion: Enter owner mobile no",
-  associated_contact: "Suggestion: Enter associated mobile no",
-  unit_no: "Suggestion: Enter unit no",
-  block: "Suggestion: Enter Block",
-  project_name: "Suggestion: Project Name",
-  unit_type:"Suggestion: Select unit type",
-  size:"Suggestion: Size of unit"
-  // Add more as needed
-};
-
-// ========================================add size in project end===================================================================
+// =============================================add unit in project end========================================================
 
 
 const [show8, setshow8] = useState(false);
@@ -4069,10 +3196,10 @@ const handleFileChangesize = (event) => {
   };
 
   reader.readAsArrayBuffer(file); // Use readAsArrayBuffer instead of readAsBinaryString
-};
+};	
 
 
-
+																		
 const sizedata = [
   { size_name: 'size 1', block1: 'b1', category: 'residential',sub_category:'plot',unit_type:'corner',total_sealable_area:'',sq_feet1:'',
     covered_area:'',sq_feet2:'',carpet_area:'',sq_feet3:'',loading:'',percentage:'',length:10,yard1:'feet',bredth:10,yard2:'feet',
@@ -4099,8 +3226,8 @@ const generateExcelFilesize = () => {
 };
 
 
-                    
-                    
+										
+										
 
 const blockdata = [
   { block_name: 'block 1', category: 'residential', sub_category: 'plot',land_area:1000,measurment:'Sqfeet',total_blocks:2,total_floors:2,
@@ -4138,7 +3265,7 @@ const unitdata = [
     side_open:'',fornt_on_road:'',total_owner:'',facing:'',road:'',ownership:'',stage:'',type:'',floor:[''],cluter_details:[''],
     length:[''],bredth:[''],total_area:[''],measurment2:[''],ocupation_date:'',age_of_construction:'',furnishing_details:'',
     enter_furnishing_details:'',furnished_item:'',location:'',lattitude:'',langitude:'',uaddress:'',ustreet:'',ulocality:'',
-    ucity:'',uzip:'',ustate:'',ucountry:'',owner_details:[''],associated_contact:[''],relation:'',
+    ucity:'',uzip:'',ustate:'',ucountry:'',owner_details:[],associated_contact:[],relation:'',
     owner_title:"Mr.",owner_first_name:"alex",owner_last_name:"kumar",owner_country_code:"91",owner_mobile_no:"9944554411",
     owner_mobile_type:"personal",owner_email:"alex@gmail.com",owner_email_type:"personal",owner_father_name:"jon",owner_hno:"f13",
     owner_area:"bishanpura",owner_location:"sec 58",owner_city:"noida",owner_pincode:"201301",owner_state:"up",owner_country:"india",
@@ -4147,7 +3274,8 @@ const unitdata = [
     associated_title:"Mr.",associated_first_name:"jon",associated_last_name:"dow",associated_country_code:"91",
     associated_mobile_no:"9454226644",associated_mobile_type:"personal",associated_email:"jon@gmail.com",associated_email_type:"home",
     associated_father_name:"alex"
-  }
+  }															
+
 ];
 
 const generateExcelFileunit = () => {
@@ -4170,6 +3298,8 @@ const generateExcelFileunit = () => {
 
 
 
+
+
               
     return ( 
         <div>
@@ -4179,10 +3309,11 @@ const generateExcelFileunit = () => {
            <div style={{padding:"50px"}}>
             <div className="container rounded bg-white mt-5 mb-5" style={{width:"80%",marginLeft:"150px"}}>
     <div className="row" id='r' style={{transition:"0.5s"}}>
-        <div className="col-md-12 border-right">
+           <div className="col-md-12 border-right">
             <div className="p-3 py-5">
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h4 className="text-right" style={{cursor:"pointer"}} onClick={()=>window.location.reload()}>Update Project</h4><input type='checkbox'  style={{marginLeft:"60%",height:"20px",width:"20px"}} /><label style={{paddingTop:"5px"}}>only show required field</label>
+                    <h4 className="text-right" style={{cursor:"pointer"}} onClick={()=>window.location.reload()}>Add Project</h4>
+                    {/* <input type='checkbox'  style={{marginLeft:"60%",height:"20px",width:"20px"}} /><label style={{paddingTop:"5px"}}>only show required field</label> */}
                 </div><hr></hr>
                
          
@@ -4206,10 +3337,9 @@ const generateExcelFileunit = () => {
  {/*------------------------------------------ basic details start------------------------------------------------------------------------ */}
                
                 <div className="row" id='basicdetails1' style={{marginTop:"40px"}}>
-                <div className="col-md-6"><label className="labels">Name</label><input type="text" value={project.name}  className="form-control form-control-sm"  onChange={(e)=>setproject({...project,name:e.target.value})}/></div>
-                <div className='col-md-6'></div>
-                    <div className="col-md-6"><label className="labels">Developer Name</label><select className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,developer_name:e.target.value})}>
-                             <option>{project.developer_name?.name}</option>
+                <div className="col-md-6 mb-6 custom-input"><label className="form-label">Name</label><input type="text" required="true" name='name' className="form-control form-control-sm"  onChange={(e)=>setproject({...project,name:e.target.value})}/></div>
+                <div className='col-md-6 mb-6 custom-input'></div>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Developer Name</label><select className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,developer_name:e.target.value})}>
                               <option>---Select---</option>
                               {
                                 data1.map((item)=>
@@ -4219,11 +3349,28 @@ const generateExcelFileunit = () => {
                               }
                         </select>
                         </div>
-                        <div className='col-md-1'><label style={{visibility:"hidden"}}>add</label><button className='form-control form-control-sm' onClick={add_developer}>+</button></div>
-                        <div className='col-md-5'></div>
-                        <div className="col-md-6"><input  type='checkbox' onChange={handleischeckedchange} checked={ischecked} /><label style={{margin:"10px"}}>Is this a Joint Venture?</label></div>
-                        <div className="col-md-6"><label className="labels">Secondary Developer</label><select id='secondarydeveloper'  className="form-control form-control-sm" required="true"  onChange={(e)=>setproject({...project,secondary_developer:e.target.value})}>
-                        <option>{project.secondary_developer}</option>
+                        <div className='col-md-1 mb-1 custom-input'><label style={{visibility:"hidden"}}>add</label>
+                        <button
+                          className="form-control form-control-sm"
+                          onClick={add_developer}
+                          style={{
+                            backgroundColor: "#007bff",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "4px",
+                            fontWeight: "500",
+                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                            transition: "all 0.2s ease-in-out"
+                          }}
+                          onMouseOver={e => e.currentTarget.style.backgroundColor = "#0056b3"}
+                          onMouseOut={e => e.currentTarget.style.backgroundColor = "#007bff"}
+                        >
+                          +
+                        </button>
+                        </div>
+                        <div className='col-md-5 mb-5 custom-input'></div>
+                        <div className="col-md-6 mb-6 custom-input"><input  type='checkbox' onChange={handleischeckedchange} checked={ischecked} /><label style={{margin:"10px"}}>Is this a Joint Venture?</label></div>
+                        <div className="col-md-6 mb-6 custom-input"><label className="form-label">Secondary Developer</label><select id='secondarydeveloper'  className="form-control form-control-sm" required="true"  onChange={(e)=>setproject({...project,secondary_developer:e.target.value})}>
                         <option>---Select---</option>
                               {
                                 data1.map((item)=>
@@ -4234,27 +3381,46 @@ const generateExcelFileunit = () => {
                         </select>
                         </div>
 
-                    <div className="col-md-5"><label className="labels">Rera Number</label><input type="text" required="true" className="form-control form-control-sm" value={project.rera_number}  onChange={(e)=>setproject({...project,rera_number:e.target.value})}/></div>
-                    <div className='col-md-7'></div>
+                    <div className="col-md-5 mb-5 custom-input"><label className="form-label">Rera Number</label><input type="text" required="true" className="form-control form-control-sm"  onChange={(e)=>setproject({...project,rera_number:e.target.value})}/></div>
+                    <div className='col-md-7 mb-7 custom-input'></div>
 
-                    <div className="col-md-10"><label className="labels">Descriptions</label><ReactQuill  key={project.descriptions} value={project.descriptions} formats={formats} modules={modules}   style={{height:"200px"}} onChange={(value) => setproject({ ...project, descriptions: value })}/></div>
-                    <div className="col-md-2"></div>
-                    
-                   
-                    <div className="col-md-12" style={{ display: "flex",marginTop:"70px" }}><label className="labels">Category</label>
+                    <div className="col-md-10 mb-10 custom-input" ><label className="form-label">Descriptions</label>
+                    <div style={{ border: '1px solid lightblue', borderRadius: '8px', overflow: 'hidden' }}>
+                    <ReactQuill value={project.descriptions} formats={formats} modules={modules} style={{height:"200px"}}   onChange={(value) => setproject({ ...project, descriptions: value })}/></div>
+                    </div>
+                    <div className="col-md-2 mb-2 custom-input"></div>
+                  
+                    <div className="col-md-12 mb-12 custom-input" style={{ display: "flex",marginTop:"70px" }}><label className="form-label">Category</label>
             {['Residential', 'Commercial', 'Agricultural', 'Institutional', 'Industrial'].map((type) => (
-                <div className="col-md-2" key={type} style={{marginTop:"20px"}}>
-                    <button 
-                        className='form-control form-control-sm' 
-                        onClick={() => handleTypeClick(type)} 
-                        style={{ backgroundColor: isSelected(type) ? 'green' : '' }}
+                <div className="col-md-2 mb-2 custom-input" key={type} style={{marginTop:"20px"}}>
+                    <button
+                      className="form-control form-control-sm category-button"
+                      onClick={() => handleTypeClick(type)}
+                      style={{
+                        backgroundColor: isSelected(type) ? "#28a745" : "#f8f9fa", // green or light gray
+                        color: isSelected(type) ? "white" : "#333",
+                        border: "1px solid #ccc",
+                        borderRadius: "6px",
+                        fontWeight: "bold",
+                        transition: "all 0.3s ease",
+                        boxShadow: isSelected(type)
+                          ? "0 4px 10px rgba(40, 167, 69, 0.4)"
+                          : "0 2px 6px rgba(0, 0, 0, 0.1)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = "scale(1.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = "scale(1)";
+                      }}
                     >
-                        {type}
+                      {type}
                     </button>
+                        
                 </div>
             ))}
         </div>
-                    <div className="col-md-6"><label className="labels">Sub Category</label>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Sub Category</label>
                     
                     <Select
                     className='form-control form-control-sm'
@@ -4280,45 +3446,44 @@ const generateExcelFileunit = () => {
           ))}
         </Select>
                     </div>
-                    <div className="col-md-6"></div>
+                    <div className="col-md-6 mb-6 custom-input"></div>
 
-                        <div className="col-md-2"><label className="labels">Land Area</label><input type="text" value={project.land_area}  className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,land_area:e.target.value})}/></div>
-                        <div className="col-md-2"><label className="labels" style={{visibility:"hidden"}}>.</label>
+                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">Land Area</label><input type="text" className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,land_area:e.target.value})}/></div>
+                        <div className="col-md-2 mb-2 custom-input"><label className="form-label" style={{visibility:"hidden"}}>.</label>
                         <select className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,measurment1:e.target.value})}>
-                              <option>{project.measurment1}</option>
-                              <option>---select---</option>
                               <option>Acres.</option>
-                              <option>Yard</option>
-                                <option>Meter</option>
-                                <option>Feet</option>
-                                <option>Inch</option>
+                              <option>Mrs.</option>
+                              <option>Sh.</option>
+                              <option>Smt.</option>
+                              <option>Dr.</option>
+                              <option>Er.</option>
+                              <option>Col.</option>
+                              <option>Maj.</option>
                         </select>
                        </div>
-                        <div className="col-md-2"><label className="labels">Total Blocks</label><input type="number" value={project.total_block} className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,total_block:e.target.value})}/></div>
-                        <div className="col-md-2" id='totalfloors'><label className="labels">TOTAL Floor</label><input type="number" value={project.total_floor} className="form-control form-control-sm" required="true"  onChange={(e)=>setproject({...project,total_floor:e.target.value})}/></div>
-                        <div className="col-md-2"><label className="labels">TOTAL Units</label><input type="number" value={project.total_units} className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,total_units:e.target.value})}/></div>
-                        <div className="col-md-2"></div>
+                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">Total Blocks</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,total_block:e.target.value})}/></div>
+                        <div className="col-md-2 mb-2 custom-input" id='totalfloors'><label className="form-label">TOTAL Floor</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true"  onChange={(e)=>setproject({...project,total_floor:e.target.value})}/></div>
+                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,total_units:e.target.value})}/></div>
+                        <div className="col-md-2 mb-2 custom-input"></div>
 
-                        <div className="col-md-10" id='zonelist' style={{display:"none"}}><label className="labels">Zone</label>
+                        <div className="col-md-10 mb-10 custom-input" id='zonelist' style={{display:"none"}}><label className="form-label">Zone</label>
                         <Select className="form-control form-control-sm" style={{border:"none"}}
                             multiple
-                            value={project.zone?project.zone:zone}
+                            value={zone}
                             onChange={handlezonechange}
                             renderValue={(selected) => selected.join(', ')}
                         >
                             {zoneslist.map((name) => (
                                 <MenuItem key={name} value={name}>
-                                    <Checkbox checked={project.zone?project.zone.indexOf(name) > -1:zone.indexOf(name)> -1} />
+                                    <Checkbox checked={zone.indexOf(name) > -1} />
                                     <ListItemText primary={name} />
                                 </MenuItem>
                             ))}
                         </Select>
                        </div>
                      <div className='row' id='withoutagriculture' style={{padding:"20px,0"}}>
-                        <div className="col-md-8"><label className="labels">Status</label>
+                        <div className="col-md-8 mb-8 custom-input"><label className="form-label">Status</label>
                         <select className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,status:e.target.value})}>
-                             <option>{project.status}</option>
-                             <option>---select---</option>
                               <option>Upcoming</option>
                               <option>Pre Launch</option>
                               <option>Launched</option>
@@ -4326,64 +3491,56 @@ const generateExcelFileunit = () => {
                               <option>Ready to Move</option>
                         </select>
                        </div>
-                       <div className="col-md-4"></div>
+                       <div className="col-md-4 mb-4 custom-input"></div>
 
-                       <div className="col-md-4" ><label className="labels">Launched On</label><input type="date" value={project.launched_on} className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,launched_on:e.target.value})}/></div>
-                       <div className="col-md-4" ><label className="labels">Expected Competion</label><input type="date" value={project.expected_competion} className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,expected_competion:e.target.value})}/></div>
-                       <div className="col-md-4" ><label className="labels">Possession</label><input type="date" value={project.possession}   className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,possession:e.target.value})}/></div>
+                       <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Launched On</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,launched_on:e.target.value})}/></div>
+                       <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Expected Competion</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,expected_competion:e.target.value})}/></div>
+                       <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Possession</label><input type="date"   className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,possession:e.target.value})}/></div>
 
-                       <div className="col-md-6"><label className="labels">Parking Type</label>
+                       <div className="col-md-6 mb-6 custom-input"><label className="form-label">Parking Type</label>
                        <Select className="form-control form-control-sm" style={{border:"none"}}
                     multiple
-                    value={project.parking_type?project.parking_type:parkings}
+                    value={parkings}
                     onChange={handleparkingChange}
                     renderValue={(selected) => selected.join(', ')}
                 >
                 
                  <MenuItem value="select-all">
-                    <Checkbox checked={project.parking_type? project.parking_type.length === parking.length:parkings.length === parking.length} />
+                    <Checkbox checked={parkings.length === parking.length} />
                     <ListItemText
                       primary={ '---select all---'} //
                     />
                   </MenuItem>
                     {parking.map((name) => (
                         <MenuItem key={name} value={name}>
-                            <Checkbox checked={project.parking_type? project.parking_type.indexOf(name) > -1: parkings.indexOf(name) > -1} />
+                            <Checkbox checked={parkings.indexOf(name) > -1} />
                             <ListItemText primary={name} />
                         </MenuItem>
                     ))}
                 </Select>
                        </div>
-                       <div className="col-md-6"><label className="labels">Approved Bank</label>
-                       <Select
-                      className="form-control form-control-sm"
-                      style={{ border: 'none' }}
-                      labelId="bank-select-label"
-                      multiple
-                      value={project.approved_bank || selectedBanks} // Ensure value is an array of bank names
-                      onChange={handleChange}
-                      renderValue={(selected) => selected.join(', ')} // Display selected bank names
-                    >
-                      {bankOptions.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          <Checkbox
-                            checked={project.approved_bank
-                              ? project.approved_bank.indexOf(option) > -1
-                              : selectedBanks.indexOf(option) > -1
-                            }
-                          />
-                          <ListItemText primary={option} />
-                        </MenuItem>
-                      ))}
-                    </Select>
+                       <div className="col-md-6 mb-6 custom-input"><label className="form-label">Approved Bank</label>
+                       <Select className="form-control form-control-sm" style={{border:"none"}}
+                labelId="bank-select-label"
+                multiple
+                value={selectedBanks}
+                onChange={handleChange}
+                renderValue={(selected) => selected.join(', ')}
+            >
+                {bankOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                        <Checkbox checked={selectedBanks.indexOf(option) > -1} />
+                        <ListItemText primary={option} />
+                    </MenuItem>
+                ))}
+            </Select>
                        </div>
-                <div className="col-md-2" > <label className="labels">Approvals</label>
+                <div className="col-md-2 mb-2 custom-input" > <label className="form-label">Approvals</label>
                     {
                       project.approvals.map((item,index)=>
                       (
                         <select style={{marginTop:"10px"}} required="true" className="form-control form-control-sm" onChange={(event)=>handleapprovalschange(index,event)}>
-                        <option>{project.approvals[index]}</option>
-                        <option>---select---</option>
+                        <option>choose</option>
                         <option>Upcoming</option>
                               <option>Rera Certificate</option>
                               <option>Layout Plan Approval</option>
@@ -4412,11 +3569,11 @@ const generateExcelFileunit = () => {
                       ))
                     }
                     </div>
-                    <div className="col-md-3"><label className="labels">Registration No.</label>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label">Registration No.</label>
                     {
                        project.registration_no.map((item,index)=>
                         (
-                          <input type="text" required="true" value={project.registration_no[index]} style={{marginTop:"10px"}} 
+                          <input type="text" required="true" style={{marginTop:"10px"}} 
                           className="form-control form-control-sm" 
                           
                           onChange={(event)=>handleregistrationchange(index,event)}/>
@@ -4424,11 +3581,11 @@ const generateExcelFileunit = () => {
                         ))
                     }
                     </div>
-                    <div className="col-md-2"><label className="labels">Date</label>
+                    <div className="col-md-2 mb-2 custom-input"><label className="form-label">Date</label>
                     {
                        project.date.map((item,index)=>
                         (
-                          <input type="date" value={project.date[index]} required="true" style={{marginTop:"10px"}} 
+                          <input type="date" required="true" style={{marginTop:"10px"}} 
                           className="form-control form-control-sm" 
                           placeholder="enter phone number" 
                           onChange={(event)=>handledatechange(index,event)}/>
@@ -4436,65 +3593,108 @@ const generateExcelFileunit = () => {
                         ))
                     }
                     </div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Pic</label>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Pic</label>
                     {
                       project.pic.map((item,index)=>
                       (
+                         <div key={index} className="custom-file-wrapper mt-2">
                         <input type="file" 
-                        src={`${project.pic}`}
-                        style={{marginTop:"10px"}}
+                        id={`doc-upload-${index}`}
+                        name='pic'
+                        style={{marginTop:"10px",display:"none"}}
                         className="form-control form-control-sm" 
                         onChange={(event)=>handlepicchange(index,event)}
                         />
+                                <label htmlFor={`doc-upload-${index}`} className="upload-label">
+                                  <i className="bi bi-image-fill me-2" style={{fontSize: "1.4rem",cursor:"pointer"}}></i> Upload Image
+                                </label>
+                                  <div className="d-flex flex-wrap gap-2 mt-2">
+                                  {(item || []).map((obj, i) => (
+                                    <div key={i} style={{ position: "relative" }}>
+                                      <img
+                                        src={obj.preview}
+                                        alt="Preview"
+                                        style={{
+                                          width: "80px",
+                                          height: "80px",
+                                          objectFit: "cover",
+                                          borderRadius: "6px",
+                                          border: "1px solid #ccc",
+                                        }}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                        </div>
                       ))
                     }
                     </div>
-                    <div className="col-md-1" style={{marginTop:"90px"}}>
+                    <div className="col-md-1 mb-1 custom-input" style={{marginTop:"70px"}}>
                     {
-                        Array.isArray(project.action1) ?
                        project.action1.map((item,index)=>
                         (
-                          <div style={{marginTop:"10px"}}><img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall1(index)} style={{height:"40px",cursor:"pointer"}}/></div>
+                          <div style={{marginTop:"90px"}}>
+                            {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
+                              <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}}  onClick={()=>deleteall1(index)}>delete</span> 
+                            </div>
                                   
                           
-                        )):[]
+                        ))
                     }
                     </div>
-                  <div className="col-md-1"><label className="labels" >add</label><button className='form-control form-control-sm' onClick={addFn1}>+</button></div>
+                  <div className="col-md-1 mb-1 custom-input"><label className="form-label" >add</label>
+                  <button
+                    className="form-control form-control-sm"
+                    onClick={addFn1}
+                    style={{
+                      backgroundColor: "#007bff",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      fontWeight: "500",
+                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                      transition: "all 0.2s ease-in-out"
+                    }}
+                    onMouseOver={e => e.currentTarget.style.backgroundColor = "#0056b3"}
+                    onMouseOut={e => e.currentTarget.style.backgroundColor = "#007bff"}
+                  >
+                    +
+                  </button>
+                  </div>
                     
                   </div>
                   
                  
                   
 
-                    <div className="col-md-12"><label className="labels" style={{fontSize:"16px",marginTop:"10px"}}>System Details</label><hr style={{marginTop:"-5px"}}></hr></div>
+                    <div className="col-md-12 mb-12 custom-input"><label className="form-label" style={{fontSize:"16px",marginTop:"10px"}}>System Details</label><hr style={{marginTop:"-5px"}}></hr></div>
                     
-                    <div className="col-md-6"><label className="labels">Owner</label>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Owner</label>
                     <Select className="form-control form-control-sm" style={{border:"none"}}
                     multiple
-                    value={project.owner?project.owner:owners}
+                    value={owners}
                     onChange={handleOwnerChange}
                     renderValue={(selected) => selected.join(', ')}
                 >
                     {ownersList.map((name) => (
                         <MenuItem key={name} value={name}>
-                            <Checkbox checked={project.owner?project.owner.indexOf(name) > -1:owners.indexOf(name) > -1} />
+                            <Checkbox checked={owners.indexOf(name) > -1} />
                             <ListItemText primary={name} />
                         </MenuItem>
                     ))}
                 </Select>
                     </div>
                   
-                        <div className="col-md-6"><label className="labels">Team</label>
+                        <div className="col-md-6 mb-6 custom-input"><label className="form-label">Team</label>
                         <Select className="form-control form-control-sm" style={{border:"none"}}
                     multiple
-                    value={project.team?project.team:teams}
+                    value={teams}
                     onChange={handleteamchange}
                     renderValue={(selected) => selected.join(', ')}
                 >
                     {teamlist.map((name) => (
                         <MenuItem key={name} value={name}>
-                            <Checkbox checked={project.team?project.team.indexOf(name) > -1:teams.indexOf(name) > -1} />
+                            <Checkbox checked={teams.indexOf(name) > -1} />
                             <ListItemText primary={name} />
                         </MenuItem>
                     ))}
@@ -4502,9 +3702,8 @@ const generateExcelFileunit = () => {
 
                     </div>
                   
-                        <div className="col-md-6"><label className="labels">Visible to</label><select className="form-control form-control-sm" onChange={(e)=>setproject({...project,visible_to:e.target.value})}>
-                                <option>{project.visible_to}</option>
-                                <option>---Select---</option>
+                        <div className="col-md-6 mb-6 custom-input"><label className="form-label">Visible to</label><select className="form-control form-control-sm" onChange={(e)=>setproject({...project,visible_to:e.target.value})}>
+                                <option>Select</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
                                 <option>All Users</option>
@@ -4518,10 +3717,10 @@ const generateExcelFileunit = () => {
                   
   {/* -----------------------------------------location Details start------------------------------------------------------------------- */}
 
-        <div className="col-md-12" id='location' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
+        <div className="col-md-12 mb-12 custom-input" id='location' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
             <div className="p-3 py-5">
                 <div className="row " >
-                <div className="col-md-12" style={{border:"1px solid black",padding:"10px"}}>
+                <div className="col-md-12 mb-12 custom-input" style={{border:"1px solid gray",padding:"10px",borderRadius:"8px"}}>
                 {/* <div style={{border:"1px solid black",marginTop:"10px"}}>
                 {mapLoaded && (
                           <LoadScript
@@ -4542,23 +3741,58 @@ const generateExcelFileunit = () => {
                 )}
                           </div> */}
                           <div className="row">
-                          <div className="col-md-6" ><label className="labels">Location</label><input  type="text" className="form-control form-control-sm" required="true" placeholder="Enter location" value={project.location} onChange={(e)=>setproject({...project,location:e.target.value})}/></div>
-                          {/* <div className='col-md-5'></div> */}
-                          <div className="col-md-1"><label className="labels" style={{visibility:"hidden"}}>.</label><button className="form-control form-control-sm" required="true" onClick={handleSubmit}>Get</button></div>
-                          <div className='col-md-5'></div>
-                          <div className="col-md-5"><label className="labels">Lattitude</label><input type="number"className="form-control form-control-sm" required="true" value={project.lattitude?project.lattitude:coordinates.lat} readOnly/></div>
-                          <div className="col-md-5"><label className="labels">Langitude</label><input type="number"className="form-control form-control-sm" required="true" value={project.langitude?project.langitude:coordinates.lng} readOnly/></div>
+                          <div className="col-md-6 mb-6 custom-input" ><label className="form-label">Location</label><input  type="text" className="form-control form-control-sm" required="true" placeholder="Enter location" value={project.location} onChange={(e)=>setproject({...project,location:e.target.value})}/></div>
+                          {/* <div className='col-md-5 mb-5 custom-input'></div> */}
+                          <div className="col-md-1 mb-1 custom-input"><label className="form-label" style={{visibility:"hidden"}}>.</label>
+                            <button
+                              onClick={handleSubmit}
+                              style={{
+                                width: '100%',
+                                padding: '6px 12px',
+                                borderRadius: '20px',
+                                fontWeight: '600',
+                                fontSize: '14px',
+                                letterSpacing: '0.6px',
+                                backgroundColor: '#2c3e50', // dark navy blue, classy and modern
+                                color: '#ecf0f1',           // light grey text
+                                border: '1.5px solid #2c3e50',
+                                transition: 'all 0.3s ease',
+                                cursor: 'pointer',
+                                outline: 'none',
+                                userSelect: 'none',
+                              }}
+                              onMouseEnter={e => {
+                                e.currentTarget.style.backgroundColor = '#ecf0f1';  // light background on hover
+                                e.currentTarget.style.color = '#2c3e50';            // dark text on hover
+                                e.currentTarget.style.borderColor = '#2c3e50';
+                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(44, 62, 80, 0.2)';
+                                e.currentTarget.style.transform = 'scale(1.05)';
+                              }}
+                              onMouseLeave={e => {
+                                e.currentTarget.style.backgroundColor = '#2c3e50';
+                                e.currentTarget.style.color = '#ecf0f1';
+                                e.currentTarget.style.borderColor = '#2c3e50';
+                                e.currentTarget.style.boxShadow = 'none';
+                                e.currentTarget.style.transform = 'scale(1)';
+                              }}
+                            >
+                              Get
+                            </button>
+                          </div>
+                          <div className='col-md-5 mb-5 custom-input'></div>
+                          <div className="col-md-5 mb-5 custom-input"><label className="form-label">Lattitude</label><input type="number"className="form-control form-control-sm" required="true" value={coordinates.lat} readOnly/></div>
+                          <div className="col-md-5 mb-5 custom-input"><label className="form-label">Langitude</label><input type="number"className="form-control form-control-sm" required="true" value={coordinates.lng} readOnly/></div>
                           </div>
                           </div>
                           
-                          <div className="col-md-12"><label className="labels" style={{fontSize:"16px",marginTop:"10px"}}>Address</label></div>
-                    <div className="row" style={{border:"1px solid black",margin:"5px",padding:"10px"}}>
-                    <div className="col-md-8"><label className="labels">ADDRESS</label><input type="text" value={project.address} className="form-control form-control-sm" onChange={(e)=>setproject({...project,address:e.target.value})}/></div>
-                    <div className="col-md-4"></div>
-                    <div className="col-md-8"><label className="labels">STREET</label><input type="text" value={project.street} className="form-control form-control-sm" onChange={(e)=>setproject({...project,street:e.target.value})}/></div>
-                    <div className="col-md-4"></div>
-                    <div className="col-md-4"><label className="labels">LOCALITY</label><input type="text" value={project.locality} className="form-control form-control-sm" onChange={(e)=>setproject({...project,locality:e.target.value})}/></div>
-                    <div className="col-md-4"><label className="labels">CITY</label>
+                          <div className="col-md-12 mb-12 custom-input"><label className="form-label" style={{fontSize:"16px",marginTop:"10px"}}>Address</label></div>
+                    <div className="row" style={{border:"1px solid gray",margin:"5px",padding:"10px",borderRadius:"8px"}}>
+                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">ADDRESS</label><input type="text" value={project.address} className="form-control form-control-sm" onChange={(e)=>setproject({...project,address:e.target.value})}/></div>
+                    <div className="col-md-4 mb-4 custom-input"></div>
+                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">STREET</label><input type="text" value={project.street} className="form-control form-control-sm" onChange={(e)=>setproject({...project,street:e.target.value})}/></div>
+                    <div className="col-md-4 mb-4 custom-input"></div>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">LOCALITY</label><input type="text" value={project.locality} className="form-control form-control-sm" onChange={(e)=>setproject({...project,locality:e.target.value})}/></div>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">CITY</label>
                     <select type="text" className="form-control form-control-sm" onChange={(e)=>setproject({...project,city:e.target.value})}>
                    <option>{project.city} </option>
                     {cities.map((city) => (
@@ -4568,8 +3802,8 @@ const generateExcelFileunit = () => {
                     ))}
                     </select>
                     </div>
-                    <div className="col-md-4"><label className="labels">ZIP</label><input type="text" value={project.zip} className="form-control form-control-sm" onChange={(e)=>setproject({...project,zip:e.target.value})}/></div>
-                    <div className="col-md-6"><label className="labels">State</label><select  className="form-control form-control-sm" onChange={(e)=>setproject({...project,state:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">ZIP</label><input type="text" value={project.zip} className="form-control form-control-sm" onChange={(e)=>setproject({...project,zip:e.target.value})}/></div>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">State</label><select  className="form-control form-control-sm" onChange={(e)=>setproject({...project,state:e.target.value})}>
                                 <option>{project.state}</option>
                                 {states.map((state) => (
                                 <option key={state} value={state}>
@@ -4578,7 +3812,7 @@ const generateExcelFileunit = () => {
                                  ))}
                                 </select>
                     </div>
-                    <div className="col-md-6"><label className="labels">Country</label><select  className="form-control form-control-sm"  onChange={(e)=>setproject({...project,country:e.target.value})}>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Country</label><select  className="form-control form-control-sm"  onChange={(e)=>setproject({...project,country:e.target.value})}>
                                 <option>{project.country}</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
@@ -4594,14 +3828,15 @@ const generateExcelFileunit = () => {
  {/*-------------------------------------------------- block details start--------------------------------------------------------- */
  
  }
-        <div className="col-md-12" id='block' style={{display:"none",marginTop:"-80px"}}>
+        <div className="col-md-12 mb-12 custom-input" id='block' style={{display:"none",marginTop:"-80px"}}>
             <div className="p-3 py-5">
      
                 <div className="row " >
 
-                    <div className="col-md-7"></div>
-                    <div className="col-md-2">
-                      <button
+                
+                    <div className="col-md-7 mb-7 custom-input"></div>
+                    <div className="col-md-2 mb-2 custom-input">
+                       <button
                         onClick={handleShow1}
                         style={{
                           width: '100%',
@@ -4637,10 +3872,9 @@ const generateExcelFileunit = () => {
                         Add Block
                       </button>
                     </div>
-
-                      <div className="col-md-2">
-                      <button
-                        onClick={handleShow11}
+                    <div className="col-md-2 mb-2 custom-input">
+                          <button
+                        onClick={handleShow8}
                         style={{
                           width: '100%',
                           height:"45px",
@@ -4674,10 +3908,10 @@ const generateExcelFileunit = () => {
                       >
                         Import Block
                       </button>
-                    </div>
-                        <Tooltip title="Download Data.." arrow>
-                                        <div className="col-md-1"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFileblock} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
-                                        </Tooltip>
+                      </div>
+                    <Tooltip title="Download Data.." arrow>
+                    <div className="col-md-1 mb-1 custom-input"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFileblock} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
+                    </Tooltip>
                     <TableContainer component={Paper} style={{height:"400px",width:"1000px",overflowY:"scroll",marginTop:"40px",marginLeft:"50px"}}>
     <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
@@ -4694,11 +3928,11 @@ const generateExcelFileunit = () => {
         {
          
         project.add_block.map ((item, index) => (
-          <StyledTableRow key={index} style={{ color: item.isDuplicate ? "red" : "black"}}>
+          <StyledTableRow key={index}>
             <StyledTableCell style={{fontSize:"12px"}}>
             {item.block_name}
              </StyledTableCell>
-             <StyledTableCell style={{fontSize:"12px"}}>Import Block
+             <StyledTableCell style={{fontSize:"12px"}}>
               {Array.isArray(item.category) ? (
                 item.category.map((categoryItem, index) => (
                   <span key={index}>{categoryItem}<br></br></span> // Render each item with a key
@@ -4716,8 +3950,8 @@ const generateExcelFileunit = () => {
              </StyledTableCell>
              <StyledTableCell style={{fontSize:"12px"}}>
              <div style={{marginTop:"10px"}}>
-               <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}} onClick={()=>deleteblock(index)}>delete</span>
               {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteblock(index)}  style={{height:"40px",cursor:"pointer"}}/> */}
+               <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}} onClick={()=>deleteblock(index)} >delete</span>
               </div>
              </StyledTableCell>
               
@@ -4735,15 +3969,16 @@ const generateExcelFileunit = () => {
             <div style={{width:"100%"}}>
             <div className="row" id='basicdetails1'>
              
-                    <div className="col-md-6"><label className="labels">Block/Tower Name</label><input type="text" required="true" className="form-control form-control-sm" placeholder="first name" onChange={(e)=>setblock({...block,block_name:e.target.value})}/></div>
-                    <div className='col-md-6'></div>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Block/Tower Name</label><input type="text" required="true" name='block_name' className="form-control form-control-sm" placeholder="first name" onChange={(e)=>setblock({...block,block_name:e.target.value})}/></div>
+                    <div className='col-md-6 mb-6 custom-input'></div>
 
-                    <div className="col-md-12"><label className="labels">Category</label></div>
-                    <div className="col-md-12" style={{display:"flex",flexWrap:"wrap"}} >
+                    <div className="col-md-12 mb-12 custom-input"><label className="form-label">Category</label></div>
+                    <div className="col-md-12 mb-12 custom-input" style={{display:"flex",flexWrap:"wrap"}} >
                        {
                         project.category.map((type) => (
-                          <div className="col-md-3" key={type}>
+                          <div className="col-md-3 mb-3 custom-input" key={type}>
                             <button 
+                            name='category'
                               className="form-control form-control-sm"
                               onClick={() => handleTypeClick3(type)} 
                               style={{ backgroundColor: selectedType2(type) ? 'green' : '' }}
@@ -4756,9 +3991,10 @@ const generateExcelFileunit = () => {
                     </div>
 
                    
-                    <div className="col-md-12"><label className="labels">Sub Category</label>
+                    <div className="col-md-12 mb-12 custom-input"><label className="form-label">Sub Category</label>
                     <Select
                     className="form-control form-control-sm"
+                    name='sub_category'
                       labelId="subcategory-label"
                       id="subcategory"
                       multiple
@@ -4782,8 +4018,8 @@ const generateExcelFileunit = () => {
                     {
                     project.category.includes('Agricultural') && (
                         <>
-                         <div className="col-md-3"><label className="labels">Land Area</label><input type="text" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,land_area:e.target.value})}/></div>
-                        <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>measurment</label>
+                         <div className="col-md-3 mb-3 custom-input"><label className="form-label">Land Area</label><input type="text" className="form-control form-control-sm" required="true" name='land_area' onChange={(e)=>setblock({...block,land_area:e.target.value})}/></div>
+                        <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>measurment</label>
                         <select className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,measurment:e.target.value})}>
                               <option>Acres.</option>
                               <option>Kanal</option>
@@ -4792,9 +4028,9 @@ const generateExcelFileunit = () => {
                               <option>Hectare</option>
                         </select>
                        </div>
-                       <div className="col-md-3"><label className="labels">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_units:e.target.value})}/></div>
-                       <div className='col-md-3'></div>
-                       <div className="col-md-10" id='zonelist' ><label className="labels">Zone</label>
+                       <div className="col-md-3 mb-3 custom-input"><label className="form-label">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_units:e.target.value})}/></div>
+                       <div className='col-md-3 mb-3 custom-input'></div>
+                       <div className="col-md-10 mb-10 custom-input" id='zonelist' ><label className="form-label">Zone</label>
                         <Select className="form-control form-control-sm" style={{border:"none"}}
                             multiple
                             value={zone}
@@ -4809,15 +4045,15 @@ const generateExcelFileunit = () => {
                             ))}
                         </Select>
                        </div>
-                       <div className="col-md-7" ><label className="labels">Rera Number</label><input type="text"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,rera_no:e.target.value})}/></div>
+                       <div className="col-md-7 mb-7 custom-input" ><label className="form-label">Rera Number</label><input type="text"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,rera_no:e.target.value})}/></div>
                         </>
                       )
                     }
                       {
                      !project.category.includes('Agricultural') && (
                         <>
-                    <div className="col-md-2"><label className="labels">Land Area</label><input type="text" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,land_area:e.target.value})}/></div>
-                        <div className="col-md-2"><label className="labels" style={{visibility:"hidden"}}>measurment</label>
+                    <div className="col-md-2 mb-2 custom-input"><label className="form-label">Land Area</label><input type="text" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,land_area:e.target.value})}/></div>
+                        <div className="col-md-2 mb-2 custom-input"><label className="form-label" style={{visibility:"hidden"}}>measurment</label>
                         <select className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,measurment:e.target.value})}>
                               <option>Acres.</option>
                               <option>Kanal</option>
@@ -4826,11 +4062,11 @@ const generateExcelFileunit = () => {
                               <option>Hectare</option>
                         </select>
                        </div>
-                        <div className="col-md-2"><label className="labels">Total Blocks</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_blocks:e.target.value})}/></div>
-                        <div className="col-md-2"><label className="labels">TOTAL Floor</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_floors:e.target.value})} /></div>
-                        <div className="col-md-2"><label className="labels">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_units:e.target.value})}/></div>
-                        <div className="col-md-2"></div>
-                        <div className="col-md-12"><label className="labels">Status</label><select  className="form-control form-control-sm"  onChange={(e)=>setblock({...block,status:e.target.value})}>
+                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">Total Blocks</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_blocks:e.target.value})}/></div>
+                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">TOTAL Floor</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_floors:e.target.value})} /></div>
+                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_units:e.target.value})}/></div>
+                        <div className="col-md-2 mb-2 custom-input"></div>
+                        <div className="col-md-12 mb-12 custom-input"><label className="form-label">Status</label><select  className="form-control form-control-sm"  onChange={(e)=>setblock({...block,status:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Upcoming</option>
                                 <option>Pre Launch</option>
@@ -4839,11 +4075,11 @@ const generateExcelFileunit = () => {
                                 <option>Ready to Move</option>
                                 </select>
                     </div>
-                    <div className="col-md-4" ><label className="labels">Launched On</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,launched_on:e.target.value})}/></div>
-                       <div className="col-md-4" ><label className="labels">Expected Competion</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,expected_competion:e.target.value})}/></div>
-                       <div className="col-md-4" ><label className="labels">Possession</label><input type="date"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,possession:e.target.value})}/></div>
+                    <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Launched On</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,launched_on:e.target.value})}/></div>
+                       <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Expected Competion</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,expected_competion:e.target.value})}/></div>
+                       <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Possession</label><input type="date"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,possession:e.target.value})}/></div>
 
-                       <div className="col-md-10"><label className="labels">Parking Type</label>
+                       <div className="col-md-10 mb-10 custom-input"><label className="form-label">Parking Type</label>
                        <Select className="form-control form-control-sm" style={{border:"none"}}
                     multiple
                     value={parkings}
@@ -4865,8 +4101,8 @@ const generateExcelFileunit = () => {
                     ))}
                 </Select>
                        </div>
-                       <div className='col-md-6'></div>
-                       <div className="col-md-7" ><label className="labels">Rera Number</label><input type="text"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,rera_no:e.target.value})}/></div>
+                       <div className='col-md-6 mb-6 custom-input'></div>
+                       <div className="col-md-7 mb-7 custom-input" ><label className="form-label">Rera Number</label><input type="text"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,rera_no:e.target.value})}/></div>
               </>
                       )}
                 </div>
@@ -4888,12 +4124,12 @@ const generateExcelFileunit = () => {
 {/*--------------------================================= block details end------------------------------============================== */}
 
 {/*------------------------------======================== size details start================----------------------------------- */}
-<div className="col-md-12" id='sizedetails' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
+<div className="col-md-12 mb-12 custom-input" id='sizedetails' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
             <div className="p-3 py-5">
                 <div className="row " >
-                <div className="col-md-7"></div>
-                    <div className="col-md-2">
-                      <button
+                <div className="col-md-7 mb-7 custom-input"></div>
+                    <div className="col-md-2 mb-2 custom-input">
+                          <button
                         onClick={handleShow2}
                         style={{
                           width: '100%',
@@ -4927,11 +4163,10 @@ const generateExcelFileunit = () => {
                       >
                         Add Size
                       </button>
-                    </div>
-
-                    <div className="col-md-2">
-                      <button
-                        onClick={handleShow10}
+                      </div>
+                    <div className="col-md-2 mb-2 custom-input">
+                        <button
+                        onClick={handleShow9}
                         style={{
                           width: '100%',
                           padding: '6px 12px',
@@ -4964,11 +4199,11 @@ const generateExcelFileunit = () => {
                       >
                         Import Size
                       </button>
-                    </div>
-
-                          <Tooltip title="Download Data.." arrow>
-                                        <div className="col-md-1"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFilesize} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
-                                        </Tooltip>
+                      </div>
+                    <Tooltip title="Download Data.." arrow>
+                    <div className="col-md-1 mb-1 custom-input"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFilesize} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
+                    </Tooltip>
+                 
                     <TableContainer component={Paper} style={{height:"400px",width:"1000px",overflowY:"scroll",marginTop:"40px",marginLeft:"50px"}}>
     <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
@@ -4985,24 +4220,24 @@ const generateExcelFileunit = () => {
         {
          
         project.add_size.map ((item, index) => (
-          <StyledTableRow key={index} style={{ color: item.isDuplicate ? "red" : "black"}}>
+          <StyledTableRow key={index}>
             <StyledTableCell style={{ fontSize:"12px" }}>
              {item.block1}
             </StyledTableCell>
-            <StyledTableCell style={{ fontSize:"12px"  }}>
+            <StyledTableCell style={{ fontSize:"12px" }}>
              {item.category}
             </StyledTableCell>
-            <StyledTableCell style={{ fontSize:"12px"  }}>
+            <StyledTableCell style={{ fontSize:"12px" }}>
              {item.sub_category}
             </StyledTableCell>
-            <StyledTableCell style={{fontSize:"12px"  }}>
+            <StyledTableCell style={{ fontSize:"12px" }}>
              {item.size_name}
             </StyledTableCell>
-            <StyledTableCell style={{ fontSize:"12px"  }}>
+            <StyledTableCell style={{ fontSize:"12px" }}>
             <div style={{marginTop:"10px"}}>
               <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}} onClick={()=>deletesize(index)}>delete</span>
-            {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletesize(index)}  style={{height:"40px",cursor:"pointer"}}/>*/}
-            </div> 
+              {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletesize(index)}  style={{height:"40px",cursor:"pointer"}}/> */}
+              </div>
             </StyledTableCell>
               
           </StyledTableRow>
@@ -5019,10 +4254,10 @@ const generateExcelFileunit = () => {
             <div style={{width:"100%"}}>
             <div className="row" id='basicdetails1'>
              
-                    <div className="col-md-8"><label className="labels">Size Name</label><input type="text" readOnly value={sizes.size_name} required="true" className="form-control form-control-sm" placeholder="first name"/></div>
-                    <div className='col-md-4'></div>
+                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">Size Name</label><input type="text" readOnly value={sizes.size_name} required="true" className="form-control form-control-sm" placeholder="first name"/></div>
+                    <div className='col-md-4 mb-4 custom-input'></div>
 
-                    <div className="col-md-8"><label className="labels">Block</label><select  className="form-control form-control-sm"  onChange={(e)=>setsizes({...sizes,block1:e.target.value})}>
+                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">Block</label><select  className="form-control form-control-sm"  onChange={(e)=>setsizes({...sizes,block1:e.target.value})}>
                                 <option>choose</option>
                                {
                                 project.add_block.map((item)=>
@@ -5032,14 +4267,14 @@ const generateExcelFileunit = () => {
                                }
                                 </select>
                     </div>
-                    <div className='col-md-4'></div>
+                    <div className='col-md-4 mb-4 custom-input'></div>
 
-                    <div className="col-md-12"><label className="labels">Category</label></div>
-                    <div className="col-md-12" style={{display:"flex"}} >
-                    <div className="col-md-12" style={{ display: "flex", flexWrap: "wrap" }}>
+                    <div className="col-md-12 mb-12 custom-input"><label className="form-label">Category</label></div>
+                    <div className="col-md-12 mb-12 custom-input" style={{display:"flex"}} >
+                    <div className="col-md-12 mb-12 custom-input" style={{ display: "flex", flexWrap: "wrap" }}>
                       {
                         project.category.map((type) => (
-                          <div className="col-md-3" key={type}>
+                          <div className="col-md-3 mb-3 custom-input" key={type}>
                             <button 
                               className="form-control form-control-sm"
                               onClick={() => handleTypeClick2(type)} 
@@ -5054,7 +4289,7 @@ const generateExcelFileunit = () => {
 
                     </div>
 
-                    <div className="col-md-12"><label className="labels">Sub Category</label>
+                    <div className="col-md-12 mb-12 custom-input"><label className="form-label">Sub Category</label>
                     <select
                     className='form-control form-control-sm'
                       labelId="subcategory-label"
@@ -5074,7 +4309,7 @@ const generateExcelFileunit = () => {
                               
                               !project.category.includes('Agricultural') && (
                                   <>
-                    <div className="col-md-6"><label className="labels">Unit Type</label>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Unit Type</label>
                     <select
                     className='form-control form-control-sm'
                       onChange={(e)=>setsizes({...sizes,unit_type:e.target.value})}>
@@ -5087,7 +4322,7 @@ const generateExcelFileunit = () => {
                       }
                 </select>
                     </div>  
-                    <div className='col-md-6'></div>
+                    <div className='col-md-6 mb-6 custom-input'></div>
                     </>
                               )}
 
@@ -5096,7 +4331,7 @@ const generateExcelFileunit = () => {
                               project.category.includes('Agricultural') && (
                                   <>
                
-                    <div className="col-md-4"><label className="labels" >Type</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,type:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label" >Type</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,type:e.target.value})}>
                                 <option>---select---</option>
                                 <option>Acre</option>
                                 <option>Kanal</option>
@@ -5104,28 +4339,28 @@ const generateExcelFileunit = () => {
                                 
                                 </select>
                              </div>
-                             <div className='col-md-8'></div>
+                             <div className='col-md-8 mb-8 custom-input'></div>
 
-                                      {/* <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Total Seleble Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,length:e.target.value})}/></div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
+                                      {/* <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Total Seleble Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,length:e.target.value})}/></div>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
                                 <option>Yard</option>
                                 <option>Sq Feet</option>
                                 <option>Plot</option>
                                 <option>All Users</option>
                                 </select>
                              </div>
-                             <div className='col-md-6'></div>
+                             <div className='col-md-6 mb-6 custom-input'></div>
                 
-                             <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}> Carpet Area</label><input type='text' onBlur={calculateTotalArea}  className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,bredth:e.target.value})}/></div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
+                             <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}> Carpet Area</label><input type='text' onBlur={calculateTotalArea}  className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,bredth:e.target.value})}/></div>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
                                 <option>Yard</option>
                                 <option>Sq Feet</option>
                                 <option>Plot</option>
                                 <option>All Users</option>
                                 </select>
                              </div>
-                             <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}> Total Area</label><input type='text' className='form-control form-control-sm'  value={sizes.total_area} readOnly /></div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
+                             <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}> Total Area</label><input type='text' className='form-control form-control-sm'  value={sizes.total_area} readOnly /></div>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
                                 <option>Sq Yard</option>
                                 <option>Plot</option>
                                 <option>All Users</option>
@@ -5135,7 +4370,7 @@ const generateExcelFileunit = () => {
                               )
                           } 
 
-                    <div className='col-md-6' style={{marginTop:"10px"}}>
+                    <div className='col-md-6 mb-6 custom-input' style={{marginTop:"10px"}}>
                             <input
                               type="checkbox"
                               checked={showapartmentSize}
@@ -5146,36 +4381,36 @@ const generateExcelFileunit = () => {
      
                    {showapartmentSize && (
                     <div className='row' id='apartmentsize' style={{margin:"20px",padding:"20px",border:"1px dashed black"}}>
-                    <div className="col-md-3"><label className="labels">Total Seleble Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,total_sealable_area:e.target.value})} /></div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,sq_feet1:e.target.value})}>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label">Total Seleble Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,total_sealable_area:e.target.value})} /></div>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,sq_feet1:e.target.value})}>
                                 <option>Feet</option>
                                 <option>Yard</option>
                                 <option>Meter</option>
                                 <option>Inch</option>
                                 </select>
                              </div>
-                             <div className='col-md-6'></div>
-                             <div className="col-md-3"><label className="labels"> Covered Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,covered_area:e.target.value})}/></div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
+                             <div className='col-md-6 mb-6 custom-input'></div>
+                             <div className="col-md-3 mb-3 custom-input"><label className="form-label"> Covered Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,covered_area:e.target.value})}/></div>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
                                 <option>{sizes.sq_feet1}</option>
                                 </select>
                              </div>
-                             <div className='col-md-6'></div>
-                             <div className="col-md-3"><label className="labels"> Carpet Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,carpet_area:e.target.value})} onBlur={totalpercentage}/></div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
+                             <div className='col-md-6 mb-6 custom-input'></div>
+                             <div className="col-md-3 mb-3 custom-input"><label className="form-label"> Carpet Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,carpet_area:e.target.value})} onBlur={totalpercentage}/></div>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
                                <option>{sizes.sq_feet1}</option>
                                 </select>
                              </div>
-                             <div className="col-md-3"><label className="labels"> Loading</label><input type='text' className='form-control form-control-sm' value={sizes.loading}/></div>
-                    <div className="col-md-2"><label className="labels" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
+                             <div className="col-md-3 mb-3 custom-input"><label className="form-label"> Loading</label><input type='text' className='form-control form-control-sm' value={sizes.loading}/></div>
+                    <div className="col-md-2 mb-2 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
                                 <option>%</option>
                                 </select>
                              </div>
-                             <div className='col-md-1'></div>
+                             <div className='col-md-1 mb-1 custom-input'></div>
                             </div>
                      )}
 
-                            <div  className='col-md-6' style={{marginTop:"10px"}}>
+                            <div  className='col-md-6 mb-6 custom-input' style={{marginTop:"10px"}}>
                         <input
                           type="checkbox"
                           checked={showPlotSize}
@@ -5185,8 +4420,8 @@ const generateExcelFileunit = () => {
                       </div>
                 {showPlotSize && (
                             <div className='row' id='plotsize' style={{margin:"20px",padding:"20px",border:"1px dashed black"}}>
-                    <div className="col-md-3"><label className="labels" >Total Length</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,length:e.target.value})}/></div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,yard1:e.target.value})}>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" >Total Length</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,length:e.target.value})}/></div>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,yard1:e.target.value})}>
                               <option>---select---</option>
                                <option>Yard</option>
                                 <option>Meter</option>
@@ -5195,16 +4430,18 @@ const generateExcelFileunit = () => {
                                 
                                 </select>
                              </div>
-                             <div className='col-md-6'></div>
+                             <div className='col-md-6 mb-6 custom-input'></div>
                 
-                             <div className="col-md-3"><label className="labels" > Total Breadth</label><input type='text'  onBlur={calculateTotalArea} className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,bredth:e.target.value})}/></div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" value={sizes.yard1} onChange={(e)=>setsizes({...sizes,yard2:e.target.value})}>
+                             <div className="col-md-3 mb-3 custom-input"><label className="form-label" > Total Breadth</label><input type='text'   className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,bredth:e.target.value})}/></div>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" value={sizes.yard1}>
+                                <option>---select---</option>
                                 <option>{sizes.yard1}</option>     
                                 </select>
                              </div>
-                             <div className="col-md-3"><label className="labels" > Total Area</label><input type='text' value={sizes.total_area} readOnly  className='form-control form-control-sm' /></div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,yard3:e.target.value})}>
-                               
+                             <div className="col-md-3 mb-3 custom-input"><label className="form-label" > Total Area</label><input type='text' value={sizes.total_area} readOnly  className='form-control form-control-sm' /></div>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,yard3:e.target.value})}
+                      onBlur={calculateTotalArea}>
+                               <option>---select---</option>
                                 <option>Sq Yard</option>
                                 <option>Sq Meter</option>
                                 <option>Sq Feet</option>
@@ -5242,12 +4479,12 @@ const generateExcelFileunit = () => {
 
 {/*---------------------------------=========================== unit details start-------------------===================================== */}
 
-<div className="col-md-12" id='unitdetails' style={{display:"none",marginTop:"-80px",lineHeight:"30px",overflow:"scroll"}}>
+<div className="col-md-12 mb-12 custom-input" id='unitdetails' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
             <div className="p-3 py-5">
                 <div className="row " >
-              
-                  <div className="col-md-2">
-                    <button
+                <div className="col-md-7 mb-7 custom-input"></div>
+                    <div className="col-md-2 mb-2 custom-input">
+                       <button
                       onClick={handleShow3}
                       style={{
                         width: '100%',
@@ -5281,10 +4518,9 @@ const generateExcelFileunit = () => {
                     >
                       Add Unit
                     </button>
-                  </div>
-
-                      <div className="col-md-2">
-                      <button
+                      </div>
+                    <div className="col-md-2 mb-2 custom-input">
+                         <button
                         onClick={handleShow7}
                         style={{
                           width: '100%',
@@ -5318,54 +4554,35 @@ const generateExcelFileunit = () => {
                       >
                         Import Unit
                       </button>
-                    </div>
-  <div className="col-md-7"></div>
-         
-                     <Tooltip title="Download Data.." arrow>
-                                        <div className="col-md-1"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFileunit} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
-                                        </Tooltip>
-                    <TableContainer component={Paper} style={{height:"400px",width:"100%",overflowX:"scroll",overflowY:"scroll",marginTop:"40px",marginLeft:"10px"}}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                      </div>
+                    <Tooltip title="Download Data.." arrow>
+                    <div className="col-md-1 mb-1 custom-input"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFileunit} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
+                    </Tooltip>
 
-         <>
-                         {loading_unit && (
-                           <div 
-                           style={{
-                            position: "fixed",
-                            top: 0,
-                            left: 0,
-                            width: "100vw",
-                            height: "100vh",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            zIndex: 9999,}}>
-                            <UniqueLoader/>
-                           </div>
-                         )}
-                       </>
+                    <TableContainer component={Paper} style={{height:"400px",width:"1100px",overflowY:"scroll",marginTop:"40px",marginLeft:"10px"}}>
+    <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
     <TableHead>
-        <TableRow >
-          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Unit_No.</StyledTableCell>
+        <TableRow>
+          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Unit No.</StyledTableCell>
           <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Block</StyledTableCell>
           <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Category</StyledTableCell>
-          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Unit_Type</StyledTableCell>
+          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Unit Type</StyledTableCell>
           <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Size</StyledTableCell>
-          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Direction</StyledTableCell>
+          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}> Direction</StyledTableCell>
           <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Road</StyledTableCell>
           <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Facing</StyledTableCell>
           <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Ownership</StyledTableCell>
           <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Lattitude</StyledTableCell>
           <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Longitude</StyledTableCell>
-          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Builtup_Details</StyledTableCell>
+          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Builtup Details</StyledTableCell>
           <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Action</StyledTableCell>
         </TableRow>
       </TableHead>
       <tbody>
         {
-
-      allunits_ofproject?.map ((item, index) => (
+         
+        project.add_unit.map ((item, index) => (
           <StyledTableRow key={index}  style={{ color: item.isDuplicate ? "red" : "black",  }}   className={item.isDuplicate ? 'no-activity-flash' : ''}>
             <StyledTableCell style={{ fontSize:"12px" }}>
              {item.unit_no}
@@ -5394,20 +4611,20 @@ const generateExcelFileunit = () => {
             <StyledTableCell style={{ fontSize:"12px" }}>
              {item.ownership}
             </StyledTableCell>
-            <StyledTableCell style={{fontSize:"12px" }}>
+            <StyledTableCell style={{ fontSize:"12px" }}>
              {item.lattitude}
             </StyledTableCell>
-            <StyledTableCell style={{fontSize:"12px" }}>
+            <StyledTableCell style={{ fontSize:"12px" }}>
              {item.langitude}
             </StyledTableCell>
-            <StyledTableCell style={{ fontSize:"12px"}}>
+            <StyledTableCell style={{ fontSize:"12px" }}>
              {item.type}
             </StyledTableCell>
             
-            <StyledTableCell style={{ fontSize: "10px" }}>
+            <StyledTableCell style={{ fontFamily: "times new roman", fontSize: "10px" }}>
               <div style={{marginTop:"10px"}}>
-               <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}} onClick={()=>deleteunit(index)}>delete</span>
                 {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteunit(index)}  style={{height:"40px",cursor:"pointer"}}/> */}
+                <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}} onClick={()=>deleteunit(index)}>delete</span>
                 </div>
             </StyledTableCell>
               
@@ -5415,55 +4632,7 @@ const generateExcelFileunit = () => {
         ))}
       </tbody>
     </Table>
-
-   
-
-
     </TableContainer>
-
-   {/* ✅ Pagination Controls */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "50%",
-          margin: "20px 0 0 10px",
-        }}
-      >
-        <Button
-          variant="contained"
-          size="small"
-          disabled={page === 1}
-          onClick={() => setPage((p) => Math.max(p - 1, 1))}
-        >
-          Prev
-        </Button>
-
-        <span>
-          Page {page} of {totalPages} | Total Units: {totalUnits}
-        </span>
-
-        <Button
-          variant="contained"
-          size="small"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-        >
-          Next
-        </Button>
-      </div>
-   
-
-
-
-
-
-
-
-
-
-
 
     <Modal show={show3} onHide={handleClose3} size={modalSize}>
             <Modal.Header>
@@ -5477,61 +4646,93 @@ const generateExcelFileunit = () => {
                 <div  id='ownerdetails' style={{cursor:'pointer',fontWeight:"bold"}}  onClick={unitdetail3}><span>Add Owner</span></div>
                </div> */}
                <div style={{ display: "flex", gap: "50px" }}>
-  <div
-    id="unitdetail"
-    style={{
-      cursor: 'pointer',
-      fontWeight: 'bold',
-      backgroundColor: activeUnit === 1 ? '#f0f0f0' : 'transparent', // Optional: to highlight active tab
-    }}
-    onClick={unitdetail1}
-  >
-    <span>Unit</span>
-  </div>
-  <div
-    id="unitlocationdetails"
-    style={{
-      cursor: 'pointer',
-      fontWeight: 'bold',
-      backgroundColor: activeUnit === 2 ? '#f0f0f0' : 'transparent', // Optional: to highlight active tab
-    }}
-    onClick={unitdetail2}
-  >
-    <span>Location</span>
-  </div>
-  <div
-    id="ownerdetails1"
-    style={{
-      cursor: 'pointer',
-      fontWeight: 'bold',
-      backgroundColor: activeUnit === 3 ? '#f0f0f0' : 'transparent', // Optional: to highlight active tab
-    }}
-    onClick={unitdetail3}
-  >
-    <span>Add Owner</span>
-  </div>
-  <div
-    id="adddocuments"
-    style={{
-      cursor: 'pointer',
-      fontWeight: 'bold',
-      backgroundColor: activeUnit === 4 ? '#f0f0f0' : 'transparent', // Optional: to highlight active tab
-    }}
-    onClick={unitdetail4}
-  >
-    <span>Add Documents</span>
-  </div>
-  <div
-    id="upload"
-    style={{
-      cursor: 'pointer',
-      fontWeight: 'bold',
-      backgroundColor: activeUnit === 5 ? '#f0f0f0' : 'transparent', // Optional: to highlight active tab
-    }}
-    onClick={unitdetail5}
-  >
-    <span>Upload</span>
-  </div>
+ <div
+  id="unitdetail"
+  style={{
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    padding: '10px 16px',
+    borderRadius: '8px',
+    backgroundColor: activeUnit === 1 ? '#e6f0ff' : 'transparent',
+    color: activeUnit === 1 ? '#0056b3' : '#333',
+    boxShadow: activeUnit === 1 ? '0 4px 8px rgba(0, 86, 179, 0.2)' : 'none',
+    border: activeUnit === 1 ? '2px solid #0056b3' : '2px solid transparent',
+    transition: 'all 0.3s ease-in-out',
+  }}
+  onClick={unitdetail1}
+>
+  <span>🏠 Unit</span>
+</div>
+<div
+  id="unitlocationdetails"
+  style={{
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    padding: '10px 16px',
+    borderRadius: '8px',
+    backgroundColor: activeUnit === 2 ? '#e6ffe6' : 'transparent',
+    color: activeUnit === 2 ? '#218838' : '#333',
+    boxShadow: activeUnit === 2 ? '0 4px 8px rgba(33, 136, 56, 0.2)' : 'none',
+    border: activeUnit === 2 ? '2px solid #218838' : '2px solid transparent',
+    transition: 'all 0.3s ease-in-out',
+  }}
+  onClick={unitdetail2}
+>
+  <span>📍 Location</span>
+</div>
+
+<div
+  id="ownerdetails1"
+  style={{
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    padding: '10px 16px',
+    borderRadius: '8px',
+    backgroundColor: activeUnit === 3 ? '#f3e6ff' : 'transparent',
+    color: activeUnit === 3 ? '#6f42c1' : '#333',
+    boxShadow: activeUnit === 3 ? '0 4px 8px rgba(111, 66, 193, 0.2)' : 'none',
+    border: activeUnit === 3 ? '2px solid #6f42c1' : '2px solid transparent',
+    transition: 'all 0.3s ease-in-out',
+  }}
+  onClick={unitdetail3}
+>
+  <span>👤 Add Owner</span>
+</div>
+<div
+  id="adddocuments"
+  style={{
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    padding: '10px 16px',
+    borderRadius: '8px',
+    backgroundColor: activeUnit === 4 ? '#e0f7f7' : 'transparent',
+    color: activeUnit === 4 ? '#007777' : '#333',
+    boxShadow: activeUnit === 4 ? '0 4px 8px rgba(0, 119, 119, 0.2)' : 'none',
+    border: activeUnit === 4 ? '2px solid #007777' : '2px solid transparent',
+    transition: 'all 0.3s ease-in-out',
+  }}
+  onClick={unitdetail4}
+>
+  <span>📄 Add Documents</span>
+</div>
+<div
+  id="upload"
+  style={{
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    padding: '10px 16px',
+    borderRadius: '8px',
+    backgroundColor: activeUnit === 5 ? '#fff8e1' : 'transparent',
+    color: activeUnit === 5 ? '#f9a825' : '#333',
+    boxShadow: activeUnit === 5 ? '0 4px 8px rgba(249, 168, 37, 0.2)' : 'none',
+    border: activeUnit === 5 ? '2px solid #f9a825' : '2px solid transparent',
+    transition: 'all 0.3s ease-in-out',
+  }}
+  onClick={unitdetail5}
+>
+  <span>⤴️ Upload</span>
+</div>
+
 </div>
 
               
@@ -5539,8 +4740,8 @@ const generateExcelFileunit = () => {
             <div style={{width:"100%"}}>
             <div className="row" id='unitdetails1'>
              
-                    <div className="col-md-8"><label className="labels">Unit Number</label><input type="text"   className="form-control form-control-sm"  placeholder="unit number" onChange={(e) => setunits({...units, unit_no: e.target.value})} /></div>
-                    <div className="col-md-4"><label className="labels">Unit Type</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,unit_type:e.target.value})}>
+                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">Unit Number</label><input type="text" required="true"  className="form-control form-control-sm"  placeholder="unit number" onChange={(e)=>setunits({...units,unit_no:e.target.value})}/></div>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Unit Type</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,unit_type:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Corner</option>
                                 <option> Two Side Open</option>
@@ -5548,12 +4749,12 @@ const generateExcelFileunit = () => {
                                 <option>Ordinary </option>
                                 </select>
                     </div>
-                    <div className="col-md-12" style={{display:"flex"}} ><label className="labels">Category</label></div>
-                    <div className="col-md-12" style={{display:"flex"}} >
-                    <div className="col-md-12" style={{ display: "flex", flexWrap: "wrap" }}>
+                    <div className="col-md-12 mb-12 custom-input" style={{display:"flex"}} ><label className="form-label">Category</label></div>
+                    <div className="col-md-12 mb-12 custom-input" style={{display:"flex"}} >
+                    <div className="col-md-12 mb-12 custom-input" style={{ display: "flex", flexWrap: "wrap" }}>
                       {
                         project.category.map((type) => (
-                          <div className="col-md-3" key={type}>
+                          <div className="col-md-3 mb-3 custom-input" key={type}>
                             <button 
                               className="form-control form-control-sm"
                               onClick={() => handleTypeClick1(type)} 
@@ -5567,7 +4768,8 @@ const generateExcelFileunit = () => {
                     </div>
                     </div>
 
-                    <div className="col-md-6"><label className="labels">Sub Category</label>
+                   
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Sub Category</label>
                     
                     <Select
                     className='form-control form-control-sm'
@@ -5592,11 +4794,11 @@ const generateExcelFileunit = () => {
             </MenuItem>
           ))}
         </Select>
+                   
                     </div>
-                    <div className='col-md-6'></div>
-
-                    <div className="col-md-6"><label className="labels">Block</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,block:e.target.value})}>
-                    <option>---choose---</option>
+                    <div className='col-md-6 mb-6 custom-input'></div>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Block</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,block:e.target.value})}>
+                    <option>choose</option>
                     {
                                 project.add_block.map((item)=>
                                 (
@@ -5605,7 +4807,7 @@ const generateExcelFileunit = () => {
                                }
                                 </select>
                     </div>
-                    <div className="col-md-6"><label className="labels">Size</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,size:e.target.value})}>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Size</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,size:e.target.value})}>
                     <option>choose</option>
                     {
                                 project.add_size.map((item)=>
@@ -5623,17 +4825,17 @@ const generateExcelFileunit = () => {
                           <>
 
 
-                    <div className="col-md-6"><label className="labels">Land Type</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,land_type:e.target.value})}>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Land Type</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,land_type:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Crop Land</option>
                                 <option>Wood Land</option>
                                 <option>Pasture</option>
                                 </select>
                     </div>
-                    <div className='col-md-6'></div>
-                    <div className='col-md-12' style={{color:"green",fontWeight:"bolder",marginTop:"10px"}}>Land Details<hr></hr></div>
+                    <div className='col-md-6 mb-6 custom-input'></div>
+                    <div className='col-md-12 mb-12 custom-input' style={{color:"green",fontWeight:"bolder",marginTop:"10px"}}>Land Details<hr></hr></div>
 
-                    <div className='col-md-3' ><label className='labels'>Khewat No</label>
+                    <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Khewat No</label>
                     {
                       Array.isArray(units.khewat_no) ?
                       units.khewat_no.map((item,index)=>
@@ -5644,7 +4846,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    <div className='col-md-3' ><label className='labels'>Killa No</label>
+                    <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Killa No</label>
                     {
                       Array.isArray(units.killa_no) ?
                       units.killa_no.map((item,index)=>
@@ -5655,7 +4857,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    <div className='col-md-3' ><label className='labels'>Share</label>
+                    <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Share</label>
                     {
                       Array.isArray(units.share) ?
                       units.share.map((item,index)=>
@@ -5665,7 +4867,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                  <div className='col-md-1' style={{marginTop:"90px"}}>
+                  <div className='col-md-1 mb-1 custom-input' style={{marginTop:"90px"}}>
                   {
                     Array.isArray(units.action5) ?
                     units.action5.map((item,index)=>
@@ -5677,11 +4879,11 @@ const generateExcelFileunit = () => {
                   }
                   </div>
 
-                       <div className="col-md-1" ><label className="labels">add</label><button className="form-control form-control-sm" onClick={addFn5}>+</button></div>
-                    <div className='col-md-12'>Total Land Area:-{units.total_land_area}</div>
-                       <div className='col-md-12' style={{color:"green",fontWeight:"bolder",marginTop:"10px"}}>Water Details<hr></hr></div>
+                       <div className="col-md-1 mb-1 custom-input" ><label className="form-label">add</label><button className="form-control form-control-sm" onClick={addFn5}>+</button></div>
+                    <div className='col-md-12 mb-12 custom-input'>Total Land Area:-{units.total_land_area}</div>
+                       <div className='col-md-12 mb-12 custom-input' style={{color:"green",fontWeight:"bolder",marginTop:"10px"}}>Water Details<hr></hr></div>
 
-                       <div className='col-md-3' ><label className='labels'>Water Source</label>
+                       <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Water Source</label>
                     {
                           Array.isArray(units.water_source) ?
                       units.water_source.map((item,index)=>
@@ -5692,7 +4894,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className='col-md-3' ><label className='labels'>Water Level</label>
+                    <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Water Level</label>
                     {
                           Array.isArray(units.water_level) ?
                       units.water_level.map((item,index)=>
@@ -5704,7 +4906,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    <div className='col-md-3' ><label className='labels'>Water Pump Type</label>
+                    <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Water Pump Type</label>
                     {
                           Array.isArray(units.water_pump_type) ?
                       units.water_pump_type.map((item,index)=>
@@ -5716,7 +4918,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className='col-md-1' style={{marginTop:"90px"}}>
+                    <div className='col-md-1 mb-1 custom-input' style={{marginTop:"90px"}}>
                   {
                     Array.isArray(units.action6) ?
                     units.action6.map((item,index)=>
@@ -5727,11 +4929,11 @@ const generateExcelFileunit = () => {
                     )):[]
                   }
                   </div>
-                  <div className="col-md-1" ><label className="labels">add</label><button className="form-control form-control-sm" onClick={addFn6}>+</button></div>
+                  <div className="col-md-1 mb-1 custom-input" ><label className="form-label">add</label><button className="form-control form-control-sm" onClick={addFn6}>+</button></div>
 
-                  <div className='col-md-12' style={{color:"green",fontWeight:"bolder"}}>Basic Details<hr></hr></div>
+                  <div className='col-md-12 mb-12 custom-input' style={{color:"green",fontWeight:"bolder"}}>Basic Details<hr></hr></div>
 
-                  <div className="col-md-4"><label className="labels">Facing</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
+                  <div className="col-md-4 mb-4 custom-input"><label className="form-label">Facing</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Village Link Road</option>
                                 <option>Highway</option>
@@ -5740,7 +4942,7 @@ const generateExcelFileunit = () => {
                                 </select>
                     </div>
 
-                    <div className="col-md-4"><label className="labels">Side Open</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Side Open</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,side_open:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>1 Side Open</option>
                                 <option>2 Side Open</option>
@@ -5748,7 +4950,7 @@ const generateExcelFileunit = () => {
                                 </select>
                     </div>
 
-                    <div className="col-md-4"><label className="labels">Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,road:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,road:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>11 Ft wide</option>
                                 <option>22 Ft Wide</option>
@@ -5759,7 +4961,7 @@ const generateExcelFileunit = () => {
                                 </select>
                     </div>
 
-                    <div className="col-md-4"><label className="labels">Front On Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Front On Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,fornt_on_road:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>10 ft</option>
                                 <option>20 ft</option>
@@ -5773,13 +4975,13 @@ const generateExcelFileunit = () => {
                                 </select>
                     </div>
 
-                    <div className="col-md-4"><label className="labels">Ownership</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ownership:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Ownership</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ownership:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Mustraka</option>
                                 <option>Individual</option>
                                 </select>
                     </div>
-                    <div className="col-md-4"><label className="labels">No. Of Owner</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">No. Of Owner</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -5797,7 +4999,7 @@ const generateExcelFileunit = () => {
 
                           <>
 
-                    <div className="col-md-4"><label className="labels">Direction</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,direction:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Direction</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,direction:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>East</option>
                                 <option>West</option>
@@ -5810,7 +5012,7 @@ const generateExcelFileunit = () => {
                                
                                 </select>
                     </div>
-                    <div className="col-md-4"><label className="labels">Facing</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Facing</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Park</option>
                                 <option>Green Belt</option>
@@ -5834,7 +5036,7 @@ const generateExcelFileunit = () => {
                                 <option> 2 Kanal</option>
                                 </select>
                     </div>
-                    <div className="col-md-4"><label className="labels">Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,road:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,road:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>9 Mtr Wide</option>
                                 <option>12 Mtr Wide</option>
@@ -5843,7 +5045,7 @@ const generateExcelFileunit = () => {
                                 <option> 60 Mtr Wide</option>
                                 </select>
                     </div>
-                    <div className="col-md-6"><label className="labels">Ownership</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ownership:e.target.value})}>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Ownership</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ownership:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Freehold</option>
                                 <option>Leasehold</option>
@@ -5851,7 +5053,7 @@ const generateExcelFileunit = () => {
                                 <option>Sale Agreement(Lal Dora)</option>
                                 </select>
                     </div>
-                    <div className='col-md-6'><label className="labels">Stage</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,stage:e.target.value})}>
+                    <div className='col-md-6 mb-6 custom-input'><label className="form-label">Stage</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,stage:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Active</option>
                                 <option>Inactive</option>
@@ -5863,7 +5065,7 @@ const generateExcelFileunit = () => {
           }
 
 
-                    <div  className='col-md-6' style={{marginTop:"10px"}}>
+                    <div  className='col-md-6 mb-6 custom-input' style={{marginTop:"10px"}}>
                         <input
                           type="checkbox"
                           checked={showabuiltup}
@@ -5871,15 +5073,14 @@ const generateExcelFileunit = () => {
                         />
                         <label>Show Builtup Details</label>
                       </div>
-                      <div className='col-md-6'></div>
+                      <div className='col-md-6 mb-6 custom-input'></div>
               {showabuiltup && (
                 <>
-                    <div className='col-md-12'><label className='labels'>Builtup Details</label><hr></hr></div>
+                    <div className='col-md-12 mb-12 custom-input'><label className='form-label'>Builtup Details</label><hr></hr></div>
 
-                    <div className='col-md-6' ><label className='labels'>Type</label>
-                     <select className="form-control form-control-sm" style={{marginTop:"10px"}} onChange={(e)=>setunits({...units,builtup_type:e.target.value})}>
-                          <option>---Select---</option>
-                       
+                    <div className='col-md-6 mb-6 custom-input' ><label className='form-label'>Type</label>
+                     <select className="form-control form-control-sm" style={{marginTop:"10px"}} onChange={(e)=>setunits({...units,unit_type:e.target.value})}>
+                           <option>---Select---</option>
                          {
                             // Combine all unit types for selected sub_categories
                             [...new Set(
@@ -5891,10 +5092,10 @@ const generateExcelFileunit = () => {
                           }
                         </select>
                     </div>
-                    <div className='col-md-6'></div>
+                    <div className='col-md-6 mb-6 custom-input'></div>
                   
                     <div className='row mt-2' style={{border:"1px dashed black",margin:"10px",marginTop:"0",padding:"10px",width:"100%"}}>
-                    <div className='col-md-2' ><label className='labels'>Floor</label>
+                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Floor</label>
                     {
                       Array.isArray(units.floor) ?
                       units.floor.map((item,index)=>
@@ -5914,7 +5115,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className='col-md-2' ><label className='labels' style={{width:"500px"}}>Cluter Details</label>
+                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label' style={{width:"500px"}}>Cluter Details</label>
                     {
                        Array.isArray(units.cluter_details) ?
                       units.cluter_details.map((item,index)=>
@@ -5940,7 +5141,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className='col-md-2' ><label className='labels'>Length</label>
+                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Length</label>
                     {
                           Array.isArray(units.length) ?
                       units.length.map((item,index)=>
@@ -5949,7 +5150,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className='col-md-2' ><label className='labels'>Breadth</label>
+                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Breadth</label>
                     {
                       Array.isArray(units.bredth) ?
                       units.bredth.map((item,index)=>
@@ -5959,7 +5160,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                      <div className='col-md-2' ><label className='labels'>Total Area</label>
+                      <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Total Area</label>
                     {
                       Array.isArray(units.total_area) ?
                       units.total_area.map((item,index)=>
@@ -5970,7 +5171,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
                    
-                    <div className='col-md-1' style={{marginTop:"90px"}}>
+                    <div className='col-md-1 mb-1 custom-input' style={{marginTop:"90px"}}>
                     {
                       Array.isArray(units.action3) ?
                       units.action3.map((item,index)=>
@@ -5981,17 +5182,17 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className="col-md-1" ><label className="labels">add</label><button className="form-control form-control-sm" onClick={addFn3}>+</button></div>
+                    <div className="col-md-1 mb-1 custom-input" ><label className="form-label">add</label><button className="form-control form-control-sm" onClick={addFn3}>+</button></div>
                    
                     </div>
                     </>
                     )}
 
-                    <div className='col-md-6'><label>Occupation Date</label><input type='date'   value={units.ocupation_date} className='form-control form-control-sm' onChange={(e)=>setunits({...units,ocupation_date:e.target.value})}/></div>
-                    <div className='col-md-6'><label>Age of Construction</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,age_of_construction:e.target.value})}/></div>
+                    <div className='col-md-6 mb-6 custom-input'><label>Occupation Date</label><input type='date' className='form-control form-control-sm' onChange={(e)=>setunits({...units,ocupation_date:e.target.value})}/></div>
+                    <div className='col-md-6 mb-6 custom-input'><label>Age of Construction</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,age_of_construction:e.target.value})}/></div>
                     
 
-                    <div className="col-md-6"><label className="labels">Furnishing Details</label><select id='subcategory'  className="form-control form-control-sm" onChange={(e)=>setunits({...units,furnishing_details:e.target.value})}>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Furnishing Details</label><select id='subcategory'  className="form-control form-control-sm" onChange={(e)=>setunits({...units,furnishing_details:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Furnished</option>
                                 <option>Unfurnished</option>
@@ -6001,18 +5202,18 @@ const generateExcelFileunit = () => {
                     {
                       (units.furnishing_details==="Furnished" || units.furnishing_details==="Semi Furnished") && (
                      
-                     <div className='col-md-12'><label>Enter Furnishing Details</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,age_of_construction:e.target.value})}/></div>
+                     <div className='col-md-12 mb-12 custom-input'><label>Enter Furnishing Details</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,age_of_construction:e.target.value})}/></div>
                     )}
-                    <div className='col-md-6'></div>
+                    <div className='col-md-6 mb-6 custom-input'></div>
 
-                    <div className='col-md-8'><label>Furnished Items</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,furnished_item:e.target.value})}/></div>
+                    <div className='col-md-8 mb-8 custom-input'><label>Furnished Items</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,furnished_item:e.target.value})}/></div>
                  
                 </div>
                 </div>
                 <div className="row">
-                <div className="col-md-12" id='unitlocation' style={{display:"none",lineHeight:"30px"}}>
+                <div className="col-md-12 mb-12 custom-input" id='unitlocation' style={{display:"none",lineHeight:"30px"}}>
                  <div className="p-3 py-5">
-                <div className="col-md-12" style={{border:"1px solid black",marginTop:"30px",padding:"10px"}}>
+                <div className="col-md-12 mb-12 custom-input" style={{border:"1px solid black",marginTop:"30px",padding:"10px"}}>
                 <div style={{border:"1px solid black",marginTop:"10px"}}>
                 
                   
@@ -6034,20 +5235,20 @@ const generateExcelFileunit = () => {
              
                           </div>
                           <div className="row">
-                          <div className="col-md-6" ><label className="labels">Location</label><input  type="text" className="form-control form-control-sm" required="true" value={units.location} onChange={(e)=>setunits({...units,location:e.target.value})}/></div>
-                          {/* <div className='col-md-5'></div> */}
-                          <div className="col-md-2"><label className="labels" style={{visibility:"hidden"}}>.</label><button className="form-control form-control-sm" required="true" onClick={handleSubmit1}>Get</button></div>
-                          <div className='col-md-4'></div>
-                          <div className="col-md-5"><label className="labels">Lattitude</label><input type="number"className="form-control form-control-sm" required="true" value={units.lattitude}  readOnly/></div>
-                          <div className="col-md-5"><label className="labels">Langitude</label><input type="number"className="form-control form-control-sm" required="true" value={units.langitude} readOnly/></div>
-                          <div className="col-md-12"><label className="labels" style={{fontSize:"16px",marginTop:"10px"}}>Address</label></div>
+                          <div className="col-md-6 mb-6 custom-input" ><label className="form-label">Location</label><input  type="text" className="form-control form-control-sm" required="true" value={units.location} onChange={(e)=>setunits({...units,location:e.target.value})}/></div>
+                          {/* <div className='col-md-5 mb-5 custom-input'></div> */}
+                          <div className="col-md-2 mb-2 custom-input"><label className="form-label" style={{visibility:"hidden"}}>.</label><button className="form-control form-control-sm" required="true" onClick={handleSubmit1}>Get</button></div>
+                          <div className='col-md-4 mb-4 custom-input'></div>
+                          <div className="col-md-5 mb-5 custom-input"><label className="form-label">Lattitude</label><input type="number"className="form-control form-control-sm" required="true" value={units.lattitude}  readOnly/></div>
+                          <div className="col-md-5 mb-5 custom-input"><label className="form-label">Langitude</label><input type="number"className="form-control form-control-sm" required="true" value={units.langitude} readOnly/></div>
+                          <div className="col-md-12 mb-12 custom-input"><label className="form-label" style={{fontSize:"16px",marginTop:"10px"}}>Address</label></div>
                    
-                    <div className="col-md-8"><label className="labels">ADDRESS</label><input type="text" value={units.uaddress} className="form-control form-control-sm" onChange={(e)=>setunits({...units,uaddress:e.target.value})}/></div>
-                    <div className="col-md-4"></div>
-                    <div className="col-md-8"><label className="labels">STREET</label><input type="text" value={units.ustreet} className="form-control form-control-sm" onChange={(e)=>setunits({...units,ustreet:e.target.value})}/></div>
-                    <div className="col-md-4"></div>
-                    <div className="col-md-4"><label className="labels">LOCALITY</label><input type="text" value={units.ulocality} className="form-control form-control-sm" onChange={(e)=>setunits({...units,ulocality:e.target.value})}/></div>
-                    <div className="col-md-4"><label className="labels">CITY</label>
+                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">ADDRESS</label><input type="text" value={units.uaddress} className="form-control form-control-sm" onChange={(e)=>setunits({...units,uaddress:e.target.value})}/></div>
+                    <div className="col-md-4 mb-4 custom-input"></div>
+                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">STREET</label><input type="text" value={units.ustreet} className="form-control form-control-sm" onChange={(e)=>setunits({...units,ustreet:e.target.value})}/></div>
+                    <div className="col-md-4 mb-4 custom-input"></div>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">LOCALITY</label><input type="text" value={units.ulocality} className="form-control form-control-sm" onChange={(e)=>setunits({...units,ulocality:e.target.value})}/></div>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">CITY</label>
                     <select type="text"  className="form-control form-control-sm" onChange={(e)=>setunits({...units,ucity:e.target.value})}>
                     <option>{units.ucity}</option>
                     {ucities.map((city) => (
@@ -6057,8 +5258,8 @@ const generateExcelFileunit = () => {
                     ))}
                     </select>
                     </div>
-                    <div className="col-md-4"><label className="labels">ZIP</label><input type="text" value={units.uzip} className="form-control form-control-sm" onChange={(e)=>setunits({...units,uzip:e.target.value})}/></div>
-                    <div className="col-md-6"><label className="labels">State</label><select  className="form-control form-control-sm" onChange={(e)=>setunits({...units,ustate:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">ZIP</label><input type="text" value={units.uzip} className="form-control form-control-sm" onChange={(e)=>setunits({...units,uzip:e.target.value})}/></div>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">State</label><select  className="form-control form-control-sm" onChange={(e)=>setunits({...units,ustate:e.target.value})}>
                                 <option>{units.ustate}</option>
                                 {ustates.map((state) => (
                                 <option key={state} value={state}>
@@ -6067,7 +5268,7 @@ const generateExcelFileunit = () => {
                                  ))}
                                 </select>
                     </div>
-                    <div className="col-md-6"><label className="labels">Country</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ucountry:e.target.value})}>
+                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Country</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ucountry:e.target.value})}>
                                 <option>{units.ucountry}</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
@@ -6084,19 +5285,39 @@ const generateExcelFileunit = () => {
                 <div id="ownerdetails" style={{padding:"5px",display:"none"}}>
                 <div className="row" style={{width:"100%"}}>
                
-                        <div className="col-md-9" id="suggestion-box" style={{ position: 'relative' }}><label className="labels" style={{visibility:"hidden"}}>Search</label><input type="search"className="form-control form-control-sm" value={input} placeholder="Type here For Search in Contact" required="true" onChange={handleInputChange}/></div>
+                        <div className="col-md-9 mb-9 custom-input" id="suggestion-box" style={{ position: 'relative' }}><label className="form-label" style={{visibility:"hidden"}}>Search</label><input type="search"className="form-control form-control-sm" value={input} placeholder="Type here For Search in Contact" required="true" onChange={handleInputChange}/></div>
                         {showSuggestions && input && filteredSuggestions.length > 0 && (
                             <ul className="suggestion-list">
                               {filteredSuggestions.map((suggestion, index) => (
-                                <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-                                  {suggestion.first_name}
+                                <li key={index} onClick={() => handleSuggestionClick(suggestion)} style={{fontSize:"12px"}}>
+                                  {suggestion.first_name} {suggestion.last_name}<br></br>
+                                  {suggestion.mobile_no}
                                 </li>
                               ))}
                             </ul>
                           )}
-                        <div className="col-md-3"><label className="labels">Add Contact</label><button className="form-control form-control-sm" style={{width:"50px"}} onClick={()=>navigate('/sortaddcontact')}>+</button></div>
+                        <div className="col-md-1 mb-1 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Add</label>
+                        {/* <button className="form-control form-control-sm" style={{width:"50px"}} onClick={()=>navigate('/sortaddcontact')}>+</button> */}
+                         <button
+                        className="form-control form-control-sm"
+                        onClick={()=>navigate('/sortaddcontact')}
+                        style={{
+                          backgroundColor: "#007bff",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "4px",
+                          fontWeight: "500",
+                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                          transition: "all 0.2s ease-in-out"
+                        }}
+                        onMouseOver={e => e.currentTarget.style.backgroundColor = "#0056b3"}
+                        onMouseOut={e => e.currentTarget.style.backgroundColor = "#007bff"}
+                      >
+                        +
+                     </button>
+                        </div>
                     
-                     <div className="col-md-12" style={{marginTop:"20px"}}><label className="labels" >Owner Contact</label><div className="col-md-12"><hr></hr></div>
+                     <div className="col-md-12 mb-12 custom-input" style={{marginTop:"20px"}}><label className="form-label" >Owner Contact</label><div className="col-md-12 mb-12 custom-input"><hr></hr></div>
                      {selectedcontact1.length >= 0 && (
                       <div className="contact-details">
                         <table  style={{width:"100%"}}>
@@ -6104,37 +5325,41 @@ const generateExcelFileunit = () => {
                           <tbody>
                           {selectedcontact1.map(contact => (
                               <StyledTableRow>
-                                <img style={{height:"70px",width:"80px"}} src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png" alt=""></img>
-                                <StyledTableCell  style={{ fontFamily: "times new roman",  cursor: 'pointer' }}>
+                                    <StyledTableCell  style={{cursor: 'pointer',fontSize:"12px"}}>
+                                   <img style={{height:"40px",width:"90px"}} src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png" alt=""></img>
+                                </StyledTableCell>
+                               
+                                <StyledTableCell  style={{cursor: 'pointer',fontSize:"12px"}}>
                                     {contact.title} {contact.first_name} {contact.last_name}<br></br>
-                                    <SvgIcon component={EmailIcon} />
+                                    <SvgIcon component={EmailIcon} style={{fontSize:"10px"}}/>
                                     <span>{contact.email}</span>
                                 </StyledTableCell>
 
-                                <StyledTableCell  style={{ fontFamily: "times new roman",  cursor: 'pointer' }}>
+                                <StyledTableCell  style={{cursor: 'pointer',fontSize:"12px" }}>
                                   {contact.mobile_no.map((number, index) => (
                                     <span key={index}>
-                                      <SvgIcon component={PhoneIphoneIcon} />
+                                      <SvgIcon component={PhoneIphoneIcon} style={{fontSize:"10px"}}/>
                                       {number}<br></br>
                                     </span>
                                   ))}
                                 </StyledTableCell>
 
-                                <StyledTableCell  style={{ fontFamily: "times new roman",  cursor: 'pointer' }}>
+                                <StyledTableCell  style={{cursor: 'pointer',fontSize:"12px" }}>
                                   S/W/O <br></br>{contact.father_husband_name}
                                   </StyledTableCell>
 
-                                  <StyledTableCell  style={{ fontFamily: "times new roman",  cursor: 'pointer' }}>
+                                  <StyledTableCell  style={{cursor: 'pointer',fontSize:"12px" }}>
                                   permanent address: <br></br>{contact.h_no}<br></br>{contact.area1}
                                   {contact.location1} {contact.city1} {contact.state1} {contact.country1} {contact.pincode1} 
                                   </StyledTableCell>
 
-                                  <StyledTableCell style={{ fontFamily: "times new roman", cursor: 'pointer' }}>
+                                  <StyledTableCell style={{cursor: 'pointer',fontSize:"12px" }}>
                                         <span style={{color:"orange",fontWeight:"bolder"}}>Owner</span>
                                     </StyledTableCell>
 
                                 <StyledTableCell>
-                                  <img style={{height:"40px",cursor:"pointer"}} src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png" alt="" onClick={() => removeContact(contact._id)}></img>
+                                  {/* <img style={{height:"40px",cursor:"pointer"}} src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png" alt="" onClick={() => removeContact(contact._id)}></img> */}
+                                  <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}}  onClick={() => removeContact(contact._id)}>delete</span> 
                                    </StyledTableCell>
                                 
                               </StyledTableRow>
@@ -6145,7 +5370,7 @@ const generateExcelFileunit = () => {
                     )}
                 </div>
                 
-                <div className="col-md-12" style={{marginTop:"20px"}}><label className="labels" >Associate Contact</label><div className="col-md-12"><hr></hr></div>
+                <div className="col-md-12 mb-12 custom-input" style={{marginTop:"20px"}}><label className="form-label" >Associate Contact</label><div className="col-md-12 mb-12 custom-input"><hr></hr></div>
                 {selectedcontact2.length >= 0 && (
                 <div className="contact-details">
                     <table style={{width:"100%"}}>
@@ -6154,38 +5379,42 @@ const generateExcelFileunit = () => {
                               
                               selectedcontact2.map(contact => (
                                 <StyledTableRow>
-                                    <img style={{ height: "70px", width: "80px" }} src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png" alt="Contact" />
-                                    <StyledTableCell style={{ fontFamily: "times new roman", cursor: 'pointer' }}>
+                                  <StyledTableCell>
+                                    <img style={{ height: "40px", width: "50px" }} src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png" alt="Contact" />
+                                  </StyledTableCell>
+                                   
+                                    <StyledTableCell style={{ fontSize:"12px",cursor: 'pointer' }}>
                                         {contact.title} {contact.first_name} {contact.last_name}<br />
-                                        <SvgIcon component={EmailIcon} />
+                                        <SvgIcon component={EmailIcon} style={{fontSize:"10px"}}/>
                                         <span>{contact.email}</span>
                                     </StyledTableCell>
 
-                                    <StyledTableCell style={{ fontFamily: "times new roman", cursor: 'pointer' }}>
+                                    <StyledTableCell style={{ cursor: 'pointer',fontSize:"12px" }}>
                                         {
                                         Array.isArray(contact.mobile_no) ?
                                         contact.mobile_no.map((number, index) => (
                                             <span key={index}>
-                                                <SvgIcon component={PhoneIphoneIcon} />
+                                                <SvgIcon component={PhoneIphoneIcon} style={{fontSize:"10px"}}/>
                                                 {number}<br />
                                             </span>
                                         )):[]}
                                     </StyledTableCell>
 
-                                    <StyledTableCell style={{ fontFamily: "times new roman", cursor: 'pointer' }}>
+                                    <StyledTableCell style={{cursor: 'pointer',fontSize:"12px" }}>
                                         S/W/O <br />{contact.father_husband_name}
                                     </StyledTableCell>
 
-                                    <StyledTableCell style={{ fontFamily: "times new roman", cursor: 'pointer' }}>
+                                    <StyledTableCell style={{ cursor: 'pointer',fontSize:"12px" }}>
                                         permanent address: <br />{contact.h_no}<br />{contact.area1} {contact.location1} {contact.city1} {contact.state1} {contact.country1} {contact.pincode1}
                                     </StyledTableCell>
 
-                                    <StyledTableCell style={{ fontFamily: "times new roman", cursor: 'pointer' }}>
+                                    <StyledTableCell style={{ cursor: 'pointer',fontSize:"12px" }}>
                                     <span style={{color:"orange",fontWeight:"bolder"}}>{units.relation}</span>
                                     </StyledTableCell>
                                         
                                     <StyledTableCell>
-                                        <img style={{ height: "40px", cursor: "pointer" }} src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png" onClick={() => removeContact(contact._id)} alt="Remove" />
+                                        {/* <img style={{ height: "40px", cursor: "pointer" }} src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png" onClick={() => removeContact(contact._id)} alt="Remove" /> */}
+                                         <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}}  onClick={() => removeContact(contact._id)}>delete</span> 
                                     </StyledTableCell>
                                 </StyledTableRow>
                             ))} 
@@ -6220,7 +5449,7 @@ const generateExcelFileunit = () => {
                        {
                        Array.isArray(units.s_no)?
                        units.s_no.map((name, index) => (
-                                 <div key={index}className="col-md-12" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
                                    <input 
                                      type="text"
                                      className="form-control form-control-sm"
@@ -6235,7 +5464,7 @@ const generateExcelFileunit = () => {
                        {
                        Array.isArray(units.preview)?
                        units.preview.map((name, index) => (
-                                 <div key={index}className="col-md-12" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
                                    <input 
                                    name="preview"
                                      type="file"
@@ -6252,7 +5481,7 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.descriptions)?
                        units.descriptions.map((name, index) => (
-                                 <div key={index}className="col-md-12" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
                                    <input 
                                      type="text"
                                      className="form-control form-control-sm"
@@ -6266,7 +5495,7 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.category)?
                        units.category.map((name, index) => (
-                                 <div key={index}className="col-md-12" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
                                    <select className="form-control form-control-sm" required="true" onChange={(event) => handlecategorychange(index, event)}>
                                        <option>select</option>
                                        <option>Bedroom</option>
@@ -6284,9 +5513,12 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.action10)?
                        units.action10.map((name, index) => (
-                                 <div key={index}className="col-md-12" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
                                  
-                                   <div><img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit(index)} style={{height:"40px",cursor:"pointer"}}/></div>
+                                   <div>
+                                    {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit(index)} style={{height:"40px",cursor:"pointer"}}/> */}
+                                    <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}}  onClick={()=>deleteallunit(index)}>delete</span> 
+                                    </div>
                                  </div>
                                )):[]}
                        </td>
@@ -6296,7 +5528,7 @@ const generateExcelFileunit = () => {
                </table>
                    </div>
                    <div className="row mt-4">
-                   <div className="col-md-3" style={{marginLeft:"70%"}} onClick={addFnunit}><button className="form-control form-control-sm">Add Image</button></div>
+                   <div className="col-md-3 mb-3 custom-input" style={{marginLeft:"70%"}} onClick={addFnunit}><button className="form-control form-control-sm custom-btn">Add Image</button></div>
                  </div>
                  <div className="d-flex justify-content-between align-items-center mb-3">
                      <h6 className="text-right">Upload Videos</h6>
@@ -6315,7 +5547,7 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.s_no1)?
                        units.s_no1.map((name, index) => (
-                                 <div key={index}className="col-md-12" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
                                    <input 
                                      type="text"
                                      className="form-control form-control-sm"
@@ -6329,7 +5561,7 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.url)?
                        units.url.map((name, index) => (
-                                 <div key={index}className="col-md-12" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
                                    <input 
                                      type="text"
                                      className="form-control form-control-sm"
@@ -6344,9 +5576,12 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.action11)?
                        units.action11.map((name, index) => (
-                                 <div key={index}className="col-md-12" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
                                  
-                                   <div><img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit1(index)} style={{height:"40px",cursor:"pointer"}}/></div>
+                                   <div>
+                                    {/* <img src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
+                                    <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}}  onClick={()=>deleteallunit1(index)}>delete</span> 
+                                    </div>
                                  </div>
                                )):[]}
                        </td>
@@ -6356,15 +5591,15 @@ const generateExcelFileunit = () => {
 
                </div>
                  <div className="row mt-4">
-                 <div className="col-md-3" style={{marginLeft:"70%"}} onClick={addFnunit1}><button className="form-control form-control-sm">Add Video Link</button></div>
+                 <div className="col-md-3 mb-3 custom-input" style={{marginLeft:"70%"}} onClick={addFnunit1}><button className="form-control form-control-sm custom-btn">Add Video Link</button></div>
                 
                  
-                 <div className="col-md-12"><hr></hr></div>
+                 <div className="col-md-12 mb-12 custom-input"><hr></hr></div>
            
                                
                              
                                 
-                                 <div className="col-md-2"></div>
+                                 <div className="col-md-2 mb-2 custom-input"></div>
                  
                                  </div>
                </div>
@@ -6377,7 +5612,7 @@ const generateExcelFileunit = () => {
 
                 <div className="row mt-2">
 
-                <div className='col-md-3' ><label className='labels'>Document Name</label>
+                <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Document Name</label>
                     {
                       Array.isArray(units.document_name) ?
                       units.document_name.map((item,index)=>
@@ -6396,7 +5631,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    <div className='col-md-2' ><label className='labels'>Document No</label>
+                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Document No</label>
                     {
                       Array.isArray(units.document_no) ?
                       units.document_no.map((item,index)=>
@@ -6407,7 +5642,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    <div className='col-md-2' ><label className='labels'>Date</label>
+                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Date</label>
                     {
                       Array.isArray(units.document_Date) ?
                       units.document_Date.map((item,index)=>
@@ -6418,7 +5653,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    {/* <div className='col-md-2' id="suggestion-box" style={{ position: 'relative' }}><label className='labels'>Linked Contact</label>
+                    {/* <div className='col-md-2 mb-2 custom-input' id="suggestion-box" style={{ position: 'relative' }}><label className='form-label'>Linked Contact</label>
                     {
                       Array.isArray(units.linkded_contact) ?
                       units.linkded_contact.map((item,index)=>
@@ -6430,7 +5665,7 @@ const generateExcelFileunit = () => {
                     </div> */}
                         
 
-                        {/* <div className="col-md-9" id="suggestion-box" style={{ position: 'relative' }}><label className="labels" style={{visibility:"hidden"}}>Search</label><input type="search"className="form-control form-control-sm" value={documents.linkded_contact}  placeholder="Type here For Search in Contact" required="true" onChange={(e)=>setdocuments({...documents,linkded_contact:e.target.value})}/></div> */}
+                        {/* <div className="col-md-9 mb-9 custom-input" id="suggestion-box" style={{ position: 'relative' }}><label className="form-label" style={{visibility:"hidden"}}>Search</label><input type="search"className="form-control form-control-sm" value={documents.linkded_contact}  placeholder="Type here For Search in Contact" required="true" onChange={(e)=>setdocuments({...documents,linkded_contact:e.target.value})}/></div> */}
                         {showSuggestions  && filteredSuggestions.length > 0 && (
                             <ul className="suggestion-list">
                               {filteredSuggestions.map((suggestion, index) => (
@@ -6442,31 +5677,33 @@ const generateExcelFileunit = () => {
                           )}
 
 
-                      <div className='col-md-3' id="suggestion-box" style={{ position: 'relative' }}><label className='labels'>Pic</label>
+                      <div className='col-md-3 mb-3 custom-input' id="suggestion-box" style={{ position: 'relative' }}><label className='form-label'>Pic</label>
                     {
                       Array.isArray(units.image) ?
                       units.image.map((item,index)=>
                       (
-                        <input type="file" className="form-control form-control-sm"  onChange={(event)=>handlepicchange1(index,event)} style={{marginTop:"5px"}} />
+                        <input type="file" name='image' className="form-control form-control-sm"  onChange={(event)=>handlepicchange1(index,event)} style={{marginTop:"5px"}} />
                         
                       )):[]
                     }
                     </div>
-                    <div className="col-md-1" style={{marginTop:"70px"}}>
+                    <div className="col-md-1 mb-1 custom-input" style={{marginTop:"70px"}}>
                     {
+                      Array.isArray(units.action12)?
                        units.action12.map((item,index)=>
                         (
                           <div style={{marginTop:"10px"}}><img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall12(index)} style={{height:"40px",cursor:"pointer"}}/></div>
                                   
                           
-                        ))
+                        )):[]
                     }
                     </div>
                         
-                        <div className="col-md-1"><label className="labels" style={{visibility:"hidden"}}>Add</label><button className="form-control form-control-sm" onClick={addFn12}>+</button></div>
+                        <div className="col-md-1 mb-1 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Add</label><button className="form-control form-control-sm custom-btn" onClick={addFn12}>+</button></div>
                         {/* <TableContainer component={Paper} style={{height:"400px",width:"1000px",overflowY:"scroll",marginTop:"40px",marginLeft:"50px"}}>
     <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
+
     <TableHead>
         <TableRow>
           <StyledTableCell style={{ fontFamily: "times new roman" }}>Serial</StyledTableCell>
@@ -6517,12 +5754,55 @@ const generateExcelFileunit = () => {
                 
           </Modal.Body>
             <Modal.Footer>
-            <Button variant="secondary" onClick={addunit}>
-                Add Unit
-              </Button>
-              <Button variant="secondary" onClick={handleClose3}>
-                Close
-              </Button>
+<Button
+  onClick={addunit}
+  style={{
+    background: 'linear-gradient(to right, #4facfe, #00f2fe)', // blue gradient
+    color: '#fff',
+    fontWeight: '600',
+    padding: '10px 24px',
+    border: 'none',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    marginRight: '12px',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+  }}
+  onMouseEnter={e => {
+    e.target.style.transform = 'scale(1.05)';
+    e.target.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.2)';
+  }}
+  onMouseLeave={e => {
+    e.target.style.transform = 'scale(1)';
+    e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+  }}
+>
+  Add Unit
+</Button>
+
+<Button
+  onClick={handleClose3}
+  style={{
+    background: 'linear-gradient(to right, #ff758c, #ff7eb3)', // pink gradient
+    color: '#fff',
+    fontWeight: '600',
+    padding: '10px 24px',
+    border: 'none',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+  }}
+  onMouseEnter={e => {
+    e.target.style.transform = 'scale(1.05)';
+    e.target.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.2)';
+  }}
+  onMouseLeave={e => {
+    e.target.style.transform = 'scale(1)';
+    e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+  }}
+>
+  Close
+</Button>
+
             </Modal.Footer>
           </Modal>
 
@@ -6534,7 +5814,7 @@ const generateExcelFileunit = () => {
             <Modal.Body>
             <div style={{width:"100%"}}>
             <div className="row">
-                    <div className="col-md-4"><label className="labels">Relation</label><select className="form-control form-control-sm" required="true" onChange={handlerelationchange}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Relation</label><select className="form-control form-control-sm" required="true" onChange={handlerelationchange}>
                               <option>Select</option>
                               <option value="Self">Self</option>
                               <option value="Son">Son</option>
@@ -6566,50 +5846,176 @@ const generateExcelFileunit = () => {
 {/* -----------------------=========================aminities details===================----------------------------------------------- */}
 
 
-          <div className="col-md-12" id='aminities' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
+          <div className="col-md-12 mb-12 custom-input" id='aminities' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
                       <div className="p-3 py-5">
                           <div className="row " >
                             <div style={{display:"flex"}}>
-                          <div style={{display:"flex",gap:"50px",border:"1px solid gray",padding:"5px",borderRadius:"50px",marginLeft:"20%"}}>
-                             <div  id='basicaminities1' onClick={basicaminities} style={{cursor:'pointer',fontWeight:"bold",backgroundColor:"black",color:"white",borderRadius:"50px",width:"80px",textAlign:"center",transition:"0.5s ease-out"}}>Basic </div>
-                             <div  id='featuredaminities1' onClick={featuredaminities} style={{cursor:'pointer',fontWeight:"bold",transition:"0.5s ease-out"}}>Featured</div>
-                             <div  id='nearbyaminities1' onClick={nearbyaminities} style={{cursor:'pointer',fontWeight:"bold",transition:"0.5s ease-out"}}>Nearby</div>
-                         </div>
+                      <div style={{ textAlign: "center", marginTop: "20px" }}>
+                        <button id="basicaminities1" className="amenity-tab active" onClick={basicaminities}>
+                          Basic
+                        </button>
+                        <button id="featuredaminities1" className="amenity-tab" onClick={featuredaminities}>
+                          Featured
+                        </button>
+                        <button id="nearbyaminities1" className="amenity-tab" onClick={nearbyaminities}>
+                          Nearby
+                        </button>
+                      </div>
                         
                          </div>
-                           <div className="row" id='basicaminities' style={{ marginTop: "20px" }}>
-                           <div className='col-md-12' style={{width:"250px",marginLeft:"200px"}}><input type="checkbox" style={{transform:"scale(1.5)",marginRight:"10px"}} checked={selectAll} onChange={handleSelectAllChange}></input>Select All</div>
-                              {checkboxItems.map((item, index) => (
-                                <div className="col-md-6" style={{ marginTop: "20px" }} key={index}>
-                                  <input
-                                    type="checkbox"
-                                    style={{ transform: "scale(1.5)", marginRight: "10px" }}
-                                    checked={checkedItems[index]}
-                                    onChange={() => handleCheckboxChange(index)}
-                                  />
-                                  {item}
-                                </div>
-                              ))}
-                        </div>
-                        <div className="row" id='featuredaminities' style={{ marginTop: "20px",display:"none" }}>
-                        <div className='col-md-12' style={{width:"250px",marginLeft:"200px"}}><input type="checkbox" style={{transform:"scale(1.5)",marginRight:"10px"}} checked={selectAll1} onChange={handleSelectAllChange1}></input>Select All</div>
-                              {checkboxItems1.map((item, index) => (
-                                <div className="col-md-3" style={{ marginTop: "20px" }} key={index}>
-                                  <input
-                                    type="checkbox"
-                                    style={{ transform: "scale(1.5)", marginRight: "10px" }}
-                                    checked={checkedItems1[index]}
-                                    onChange={() => handleCheckboxChange1(index)}
-                                  />
-                                  {item}
-                                </div>
-                              ))}
-                        </div>
+                       <div
+  id="basicaminities"
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "20px",
+    justifyContent: "center",
+    marginTop: "20px",
+  }}
+>
+  {/* SELECT ALL CARD */}
+  <div
+    onClick={handleSelectAllChange}
+    style={{
+      width: "220px",
+      padding: "18px",
+      borderRadius: "12px",
+      background: selectAll ? "#007BFF" : "#e3f2fd",
+      color: selectAll ? "#fff" : "#0d6efd",
+      fontWeight: "700",
+      fontSize: "17px",
+      display: "flex",
+      alignItems: "center",
+      cursor: "pointer",
+      boxShadow: "0 5px 10px rgba(0,0,0,0.1)",
+      transition: "all 0.3s ease",
+      border: selectAll ? "2px solid #0056b3" : "2px dashed #90caf9",
+    }}
+  >
+    <input
+      type="checkbox"
+      checked={selectAll}
+      onClick={(e) => e.stopPropagation()} // stop bubbling
+      onChange={handleSelectAllChange}
+      style={{ marginRight: "12px", transform: "scale(1.4)" }}
+    />
+    Select All Amenities
+  </div>
+
+  {/* AMENITY CARDS */}
+  {checkboxItems.map((item, index) => (
+    <div
+      key={index}
+      onClick={() => handleCheckboxChange(index)}
+      style={{
+        width: "220px",
+        padding: "16px",
+        borderRadius: "10px",
+        backgroundColor: checkedItems[index] ? "#4CAF50" : "#f9f9f9",
+        color: checkedItems[index] ? "#fff" : "#333",
+        fontWeight: "500",
+        fontSize: "16px",
+        display: "flex",
+        alignItems: "center",
+        cursor: "pointer",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        transition: "all 0.3s ease",
+        border: checkedItems[index] ? "2px solid #388e3c" : "2px solid #ddd",
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={checkedItems[index]}
+        onClick={(e) => e.stopPropagation()} // prevent double trigger
+        onChange={() => handleCheckboxChange(index)}
+        style={{ marginRight: "10px", transform: "scale(1.3)" }}
+      />
+      {item}
+    </div>
+  ))}
+</div>
+
+                  <div
+  className="row"
+  id="featuredaminities"
+  style={{
+    marginTop: "20px",
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "20px",
+    justifyContent: "center",
+    display: "none", // keep this if you’re toggling visibility dynamically
+  }}
+>
+  {/* SELECT ALL CARD */}
+  <div
+    onClick={handleSelectAllChange1}
+    style={{
+      width: "220px",
+      padding: "18px",
+      borderRadius: "12px",
+      background: selectAll1 ? "#007BFF" : "#e3f2fd",
+      color: selectAll1 ? "#fff" : "#0d6efd",
+      fontWeight: "700",
+      fontSize: "17px",
+      display: "flex",
+      alignItems: "center",
+      cursor: "pointer",
+      boxShadow: "0 5px 10px rgba(0,0,0,0.1)",
+      transition: "all 0.3s ease",
+      border: selectAll1 ? "2px solid #0056b3" : "2px dashed #90caf9",
+    }}
+  >
+    <input
+      type="checkbox"
+      checked={selectAll1}
+      onClick={(e) => e.stopPropagation()}
+      onChange={handleSelectAllChange1}
+      style={{ marginRight: "12px", transform: "scale(1.4)" }}
+    />
+    Select All Featured
+  </div>
+
+  {/* FEATURED AMENITY CARDS */}
+  {checkboxItems1.map((item, index) => (
+    <div
+      key={index}
+      onClick={() => handleCheckboxChange1(index)}
+      style={{
+        width: "220px",
+        padding: "16px",
+        borderRadius: "10px",
+        backgroundColor: checkedItems1[index] ? "#4CAF50" : "#f9f9f9",
+        color: checkedItems1[index] ? "#fff" : "#333",
+        fontWeight: "500",
+        fontSize: "16px",
+        display: "flex",
+        alignItems: "center",
+        cursor: "pointer",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        transition: "all 0.3s ease",
+        border: checkedItems1[index]
+          ? "2px solid #388e3c"
+          : "2px solid #ddd",
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={checkedItems1[index]}
+        onClick={(e) => e.stopPropagation()}
+        onChange={() => handleCheckboxChange1(index)}
+        style={{ marginRight: "10px", transform: "scale(1.3)" }}
+      />
+      {item}
+    </div>
+  ))}
+</div>
+
                         <div className="row" id='nearbyaminities' style={{ marginTop: "20px",display:"none"}}>
-                        <div className='col-md-12'></div><br></br>
+                        <div className='col-md-12 mb-12 custom-input'></div><br></br>
                        
-                        <div className="col-md-3"><label className='labels'>Destination</label><select id='choosedestination' className='form-control form-control-sm' onChange={(e)=>setdestinations({...destinations,destination:e.target.value})} >
-                        <option>Select</option>
+                        <div className="col-md-3 mb-3 custom-input"><label className='form-label'>Destination</label><select id='choosedestination' className='form-control form-control-sm' onChange={(e)=>setdestinations({...destinations,destination:e.target.value})} >
+                              <option>Select</option>
                               <option>Bus Stop</option>
                               <option>Railway Station</option>
                               <option>Airport</option>
@@ -6623,27 +6029,47 @@ const generateExcelFileunit = () => {
                               <option>School</option>
                               <option>Temple</option>
                               <option>Super Market</option>
+
                         </select>
                         </div>
-                        <div className="col-md-3"><label className='labels'>Name Of Destination</label><input id='nameofdestination' type='text' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,name_of_destination:e.target.value}))}/> </div>
-                        <div className="col-md-2"><label className='labels'>Distance</label><input id='destination' type='text' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,distance:e.target.value}))}/> </div>
-                        <div className="col-md-2"><label className='labels' style={{visibility:"hidden"}}>Measurement</label><select id='measurment' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,measurment:e.target.value}))}>
+                        <div className="col-md-3 mb-3 custom-input"><label className='form-label'>Name Of Destination</label><input id='nameofdestination' type='text' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,name_of_destination:e.target.value}))}/> </div>
+                        <div className="col-md-2 mb-2 custom-input"><label className='form-label'>Distance</label><input id='destination' type='text' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,distance:e.target.value}))}/> </div>
+                        <div className="col-md-2 mb-2 custom-input"><label className='form-label' style={{visibility:"hidden"}}>Measurement</label><select id='measurment' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,measurment:e.target.value}))}>
                          <option>Select</option><option>K.M</option><option>Miles</option><option>Meter</option>
                           </select>
                            </div>
-                         <div className="col-md-1"><label className='labels' style={{visibility:"hidden"}} >Add</label><button className='form-control form-control-sm' onClick={adddestination}>+</button></div>
-                    <div className='col-md-4'></div><br></br>
-                    <div className='col-md-12'><label className='labels'>List Of Destinations</label></div>
+                         <div className="col-md-1 mb-1 custom-input"><label className='form-label' style={{visibility:"hidden"}} >Add</label>
+                         {/* <button className='form-control form-control-sm' onClick={adddestination}>+</button> */}
+                            <button
+                                className="form-control form-control-sm"
+                               onClick={adddestination}
+                                style={{
+                                  backgroundColor: "#007bff",
+                                  color: "#fff",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  fontWeight: "500",
+                                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                  transition: "all 0.2s ease-in-out"
+                                }}
+                                onMouseOver={e => e.currentTarget.style.backgroundColor = "#0056b3"}
+                                onMouseOut={e => e.currentTarget.style.backgroundColor = "#007bff"}
+                              >
+                                +
+                              </button>
+                         </div>
+                    <div className='col-md-4 mb-4 custom-input'></div><br></br>
+                    <div className='col-md-12 mb-12 custom-input'><label className='form-label'>List Of Destinations</label></div>
                     <TableContainer component={Paper} style={{height:"400px",width:"1100px",overflowY:"scroll",marginTop:"40px",marginLeft:"10px"}}>
     <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
     <TableHead>
         <TableRow>
-          <StyledTableCell style={{ fontFamily: "times new roman"}}>Sr.</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman"}}>Name Of Destination</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman"}}>Type Of Destination</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman"}}>Distance</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman"}}>Action</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Sr.</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Name Of Destination</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Type Of Destination</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Distance</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Action</StyledTableCell>
           
         </TableRow>
       </TableHead>
@@ -6651,14 +6077,15 @@ const generateExcelFileunit = () => {
         {
           project.nearby_aminities.map((item, index) => (
           <StyledTableRow key={index} style={{backgroundColor:"white"}}>
-            <StyledTableCell style={{ padding: "10px", cursor: "pointer", fontFamily: "times new roman", fontSize: "10px" }}  >
+            <StyledTableCell style={{ padding: "10px", cursor: "pointer", fontSize: "10px" }}  >
               {index+1}
             </StyledTableCell>
             <StyledTableCell >{item.name_of_destination} </StyledTableCell>
             <StyledTableCell >{item.destination} </StyledTableCell>
             <StyledTableCell >{item.distance}{item.measurment} </StyledTableCell> 
             <StyledTableCell >
-              <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletedestination(index)}   style={{height:"40px",cursor:"pointer"}}/>
+              {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletedestination(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
+              <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}}  onClick={()=>deletedestination(index)}>delete</span> 
             </StyledTableCell>
               
           </StyledTableRow>
@@ -6674,27 +6101,46 @@ const generateExcelFileunit = () => {
 
 {/* -------------------=====================================price start==================================---------------------------------- */}
 
-<div className="col-md-12" id='price' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
+<div className="col-md-12 mb-12 custom-input" id='price' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
                       <div className="p-3 py-5">
                         
                         <div className="row" id='nearbyaminities' style={{ marginTop: "20px"}}>
-                        <div className='col-md-12'></div><br></br>
+                        <div className='col-md-12 mb-12 custom-input'></div><br></br>
                        
                       
-                        <div className='col-md-10'><label className='labels'>Price List</label></div>
-                         <div className="col-md-1"><button className='form-control form-control-sm' onClick={handleShow4}>Add</button></div>
-                    <div className='col-md-12'><hr></hr></div>
+                        <div className='col-md-10 mb-10 custom-input'><label className='form-label'>Price List</label></div>
+                         <div className="col-md-1 mb-1 custom-input">
+                          {/* <button className='form-control form-control-sm' onClick={handleShow4}>Add</button> */}
+                              <button
+                                className="form-control form-control-sm"
+                                onClick={handleShow4}
+                                style={{
+                                  backgroundColor: "#007bff",
+                                  color: "#fff",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  fontWeight: "500",
+                                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                  transition: "all 0.2s ease-in-out"
+                                }}
+                                onMouseOver={e => e.currentTarget.style.backgroundColor = "#0056b3"}
+                                onMouseOut={e => e.currentTarget.style.backgroundColor = "#007bff"}
+                              >
+                                +
+                              </button>
+                          </div>
+                    <div className='col-md-12 mb-12 custom-input'><hr></hr></div>
                     <TableContainer component={Paper} style={{height:"400px",width:"1100px",overflowY:"scroll",marginLeft:"10px"}}>
     <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
     <TableHead>
         <TableRow>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Block Name</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Sub Category</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman"}}>Size</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Charge</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Taxes</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Total Price</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Block Name</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Sub Category</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Size</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Charge</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Taxes</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Total Price</StyledTableCell>
           
         </TableRow>
       </TableHead>
@@ -6702,7 +6148,7 @@ const generateExcelFileunit = () => {
         {
           project.price_list.map((item, index) => (
           <StyledTableRow key={index} style={{backgroundColor:"white"}}>
-            <StyledTableCell style={{ padding: "10px", fontFamily: "times new roman"}}  >
+            <StyledTableCell style={{ padding: "10px", fontSize: "10px"}}  >
              {item.block}
             </StyledTableCell>
             <StyledTableCell >{item.sub_category} </StyledTableCell>
@@ -6710,7 +6156,8 @@ const generateExcelFileunit = () => {
             <StyledTableCell >{item.blank1}</StyledTableCell> 
             <StyledTableCell >{item.blank4}</StyledTableCell> 
             <StyledTableCell >
-              <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteprice(index)}   style={{height:"40px",cursor:"pointer"}}/>
+              {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteprice(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
+               <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}} onClick={()=>deleteprice(index)}>delete</span>
             </StyledTableCell>
               
           </StyledTableRow>
@@ -6725,9 +6172,9 @@ const generateExcelFileunit = () => {
             </Modal.Header>
             <Modal.Body>
               <div className='row'>
-              <div className='col-md-12'  style={{marginTop:"20px",display:"flex",gap:"30px"}}> <u id='baseprice1' onClick={baseprice} style={{cursor:"pointer",fontWeight:"bold"}}>Base Price</u><u id='charges1' onClick={charges} style={{cursor:"pointer",fontWeight:"bold"}}>Charges</u><u id='taxes1' onClick={taxes} style={{cursor:"pointer",fontWeight:"bold"}}>Taxes</u></div>
+              <div className='col-md-12 mb-12 custom-input'  style={{marginTop:"20px",display:"flex",gap:"30px"}}> <u id='baseprice1' onClick={baseprice} style={{cursor:"pointer",fontWeight:"bold"}}>Base Price</u><u id='charges1' onClick={charges} style={{cursor:"pointer",fontWeight:"bold"}}>Charges</u><u id='taxes1' onClick={taxes} style={{cursor:"pointer",fontWeight:"bold"}}>Taxes</u></div>
               <div className='row' id='baseprice' style={{marginTop:"20px",padding:"30px"}}><hr></hr>
-            <div className="col-md-4"><label className="labels">Block</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,block:e.target.value})}>
+            <div className="col-md-4 mb-4 custom-input"><label className="form-label">Block</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,block:e.target.value})}>
                                 <option>---Select---</option>
                                 {
                                   project.add_block.map((item)=>
@@ -6737,7 +6184,7 @@ const generateExcelFileunit = () => {
                                 }
                                 </select>
                     </div>
-                    <div className="col-md-4"><label className="labels">Category</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,category:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Category</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,category:e.target.value})}>
                             <option>---Select---</option>
                        {
                         project.category.map((type)=>
@@ -6747,7 +6194,7 @@ const generateExcelFileunit = () => {
                        }
                         </select>
                     </div>
-                    <div className="col-md-4"><label className="labels">Sub Category</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,sub_category:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Sub Category</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,sub_category:e.target.value})}>
                     <option>---Select---</option>
                                 {
                                   project.sub_category.map((item)=>
@@ -6757,7 +6204,7 @@ const generateExcelFileunit = () => {
                                 }
                                 </select>
                     </div>
-                    <div className="col-md-8"><label className="labels">Size</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,size:e.target.value})}>
+                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">Size</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,size:e.target.value})}>
                     <option>---Select---</option>
                                 {
                                   project.add_size.map((item)=>
@@ -6767,27 +6214,27 @@ const generateExcelFileunit = () => {
                                 }
                                 </select>
                     </div>
-                    <div className="col-md-4"><label className="labels">Covered Area</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,covered_area:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Covered Area</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,covered_area:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Covered Area</option>
                                 <option> Carpet Area</option>
                                 <option>Total Area</option>
                                 </select>
                     </div>
-                    <div className='col-md-6'><label className='labels'>Base Rate</label><input type='text' className='form-control form-control-sm'></input></div><br></br>
-                    <div className='col-md-6'></div>
+                    <div className='col-md-6 mb-6 custom-input'><label className='form-label'>Base Rate</label><input type='text' className='form-control form-control-sm'></input></div><br></br>
+                    <div className='col-md-6 mb-6 custom-input'></div>
                     </div>
 
                     <div className='row' id='charges' style={{marginTop:"20px",padding:"30px",display:"none"}}>
-                  <div className='col-md-12'><hr></hr></div>
-                  <div className="col-md-4"><label className="labels">Name</label><select className="form-control form-control-sm" onChange={handlechargenamechange}>
+                  <div className='col-md-12 mb-12 custom-input'><hr></hr></div>
+                  <div className="col-md-4 mb-4 custom-input"><label className="form-label">Name</label><select className="form-control form-control-sm" onChange={handlechargenamechange}>
                                 <option>---Select---</option>
                                 <option>Preferred Location Charges</option>
                                 <option>Amenities Charges</option>
                                 <option>Govt. Charges</option>
                                 </select>
                     </div>
-                    <div className="col-md-4"><label className="labels">Type</label>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Type</label>
                     {prices.chargename && (
                     <select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,chargetype:e.target.value})}>
                                 <option>Select</option>
@@ -6799,24 +6246,24 @@ const generateExcelFileunit = () => {
                                 </select>
                     )}
                     </div>
-                    <div className='col-md-4'></div>
+                    <div className='col-md-4 mb-4 custom-input'></div>
 
-                    <div className="col-md-4"><label className="labels">Calculation ype</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,calculation_type:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Calculation ype</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,calculation_type:e.target.value})}>
                                 <option>Select</option>
                                 <option>Calculate</option>
                                 <option>Absolute</option>
                               
                                 </select>
                     </div>
-                    <div className='col-md-2'><label className='labels' style={{visibility:"hidden"}}>blank1</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setprices({...prices,blank1:e.target.value})}></input></div><br></br>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>blank2</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,blank2:e.target.value})}>
+                    <div className='col-md-2 mb-2 custom-input'><label className='form-label' style={{visibility:"hidden"}}>blank1</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setprices({...prices,blank1:e.target.value})}></input></div><br></br>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>blank2</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,blank2:e.target.value})}>
                                 <option>Select</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
                                 <option>All Users</option>
                                 </select>
                     </div>
-                    <div className="col-md-3"><label className="labels" style={{visibility:"hidden"}}>blank3</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,blank3:e.target.value})}>
+                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>blank3</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,blank3:e.target.value})}>
                                 <option>Select</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
@@ -6825,55 +6272,74 @@ const generateExcelFileunit = () => {
                     </div>
                     </div>
                     <div className='row' id='taxes' style={{marginTop:"20px",padding:"30px",display:"none"}}>
-                  <div className='col-md-12'><hr></hr></div>
-                  <div className="col-md-5"><label className="labels">Name</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,name1:e.target.value})}>
+                  <div className='col-md-12 mb-12 custom-input'><hr></hr></div>
+                  <div className="col-md-5 mb-5 custom-input"><label className="form-label">Name</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,name1:e.target.value})}>
                                 <option>Select</option>
                                 <option>Goods and Service Tax(GST)</option>
                                 <option>Registration Charges</option>
                                 <option>Stamp Duty</option>
                                 </select>
                     </div>
-                    <div className="col-md-5"><label className="labels">Type</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,type1:e.target.value})}>
+                    <div className="col-md-5 mb-5 custom-input"><label className="form-label">Type</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,type1:e.target.value})}>
                                 <option>Select</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
                                 <option>All Users</option>
                                 </select>
                     </div>
-                    <div className='col-md-2'></div>
+                    <div className='col-md-2 mb-2 custom-input'></div>
 
-                    <div className="col-md-4"><label className="labels">Calculation ype</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,calculation_type1:e.target.value})}>
+                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Calculation ype</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,calculation_type1:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Calculate</option>
                                 <option>Absolute</option>
                                
                                 </select>
                     </div>
-                    <div className='col-md-4'><label className='labels' style={{visibility:"hidden"}}>blank4</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setprices({...prices,blank4:e.target.value})}></input></div><br></br>
+                    <div className='col-md-4 mb-4 custom-input'><label className='form-label' style={{visibility:"hidden"}}>blank4</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setprices({...prices,blank4:e.target.value})}></input></div><br></br>
                    </div>
                   </div>
     </Modal.Body>
             <Modal.Footer>
-            <Button variant="secondary" onClick={addprice}>
+            <Button variant="secondary" onClick={addprice} className='custom-btn'>
                 Add Price
               </Button>
-              <Button variant="secondary" onClick={handleClose4}>
+              <Button variant="secondary" onClick={handleClose4} className='cancel-btn'>
                 Close
               </Button>
             </Modal.Footer>
           </Modal>
 
-    <div className='col-md-10' style={{marginTop:"10px"}}><label className='labels'>Payment Plan</label></div>
-    <div className='col-md-1' style={{marginTop:"10px"}}><button className='form-control form-control-sm' onClick={handleShow5}>Add</button></div>
-                    <div className='col-md-12'><hr></hr></div>
+    <div className='col-md-10 mb-10 custom-input' style={{marginTop:"10px"}}><label className='form-label'>Payment Plan</label></div>
+    <div className='col-md-1 mb-1 custom-input' style={{marginTop:"10px"}}>
+      {/* <button className='form-control form-control-sm' onClick={handleShow5}>Add</button> */}
+                            <button
+                                className="form-control form-control-sm"
+                                onClick={handleShow5}
+                                style={{
+                                  backgroundColor: "#007bff",
+                                  color: "#fff",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  fontWeight: "500",
+                                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                  transition: "all 0.2s ease-in-out"
+                                }}
+                                onMouseOver={e => e.currentTarget.style.backgroundColor = "#0056b3"}
+                                onMouseOut={e => e.currentTarget.style.backgroundColor = "#007bff"}
+                              >
+                                +
+                              </button>
+      </div>
+                    <div className='col-md-12 mb-12 custom-input'><hr></hr></div>
                     <TableContainer component={Paper} style={{height:"400px",width:"1100px",overflowY:"scroll",marginLeft:"10px"}}>
     <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
     <TableHead>
         <TableRow>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Serial</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Plan Name</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Action</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Serial</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Plan Name</StyledTableCell>
+          <StyledTableCell style={{backgroundColor:"gray"}}>Action</StyledTableCell>
           
         </TableRow>
       </TableHead>
@@ -6881,12 +6347,13 @@ const generateExcelFileunit = () => {
         {
           project.Payment_plan.map((item, index) => (
           <StyledTableRow key={index} style={{backgroundColor:"white"}}>
-            <StyledTableCell style={{ padding: "10px", cursor: "pointer", fontFamily: "times new roman", fontSize: "14px" }}  >
+            <StyledTableCell style={{ padding: "10px", cursor: "pointer", fontSize: "10px" }}  >
               {index+1}
             </StyledTableCell>
             <StyledTableCell >{item.payment_planname} </StyledTableCell>
             <StyledTableCell >
-              <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletepayment(index)}   style={{height:"40px",cursor:"pointer"}}/>
+              {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletepayment(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
+               <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}} onClick={()=>deletepayment(index)}>delete</span>
             </StyledTableCell>
               
           </StyledTableRow>
@@ -6900,10 +6367,10 @@ const generateExcelFileunit = () => {
             </Modal.Header>
             <Modal.Body>
               <div className='row'>
-              <div className='col-md-6'><label className='labels'>Payment Plan Name</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setpayments({...payments,payment_planname:e.target.value})}></input></div>
-              <div className='col-md-6'></div>
+              <div className='col-md-6 mb-6 custom-input'><label className='form-label'>Payment Plan Name</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setpayments({...payments,payment_planname:e.target.value})}></input></div>
+              <div className='col-md-6 mb-6 custom-input'></div>
 
-              <div className='col-md-4'><label className='labels'>Step Name</label>
+              <div className='col-md-4 mb-4 custom-input'><label className='form-label'>Step Name</label>
             {
               payments.step_name.map((item,index)=>
               (
@@ -6911,7 +6378,7 @@ const generateExcelFileunit = () => {
               ))
             }
             </div>
-            <div className='col-md-2'><label className='labels' style={{width:"200px"}}>Calculation Type</label>
+            <div className='col-md-2 mb-2 custom-input'><label className='form-label' style={{width:"200px"}}>Calculation Type</label>
             {
               payments.calculation_type.map((item,index)=>
               (
@@ -6925,7 +6392,7 @@ const generateExcelFileunit = () => {
             }
             </div>
 
-            <div className='col-md-1'><label className='labels' style={{visibility:"hidden"}}>Blank1</label>
+            <div className='col-md-1 mb-1 custom-input'><label className='form-label' style={{visibility:"hidden"}}>Blank1</label>
              {
               payments.blank1.map((item,index)=>
               (
@@ -6935,7 +6402,7 @@ const generateExcelFileunit = () => {
             }
             </div>
 
-            <div className='col-md-1'><label className='labels' style={{visibility:"hidden"}}>Blank2</label>
+            <div className='col-md-1 mb-1 custom-input'><label className='form-label' style={{visibility:"hidden"}}>Blank2</label>
             {
               payments.blank2.map((item,index)=>
               (
@@ -6945,7 +6412,7 @@ const generateExcelFileunit = () => {
             }
              </div>
 
-             <div className='col-md-2'><label className='labels' style={{visibility:"hidden"}}>Blank3</label>
+             <div className='col-md-2 mb-2 custom-input'><label className='form-label' style={{visibility:"hidden"}}>Blank3</label>
               {
               payments.blank3.map((item,index)=>
               (
@@ -6960,20 +6427,21 @@ const generateExcelFileunit = () => {
             }
              </div>
 
-             <div className='col-md-1' style={{marginTop:"90px"}}>
+             <div className='col-md-1 mb-1 custom-input' style={{marginTop:"90px"}}>
               {
               payments.action4.map((item,index)=>
               (
-               <img   src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall4(index)} style={{height:"40px",cursor:"pointer"}}/>
+              //  <img src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall4(index)} style={{height:"40px",cursor:"pointer"}}/>
+              <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}}  onClick={()=>deleteall4(index)}>delete</span> 
               ))
             }
             </div>
-            <div className='col-md-1'><label className='labels' style={{visibility:"hidden"}}>add</label><button className='form-control form-control-sm' onClick={addFn4}>+</button></div>
+            <div className='col-md-1 mb-1 custom-input'><label className='form-label' style={{visibility:"hidden"}}>add</label><button className='form-control form-control-sm custom-btn' onClick={addFn4}>+</button></div>
            
-           <div className='col-md-8'><label className='labels'>Terms & Condition</label>
+           <div className='col-md-8 mb-8 custom-input'><label className='form-label'>Terms & Condition</label>
               <textarea className='form-control form-control-sm' style={{height:"100px"}}/>
            </div>
-           <div className='col-md-4'></div>
+           <div className='col-md-4 mb-4 custom-input'></div>
                  
                    
                   
@@ -6981,21 +6449,24 @@ const generateExcelFileunit = () => {
               </div>
     </Modal.Body>
             <Modal.Footer>
-            <Button variant="secondary" onClick={addpayment}>
+            <Button variant="secondary" onClick={addpayment} className='custom-btn'>
                 Add Payment
               </Button>
-              <Button variant="secondary" onClick={handleClose5}>
+              <Button variant="secondary" onClick={handleClose5} className='cancel-btn'>
                 Close
               </Button>
             </Modal.Footer>
           </Modal>
+
     
                 </div>
               </div>
           </div>
 
 
-          <Modal show={show7} onHide={handleClose7} size='lg'>
+{/* ===========================-----------------------------price end--------------------------=============================================== */}
+
+<Modal show={show7} onHide={handleClose7} size='lg'>
             <Modal.Header>
               <Modal.Title>Import Units Data</Modal.Title>
             </Modal.Header>
@@ -7023,49 +6494,48 @@ const generateExcelFileunit = () => {
 
       {/* Mapping UI */}
       {excelHeaders.length > 0 && (
-  <div className="mt-4">
-    <h5 className="text-lg font-semibold mb-3 text-gray-700">🗺️ Map Your Excel Columns</h5>
-
-    <div className="row">
-      {excelHeaders.map((header, index) => (
-        <div key={index} className="col-md-4 mb-3 ">
-          <div className="p-2 border rounded shadow-sm bg-light zoom-card">
-            <label className="form-label fw-semibold">{header} ➝</label>
-            <select
-              className="form-control form-control-sm"
-              onChange={(e) =>
-                setMappedFields((prev) => ({
-                  ...prev,
-                  [header]: e.target.value,
-                }))
-              }
-            >
-              <option value="">Select a field</option>
-              {databasefieldsunit.map((dbField, idx) => (
-                <option key={idx} value={dbField}>
-                  {dbField}
-                </option>
-              ))}
-            </select>
-             {/* ✅ Suggestion Text */}
-             {headerSuggestions[header] && (
-              <small  style={{color:"blue"}}>{headerSuggestions[header]}</small>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <button
-      style={{ backgroundColor: "gray", width: "200px" }}
-      onClick={handleProcessFile}
-      className="mt-3 btn btn-success fw-semibold"
-    >
-      ✅ Process File
-    </button>
-  </div>
-)}
-
+         <div className="mt-4">
+         <h5 className="text-lg font-semibold mb-3 text-gray-700">🗺️ Map Your Excel Columns</h5>
+     
+         <div className="row">
+           {excelHeaders.map((header, index) => (
+             <div key={index} className="col-md-4 mb-4 custom-input mb-3 ">
+               <div className="p-2 border rounded shadow-sm bg-light zoom-card">
+                 <label className="form-label fw-semibold">{header} ➝</label>
+                 <select
+                   className="form-control form-control-sm"
+                   onChange={(e) =>
+                     setMappedFields((prev) => ({
+                       ...prev,
+                       [header]: e.target.value,
+                     }))
+                   }
+                 >
+                   <option value="">Select a field</option>
+                   {databasefieldsunit.map((dbField, idx) => (
+                     <option key={idx} value={dbField}>
+                       {dbField}
+                     </option>
+                   ))}
+                 </select>
+                  {/* ✅ Suggestion Text */}
+                  {/* {headerSuggestions[header] && (
+                   <small  style={{color:"blue"}}>{headerSuggestions[header]}</small>
+                 )} */}
+               </div>
+             </div>
+           ))}
+         </div>
+     
+         <button
+           style={{ backgroundColor: "gray", width: "200px" }}
+           onClick={handleProcessFile}
+           className="mt-3 btn btn-success fw-semibold"
+         >
+           ✅ Process File
+         </button>
+       </div>
+      )} 
 
       {/* Show Processed Data */}
       {allcontacts.length > 0 && (
@@ -7073,58 +6543,55 @@ const generateExcelFileunit = () => {
     <h3 className="text-lg font-semibold mb-2 text-gray-700">📜 Processed Data</h3>
     
     <div className="mb-4">
-  <h4 className="font-semibold text-gray-800 mb-3" style={{ fontFamily: "arial" }}>
-    New Units
-  </h4>
-
-  <div className="row">
-    {pendingContacts.map((entry, index) => (
-      <div key={index} className="col-md-4 mb-3">
-        <div className="p-2 border rounded bg-light">
-          <p className="mb-1"><strong>Project:</strong> {entry.project_name}</p>
-          <p className="mb-1"><strong>Block:</strong> {entry.block}</p>
-          <p className="mb-0"><strong>Unit No:</strong> {entry.unit_no}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-
-  <button
-    className="btn btn-primary mt-2"
-    style={{ width: "150px" }}
-    onClick={addunits}
-  >
-    ➕ Add Units
-  </button>
-</div>
-
+      <h4 className="font-semibold text-gray-800" style={{fontFamily:"arial"}}>New Units</h4>
+      <pre className="text-sm text-gray-600 overflow-x-auto" >
+      {JSON.stringify(
+      pendingContacts.map(({ project_name, block, unit_no }) => ({
+        project_name,
+        block,
+        unit_no,
+      })),
+      null,
+      2
+    )}
+      </pre>
+      <button className="form-control form-control-sm"  style={{width:"150px"}} onClick={addunits}>
+        ➕ Add Units
+      </button>
+    </div>
 
     <div>
-  <h4 className="font-semibold text-gray-800 mb-3" style={{ fontFamily: "arial" }}>
-    Duplicate Units
-  </h4>
-
-  <div className="row">
-    {duplicateEntries.map((entry, index) => (
-      <div key={index} className="col-md-4 mb-3">
-        <div className="p-2 border rounded bg-light">
-          <p className="mb-1"><strong>Project:</strong> {entry.project_name}</p>
-          <p className="mb-1"><strong>Block:</strong> {entry.block}</p>
-          <p className="mb-0"><strong>Unit No:</strong> {entry.unit_no}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-
-  <button className="btn btn-secondary mt-3" style={{ width: "200px" }} onClick={updateunits}>
-    🔄 Update Units
-  </button>
-</div>
-
+      <h4 className="font-semibold text-gray-800" style={{fontFamily:"arial"}}>Duplicate Units</h4>
+      <pre className="text-sm text-gray-600 overflow-x-auto">
+      {JSON.stringify(
+      duplicateEntries.map(({ project_name, block, unit_no}) => ({
+        project_name,
+        block,
+        unit_no,
+      })),
+      null,
+      2
+    )}
+      </pre>
+      <button className="form-control form-control-sm" style={{width:"200px"}}>
+        🔄 Update Units
+      </button>
+    </div>
   </div>
 )}
 
     </div>
+
+    {/* {showPopup && (
+      <div className="popup-container">
+        <div className="popup">
+          <h3>Duplicate Contacts Found</h3>
+          <p>Some contacts already exist. Do you want to update them?</p>
+          <button className="form-control form-control-sm" onClick={handleSkipDuplicates}>Skip</button>
+          <button className="form-control form-control-sm" >Update</button>
+        </div>
+      </div>
+    )} */}
     <>
     {isLoading && (
       <div style={{
@@ -7160,363 +6627,13 @@ const generateExcelFileunit = () => {
       </div>
     )}
   </>
+
             </Modal.Body>
             <Modal.Footer>
             {/* <Button variant="secondary" onClick={addpayment}>
                 Import
               </Button> */}
               <Button variant="secondary" onClick={handleClose7}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
-
-            <Modal show={show11} onHide={handleClose11} size='lg'>
-            <Modal.Header>
-              <Modal.Title>Import Blocks Data</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-
-            <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <h3 className="text-2xl font-bold text-center mb-4 text-gray-800">
-        📂 Upload & Map Your Excel Data
-      </h3>
-
-      {/* File Upload Input */}
-      <div className="flex flex-col items-center space-y-4">
-        <input
-          type="file"
-          onChange={handleFileChangeblock1}
-          accept=".xlsx, .xls"
-          className="block w-full text-sm text-gray-500
-            file:mr-4 file:py-2 file:px-4
-            file:rounded-lg file:border-0
-            file:text-sm file:font-semibold
-            file:bg-blue-600 file:text-white
-            hover:file:bg-blue-700 cursor-pointer"
-        />
-      </div>
-
-      {/* Mapping UI */}
-      {excelHeadersblock.length > 0 && (
-  <div className="mt-4">
-    <h5 className="text-lg font-semibold mb-3 text-gray-700">🗺️ Map Your Excel Columns</h5>
-
-    <div className="row">
-      {excelHeadersblock.map((header, index) => (
-        <div key={index} className="col-md-4 mb-3 ">
-          <div className="p-2 border rounded shadow-sm bg-light zoom-card">
-            <label className="form-label fw-semibold">{header} ➝</label>
-            <select
-              className="form-control form-control-sm"
-              onChange={(e) =>
-                setMappedFieldsblock((prev) => ({
-                  ...prev,
-                  [header]: e.target.value,
-                }))
-              }
-            >
-              <option value="">Select a field</option>
-              {databasefieldblock.map((dbField, idx) => (
-                <option key={idx} value={dbField}>
-                  {dbField}
-                </option>
-              ))}
-            </select>
-             {/* ✅ Suggestion Text */}
-             {/* {headerSuggestionsblock[header] && (
-              <small  style={{color:"blue"}}>{headerSuggestions[header]}</small>
-            )} */}
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <button
-      style={{ backgroundColor: "gray", width: "200px" }}
-      onClick={handleProcessFileblock}
-      className="mt-3 btn btn-success fw-semibold"
-    >
-      ✅ Process File
-    </button>
-  </div>
-)}
-
-
-      {/* Show Processed Data */}
-      {allcontactsblock.length > 0 && (
-  <div className="mt-6 bg-gray-100 p-4 rounded-lg">
-    <h3 className="text-lg font-semibold mb-2 text-gray-700">📜 Processed Data</h3>
-    
-    <div className="mb-4">
-  <h4 className="font-semibold text-gray-800 mb-3" style={{ fontFamily: "arial" }}>
-    New Blocks
-  </h4>
-
-  <div className="row">
-    {pendingContactsblock.map((entry, index) => (
-      <div key={index} className="col-md-4 mb-3">
-        <div className="p-2 border rounded bg-light">
-          <p className="mb-1"><strong>Block Name:</strong> {entry.block_name}</p>
-          <p className="mb-1"><strong>Category:</strong> {entry.category}</p>
-          <p className="mb-0"><strong>Sub Category:</strong> {entry.sub_category}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-
-  <button
-    className="btn btn-primary mt-2"
-    style={{ width: "150px" }}
-    onClick={addbulkblock}
-  >
-    ➕ Add Blocks
-  </button>
-</div>
-
-
-    <div>
-  <h4 className="font-semibold text-gray-800 mb-3" style={{ fontFamily: "arial" }}>
-    Duplicate Blocks
-  </h4>
-
-  <div className="row">
-    {duplicateEntriesblock.map((entry, index) => (
-      <div key={index} className="col-md-4 mb-3">
-        <div className="p-2 border rounded bg-light">
-          <p className="mb-1"><strong>Block Name:</strong> {entry.block_name}</p>
-          <p className="mb-1"><strong>Category:</strong> {entry.category}</p>
-          <p className="mb-0"><strong>Sub Category:</strong> {entry.sub_category}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-
-  <button className="btn btn-secondary mt-3" style={{ width: "200px" }}>
-    🔄 Update Blocks
-  </button>
-</div>
-
-  </div>
-)}
-
-    </div>
-    <>
-    {isLoading && (
-      <div style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        background: "rgba(0, 0, 0, 0.6)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-      }}>
-        <div style={{
-          background: "rgba(0, 0, 0, 0.8)",
-          padding: "20px 40px",
-          borderRadius: "10px",
-          textAlign: "center",
-          color: "white",
-        }}>
-          <div style={{
-            width: "50px",
-            height: "50px",
-            border: "5px solid white",
-            borderTop: "5px solid transparent",
-            borderRadius: "50%",
-            animation: "spin 1s linear infinite",
-            margin: "0 auto 10px",
-          }}></div>
-          <p>Uploading data...</p>
-        </div>
-      </div>
-    )}
-  </>
-            </Modal.Body>
-            <Modal.Footer>
-            {/* <Button variant="secondary" onClick={addpayment}>
-                Import
-              </Button> */}
-              <Button variant="secondary" onClick={handleClose11}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
-
-
-           <Modal show={show10} onHide={handleClose10} size='lg'>
-            <Modal.Header>
-              <Modal.Title>Import Size Data</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-
-            <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <h3 className="text-2xl font-bold text-center mb-4 text-gray-800">
-        📂 Upload & Map Your Excel Data
-      </h3>
-
-      {/* File Upload Input */}
-      <div className="flex flex-col items-center space-y-4">
-        <input
-          type="file"
-          onChange={handleFileChangesize1}
-          accept=".xlsx, .xls"
-          className="block w-full text-sm text-gray-500
-            file:mr-4 file:py-2 file:px-4
-            file:rounded-lg file:border-0
-            file:text-sm file:font-semibold
-            file:bg-blue-600 file:text-white
-            hover:file:bg-blue-700 cursor-pointer"
-        />
-      </div>
-
-      {/* Mapping UI */}
-      {excelHeaderssize.length > 0 && (
-  <div className="mt-4">
-    <h5 className="text-lg font-semibold mb-3 text-gray-700">🗺️ Map Your Excel Columns</h5>
-
-    <div className="row">
-      {excelHeaderssize.map((header, index) => (
-        <div key={index} className="col-md-4 mb-3 ">
-          <div className="p-2 border rounded shadow-sm bg-light zoom-card">
-            <label className="form-label fw-semibold">{header} ➝</label>
-            <select
-              className="form-control form-control-sm"
-              onChange={(e) =>
-                setMappedFieldssize((prev) => ({
-                  ...prev,
-                  [header]: e.target.value,
-                }))
-              }
-            >
-              <option value="">Select a field</option>
-              {databasefieldsize.map((dbField, idx) => (
-                <option key={idx} value={dbField}>
-                  {dbField}
-                </option>
-              ))}
-            </select>
-             {/* ✅ Suggestion Text */}
-             {/* {headerSuggestionssize[header] && (
-              <small  style={{color:"blue"}}>{headerSuggestionssize[header]}</small>
-            )} */}
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <button
-      style={{ backgroundColor: "gray", width: "200px" }}
-      onClick={handleProcessFilesize}
-      className="mt-3 btn btn-success fw-semibold"
-    >
-      ✅ Process File
-    </button>
-  </div>
-)}
-
-
-      {/* Show Processed Data */}
-      {allcontactssize.length > 0 && (
-  <div className="mt-6 bg-gray-100 p-4 rounded-lg">
-    <h3 className="text-lg font-semibold mb-2 text-gray-700">📜 Processed Data</h3>
-    
-    <div className="mb-4">
-  <h4 className="font-semibold text-gray-800 mb-3" style={{ fontFamily: "arial" }}>
-    New Size
-  </h4>
-
-  <div className="row">
-    {pendingContactssize.map((entry, index) => (
-      <div key={index} className="col-md-4 mb-3">
-        <div className="p-2 border rounded bg-light">
-          <p className="mb-1"><strong>Size:</strong> {entry.size_name}</p>
-          <p className="mb-1"><strong>Category:</strong> {entry.category}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-
-  <button
-    className="btn btn-primary mt-2"
-    style={{ width: "150px" }}
-    onClick={addbulksize}
-  >
-    ➕ Add Sizes
-  </button>
-</div>
-
-
-    <div>
-  <h4 className="font-semibold text-gray-800 mb-3" style={{ fontFamily: "arial" }}>
-    Duplicate Sizes
-  </h4>
-
-  <div className="row">
-    {duplicateEntriessize.map((entry, index) => (
-      <div key={index} className="col-md-4 mb-3">
-        <div className="p-2 border rounded bg-light">
-         <p className="mb-1"><strong>Size:</strong> {entry.size_name}</p>
-          <p className="mb-1"><strong>Category:</strong> {entry.category}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-
-  <button className="btn btn-secondary mt-3" style={{ width: "200px" }}>
-    🔄 Update Sizes
-  </button>
-</div>
-
-  </div>
-)}
-
-    </div>
-    <>
-    {isLoading && (
-      <div style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        background: "rgba(0, 0, 0, 0.6)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-      }}>
-        <div style={{
-          background: "rgba(0, 0, 0, 0.8)",
-          padding: "20px 40px",
-          borderRadius: "10px",
-          textAlign: "center",
-          color: "white",
-        }}>
-          <div style={{
-            width: "50px",
-            height: "50px",
-            border: "5px solid white",
-            borderTop: "5px solid transparent",
-            borderRadius: "50%",
-            animation: "spin 1s linear infinite",
-            margin: "0 auto 10px",
-          }}></div>
-          <p>Uploading data...</p>
-        </div>
-      </div>
-    )}
-  </>
-            </Modal.Body>
-            <Modal.Footer>
-            {/* <Button variant="secondary" onClick={addpayment}>
-                Import
-              </Button> */}
-              <Button variant="secondary" onClick={handleClose10}>
                 Close
               </Button>
             </Modal.Footer>
@@ -7561,131 +6678,45 @@ const generateExcelFileunit = () => {
            </Modal> 
 
 
-{/* ===========================-----------------------------price end--------------------------=============================================== */}
 
-
-                 <div className='col-md-12'><hr></hr></div> 
+                 <div className='col-md-12 mb-12 custom-input'><hr></hr></div> 
                     <ToastContainer/>
                 </div>
-                <div className='row' style={{marginLeft:"60%",marginBottom:"20px"}}>
-                  <div className='col-md-4'></div>
-                   <div className="col-md-4">
-                    <button
-                      onClick={() => navigate(-1)}
-                      style={{
-                        width: '100%',
-                        height: '45px',
-                        padding: '10px 20px',
-                        borderRadius: '12px',
-                        fontWeight: '600',
-                        fontSize: '15px',
-                        letterSpacing: '0.5px',
-                        backgroundColor: '#e74c3c', // classic red
-                        color: '#ffffff',           // white text
-                        border: '1.5px solid #e74c3c',
-                        transition: 'all 0.25s ease-in-out',
-                        cursor: 'pointer',
-                        outline: 'none',
-                        userSelect: 'none',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#c0392b'; // darker red on hover
-                        e.currentTarget.style.borderColor = '#c0392b';
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(192, 57, 43, 0.3)';
-                        e.currentTarget.style.transform = 'scale(1.03)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#e74c3c';
-                        e.currentTarget.style.borderColor = '#e74c3c';
-                        e.currentTarget.style.boxShadow = 'none';
-                        e.currentTarget.style.transform = 'scale(1)';
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-
-
-                    {/* <div className="col-md-5" style={{marginTop:"20px"}}><button className="form-control form-control-sm">Save & View Project</button></div> */}
-                    {/* <div className="col-md-3" style={{marginTop:"20px"}}><button className="form-control form-control-sm" onClick={addproject}>Update</button></div> */}
-                    <div className="col-md-4">
-                      <button
-                        onClick={addproject} 
-                        style={{
-                          width: '100%',
-                          height: '45px',
-                          padding: '10px 20px',
-                          borderRadius: '12px',
-                          fontWeight: '600',
-                          fontSize: '15px',
-                          letterSpacing: '0.5px',
-                          backgroundColor: '#27ae60', // green color for update
-                          color: '#ffffff',
-                          border: '1.5px solid #27ae60',
-                          transition: 'all 0.25s ease-in-out',
-                          cursor: 'pointer',
-                          outline: 'none',
-                          userSelect: 'none',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#1e8449'; // darker green on hover
-                          e.currentTarget.style.borderColor = '#1e8449';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(39, 174, 96, 0.3)';
-                          e.currentTarget.style.transform = 'scale(1.03)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = '#27ae60';
-                          e.currentTarget.style.borderColor = '#27ae60';
-                          e.currentTarget.style.boxShadow = 'none';
-                          e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                      >
-                        Update
-                      </button>
-                    </div>
-
+                <div className='row' style={{marginLeft:"50%",marginBottom:"20px"}}>
+                  <div className='col-md-6'></div>
+                    <div className="col-md-3 mb-3 custom-input" style={{marginTop:"20px"}}>
+                                        <button
+                                          className="btn btn-outline-danger btn-sm form-control"
+                                          onClick={() => navigate(-1)}
+                                          style={{ fontWeight: '600', borderRadius: '8px', transition: 'all 0.3s ease' }}
+                                          onMouseEnter={e => {
+                                            e.currentTarget.style.backgroundColor = '#dc3545';
+                                            e.currentTarget.style.color = 'white';
+                                            e.currentTarget.style.borderColor = '#dc3545';
+                                          }}
+                                          onMouseLeave={e => {
+                                            e.currentTarget.style.backgroundColor = 'transparent';
+                                            e.currentTarget.style.color = '#dc3545';
+                                            e.currentTarget.style.borderColor = '#dc3545';
+                                          }}
+                                        >
+                                          Cancel
+                                        </button>
+                      </div>
+                    <div className="col-md-3 mb-3 custom-input" style={{marginTop:"20px"}}>
+                       <button   className="btn btn-primary btn-sm form-control" onClick={addproject}
+                        style={{ fontWeight: '600', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', transition: 'all 0.3s ease',backgroundColor:"lightblue" }}
+                        onMouseEnter={e => e.currentTarget.style.backgroundColor = '#0056b3'}
+                        onMouseLeave={e => e.currentTarget.style.backgroundColor = '#0d6efd'}>Save
+                        </button>
+              
+                      </div>
                     </div>
             </div>
         </div>
-
-         {isLoading && (
-      <div style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        background: "rgba(0, 0, 0, 0.6)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-      }}>
-        <div style={{
-          background: "rgba(0, 0, 0, 0.8)",
-          padding: "20px 40px",
-          borderRadius: "10px",
-          textAlign: "center",
-          color: "white",
-        }}>
-          <div style={{
-            width: "50px",
-            height: "50px",
-            border: "5px solid white",
-            borderTop: "5px solid transparent",
-            borderRadius: "50%",
-            animation: "spin 1s linear infinite",
-            margin: "0 auto 10px",
-          }}></div>
-          <p>Loading...</p>
-        </div>
-      </div>
-    )}
-
-
     </div>
 
 
 );
 }
-export default EditProjectform;
+export default Projectform;

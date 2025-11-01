@@ -121,6 +121,27 @@ function Addcontact() {
         }
     }
 
+      //===================================== get user ========================================================
+    
+        const[all_users,setall_users]=useState([])
+    
+        const getalluserdata=async()=>
+        {
+          try {
+            const resp=await api.get('viewuser')
+            setall_users(resp.data.user)
+            
+          } catch (error) {
+            console.log(error);
+            
+          }
+        }
+    
+        useEffect(()=>
+        {
+          getalluserdata()
+        },[])
+
     
     const professtiondetails = {
       profession_category: ["Govt. Employed", "Private Employee","Self Employed","Retired","Business Man","Student","House Wife"],

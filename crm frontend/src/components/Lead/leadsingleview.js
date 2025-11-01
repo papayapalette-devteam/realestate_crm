@@ -1,7 +1,7 @@
 import React, { act, useEffect,useRef } from 'react'
 import axios from "axios";
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
+import Header1 from "../header1";
+import Sidebar1 from "../sidebar1";
 import { useLocation, useNavigate } from 'react-router-dom';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -11,7 +11,7 @@ import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import Paper from '@mui/material/Paper';
 import { useState } from 'react';
-import api from "../api";
+import api from "../../api";
 import Tooltip from '@mui/material/Tooltip';
 import { Select, MenuItem, FormControl, InputLabel, Checkbox, ListItemText } from '@mui/material';
 import Modal from 'react-bootstrap/Modal';
@@ -19,7 +19,7 @@ import Button from 'react-bootstrap/Button';
 import ReactQuill from 'react-quill';  // Import ReactQuill
 import 'react-quill/dist/quill.snow.css';
 import Swal from 'sweetalert2'; 
-import '../css/leadview.css'
+import '../../css/leadview.css'
 import { useDropzone } from 'react-dropzone';
 import { toast, ToastContainer } from "react-toastify";
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -27,12 +27,12 @@ import "react-circular-progressbar/dist/styles.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import Icon from '@mdi/react';
 import { mdiCurrencyUsd } from '@mdi/js';
-import matcheddeal from '../icons/matcheddeal.jpg'
-import inventories from '../icons/inventories.jpg'
-import publish from '../icons/publish.jpg'
-import createbooking from '../icons/createbooking.jpg'
-import matchedlead from '../icons/matchedlead.jpg'
-import transferuser from '../icons/transferuser.jpg'
+import matcheddeal from '../../icons/matcheddeal.jpg'
+import inventories from '../../icons/inventories.jpg'
+import publish from '../../icons/publish.jpg'
+import createbooking from '../../icons/createbooking.jpg'
+import matchedlead from '../../icons/matchedlead.jpg'
+import transferuser from '../../icons/transferuser.jpg'
 import { event } from 'jquery';
 import { CircularProgress,LinearProgress, Typography, Box } from "@mui/material";
 

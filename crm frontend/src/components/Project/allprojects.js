@@ -1,5 +1,5 @@
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
+import Header1 from "../header1";
+import Sidebar1 from "../sidebar1";
 import {  useNavigate } from "react-router-dom";
 import { useEffect, useState,useRef } from "react";
 import { styled } from '@mui/material/styles';
@@ -13,10 +13,10 @@ import { ToastContainer,toast } from "react-toastify";
 import React from "react";
 import { utils, writeFile } from "xlsx";
 import Tooltip from '@mui/material/Tooltip';
-import api from "../api";
-import '../css/deal.css';
+import api from "../../api";
+import '../../css/deal.css';
 import Swal from "sweetalert2";
-import UniqueLoader from "./loader";
+import UniqueLoader from "../loader";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 

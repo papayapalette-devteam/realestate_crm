@@ -31,7 +31,15 @@ app.get('/',(req,res)=>
 {
     res.send("welcome")
 })
+
+
 app.use('/',require('./routes/admin'));
+
+// contacts route
+app.use('/',require('./routes/Contacts/contact'));
+
+// settings route
+app.use('/api/settings',require('./routes/Settings/settings'));
 
 
 const server=app.listen(process.env.PORT,()=>

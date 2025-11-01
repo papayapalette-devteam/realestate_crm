@@ -1,5 +1,5 @@
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
+import Header1 from "../header1";
+import Sidebar1 from "../sidebar1";
 import {  useNavigate } from "react-router-dom";
 import axios from "axios";
 import React, { useEffect, useState,useRef } from "react";
@@ -20,10 +20,10 @@ import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import { SvgIcon } from "@mui/material";
 import EmailIcon from '@mui/icons-material/Email';
 import { utils, writeFile } from "xlsx";
-import api from "../api";
+import api from "../../api";
 // import {  AlternateEmail, Remove as RemoveIcon } from '@mui/icons-material';
 // import { IconButton } from '@mui/material';
-import'../css/addcontact.css';
+import'../../css/addcontact.css';
 import Tooltip from '@mui/material/Tooltip';
 import { Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
@@ -31,7 +31,7 @@ import ReactQuill from 'react-quill';  // Import ReactQuill
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Swal from 'sweetalert2'; 
-import UniqueLoader from '../components/loader'
+import UniqueLoader from '../loader'
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 

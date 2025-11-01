@@ -7,7 +7,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import Header1 from './header1';
 // import Sidebar1 from './sidebar1';
 import { useNavigate } from 'react-router-dom';
-import Sidebarsetting from './settingsidebar';
+import Sidebarsetting from './Settings/settingsidebar';
 
 
 function Crmsettings() {

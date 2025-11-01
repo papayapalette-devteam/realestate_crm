@@ -1,8 +1,8 @@
 import React from 'react';
-import '../css/sidebarsetting.css';
+import '../../css/sidebarsetting.css';
 import { FiUser, FiShield, FiSettings, FiDatabase, FiBell, FiMail, FiMap } from 'react-icons/fi';
 import { FaWhatsapp } from "react-icons/fa";
-import Header1 from './header1';
+import Header1 from '../header1';
 // import Sidebar1 from './sidebar1';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,6 +15,13 @@ function Sidebarsetting() {
             icon: <FiUser />,
            onClick: () => navigate('/addusers'),
         },
+
+                {
+            title: 'Add Sub-Admin',
+            icon: <FiUser />,
+           onClick: () => navigate('/add-sub-admin'),
+        },
+
         {
             title: 'Permissions',
             icon: <FiShield />,

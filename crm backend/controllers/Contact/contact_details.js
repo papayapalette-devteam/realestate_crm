@@ -1,7 +1,7 @@
 
-const addcontact = require('../models/add_contact');
-const adddeal = require('../models/deal.js');
-const addactivity = require("../models/activity");
+const addcontact = require('../../models/add_contact.js');
+const adddeal = require('../../models/deal.js');
+const addactivity = require("../../models/activity.js");
 
 const cloudinary=require('cloudinary').v2
 const fs=require('fs')

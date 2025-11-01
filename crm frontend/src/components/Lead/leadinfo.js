@@ -1,11 +1,11 @@
 import {React, useState,useEffect,useRef} from "react";
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
+import Header1 from "../header1";
+import Sidebar1 from "../sidebar1";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
-import '../css/common.css';
+import '../../css/common.css';
 import { useNavigate } from "react-router-dom";
-import api from "../api";
+import api from "../../api";
 import { useLocation } from 'react-router-dom';
 import { Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
 import Button from 'react-bootstrap/Button';

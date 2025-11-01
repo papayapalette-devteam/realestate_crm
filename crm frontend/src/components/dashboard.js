@@ -128,7 +128,7 @@ const TopDeals = ({ deals }) => (
   </div>
 );
 
-export function Dashboard() {
+ function Dashboard() {
   const metrics = {
     totalPipelineValue: 50000,
     openDeals: 12,
@@ -348,3 +348,5 @@ export function Dashboard() {
     </div>
   );
 }
+
+export default Dashboard

@@ -1,12 +1,12 @@
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
-import '../css/toggle.css';
+import Header1 from "../header1";
+import Sidebar1 from "../sidebar1";
+import '../../css/toggle.css';
 import { ToastContainer,toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import api from "../api";
+import api from "../../api";
 import { Inventory, Try } from "@mui/icons-material";
 import { Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
 import { useLocation } from 'react-router-dom';
