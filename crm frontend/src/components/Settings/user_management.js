@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import MainLayout from "./main_layout";
 import UserList from "./user_list";
+import Role from "./role";
 // import UserHierarchy from "./UserHierarchy";
-// import Roles from "./Roles";
+
 
 const UserManagement = () => {
   const [activeTab, setActiveTab] = useState("userList");
@@ -42,7 +43,7 @@ const UserManagement = () => {
         <div>
           {activeTab === "userList" && <UserList />}
           {/* {activeTab === "userHierarchy" && <UserHierarchy />} */}
-          {/* {activeTab === "roles" && <Roles />} */}
+          {activeTab === "roles" && <Role />}
         </div>
       </div>
     </MainLayout>
