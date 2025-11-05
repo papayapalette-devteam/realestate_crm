@@ -1,6 +1,6 @@
 import {React,useState,useEffect} from 'react'
-import Header1 from './header1'
-import Sidebar1 from './sidebar1'
+import Header1 from '../header1'
+import Sidebar1 from '../sidebar1'
 import Tooltip from '@mui/material/Tooltip';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -11,17 +11,26 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import api from "../api";
+import api from "../../api";
 import Swal from 'sweetalert2';
 import { ToastContainer,toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
 import {  SvgIcon } from "@mui/material";
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
+import Sidebarsetting from './settingsidebar';
+import MainLayout from "./main_layout";
 
 function Users() {
 
 const navigate=useNavigate()
     
+// tabs
+
+  const [activeTab, setActiveTab] = useState("userList");
+
+
+
+
   //===================================== get user and table code start========================================================
 
     const[data,setdata]=useState([])
@@ -29,7 +38,7 @@ const navigate=useNavigate()
     const getalluserdata=async()=>
     {
       try {
-        const resp=await api.get('viewuser')
+        const resp=await api.get('api/settings/viewuser')
         setdata(resp.data.user)
         
       } catch (error) {
@@ -52,9 +61,7 @@ const navigate=useNavigate()
         { id: 'email', name: 'Email' },
         { id: 'manager', name: 'Manager' },
         { id: 'team', name: 'Team' },
-        { id: 'role_name', name: 'Role Name' },
-        { id: 'bussiness_rule', name: 'Bussiness Rule' },
-        { id: 'communication_channels', name: 'Communication' },
+        { id: 'mobile', name: 'Mobile No' },
       ];
 
     
@@ -230,7 +237,7 @@ const navigate=useNavigate()
                                       }
                           
                                       const resp = selectedItems.map(async (itemId) => {
-                                        await api.delete(`deleteuser/${itemId}`);
+                                        await api.delete(`api/settings/deleteuser/${itemId}`);
                                       });
                                       
                                         Swal.fire({
@@ -275,10 +282,8 @@ const navigate=useNavigate()
 
   //===================================================== save user start========================================================
 
-        const [user,setuser]=useState({full_name:"",email:"",mobile:"",manager:"",team:"",role_name:"",descriptions:"",permission:"",
-                                        assign_permission:"",manage:[],data:[],communication_channels:[],cutomize:[],integration:[],
-                                        bussiness_rule:[],canview_properties:"",canadd_properties:"",canupdate_properties:"",
-                                        canreassign_properties:"",candeletproperties:"",canview_properties_owner:""
+        const [user,setuser]=useState({full_name:"",email:"",mobile:"",manager:"",team:"",permission:"",
+                                        assign_permission:""
                                       })  
 
 
@@ -315,7 +320,7 @@ const handleCheckboxChange = (e) => {
     const adduser=async()=>
     {
       try {
-        const resp=await api.post('adduser',user)
+        const resp=await api.post('api/settings/adduser',user)
         if(resp.status===200)
         {
           Swal.fire({
@@ -351,76 +356,126 @@ const handleCheckboxChange = (e) => {
 
   return (
     <div>
-        <Header1/>
-        <Sidebar1/>
+   
+<div style={{backgroundColor:"lightgray"}}>
 
-          <div style={{marginTop:"60px",paddingLeft:"80px",backgroundColor:"white",display:"flex",paddingTop:"10px",paddingBottom:"10px"}}>
-                   
-                   <h3 style={{marginLeft:"10px",cursor:"pointer"}}>User Creation </h3>
-                  
-                       <button  class="btn btn-secondary " type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{color:"black",backgroundColor:"transparent",border:"none"}}>
-                       <img src="https://static.thenounproject.com/png/61783-200.png" style={{height:"25px"}} alt=""/>
-                   </button>
-                       <ul class="dropdown-menu" id="exporttoexcel" style={{textAlign:"left",padding:"0px",boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",fontFamily:"arial",fontSize:"14px",lineHeight:"30px"}}> 
-                       
-                       <li   ><img src="https://static.thenounproject.com/png/1960252-200.png" style={{height:"20px",marginTop:"5px"}}></img>
-                       Export Data
-                       </li>
-                       <li  ><img src="https://www.svgrepo.com/show/447311/database-import.svg" style={{height:"20px",marginTop:"5px"}}></img>
-                       Import Data</li>
-                       <li ><img src="https://static.thenounproject.com/png/2406231-200.png"  style={{height:"20px",marginTop:"5px"}}></img>
-                       Download Data(sample)</li>
-                       </ul>
-        
-                         <Tooltip title="Add New User..." arrow>
-                                   <button onClick={handleShow1}   style={{ position:"relative",marginLeft: '40%',width:"50px",padding: '8px',color: 'white',border: 'none', borderRadius: '4px',cursor: 'pointer',fontWeight: 'bold',textAlign: 'center'}} className="form-control form-control-sm form-control form-control-sm-sm"  >
-                                          <img src="https://png.pngtree.com/png-clipart/20191122/original/pngtree-vector-plus-icon-png-image_5169416.jpg" style={{height:"25px"}}></img>
-                                   </button>
-                        </Tooltip>
-        
-                                   <div style={{display:"flex",fontSize:"14px",gap:"5px", marginTop:"10px",marginLeft:"70%",position:"absolute"}}>
-              
-              <label htmlFor="itemsPerPage" style={{fontSize:"16px",fontFamily:"times new roman"}}>Items: </label>
-              <select id="itemsPerPage" value={itemsPerPage} onChange={handleItemsPerPageChange} style={{fontSize:"16px",fontFamily:"times new roman",height:"30px"}}>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-              </select>
-            
-            {renderPageNumbers()}
-            </div>
-        
-            
-             </div>
-        
-             <div id="action" style={{position:"relative",marginLeft:"6%",gap:"20px"}}>
-                  
-                  <Tooltip title="Delete Data.." arrow>
-                        <img
-                          id="delete"
-                          src={
-                            isHoveringDelete
-                              ? "https://cdn-icons-png.freepik.com/512/6861/6861362.png" // hover image
-                              : "https://cdn-icons-png.freepik.com/512/7078/7078067.png" // default image
-                          }
-                          onClick={deleteSelectedItems}
-                          onMouseEnter={() => setIsHoveringDelete(true)}
-                          onMouseLeave={() => setIsHoveringDelete(false)}
-                          alt=""
-                          style={{
-                           //  display:"none",
-                            height: "25px",
-                            width: "25px",
-                            cursor: "pointer",
-                            marginTop: "6px"
-                          }}
-                        />
-                      </Tooltip>
+    
 
-                   </div>
 
-                    <div style={{marginLeft:"60px",marginTop:"2px",backgroundColor:"white"}}>
+    {/* 🔹 Top Filter Bar Section */}
+<div className="bg-white mt-0 px-0 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+  
+  {/* Search Bar */}
+  <div className="flex items-center w-full sm:w-1/2 bg-gray-50 border border-gray-200 rounded-md px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+      <path fillRule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l4.387 4.386a1 1 0 01-1.414 1.415l-4.387-4.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clipRule="evenodd" />
+    </svg>
+    <input
+      type="text"
+      placeholder="Search by name, email, or role..."
+      className="w-full bg-transparent focus:outline-none text-sm"
+      onChange={async(e) => {
+        const value = e.target.value.toLowerCase();
+        const filtered = data.filter(
+          (item) =>
+            item.full_name?.toLowerCase().includes(value) ||
+            item.email?.toLowerCase().includes(value) ||
+            item.role_name?.toLowerCase().includes(value)
+        );
+        setdata(filtered.length > 0 || value ? filtered : await api.get('viewuser').then(r => r.data.user));
+      }}
+    />
+  </div>
+
+  {/* Status Tabs */}
+  <div className="flex justify-center sm:justify-start gap-3">
+    {["Active", "Deactivated", "Pending"].map((status) => (
+      <button
+        key={status}
+        onClick={() => setActiveTab(status.toLowerCase())}
+        className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200
+          ${
+            activeTab === status.toLowerCase()
+              ? "bg-blue-600 text-white shadow-sm"
+              : "bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+          }`}
+      >
+        {status}
+      </button>
+    ))}
+  </div>
+
+  {/* Add User Button */}
+  <div className="flex justify-end">
+    <button
+      onClick={handleShow1}
+      className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition-all duration-300"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Add User
+    </button>
+  </div>
+
+</div>
+
+
+
+        <div className="flex items-center justify-between bg-white mt-0 px-4 py-2 shadow-sm border-t border-gray-200">
+
+  {/* Left Section - Action Buttons */}
+  <div className="flex items-center gap-5 ml-6">
+    <Tooltip title="Delete Data.." arrow>
+      <img
+        id="delete"
+        src={
+          isHoveringDelete
+            ? "https://cdn-icons-png.freepik.com/512/6861/6861362.png"
+            : "https://cdn-icons-png.freepik.com/512/7078/7078067.png"
+        }
+        onClick={deleteSelectedItems}
+        onMouseEnter={() => setIsHoveringDelete(true)}
+        onMouseLeave={() => setIsHoveringDelete(false)}
+        alt="Delete"
+        className="h-6 w-6 cursor-pointer hover:scale-110 transition-transform duration-200"
+      />
+    </Tooltip>
+  </div>
+
+  {/* Right Section - Pagination & Items Dropdown */}
+  <div className="flex items-center gap-3 mr-8">
+    <label
+      htmlFor="itemsPerPage"
+      className="text-gray-700 text-sm font-medium"
+    >
+      Items:
+    </label>
+    <select
+      id="itemsPerPage"
+      value={itemsPerPage}
+      onChange={handleItemsPerPageChange}
+      className="border border-gray-300 text-gray-700 text-sm rounded-md px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+    >
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="50">50</option>
+    </select>
+
+    {/* Pagination Buttons */}
+    <div className="flex items-center gap-1">
+      {renderPageNumbers()}
+    </div>
+  </div>
+</div>
+
+
+
+        
+        
+
+                    <div style={{marginTop:"2px",backgroundColor:"white"}}>
                                      <TableContainer component={Paper}>
                                <Table sx={{ minWidth: 700 }} aria-label="customized table">
                                  <TableHead>
@@ -549,168 +604,7 @@ const handleCheckboxChange = (e) => {
                       
                       
                       
-                      <div>
-                        <p style={{borderTop: "1px solid ", borderBottom: "1px solid #000"}} >Create a new role</p>
-                                   <div className="mb-3">
-                            <label htmlFor="name" className="form-label">Role name</label>
-                              <input type="text" className="form-control" id="name" name='role_name' onChange={handlechange} required placeholder='Manager (Sales)' />
-                      
-                      
-                                    <label htmlFor="name" className="form-label">Description</label>
-                                    <textarea type="text" style={{height:'100px'}} name='descriptions' onChange={handlechange} className="form-control" id="name" placeholder='Lets people know how this role should be used. '/>
-                                    <h6>Configure Setting Permission</h6>
-                                  <h8>Manage</h8><br></br>
-                              <div style={{ display: "flex", gap: "80px", alignItems: "center" }}>
-                        <label>
-                          <input type="checkbox" name='manage' value="profile" onChange={handleCheckboxChange}/> Profile
-                        </label>
-                        <label>
-                          <input type="checkbox" name='manage' value="users" onChange={handleCheckboxChange}/> Users
-                        </label>
-                        <label>
-                          <input type="checkbox" name='manage' value="notification" onChange={handleCheckboxChange}/> Notification
-                        </label>
-                        <label>
-                          <input type="checkbox" name='manage' value="salesgoal" onChange={handleCheckboxChange}/> Sales Goal
-                        </label>
-                      </div>
-                          
-                      
-                           <h8 style={{ textDecoration: "underline" }}>Data</h8><br></br>
-                              <div style={{ display: "flex", gap: "40px", alignItems: "center", marginTop:'10px' }}>
-                        <label>
-                          <input type="checkbox" name='data' value="import" onChange={handleCheckboxChange} /> Import
-                        </label>
-                        <label>
-                          <input type="checkbox" name='data' value="export" onChange={handleCheckboxChange}/> Export
-                        </label>
-                        <label>
-                          <input type="checkbox" name='data' value="bulkupdate" onChange={handleCheckboxChange}/>Bulk Update
-                        </label>
-                        <label>
-                          <input type="checkbox" name='data' value="duplicatemanagement" onChange={handleCheckboxChange}/> Duplicate Managment
-                        </label>
-                         <label>
-                          <input type="checkbox" name='data' value="prospectingandenrich" onChange={handleCheckboxChange}/>Prospecting and Enrich
-                        </label>
-                        <label>
-                          <input type="checkbox" name='data' value="leadcapture" onChange={handleCheckboxChange}/>Lead Capture
-                            </label>
-                      </div>
-                                  <h8 style={{ textDecoration: "underline" }}>Communication Channels</h8><br></br>
-                              <div style={{ display: "flex", gap: "80px", alignItems: "center" , marginTop:'10px' }}>
-                        <label>
-                          <input type="checkbox" name='communication_channels' value="email" onChange={handleCheckboxChange} /> Email
-                        </label>
-                        <label>
-                          <input type="checkbox"  name='communication_channels' value="voice" onChange={handleCheckboxChange}/> Voice(vertual Call)
-                        </label>
-                        <label>
-                          <input type="checkbox"  name='communication_channels' value="text" onChange={handleCheckboxChange}/>Text(SMS)
-                        </label>
-                        <label>
-                          <input type="checkbox"  name='communication_channels' value="salesgoal" onChange={handleCheckboxChange}/> Sales Goal
-                        </label>
-                      </div>
-                      
-                      <h8 style={{ textDecoration: "underline" }}>Customize</h8><br></br>
-                              <div style={{ display: "flex", gap: "40px", alignItems: "center", marginTop:'10px' }}>
-                        <label>
-                          <input type="checkbox" name='cutomize' value="lead" onChange={handleCheckboxChange} />Lead
-                        </label>
-                        <label>
-                          <input type="checkbox" name='cutomize' value="contact" onChange={handleCheckboxChange}  />Contact
-                        </label>
-                        <label>
-                          <input type="checkbox" name='cutomize' value="task" onChange={handleCheckboxChange}  />Task
-                        </label>
-                        <label>
-                          <input type="checkbox" name='cutomize' value="properties" onChange={handleCheckboxChange} /> Properties
-                        </label>
-                         <label>
-                          <input type="checkbox" name='cutomize' value="notes" onChange={handleCheckboxChange} />Notes
-                        </label>
-                        <label>
-                          <input type="checkbox" name='cutomize' value="templates" onChange={handleCheckboxChange} />Templates
-                            </label>
-                       <label>
-                          <input type="checkbox" name='cutomize' value="layout" onChange={handleCheckboxChange} />Layout
-                            </label>
-                             <label>
-                          <input type="checkbox" name='cutomize' value="postsales" onChange={handleCheckboxChange} />Post Sales
-                            </label>
-                            </div>
-                      
-                      <h8 style={{ textDecoration: "underline" }}>Intergration</h8><br></br>
-                              <div style={{ display: "flex", gap: "40px", alignItems: "center" , marginTop:'10px'}}>
-                        <label>
-                          <input type="checkbox" name='integration' value="integration" onChange={handleCheckboxChange} />Intergration
-                        </label>
-                        <label>
-                          <input type="checkbox" name='integration' value="api" onChange={handleCheckboxChange}/>API
-                        </label>
-                        </div>
-                      
-                        <h8 style={{ textDecoration: "underline" }}>Business Rule</h8><br></br>
-                              <div style={{ display: "flex", gap: "40px", alignItems: "center", marginTop:'10px' }}>
-                        <label>
-                          <input type="checkbox" name='bussiness_rule' value="fieldrules" onChange={handleCheckboxChange} />Field Rules
-                        </label>
-                        <label>
-                          <input type="checkbox" name='bussiness_rule' value="distributions" onChange={handleCheckboxChange}/>Distributions
-                        </label>
-                        <label>
-                          <input type="checkbox" name='bussiness_rule' value="postsales" onChange={handleCheckboxChange}/>Post Sales
-                        </label>
-                         <label>
-                          <input type="checkbox" name='bussiness_rule' value="automatedactions" onChange={handleCheckboxChange}/>Automated Actions
-                        </label>
-                         <label>
-                          <input type="checkbox" name='bussiness_rule' value="triggers" onChange={handleCheckboxChange}/>Triggers
-                        </label>
-                         <label>
-                          <input type="checkbox" name='bussiness_rule' value="scoring" onChange={handleCheckboxChange}/>Scoring
-                        </label>
-                        </div>
-                      </div>
-                      
-                       <div style={{ display: "flex", gap: "70px", marginTop:'25px',  borderTop: "1px solid #000",borderBottom: "1px solid #000"}}>
-                         <label>Leads</label>
-                          <label>Contacts</label>
-                           <label>Properties</label>
-                            <label>Task</label>
-                             <label>Booking</label>
-                              <label>Reports</label>
-                       </div>
-                       <div  style={{marginTop:'15px'}}>
-                       <h8>Can view Properties</h8> <br></br>
-                       <input style={{marginTop:'10px', gap:'20px'}} type='radio' name='canview_properties' value='Their and subordinates deals' onChange={handlechange}></input> Their and subordinates' deals <br></br>
-                        <input style={{marginTop:'10px', gap:'20px'}} type='radio' name='canview_properties' onChange={handlechange} value='Their subordinates and peers deals'></input>Their subordinates' and peers' deals<br></br>
-                        <input style={{marginTop:'10px', gap:'20px'}} type='radio' name='canview_properties' onChange={handlechange} value='Their subordinates peers and manager deals'></input>Their subordinates'  peers and manager deals<br></br>
-                        <input style={{marginTop:'10px', gap:'20px'}} type='radio' name='canview_properties' onChange={handlechange} value='Same deals as thier manager'></input> Same deals as thier manager<br></br>
-                      </div>
-                             <input style={{marginTop:'30px', gap:'10px', transform: "scale(1.4)", marginRight: "8px" }} type="checkbox" name='canadd_properties' onChange={handlechange} />Can add Properties<br></br>
-                      
-                              <input style={{marginTop:'30px', gap:'10px', transform: "scale(1.4)", marginRight: "8px"}} type="checkbox" />Can update Properties<br></br>
-                               <input style={{marginTop:'10px', gap:'10px'}} type='radio' name='canupdate_properties' onChange={handlechange} value='Only thier and subordinates deals'></input> Only thier and subordinates deals<br></br>
-                                <input style={{marginTop:'10px', gap:'10px'}} type='radio' name='canupdate_properties' onChange={handlechange} value='All deals they can view'></input> All deals they can view<br></br>
-                      
-                                <input style={{marginTop:'30px', gap:'10px', transform: "scale(1.4)", marginRight: "8px"}} type="checkbox" />Can reassign ownership of Properties<br></br>
-                               <input style={{marginTop:'10px', gap:'10px'}} type='radio' name='canreassign_properties' onChange={handlechange} value='Only thier and subordinates deals'></input>Only thier and subordinates deals<br></br>
-                                <input style={{marginTop:'10px', gap:'10px'}} type='radio' name='canreassign_properties' onChange={handlechange} value='All deals they can view'></input>  All deals they can view<br></br>
-                      
-                                  <input style={{marginTop:'30px', transform: "scale(1.4)", marginRight: "8px"}} type="checkbox" />Can delete Properties<br></br>
-                               <input style={{marginTop:'10px'}} type='radio' name='candeletproperties' onChange={handlechange} value='Only thier and subordinates deals'></input>Only thier and subordinates deals<br></br>
-                                <input style={{marginTop:'10px'}} type='radio' name='candeletproperties' onChange={handlechange} value='All deals they can view'></input>  All deals they can view<br></br>
-                      
-                               <div  style={{marginTop:'15px'}}>
-                                <h8 >Can view Properties Owner</h8> <br></br>
-                       <input style={{marginTop:'10px'}} type='radio' name='canview_properties_owner' onChange={handlechange} value='Their and subordinates deals'></input> Their and subordinates' deals <br></br>
-                        <input style={{marginTop:'10px'}} type='radio' name='canview_properties_owner' onChange={handlechange} value='Their subordinates and peers deals'></input>Their subordinates' and peers' deals<br></br>
-                        <input style={{marginTop:'10px'}} type='radio' name='canview_properties_owner' onChange={handlechange} value='Their subordinates peers and manager deals'></input>Their subordinates'  peers and manager deals<br></br>
-                        <input style={{marginTop:'10px'}} type='radio' name='canview_properties_owner' onChange={handlechange} value='Same deals as thier manager'></input> Same deals as thier manager<br></br>
-                           </div>
-                      </div>
+                   
                       
                       
                             
@@ -733,6 +627,8 @@ const handleCheckboxChange = (e) => {
                                         </Modal>
 
       {/*================================== add user modal end===================================================================== */}
+    </div>
+  
     </div>
   )
 }

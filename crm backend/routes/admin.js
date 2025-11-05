@@ -164,12 +164,12 @@ const {
   view_instanceid,
 } = require("../controllers/whatsappinstanceid");
 const { add_feedback } = require("../controllers/feedbackform");
-const {
-  add_user,
-  view_user,
-  update_user,
-  remove_user,
-} = require("../controllers/adduser");
+// const {
+//   add_user,
+//   view_user,
+//   update_user,
+//   remove_user,
+// } = require("../controllers/Settings/adduserr");
 const {
   view_followup_task,
   view_sitevisit_task,
@@ -418,9 +418,9 @@ router.get("/viewinstanceid", view_instanceid);
 
 router.post("/addfeedback", add_feedback);
 
-router.post("/adduser", add_user);
-router.get("/viewuser", view_user);
-router.put("/updateuser/:_id", update_user);
-router.delete("/deleteuser/:_id", remove_user);
+
+
+
+
 
 module.exports = router;
