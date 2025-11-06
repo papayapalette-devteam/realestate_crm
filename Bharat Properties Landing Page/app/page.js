@@ -12,18 +12,18 @@ import 'swiper/css/pagination';
 import { FaStar } from 'react-icons/fa';
 import { FaUserCircle } from 'react-icons/fa';
 import 'swiper/css/navigation';
-import Image1 from "../icons/mumbai.webp";
-import Image2 from "../icons/building.webp"
-import Logo from "../icons/logo.svg"
-import Image3  from "../icons/JLL_Mumbai_Birla.webp";
-import Image4 from "../icons/JLL_Mum_Ekta.webp"
-import Image5 from "../icons/JLL_Mumbai_Lodha.webp"
-import Image6 from "../icons/JLL_Mumbai_Meghdoo.webp"
-import Image7 from "../icons/bedrooms.b2ea63d7.svg"
-import Image8 from "../icons/budget.webp"
-import Image9 from "../icons/pc-3.webp"
-import Image10 from "../icons/pc-2.webp"
-import Image11 from "../icons/pc-1.webp"
+import Image1 from "./icons/mumbai.webp";
+import Image2 from "./icons/building.webp";
+import Logo from "./icons/logo.svg";
+import Image3  from "./icons/JLL_Mumbai_Birla.webp";
+import Image4 from "./icons/JLL_Mum_Ekta.webp";
+import Image5 from "./icons/JLL_Mumbai_Lodha.webp";
+import Image6 from "./icons/JLL_Mumbai_Meghdoo.webp";
+import Image7 from "./icons/bedrooms.b2ea63d7.svg";
+import Image8 from "./icons/budget.webp";
+import Image9 from "./icons/pc-3.webp";
+import Image10 from "./icons/pc-2.webp";
+import Image11 from "./icons/pc-1.webp";
 import Header from "@/Components/header";
 
 
