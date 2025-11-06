@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
+import AuthGuard from "./components/Others/autguard.js";
 
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
@@ -58,6 +59,7 @@ function App() {
         <div>
           <Routes>
             <Route path="/" element={<Login />} />
+            <Route element={<AuthGuard/>}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/addcontact" element={<Addcontact />} />
             <Route path="/leadinfo" element={<Leadinfo />} />
@@ -105,6 +107,7 @@ function App() {
             <Route path="/allprojects" element={<Allprojects />} />
             <Route path="/allunits" element={<Allunits />} />
             <Route path="/add-sub-admin" element={<AddSubAdmin />} />
+            </Route>
           </Routes>
         </div>
       </Suspense>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import Icon from '@mdi/react';
+import Swal from 'sweetalert2';
 import {
   mdiNetworkStrength4,
   mdiPhone,
@@ -17,6 +18,27 @@ import '../css/mystyle.css';
 
 function Sidebar1() {
   const [inventoryOpen, setInventoryOpen] = useState(false);
+
+  const navigate=useNavigate()
+
+  const handle_logout = () => {
+    // ✅ Clear storage
+    localStorage.clear();
+
+    // ✅ Show alert, then redirect
+    Swal.fire({
+      icon: 'success',
+      title: 'Logged Out',
+      text: 'You have been logged out successfully!',
+      showConfirmButton: true,
+      customClass: {
+        confirmButton: 'my-swal-button',
+      },
+    }).then(() => {
+      // ✅ Redirect after alert is closed
+      navigate('/');
+    });
+  };
 
   return (
     <div>
@@ -126,7 +148,7 @@ function Sidebar1() {
                 <span>Settings</span>
               </Link>
             </li>
-            <li>
+            <li onClick={handle_logout}>
               <Link className="sidebar__link">
                 <span className="sidebar__icon dw dw-diagram"></span>
                 <span>LogOut</span>

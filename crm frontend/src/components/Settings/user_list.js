@@ -59,6 +59,7 @@ const navigate=useNavigate()
         { id: 'sno', name: '#' },
         { id: 'full_name', name: 'Full Name' },
         { id: 'email', name: 'Email' },
+        { id: 'password', name: 'Password' },
         { id: 'manager', name: 'Manager' },
         { id: 'team', name: 'Team' },
         { id: 'mobile', name: 'Mobile No' },
@@ -282,7 +283,7 @@ const navigate=useNavigate()
 
   //===================================================== save user start========================================================
 
-        const [user,setuser]=useState({full_name:"",email:"",mobile:"",manager:"",team:"",permission:"",
+        const [user,setuser]=useState({full_name:"",email:"",password:"",mobile:"",manager:"",team:"",permission:"",
                                         assign_permission:""
                                       })  
 
@@ -512,15 +513,7 @@ const navigate=useNavigate()
                                  </tbody>
                                </Table>
                              </TableContainer>
-                               {/* <footer style={{height:"50px",width:"100%",position:"sticky",display:"flex",gap:"50px",bottom:"0",backgroundColor:"#f8f9fa",marginLeft:"10px"}}>
-                                     <h6 style={{lineHeight:"50px",color:"GrayText"}}>Summary</h6>
-                                     <h6 style={{lineHeight:"50px"}}>Total Inventories <span style={{color:"black",fontSize:"20px"}}>{totalinventories}</span></h6>
-                                     <h6 style={{lineHeight:"50px"}}> Residential <span style={{color:"green",fontSize:"20px"}}>{totalResidential}</span></h6>
-                                     <h6 style={{lineHeight:"50px"}}> Commercial <span style={{color:"blue",fontSize:"20px"}}>{totalcommercial}</span></h6>
-                                     <h6 style={{lineHeight:"50px"}}> Agriculture <span style={{color:"orange",fontSize:"20px"}}>{totalagriculture}</span></h6>
-                                     <h6 style={{lineHeight:"50px"}}> Industrial <span style={{color:"red",fontSize:"20px"}}>{totalindustrial}</span></h6>
-                                     <h6 style={{lineHeight:"50px"}}> Institutional <span style={{color:"gray",fontSize:"20px"}}>{totalinstitutional}</span></h6>
-                                   </footer> */}
+       
                                  </div>
         
       
@@ -548,11 +541,17 @@ const navigate=useNavigate()
                               <label htmlFor="email" className="form-label">Activation Instructions will be emailed to this address.</label>
                               <input type="email" className="form-control" id="email" name='email' required onChange={handlechange} />
                             </div>
+
+                            <div className="mb-3">
+                              <h6>Password</h6>
+                              <label htmlFor="email" className="form-label">Activation Instructions will be emailed to this address.</label>
+                              <input type="password" className="form-control" id="password" name='password' required onChange={handlechange} />
+                            </div>
                       
                              <div className="mb-3">
                                <h6>Mobile</h6>
                               {/* <label htmlFor="email" className="form-label">Mobile</label> */}
-                              <input type="text" className="form-control" id="mobile" name='mobile' required placeholder='Verified by OTP' onChange={handlechange}/>
+                              <input type="text" className="form-control" id="mobile" name='mobile' required onChange={handlechange}/>
                             </div>
                       
                              <div className="mb-3">

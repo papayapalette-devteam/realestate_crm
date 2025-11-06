@@ -4,7 +4,7 @@ const adduser = require('../../models/Settings/adduser')
 const add_user = async (req, res) => {
     try {
 
-    const { full_name,email,mobile,manager,team,permission,assign_permission } = req.body;
+    const { full_name,email,password,mobile,manager,team,permission,assign_permission } = req.body;
    
       const existinguser=await adduser.findOne({email:email,mobile:mobile})
       if(existinguser)
@@ -14,7 +14,7 @@ const add_user = async (req, res) => {
       }
 
       const new_add_user= new adduser({
-       full_name,email,mobile,manager,team,permission,assign_permission  });
+       full_name,email,password,mobile,manager,team,permission,assign_permission  });
   
       // Save the user to the database
       const resp = await new_add_user.save();

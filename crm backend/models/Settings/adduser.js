@@ -4,6 +4,7 @@ const mongoose=require('mongoose')
 const user=new mongoose.Schema({
 full_name:{type:String},
 email:{type:String},
+password:{type:String},
 mobile:{type:String},
 manager:{type:String},
 team:{type:String},

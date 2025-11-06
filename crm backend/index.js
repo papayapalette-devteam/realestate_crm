@@ -41,6 +41,9 @@ app.use('/',require('./routes/Contacts/contact'));
 // settings route
 app.use('/api/settings',require('./routes/Settings/settings'));
 
+// others route
+app.use('/api',require('./routes/Others/other'));
+
 
 const server=app.listen(process.env.PORT,()=>
 {

@@ -617,20 +617,20 @@ const goToPreviousPage = () => {
     
 
 
-    const [show2, setshow2] = useState(false);
-    const[data2,setdata2]=useState([])
-    const handleClose2 = () => setshow2(false);
-    const[educationdata,seteducationdata]=useState([])
-    const[degreedata,setdegreedata]=useState([])
-    const[schooldata,setschooldata]=useState([])
-    const handleShow2=(item)=>
-    {
-      setshow2(true);
-      setdata2(item)
-      seteducationdata(item.education)
-      setdegreedata(item.degree)
-      setschooldata(item.school_college)
-    }
+    // const [show2, setshow2] = useState(false);
+    // const[data2,setdata2]=useState([])
+    // const handleClose2 = () => setshow2(false);
+    // const[educationdata,seteducationdata]=useState([])
+    // const[degreedata,setdegreedata]=useState([])
+    // const[schooldata,setschooldata]=useState([])
+    // const handleShow2=(item)=>
+    // {
+    //   setshow2(true);
+    //   setdata2(item)
+    //   seteducationdata(item.education)
+    //   setdegreedata(item.degree)
+    //   setschooldata(item.school_college)
+    // }
    
   
 
@@ -4845,7 +4845,7 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
             </Modal.Footer>
           </Modal>
 
-          <Modal show={show2} onHide={handleClose2} size='lg'>
+          {/* <Modal show={show2} onHide={handleClose2} size='lg'>
             <Modal.Header>
               <Modal.Title>Contact Details</Modal.Title>
             </Modal.Header>
@@ -4915,7 +4915,7 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
                 Close
               </Button>
             </Modal.Footer>
-          </Modal>
+          </Modal> */}
 
           <Modal show={show3} onHide={handleClose3} size='lg'>
             <Modal.Header>

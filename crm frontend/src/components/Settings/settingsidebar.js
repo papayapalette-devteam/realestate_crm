@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  FiGrid,
   FiUser,
   FiShield,
   FiSettings,
@@ -69,7 +70,20 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
                {/* Collapse handle (always visible on lg; hidden on mobile because hamburger exists) */}
    
 
+
           <ul className="space-y-2 mt-4">
+   
+               <li
+              className="flex items-center justify-between hover:bg-gray-700 p-2 rounded-md cursor-pointer"
+              onClick={()=>navigate('/dashboard')}
+            >
+              <div className="flex items-center space-x-3">
+                <FiGrid size={20} />
+                {isSidebarOpen && <span>Admin Dashboard</span>}
+              </div>
+       
+            </li>
+
             {/* User Management */}
             <li
               className="flex items-center justify-between hover:bg-gray-700 p-2 rounded-md cursor-pointer"

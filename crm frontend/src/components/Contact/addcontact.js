@@ -6,7 +6,7 @@ import { ToastContainer, toast} from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import api from "../../api";
 import { event } from 'jquery'; 
-import { Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
+import { Select, MenuItem, Checkbox, ListItemText,CircularProgress} from '@mui/material';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
@@ -870,28 +870,7 @@ function Addcontact() {
 
    
   }
-  // function next2()
-  // {
 
-  //     document.getElementById("profession").style.display="none";
-  //     document.getElementById("otherdetails").style.display="flex";
-
-  //     document.getElementById("professional").style.color="black";
-  //     document.getElementById("other").style.color="green";
-
-   
-  // }
-
-  // function prev1()
-  // {
-  //   document.getElementById("basicdetails1").style.display="flex";
-  //   document.getElementById("basicdetails2").style.display="flex";
-  //   document.getElementById("profession").style.display="none";
-
-  //   document.getElementById("professional").style.color="black";
-  //   document.getElementById("basic").style.color="green";
-     
-  // }
   function prev2()
   {
     document.getElementById("basicdetails1").style.display="flex";
@@ -956,14 +935,36 @@ function Addcontact() {
     "Timor-Leste", "Turkmenistan", "United Arab Emirates", "Uzbekistan", 
     "Vietnam", "Yemen"
   ];
-  const ownersList = [
-    'Suraj',
-    'Suresh Kumar',
-    'Ramesh Singh',
-    'Maanav Sharma',
-    'Sukram'
-];
 
+  const[loading_owners,setloading_owners]=useState(false)
+
+      const[ownersList,setownersList]=useState([])
+
+    const getall_userdata=async()=>
+    {
+      try {
+        setloading_owners(true)
+        const resp=await api.get('api/settings/viewuser')
+        setownersList(resp.data.user.map((item)=>item.full_name))
+        
+      } catch (error) {
+        console.log(error);
+        
+      }
+      finally
+      {
+        setloading_owners(false)
+      }
+    }
+
+    useEffect(()=>
+    {
+      getall_userdata()
+
+    },[])
+console.log(contact);
+
+  
 const [owners, setOwners] = useState([]);
 
 const handleOwnerChange = (event) => {
@@ -1126,34 +1127,39 @@ const handleOwnerChange = (event) => {
                         </select>
                     </div>
                     <div className="col-md-6 mb-3 custom-input"><label className="form-label">Owner</label>
-                    {/* <select className="form-control form-control-sm" onChange={(e)=>setcontact({...contact,owner:e.target.value})}>
-                    <option>Select</option>
-                              <option>Suraj</option> 
-                              <option>Suresh Kumar</option>
-                              <option>Ramesh Singh</option>
-                              <option>Maanav Sharma</option>
-                              <option>Sukram</option>
-                        </select> */}
-    <Select className="form-control form-control-sm"
+     
+              <Select className="form-control form-control-sm"
                     multiple
                     value={owners}
                     onChange={handleOwnerChange}
                     renderValue={(selected) => selected.join(', ')}
                 >
-                    {ownersList.map((name) => (
-                        <MenuItem key={name} value={name}>
-                            <Checkbox checked={owners.indexOf(name) > -1} />
-                            <ListItemText primary={name} />
-                        </MenuItem>
-                    ))}
+                  {loading_owners ? (
+                    <MenuItem disabled>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <CircularProgress size={20} style={{ marginRight: 8 }} />
+                        Loading owners...
+                      </div>
+                    </MenuItem>
+                  ) : ownersList.length > 0 ? (
+                    ownersList.map((name) => (
+                      <MenuItem key={name} value={name}>
+                        <Checkbox checked={owners.indexOf(name) > -1} />
+                        <ListItemText primary={name} />
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem disabled>No owners found</MenuItem>
+                  )}
                 </Select>
                         </div>
-                        <div className="col-md-6 mb-3 custom-input"><label className="form-label">Visible to</label><select className="form-control form-control-sm" onChange={(e)=>setcontact({...contact,visible_to:e.target.value})}>
+                        <div className="col-md-6 mb-3 custom-input"><label className="form-label">Visible to</label>
+                        <select className="form-control form-control-sm" onChange={(e)=>setcontact({...contact,visible_to:e.target.value})}>
                                 <option>Select</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
                                 <option>All Users</option>
-                                </select>
+                        </select>
                     </div>
                     <div className='col-md-5 mb-3 custom-input'></div>
                     <div className="col-md-2 mb-3 custom-input" style={{marginTop:"20px"}}><button className="form-control form-control-sm" onClick={()=>navigate(-1)}>Cancel</button></div>
