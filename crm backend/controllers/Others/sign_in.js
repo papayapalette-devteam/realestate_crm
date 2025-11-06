@@ -23,11 +23,11 @@ exports.login = async (req, res) => {
         message: "Admin login successful",
         token: adminToken,
         user: {
-          id: "admin",
-          name: "Admin",
-          email: "admin",
-          mobile: "N/A",
-          role: "admin",
+          Id: "admin",
+          Name: "Admin",
+          Email: "admin",
+          Mobile: "N/A",
+          Role: "admin",
         },
       });
     }

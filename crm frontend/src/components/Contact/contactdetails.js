@@ -86,6 +86,10 @@ function Fetchcontact() {
     const[loading,setloading]=useState(false)
 
     const [isLoading, setIsLoading] = useState(false);
+
+    const logged_user=JSON.parse(localStorage.getItem('user'))
+    console.log(logged_user);
+    
 /*-------------------------------------------------------------------fetching all contact data start---------------------------------------------------------------------------- */                                                     
     const[data,setdata]=useState([]);
     const [filteredData, setFilteredData] = useState([]);
@@ -421,7 +425,7 @@ const totalPages = Math.ceil(data.length / itemsPerPage);
 
 
  const [contacttotalPages, setcontacttotalPages] = useState(0);
-   const fetchdata=async(page, limit,activeFilters=[])=>
+   const fetchdata=async(page, limit,activeFilters=[],login_user = logged_user ? logged_user.name : "")=>
     {
       try {
 
@@ -432,6 +436,12 @@ const totalPages = Math.ceil(data.length / itemsPerPage);
             if (activeFilters.length > 0) {
           params.append("activeFilters", JSON.stringify(activeFilters));
         }
+
+            // ✅ Pass logged-in user name in query
+    if (login_user) {
+      params.append("login_user", login_user);
+    }
+
 
         setloading(true)
         const resp=await api.get(`/viewcontact?${params.toString()}`)
