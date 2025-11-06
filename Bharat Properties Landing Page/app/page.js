@@ -133,17 +133,17 @@ export default function Home() {
   ];
 
   const developers = [
-  { name: 'India Bulls', logo: '/logos/indiabulls.png' },
+  { name: 'India Bulls' },
   { name: 'Lodha', logo: '/logos/lodha.png' },
-  { name: 'Kalpa Taru', logo: '/logos/kalpataru.png' },
-  { name: 'Godrej Properties', logo: '/logos/godrej.png' },
-  { name: 'Satyam developer', logo: '/logos/godrej.png' },
-  { name: 'Shapoorji Pallonji', logo: '/logos/godrej.png' },
-  { name: 'Sheath creater', logo: '/logos/godrej.png' },
-  { name: 'Piramal Realty', logo: '/logos/godrej.png' },
-  { name: 'Godrej Properties', logo: '/logos/godrej.png' },
-  { name: 'Intigrated Space Limited', logo: '/logos/godrej.png' },
-  { name: 'Chandak', logo: '/logos/godrej.png' },
+  { name: 'Kalpa Taru'},
+  { name: 'Godrej Properties' },
+  { name: 'Satyam developer' },
+  { name: 'Shapoorji Pallonji' },
+  { name: 'Sheath creater' },
+  { name: 'Piramal Realty' },
+  { name: 'Godrej Properties' },
+  { name: 'Intigrated Space Limited' },
+  { name: 'Chandak' },
 
 ];
   
@@ -925,11 +925,6 @@ const testimonials = [
         {developers.map((dev, i) => (
           <SwiperSlide key={i}>
             <div className="bg-white rounded-xl p-6 flex items-center gap-4 shadow-sm hover:shadow-md transition">
-              <img
-                src={dev.logo}
-                alt={dev.name}
-                className="w-16 h-16 object-contain"
-              />
               <div>
                 <h3 className="font-semibold text-gray-800">{dev.name}</h3>
                 <p className="text-sm text-gray-500">6+ available properties</p>
