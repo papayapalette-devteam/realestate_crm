@@ -33,16 +33,16 @@ exports.login = async (req, res) => {
     }
 
     // ✅ 2️⃣ Normal User Login
-    const user = await MSP.findOne({ email: Email });
-    if (!user)
+    const existing_user = await user.findOne({ email: Email });
+    if (!existing_user)
       return res.status(404).json({ message: "User not found" });
 
-    const isMatch = Password === user.password;
+    const isMatch = Password === existing_user.password;
     if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: existing_user._id, email: existing_user.email },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -51,10 +51,10 @@ exports.login = async (req, res) => {
       message: "Login successful",
       token,
       user: {
-        id: user._id,
-        name: user.full_name,
-        email: user.email,
-        mobile: user.mobile,
+        id: existing_user._id,
+        name: existing_user.full_name,
+        email: existing_user.email,
+        mobile: existing_user.mobile,
       },
     });
   } catch (error) {
