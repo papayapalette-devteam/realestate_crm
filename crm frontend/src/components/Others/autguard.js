@@ -11,7 +11,7 @@ const AuthGuard = () => {
 
   if (!token) {
     // 🚫 No token → redirect to login
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // ✅ Token exists → allow access
