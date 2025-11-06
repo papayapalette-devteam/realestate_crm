@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import Image1 from '../../icons/about-content-1.webp'
-import Image2 from "../../icons/about-content-2.webp"
+import Image1 from '../icons/about-content-1.webp'
+import Image2 from "../icons/about-content-2.webp"
 import Header from "@/Components/header";
 
 
