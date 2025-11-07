@@ -24,7 +24,7 @@ export default function Header() {
       <Link href="/aboutus" className="text-gray-300 hover:text-red-500 text-sm font-medium">
         About
       </Link>
-      <Link href="https://admin.bharatproperties.co/" className="text-gray-300 hover:text-red-500 text-sm font-medium">
+      <Link href="https://crm.bharatproperties.co/" className="text-gray-300 hover:text-red-500 text-sm font-medium">
         Login
       </Link>
     </nav>
