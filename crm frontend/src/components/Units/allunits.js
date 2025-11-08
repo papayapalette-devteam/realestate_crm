@@ -2899,7 +2899,8 @@ const deleteinventories=async()=>
       api.delete(`deleteprojectforinventories/${item.project_name}/${item.unit_no}/${item.block}`)
     ));
                             Swal.fire({
-                             title: '🎉 Selected items deleted successfully...!',
+                            icon:"success",
+                             title: 'Selected items deleted successfully...!',
                              text:"Selected Units Deleted Successfully",
                              width: '400px', // makes it small
                              padding: '1.2em',
