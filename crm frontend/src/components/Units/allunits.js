@@ -23,7 +23,6 @@ import Tooltip from '@mui/material/Tooltip';
 import api from "../../api";
 import '../../css/deal.css';
 import { toWords } from 'number-to-words';
-import { CircularProgress,LinearProgress, Typography, Box } from "@mui/material";
 import Swal from "sweetalert2";
 import { useDropzone } from 'react-dropzone';
 import ReactQuill from 'react-quill';  // Import ReactQuill
