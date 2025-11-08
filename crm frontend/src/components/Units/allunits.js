@@ -25,10 +25,7 @@ import '../../css/deal.css';
 import { toWords } from 'number-to-words';
 import Swal from "sweetalert2";
 import { useDropzone } from 'react-dropzone';
-import ReactQuill from 'react-quill';  // Import ReactQuill
-import Lottie from "lottie-react";
 import deallogo from '../../icons/deal.jpg'
-import { FeedRounded } from "@mui/icons-material";
 import UniqueLoader from '../loader'
 
 function Allunits() {
