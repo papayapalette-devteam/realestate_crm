@@ -2904,11 +2904,7 @@ const deleteinventories=async()=>
     ));
                             Swal.fire({
                              title: '🎉 Selected items deleted successfully...!',
-                             html: `
-                             <img src="https://cdn.vectorstock.com/i/500p/63/50/thumbs-up-smiley-face-icon-vector-10176350.jpg"
-                             alt="Thumbs up" 
-                             width="80" 
-                             style="margin-bottom: 0px;"/>`,
+                             text:"Selected Units Deleted Successfully",
                              width: '400px', // makes it small
                              padding: '1.2em',
                              showConfirmButton: true,

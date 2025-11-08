@@ -1797,28 +1797,57 @@ const unit_type = {
                                                                          
                                                                             };  
                                                                      
+const addunit = async () => {
 
 
-                                              const addunit = () => {
+  try {
+    setloading_unit(true)
+    const res = await api.post("/add-units", {
+      project_id: project._id,
+      pendingContacts:units,
+    });
 
-                                                  if (units.unit_no ) 
-                                                    {
-                                                      const updateunit= [...project.add_unit, units];
-                                                      setunit(updateunit);
-                                                      setproject(prevState => ({
-                                                        ...prevState,
-                                                        add_unit: updateunit
-                                                      }));
+    if (res.data.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Units Added",
+        html: `<b>${res.data.addedCount}</b> new units added.`,
+      });
+
+    
+    } else {
+      Swal.fire("Error", res.data.message, "error");
+    }
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error", "Something went wrong", "error");
+  }
+  finally
+  {
+    setloading_unit(false)
+  }
+};
+
+                                              // const addunit = () => {
+
+                                              //     if (units.unit_no ) 
+                                              //       {
+                                              //         const updateunit= [...project.add_unit, units];
+                                              //         setunit(updateunit);
+                                              //         setproject(prevState => ({
+                                              //           ...prevState,
+                                              //           add_unit: updateunit
+                                              //         }));
                                                       
-                                                      handleClose3()
+                                              //         handleClose3()
 
-                                                        document.getElementById("choosedestination").value="Select"
-                                                      } 
-                                                      else
-                                                        {
-                                                            toast.error("Please fill out all fields.");
-                                                        }
-                                                      };
+                                              //           document.getElementById("choosedestination").value="Select"
+                                              //         } 
+                                              //         else
+                                              //           {
+                                              //               toast.error("Please fill out all fields.");
+                                              //           }
+                                              //         };
                                           const deleteunit = (index) => {
 
 

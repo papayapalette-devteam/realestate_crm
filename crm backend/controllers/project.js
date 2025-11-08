@@ -1230,7 +1230,13 @@ const update_projectforinventories = async (req, res) => {
 
 const addUnitsToProject = async (req, res) => {
   try {
-    const { project_id, pendingContacts } = req.body;
+    let { project_id, pendingContacts } = req.body;
+
+      // ✅ Always convert to array if it's a single object
+    if (!Array.isArray(pendingContacts)) {
+      pendingContacts = pendingContacts ? [pendingContacts] : [];
+    }
+    
 
     if (!project_id || !Array.isArray(pendingContacts)) {
       return res.status(400).json({ success: false, message: "Invalid data" });
