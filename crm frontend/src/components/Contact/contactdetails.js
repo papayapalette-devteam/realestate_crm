@@ -25,7 +25,7 @@ import api from "../../api";
 // import { IconButton } from '@mui/material';
 import'../../css/addcontact.css';
 import Tooltip from '@mui/material/Tooltip';
-import { Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
+import { Select, MenuItem, Checkbox, ListItemText,CircularProgress } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import ReactQuill from 'react-quill';  // Import ReactQuill
 import * as XLSX from 'xlsx';
@@ -88,7 +88,7 @@ function Fetchcontact() {
     const [isLoading, setIsLoading] = useState(false);
 
     const logged_user=JSON.parse(localStorage.getItem('user'))
-    console.log(logged_user);
+
     
 /*-------------------------------------------------------------------fetching all contact data start---------------------------------------------------------------------------- */                                                     
     const[data,setdata]=useState([]);
@@ -1461,7 +1461,50 @@ const allColumns = [
                               document_pic: newdocumentpic
                             }));
                           };
-                        
+  
+  const[loading_owners,setloading_owners]=useState(false)
+
+      const[ownersList,setownersList]=useState([])
+
+    const getall_userdata=async()=>
+    {
+      try {
+        setloading_owners(true)
+        const resp=await api.get('api/settings/viewuser')
+        setownersList(resp.data.user.map((item)=>item.full_name))
+        
+      } catch (error) {
+        console.log(error);
+        
+      }
+      finally
+      {
+        setloading_owners(false)
+      }
+    }
+
+    useEffect(()=>
+    {
+      getall_userdata()
+
+    },[])
+
+
+  
+const [owners, setOwners] = useState([]);
+
+const handleOwnerChange = (event) => {
+  const {
+      target: { value },
+  } = event;
+
+  const selectedOwners = typeof value === 'string' ? value.split(',') : value;
+
+  setOwners(selectedOwners);
+  setcontact({ ...contact, owner: selectedOwners });
+};
+
+
                           const config = {
                             headers: {
                               'Content-Type': 'multipart/form-data' // Set the Content-Type here
@@ -4433,17 +4476,32 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
                               <option> Pre Sales</option>
                         </select>
                     </div>
-                    <div className="col-md-6"><label className="labels">Owner</label>
-                    <select className="form-control form-control-sm" onChange={(e)=>setcontact((prevProfile)=>({...prevProfile,owner:e.target.value}))} >
-                              <option>{data1.owner}</option>     
-                              <option>---Select---</option>
-                              <option>Suraj</option> 
-                              <option>Suresh Kumar</option>
-                              <option>Ramesh Singh</option>
-                              <option>Maanav Sharma</option>
-                              <option>Sukram</option>
-                        </select>
-                        
+  <div className="col-md-6 mb-3 custom-input"><label className="form-label">Owner</label>
+     
+              <Select className="form-control form-control-sm"
+                    multiple
+                    value={owners}
+                    onChange={handleOwnerChange}
+                    renderValue={(selected) => selected.join(', ')}
+                >
+                  {loading_owners ? (
+                    <MenuItem disabled>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <CircularProgress size={20} style={{ marginRight: 8 }} />
+                        Loading owners...
+                      </div>
+                    </MenuItem>
+                  ) : ownersList.length > 0 ? (
+                    ownersList.map((name) => (
+                      <MenuItem key={name} value={name}>
+                        <Checkbox checked={contact.owner.indexOf(name) > -1} />
+                        <ListItemText primary={name} />
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem disabled>No owners found</MenuItem>
+                  )}
+                </Select>
                         </div>
                         <div className="col-md-6"><label className="labels">Visible to</label><select className="form-control form-control-sm" onChange={(e)=>setcontact((prevProfile)=>({...prevProfile,visible_to:e.target.value}))} >
                                <option>{data1.visible_to}</option> 

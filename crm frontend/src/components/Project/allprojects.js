@@ -26,6 +26,8 @@ function Allprojects() {
   const navigate=useNavigate()
   const [isLoading, setIsLoading] = useState(false);
 
+  const logged_user=JSON.parse(localStorage.getItem('user'))
+
 
     // ==========================================fetch all project data start=========================================================
 
@@ -198,7 +200,7 @@ function Allprojects() {
 
     const[total_project,settotal_project]=useState("")
 
-      const fetchcdata=async(page,limit)=>
+      const fetchcdata=async(page,limit,activeFilters=[],login_user = logged_user ? logged_user.name : "")=>
                       {
                         setIsLoading(true)
                         try {
@@ -209,9 +211,12 @@ function Allprojects() {
                             if (activeFilters.length > 0) {
                               params.append("activeFilters", JSON.stringify(activeFilters));
                             }
+                                  if (login_user) {
+                                params.append("login_user", login_user);
+                              }
 
                           const resp=await api.get(`viewproject?${params.toString()}`)
-                          console.log(resp);
+                       
                           
                           // setcdata(resp.data.project)
                           setcdata(resp.data.project)

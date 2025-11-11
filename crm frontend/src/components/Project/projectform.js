@@ -2088,13 +2088,28 @@ const handleTypeClick3 = (type) => {
                       document.getElementById("taxes1").style.color="green"
                     }
 
-                    const ownersList = [
-                      'Suraj',
-                      'Suresh Kumar',
-                      'Ramesh Singh',
-                      'Maanav Sharma',
-                      'Sukram'
-                  ];
+                 const[ownersList,setownersList]=useState([])
+           
+               const getall_userdata=async()=>
+               {
+                 try {
+               
+                   const resp=await api.get('api/settings/viewuser')
+                   setownersList(resp.data.user.map((item)=>item.full_name))
+                   
+                 } catch (error) {
+                   console.log(error);
+                   
+                 }
+               
+               }
+           
+               useEffect(()=>
+               {
+                 getall_userdata()
+           
+               },[])
+               
                     const [owners, setOwners] = useState([]);
 
                     const handleOwnerChange = (event) => {

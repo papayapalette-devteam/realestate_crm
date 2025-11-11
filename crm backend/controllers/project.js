@@ -276,6 +276,11 @@ const view_project = async (req, res) => {
     // 🔹 Build MongoDB match query
     let matchStage = {};
 
+          const loginUser = req.query.login_user;
+    if (loginUser) {
+      matchStage.owner = { $in: [loginUser] }; // owner is an array
+    }
+
     if (activeFilters.length > 0) {
       activeFilters.forEach((filter) => {
         const field = filter.field;

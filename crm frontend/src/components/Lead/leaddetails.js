@@ -92,6 +92,8 @@ function Leadfetch() {
 
       const navigate=useNavigate();
       const [searchParams, setSearchParams] = useSearchParams();
+
+      const logged_user=JSON.parse(localStorage.getItem('user'))
       
 
 /*-------------------lead crud operations start---------------------------lead crud operations start------------------------------------lead crud operations start*/
@@ -128,7 +130,7 @@ const[allleaddataforsearch,setallleaddataforsearch]=useState([])
   const[totalpages,settotalpages]=useState("")
 
 
-  const fetchdata=async(page,limit,activeFilters=[])=>
+  const fetchdata=async(page,limit,activeFilters=[],login_user = logged_user ? logged_user.name : "")=>
   {
     
     try {
@@ -140,6 +142,9 @@ const[allleaddataforsearch,setallleaddataforsearch]=useState([])
             if (activeFilters.length > 0) {
           params.append("activeFilters", JSON.stringify(activeFilters));
         }
+         if (login_user) {
+      params.append("login_user", login_user);
+    }
 
       setIsLoading(true)
       const resp=await api.get(`leadinfo?${params.toString()}`)
@@ -1780,13 +1785,27 @@ const handleShow5=async()=>
     }
   }
 
-const ownersList = [
-  'Suraj',
-  'Suresh Kumar',
-  'Ramesh Singh',
-  'Maanav Sharma',
-  'Sukram'
-];
+      const[ownersList,setownersList]=useState([])
+
+    const getall_userdata=async()=>
+    {
+      try {
+    
+        const resp=await api.get('api/settings/viewuser')
+        setownersList(resp.data.user.map((item)=>item.full_name))
+        
+      } catch (error) {
+        console.log(error);
+        
+      }
+    
+    }
+
+    useEffect(()=>
+    {
+      getall_userdata()
+
+    },[])
 
 const [owners, setOwners] = useState([]);
 const[leadowner,setleadowner]=useState(leaddata.owner)

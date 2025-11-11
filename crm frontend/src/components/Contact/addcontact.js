@@ -962,7 +962,7 @@ function Addcontact() {
       getall_userdata()
 
     },[])
-console.log(contact);
+
 
   
 const [owners, setOwners] = useState([]);
