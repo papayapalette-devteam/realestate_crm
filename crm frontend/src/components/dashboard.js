@@ -129,6 +129,10 @@ const TopDeals = ({ deals }) => (
 );
 
  function Dashboard() {
+
+  const logged_user=JSON.parse(localStorage.getItem('user'))
+
+
   const metrics = {
     totalPipelineValue: 50000,
     openDeals: 12,
@@ -185,7 +189,7 @@ const TopDeals = ({ deals }) => (
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h1 className="text-2xl font-bold mb-2">
-                Welcome back, {profile.first_name}! 👋
+                Welcome back, {logged_user.name || logged_user.Name}! 👋
               </h1>
               <p className="text-blue-100">
                 Here's your sales performance overview for today

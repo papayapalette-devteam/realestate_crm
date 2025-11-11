@@ -12,6 +12,8 @@ import project from '../icons/project.jpg'
 
 function Header1() {
 
+  const logged_user=JSON.parse(localStorage.getItem('user'))
+
 	const menuRef = useRef(null);
 	const buttonRef = useRef(null);
 	const [isOpen, setIsOpen] = useState(false);
@@ -172,7 +174,7 @@ function Header1() {
 				<div class="dropdown">
 					<a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" style={{paddingRight:"40px"}}>
 					
-						<span class="user-name">Admin</span>
+						<span class="user-name">{logged_user.name || logged_user.Name}</span>
 					</a>
 					<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
 						<a class="dropdown-item" href="profile.html"><i class="dw dw-user1"></i> Profile</a>
