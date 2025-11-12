@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import React from 'react';
-import'../css/addcontact.css';
-import Header1 from './header1';
-import Sidebar1 from './sidebar1';
+import'../../css/addcontact.css';
+import Header1 from '../header1';
+import Sidebar1 from '../sidebar1';
 import { ToastContainer, toast} from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import api from "../api";
+import api from "../../api";
 
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';

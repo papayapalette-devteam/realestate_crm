@@ -396,6 +396,11 @@ const view_units = async (req, res) => {
 
     let matchStage = {};
 
+    const loginUser = req.query.login_user;
+    if (loginUser) {
+      matchStage.owner = { $in: [loginUser] }; // owner is an array
+    }
+
     // 🔹 Search
     if (search) {
       matchStage.$or = [

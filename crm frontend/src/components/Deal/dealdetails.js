@@ -1,5 +1,5 @@
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
+import Header1 from "../header1";
+import Sidebar1 from "../sidebar1";
 import {  useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState,useRef } from "react";
@@ -20,15 +20,15 @@ import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import {  SvgIcon } from "@mui/material";
 import EmailIcon from '@mui/icons-material/Email';
 import Tooltip from '@mui/material/Tooltip';
-import api from "../api";
-import '../css/deal.css';
+import api from "../../api";
+import '../../css/deal.css';
 import { toWords } from 'number-to-words';
 import { CircularProgress,LinearProgress, Typography, Box } from "@mui/material";
 import Swal from "sweetalert2";
 import { useDropzone } from 'react-dropzone';
 import ReactQuill from 'react-quill';  // Import ReactQuill
 import Lottie from "lottie-react";
-import deallogo from '../icons/deal.jpg'
+import deallogo from '../../icons/deal.jpg'
 
 function Dealdetails() {
 

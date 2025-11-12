@@ -1,12 +1,12 @@
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
-import '../css/addinventory.css';
+import Header1 from "../header1";
+import Sidebar1 from "../sidebar1";
+import '../../css/addinventory.css';
 import { useState,useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import * as React from 'react';
 import { toast,ToastContainer } from "react-toastify";
-import api from "../api";
+import api from "../../api";
 import { useLocation, useNavigate } from "react-router-dom";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -360,7 +360,25 @@ const handleallunitschange = (event) => {
           };
          
           
+    const[userlist,setuserlist]=useState([])
 
+    const getall_userdata=async()=>
+    {
+      try {
+        const resp=await api.get('api/settings/viewuser')
+        setuserlist(resp.data.user.map((item)=>item.full_name))
+        
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+
+    React.useEffect(()=>
+    {
+      getall_userdata()
+
+    },[])
 
 
           const add_deal=async(e)=>
@@ -1449,11 +1467,13 @@ const formats = [
                         </select></div>
                         <div className="col-md-4 mb-4 custom-input"><label className="form-label">User</label><select className="form-control form-control-sm" name="user" onChange={(e)=>setdeal({...deal,user:e.target.value})}>
                     <option>Select</option>
-                              <option>Suraj</option> 
-                              <option>Suresh Kumar</option>
-                              <option>Ramesh Singh</option>
-                              <option>Maanav Sharma</option>
-                              <option>Sukram</option>
+                            {
+                              userlist.map((item=>
+                              (
+                                <option>{item}</option>
+                              )
+                              ))
+                            }
                         </select></div>
                         <div className="col-md-4 mb-4 custom-input"><label className="form-label">Visible To</label><select className="form-control form-control-sm" name="visible_to" onChange={(e)=>setdeal({...deal,visible_to:e.target.value})}>
                     <option>Select</option>

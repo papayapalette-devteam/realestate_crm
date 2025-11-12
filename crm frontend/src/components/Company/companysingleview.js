@@ -1,6 +1,6 @@
 import React, { act, useEffect } from 'react'
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
+import Header1 from "../header1";
+import Sidebar1 from "../sidebar1";
 import { useLocation, useNavigate } from 'react-router-dom';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -10,7 +10,7 @@ import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import Paper from '@mui/material/Paper';
 import { useState } from 'react';
-import api from "../api";
+import api from "../../api";
 import { Tooltip } from 'react-bootstrap';
 import { Select, MenuItem, FormControl, InputLabel, Checkbox, ListItemText } from '@mui/material';
 import Modal from 'react-bootstrap/Modal';
@@ -18,16 +18,16 @@ import Button from 'react-bootstrap/Button';
 import ReactQuill from 'react-quill';  // Import ReactQuill
 import 'react-quill/dist/quill.snow.css';
 import Swal from 'sweetalert2'; 
-import '../css/leadview.css'
+import '../../css/leadview.css'
 import { useDropzone } from 'react-dropzone';
 import { toast, ToastContainer } from "react-toastify";
 import Dropdown from 'react-bootstrap/Dropdown';
 import "react-circular-progressbar/dist/styles.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import matchedlead from '../icons/matchedlead.jpg'
-import publish from '../icons/publish.jpg'
-import createbooking from '../icons/createbooking.jpg'
-import transferuser from '../icons/transferuser.jpg'
+import matchedlead from '../../icons/matchedlead.jpg'
+import publish from '../../icons/publish.jpg'
+import createbooking from '../../icons/createbooking.jpg'
+import transferuser from '../../icons/transferuser.jpg'
 
 function Companysingleview() {
 

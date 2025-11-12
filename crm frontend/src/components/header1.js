@@ -174,7 +174,7 @@ function Header1() {
 				<div class="dropdown">
 					<a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" style={{paddingRight:"40px"}}>
 					
-						<span class="user-name">{logged_user.name || logged_user.Name}</span>
+						<span class="user-name">{logged_user?.name || logged_user?.Name}</span>
 					</a>
 					<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
 						<a class="dropdown-item" href="profile.html"><i class="dw dw-user1"></i> Profile</a>

@@ -90,9 +90,15 @@ const sizeLabelMap = [
 ];
 
 
-    console.log(activeFilters);
+  
     
     let matchStage = {};
+
+const loginUser = req.query.login_user;
+if (loginUser) {
+  matchStage.user = loginUser; // direct match since user is string
+}
+
 
     if (activeFilters.length > 0) {
       const orConditions = [];

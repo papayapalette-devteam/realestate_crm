@@ -1,6 +1,6 @@
 
-import Header1 from "./header1";
-import Sidebar1 from "./sidebar1";
+import Header1 from "../header1";
+import Sidebar1 from "../sidebar1";
 import {  useNavigate } from "react-router-dom";
 import { useEffect, useState,useRef } from "react";
 import { styled } from '@mui/material/styles';
@@ -18,8 +18,8 @@ import { utils, writeFile } from "xlsx";
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import {  SvgIcon } from "@mui/material";
 import Tooltip from '@mui/material/Tooltip';
-import api from "../api";
-import '../css/deal.css';
+import api from "../../api";
+import '../../css/deal.css';
 import { toWords } from 'number-to-words';
 import { CircularProgress,LinearProgress, Typography, Box } from "@mui/material";
 import Swal from "sweetalert2";
@@ -39,6 +39,8 @@ function Alldeals() {
     const navigate=useNavigate()
 
     const[data,setdata]=useState([])
+
+    const logged_user=JSON.parse(localStorage.getItem('user'))
 
     //========================================= loader code start============================================================
 
@@ -558,8 +560,7 @@ const fetchalldealdata=async()=>
       
       try {
         const resp=await api.get('viewdeal')
-        console.log(resp);
-        
+
         const all=(resp.data.deal)
         setalldealdata(all)
       } catch (error) {
@@ -831,7 +832,7 @@ const dealfields = [
     
       const[total_data,settotal_data]=useState()
 
-        const fetchdata=async(page, limit,activeFilters=[])=>
+        const fetchdata=async(page, limit,activeFilters=[],login_user = logged_user ? logged_user.name : "")=>
             {
               
               try {
@@ -841,6 +842,9 @@ const dealfields = [
                 if (activeFilters.length > 0) {
                   params.append("activeFilters", JSON.stringify(activeFilters));
                 }
+                  if (login_user) {
+      params.append("login_user", login_user);
+    }
 
                 const resp=await api.get(`viewdeal?${params.toString()}`)
                 const all=(resp.data.deal)
@@ -2048,6 +2052,28 @@ const [project,setproject]=useState({name:"",developer_name:"",joint_venture:"",
                           deal_type:"",deal_case:"",transaction_type:"",source:"",white_portion:"",team:"",user:"",visible_to:"",
                           website:"",social_media:"",send_matchedlead:"",matchedleads:[],matchinglead:"",remarks:""})
 
+
+                              const[userlist,setuserlist]=useState([])
+                          
+                              const getall_userdata=async()=>
+                              {
+                                try {
+                                  const resp=await api.get('api/settings/viewuser')
+                                  setuserlist(resp.data.user.map((item)=>item.full_name))
+                                  
+                                } catch (error) {
+                                  console.log(error);
+                                  
+                                }
+                              }
+                          
+                              React.useEffect(()=>
+                              {
+                                getall_userdata()
+                          
+                              },[])
+
+                              
 
 const [show10, setshow10] = useState(false);
     
@@ -4868,12 +4894,15 @@ const handleTimeChangemail = (e) => {
                               <option> Pre Sales</option>
                         </select></div>
                         <div className="col-md-4"><label className="labels">User</label><select className="form-control form-control-sm" name="user" onChange={(e)=>setdeal({...deal,user:e.target.value})}>
+                    <option>{deal.user}</option>
                     <option>Select</option>
-                              <option>Suraj</option> 
-                              <option>Suresh Kumar</option>
-                              <option>Ramesh Singh</option>
-                              <option>Maanav Sharma</option>
-                              <option>Sukram</option>
+                                  {
+                              userlist.map((item=>
+                              (
+                                <option>{item}</option>
+                              )
+                              ))
+                            }
                         </select></div>
                         <div className="col-md-4"><label className="labels">Visible To</label><select className="form-control form-control-sm" name="visible_to" onChange={(e)=>setdeal({...deal,visible_to:e.target.value})}>
                     <option>Select</option>
@@ -5060,11 +5089,13 @@ const handleTimeChangemail = (e) => {
                         <div className="col-md-4"><label className="labels">User</label><select className="form-control form-control-sm" name="user" onChange={(e)=>setdeal({...deal,user:e.target.value})}>
                         <option>{deal.user}</option>
                               <option>---select---</option>
-                              <option>Suraj</option> 
-                              <option>Suresh Kumar</option>
-                              <option>Ramesh Singh</option>
-                              <option>Maanav Sharma</option>
-                              <option>Sukram</option>
+                               {
+                              userlist.map((item=>
+                              (
+                                <option>{item}</option>
+                              )
+                              ))
+                            }
                         </select></div>
                         <div className="col-md-4"><label className="labels">Visible To</label><select className="form-control form-control-sm" name="visible_to" onChange={(e)=>setdeal({...deal,visible_to:e.target.value})}>
                         <option>{deal.visible_to}</option>
