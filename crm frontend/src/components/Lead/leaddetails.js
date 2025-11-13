@@ -135,7 +135,6 @@ const[allleaddataforsearch,setallleaddataforsearch]=useState([])
     
     try {
 
-      
        const params = new URLSearchParams();
             params.append("page", page);
             params.append("limit", limit);
@@ -157,8 +156,7 @@ const[allleaddataforsearch,setallleaddataforsearch]=useState([])
       setcountall(resp.data.total)
       settotalpages(resp.data.totalPages)
 
-      setSearchParams({ page, limit });
-       await get_matched_deals()
+       setSearchParams({ page, limit });
     } catch (error) {
       console.log(error);
     }finally
@@ -3092,7 +3090,7 @@ const handlepropertyunitstypesChange = (event) => {
 
         const[allunitsdetails,setallunitsdetails]=useState([])
       
-        const get_matched_deals=() => {
+        useEffect(() => {
           const updateLeads = async () => {
             if (dealdata.length === 0 || data.length === 0) return;
         
@@ -3831,8 +3829,8 @@ const handlepropertyunitstypesChange = (event) => {
                          
                       deal.available_for === availableFor &&  
                         (propertytype && unitData.category && propertytype.some(pt => unitData.category.includes(pt))) &&
-                        // (subtype && unitData.sub_category && subtype.includes(unitData.sub_category)) &&
-                        // (unit_type.includes(unittype)) &&
+                        (subtype && unitData.sub_category && subtype.includes(unitData.sub_category)) &&
+                        (unit_type.includes(unittype)) &&
                       (
                         (facing && unitData.facing && facing.includes(unitData.facing)) ||
                         (road && unitData.road && road.includes(unitData.road)) ||
@@ -3887,8 +3885,7 @@ const handlepropertyunitstypesChange = (event) => {
           };
         
           updateLeads();
-        }
-      
+        }, [data, dealdata,alltaskdata]);
         
 
         useEffect(() => {
