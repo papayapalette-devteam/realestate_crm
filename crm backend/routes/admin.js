@@ -135,6 +135,7 @@ const {
   updateMany,
   dealupdatemany,
   getGroupedDatadeal,
+  view_all_deal,
 } = require("../controllers/add_deal");
 const uploadFields = require("../middlewares/multifile");
 const upload1 = require("../middlewares/multifile");
@@ -294,6 +295,7 @@ router.put("/addinventory/:name", uploadFields, update_projectaddunit);
 //router.post('/adddeal',upload.any('preview'),add_deal)
 router.post("/adddeal", add_deal);
 router.get("/viewdeal", view_deal);
+router.get("/view-all-deal", view_all_deal);
 router.get("/viewdealbyid/:_id", view_deal_Byid);
 router.get("/viewdealbystage/:stage", view_deal_Bystage);
 router.get("/viewdealbyproject/:project", view_deal_Byproject);

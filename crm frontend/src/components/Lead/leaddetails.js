@@ -135,6 +135,7 @@ const[allleaddataforsearch,setallleaddataforsearch]=useState([])
     
     try {
 
+      
        const params = new URLSearchParams();
             params.append("page", page);
             params.append("limit", limit);
@@ -156,7 +157,8 @@ const[allleaddataforsearch,setallleaddataforsearch]=useState([])
       setcountall(resp.data.total)
       settotalpages(resp.data.totalPages)
 
-       setSearchParams({ page, limit });
+      setSearchParams({ page, limit });
+       await get_matched_deals()
     } catch (error) {
       console.log(error);
     }finally
@@ -3001,7 +3003,7 @@ const handlepropertyunitstypesChange = (event) => {
         {
           
           try {
-            const resp=await api.get('viewdeal')
+            const resp=await api.get('view-all-deal')
             const all=(resp.data.deal)
             setdealdata(all)
           } catch (error) {
@@ -3015,7 +3017,6 @@ const handlepropertyunitstypesChange = (event) => {
           fetchdealdata()
 
         },[])
-
 
         function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
           lat1 = parseFloat(lat1);
@@ -3090,11 +3091,8 @@ const handlepropertyunitstypesChange = (event) => {
       
 
         const[allunitsdetails,setallunitsdetails]=useState([])
-        const [taskforactivity, settaskforactivity] = useState([]);
-        console.log(taskforactivity);
-        
-        
-        useEffect(() => {
+      
+        const get_matched_deals=() => {
           const updateLeads = async () => {
             if (dealdata.length === 0 || data.length === 0) return;
         
@@ -3105,10 +3103,10 @@ const handlepropertyunitstypesChange = (event) => {
             
               const unitDetails = res.data;
               setallunitsdetails(res.data)
-        
+              console.log(res);
+              
               
              
-              
               // 2. Process all leads
               const updatedleads = await Promise.all(
                 data.map(async (singlelead) => {
@@ -3798,9 +3796,7 @@ const handlepropertyunitstypesChange = (event) => {
                     const unitData = unitInfo?.unitData;
                     if (!unitData) continue;
 
-                    console.log(unitData);
-                    
-        
+                  
                     const distance = getDistanceFromLatLonInKm(unitData.lattitude, unitData.langitude, leadlat, leadlong);
                     const unitsize = unitData.size;
                     const match = unitsize?.match(/^([\d.]+)\s+([^\(]+)\s+\(([\d.]+)\s+Sq\s+Yard\)/);
@@ -3830,8 +3826,7 @@ const handlepropertyunitstypesChange = (event) => {
                     //   )
                     // ) 
 
-                 
-                  
+            
                       if (
                          
                       deal.available_for === availableFor &&  
@@ -3852,9 +3847,8 @@ const handlepropertyunitstypesChange = (event) => {
                     )
                     {
                       matcheddeals.push(deal);
-                    
-                      
                      
+
                     }
                   }
                 
@@ -3869,6 +3863,7 @@ const handlepropertyunitstypesChange = (event) => {
                   };
                 })
               );
+  
     
     
               // 3. Update all leads (PUT)
@@ -3876,6 +3871,8 @@ const handlepropertyunitstypesChange = (event) => {
               try {
                 await api.put('bulkupdate', { leads: updatedleads });
                 console.log('All leads updated successfully');
+                // fetchdata(currentPage, itemsPerPage, activeFilters);
+                
               } catch (err) {
                 console.error('Error updating leads:', err);
               }
@@ -3890,7 +3887,8 @@ const handlepropertyunitstypesChange = (event) => {
           };
         
           updateLeads();
-        }, [data, dealdata,alltaskdata]);
+        }
+      
         
 
         useEffect(() => {

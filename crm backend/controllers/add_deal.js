@@ -222,6 +222,23 @@ else if (field === "usize" && Array.isArray(filter.checked) && filter.checked.le
   }
 };
 
+const view_all_deal = async (req, res) => {
+  try {
+    const resp = await adddeal
+      .find()
+      .select("project block unit_number available_for expected_price"); // ✅ select fields correctly
+
+    res.status(200).send({
+      message: "Deal details fetched successfully",
+      deal: resp,
+    });
+  } catch (error) {
+    console.error("Error in view_all_deal:", error);
+    res.status(500).send({ success: false, message: error.message });
+  }
+};
+
+
 
 
 
@@ -420,19 +437,19 @@ else if (field === "usize" && Array.isArray(filter.checked) && filter.checked.le
                         const getUnitDetails = async (req, res) => {
                         try {
                             const { deals } = req.body;
-
-
+                         
                             const unitDetails = await Promise.all(
                             deals.map(async (deal) => {
-                               
+                          
                                 try {
                                 const response = await axios.get(
                                     `${process.env.API_URL}/viewprojectforinventories/${deal.project}/${deal.unit_number}/${deal.block}`
                                 );
+                             
                                
-                                
                                 const unitData = response.data?.project?.add_unit?.[0] || null;
-
+                             
+                                
                                 return {
                                    
                                     unitData,
@@ -587,5 +604,5 @@ const getGroupedDatadeal = async (req, res) => {
 
     module.exports={add_deal,view_deal,view_deal_Bystage,remove_deal,update_deal,view_deal_Byid,update_dealbysingle,update_dealbyowner,
         update_dealbyprojectandunit,view_deal_Byproject,update_dealbyprojectandunitforownerdetails,getUnitDetails,dealupdatemany,
-        getGroupedDatadeal
+        getGroupedDatadeal,view_all_deal
     };

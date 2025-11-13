@@ -983,7 +983,7 @@ const update_project = async (req, res) => {
 const view_projectforinventories = async (req, res) => {
   try {
     // Retrieve project_name, block, and unit_no from request params or body
-    const { project_name, block, unit_no } = req.params; // Assuming you are sending these in the request body
+    const { project_name,  unit_no,block, } = req.params; // Assuming you are sending these in the request body
 
     // Perform the query on the project model and filter the add_unit array using $elemMatch
     // const project = await addproject.findOne(
@@ -1001,6 +1001,8 @@ const view_projectforinventories = async (req, res) => {
     //   }
     // )
 
+  
+    
     const project = await addproject
       .findOne(
         {
