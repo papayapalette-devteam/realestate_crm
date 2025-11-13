@@ -3823,8 +3823,8 @@ const handlepropertyunitstypesChange = (event) => {
                     //     (distance <= range)
                     //   )
                     // ) 
-
-            
+                 
+                    
                       if (
                          
                       deal.available_for === availableFor &&  
