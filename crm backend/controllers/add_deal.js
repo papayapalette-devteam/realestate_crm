@@ -449,6 +449,7 @@ const view_all_deal = async (req, res) => {
                                
                                 const unitData = response.data?.project?.add_unit?.[0] || null;
                              
+                               
                                 
                                 return {
                                    

@@ -168,6 +168,40 @@ const[allleaddataforsearch,setallleaddataforsearch]=useState([])
   useEffect(()=>{fetchdata()},[])
   useEffect(()=>{fetchdatabystage_incomingcount()},[])
  
+
+const hasRunRef = useRef(false);
+
+useEffect(() => {
+  const updateLeadsAndRefresh = async () => {
+    if (!data || data.length === 0 || hasRunRef.current) return; // skip if no data or already ran
+
+    try {
+      setIsLoading(true);
+
+      // Call backend to update matched deals
+      const resp=await api.post("/matched-deals", { leads: data });
+
+      console.log(resp);
+      
+
+      // Refetch leads after updating
+      await fetchdata(currentPage, itemsPerPage, activeFilters, logged_user?.name);
+
+      hasRunRef.current = true; // mark as run
+
+    } catch (err) {
+      console.error("Error updating leads:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  updateLeadsAndRefresh();
+}, [data]); // ⚡ run whenever data changes, but effect executes only once
+
+
+
+
   
   // ===============================================filter code start==================================================================
   
@@ -3090,1028 +3124,1030 @@ const handlepropertyunitstypesChange = (event) => {
 
         const[allunitsdetails,setallunitsdetails]=useState([])
       
-        useEffect(() => {
-          const updateLeads = async () => {
-            if (dealdata.length === 0 || data.length === 0) return;
+        // useEffect(() => {
+        //   const updateLeads = async () => {
+        //     if (dealdata.length === 0 || data.length === 0) return;
         
-            try {
-              setIsLoading(true)
-              // 1. Fetch all unit details for all deals in one API call
-              const res = await api.post('/getUnitDetails', { deals: dealdata });
+        //     try {
+        //       setIsLoading(true)
+        //       // 1. Fetch all unit details for all deals in one API call
+        //       const res = await api.post('/getUnitDetails', { deals: dealdata });
             
-              const unitDetails = res.data;
-              setallunitsdetails(res.data)
-              console.log(res);
+        //       const unitDetails = res.data;
+        //       setallunitsdetails(res.data)
+        //       console.log(res);
               
               
              
-              // 2. Process all leads
-              const updatedleads = await Promise.all(
-                data.map(async (singlelead) => {
-                  const fullname = `${singlelead.title} ${singlelead.first_name} ${singlelead.last_name}`.trim();
+        //       // 2. Process all leads
+        //       const updatedleads = await Promise.all(
+        //         data.map(async (singlelead) => {
+        //           const fullname = `${singlelead.title} ${singlelead.first_name} ${singlelead.last_name}`.trim();
 
-                  const leadscoretaskdata = alltaskdata.filter((item) => {
-                    return fullname === item.lead;
-                  });
+        //           const leadscoretaskdata = alltaskdata.filter((item) => {
+        //             return fullname === item.lead;
+        //           });
 
                  
              
-                  const availableFor = singlelead.requirment === 'Buy' ? 'Sale' : singlelead.requirment;
-                  const minprice = parseFloat(singlelead.budget_min);
-                  const maxprice = parseFloat(singlelead.budget_max);
-                  const minsize = parseFloat(singlelead.minimum_area);
-                  const maxsize = parseFloat(singlelead.maximum_area);
-                  const areaproject = singlelead.area_project;
-                  const block = singlelead.block3;
-                  const specificunit = singlelead.specific_unit;
-                  const leadlat = singlelead.lattitude;
-                  const leadlong = singlelead.longitude;
-                  const propertytype = singlelead.property_type;
-                  const subtype = singlelead.sub_type;
-                  const unit_type = singlelead.unit_type || [];
-                  const facing = singlelead.facing;
-                  const road = singlelead.road;
-                  const direction = singlelead.direction;
-                  const range = singlelead.range;
+        //           const availableFor = singlelead.requirment === 'Buy' ? 'Sale' : singlelead.requirment;
+        //           const minprice = parseFloat(singlelead.budget_min);
+        //           const maxprice = parseFloat(singlelead.budget_max);
+        //           const minsize = parseFloat(singlelead.minimum_area);
+        //           const maxsize = parseFloat(singlelead.maximum_area);
+        //           const areaproject = singlelead.area_project;
+        //           const block = singlelead.block3;
+        //           const specificunit = singlelead.specific_unit;
+        //           const leadlat = singlelead.lattitude;
+        //           const leadlong = singlelead.longitude;
+        //           const propertytype = singlelead.property_type;
+        //           const subtype = singlelead.sub_type;
+        //           const unit_type = singlelead.unit_type || [];
+        //           const facing = singlelead.facing;
+        //           const road = singlelead.road;
+        //           const direction = singlelead.direction;
+        //           const range = singlelead.range;
 
                
-                  const matcheddeals = [];
-                  let score = 0;
-                  let leadstage=""
+        //           const matcheddeals = [];
+        //           let score = 0;
+        //           let leadstage=""
 
-                  if (leadscoretaskdata.length >=1) {
+        //           if (leadscoretaskdata.length >=1) {
                    
-                    leadscoredata.forEach((item) => {
-                      leadscoretaskdata.forEach((item1) => {
-                        if (item1.activity_type.trim() === "Call") {
+        //             leadscoredata.forEach((item) => {
+        //               leadscoretaskdata.forEach((item1) => {
+        //                 if (item1.activity_type.trim() === "Call") {
                      
-                          if (
-                            item1.activity_type.trim() === item.available_for.trim() &&
-                            item1.direction.trim() === item.direction.trim() &&
-                            item1.reason.trim() === item.reason.trim() &&
-                            item1.status.trim() === item.status.trim() &&
-                            item1.result.trim() === item.result.trim()
-                          ) 
+        //                   if (
+        //                     item1.activity_type.trim() === item.available_for.trim() &&
+        //                     item1.direction.trim() === item.direction.trim() &&
+        //                     item1.reason.trim() === item.reason.trim() &&
+        //                     item1.status.trim() === item.status.trim() &&
+        //                     item1.result.trim() === item.result.trim()
+        //                   ) 
                           
         
-                          {
-                            const formMap = {
-                              "Call Scheduled Form":"Call scheduled",
-                              "Mail Scheduled Form":"Mail scheduled",
-                              "Meeting Scheduled Form":"Meeting scheduled",
-                              "Site Visit Scheduled Form":"Sitevisit scheduled",
-                              "Call Completed Form":"Call",
-                              "Mail Completed Form":"Mail",
-                              "Meeting Completed Form":"Meeting",
-                              "Site Visit Completed Form":"SiteVisit",
-                              "Negotiation Form": "Negotiation",
-                              "Requirment Form": "Requirement",
-                            };
-                            const requirements = item.stage_requirment || [];
-                            const incompleteForms = [];
-                            const usedFormDates = new Set();
+        //                   {
+        //                     const formMap = {
+        //                       "Call Scheduled Form":"Call scheduled",
+        //                       "Mail Scheduled Form":"Mail scheduled",
+        //                       "Meeting Scheduled Form":"Meeting scheduled",
+        //                       "Site Visit Scheduled Form":"Sitevisit scheduled",
+        //                       "Call Completed Form":"Call",
+        //                       "Mail Completed Form":"Mail",
+        //                       "Meeting Completed Form":"Meeting",
+        //                       "Site Visit Completed Form":"SiteVisit",
+        //                       "Negotiation Form": "Negotiation",
+        //                       "Requirment Form": "Requirement",
+        //                     };
+        //                     const requirements = item.stage_requirment || [];
+        //                     const incompleteForms = [];
+        //                     const usedFormDates = new Set();
 
-                            requirements.forEach((formName) => {
-                              const expectedRequirment = formMap[formName]?.toLowerCase();
+        //                     requirements.forEach((formName) => {
+        //                       const expectedRequirment = formMap[formName]?.toLowerCase();
 
-                              if (expectedRequirment === "sitevisit" || expectedRequirment === "meeting" || expectedRequirment === "call" || expectedRequirment === "mail") {
-                             const match = leadscoretaskdata?.find((form) => {
+        //                       if (expectedRequirment === "sitevisit" || expectedRequirment === "meeting" || expectedRequirment === "call" || expectedRequirment === "mail") {
+        //                      const match = leadscoretaskdata?.find((form) => {
                             
-                                  const formDate = new Date(form.date);
-                                  const itemDate = new Date(item1.date);
-                                  // Zero the time part
-                                      itemDate.setHours(0, 0, 0, 0);
-                                      formDate.setHours(0, 0, 0, 0);
-                                  const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
+        //                           const formDate = new Date(form.date);
+        //                           const itemDate = new Date(item1.date);
+        //                           // Zero the time part
+        //                               itemDate.setHours(0, 0, 0, 0);
+        //                               formDate.setHours(0, 0, 0, 0);
+        //                           const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
                                  
-                                  return (
-                                    form.activity_type?.toLowerCase() === expectedRequirment &&
-                                    form.complete === "true" &&
-                                    itemDate <= formDate &&
-                                    !usedFormDates.has(formKey)
-                                  );
-                                });
+        //                           return (
+        //                             form.activity_type?.toLowerCase() === expectedRequirment &&
+        //                             form.complete === "true" &&
+        //                             itemDate <= formDate &&
+        //                             !usedFormDates.has(formKey)
+        //                           );
+        //                         });
                        
-                              if (match) {
-                                const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
-                                usedFormDates.add(formKey); // ✅ Mark as used
-                                 console.log(usedFormDates);
+        //                       if (match) {
+        //                         const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
+        //                         usedFormDates.add(formKey); // ✅ Mark as used
+        //                          console.log(usedFormDates);
                               
-                              } else {
-                                incompleteForms.push(formName);
-                                 // ❌ No match found for this requirement
-                              }
-                            }
+        //                       } else {
+        //                         incompleteForms.push(formName);
+        //                          // ❌ No match found for this requirement
+        //                       }
+        //                     }
                           
-                               if (expectedRequirment === "call scheduled" || expectedRequirment === "mail scheduled" || expectedRequirment === "meeting scheduled" || expectedRequirment === "sitevisit scheduled") {
+        //                        if (expectedRequirment === "call scheduled" || expectedRequirment === "mail scheduled" || expectedRequirment === "meeting scheduled" || expectedRequirment === "sitevisit scheduled") {
                         
                             
-                                const match = leadscoretaskdata?.find((form) => {
-                                  const formDate = new Date(form.due_date ? form.due_date : form.start_date );
-                                  const itemDate = new Date(item1.due_date ? item1.due_date : item1.start_date);
-                                  // Zero the time part
-                                      itemDate.setHours(0, 0, 0, 0);
-                                      formDate.setHours(0, 0, 0, 0);
+        //                         const match = leadscoretaskdata?.find((form) => {
+        //                           const formDate = new Date(form.due_date ? form.due_date : form.start_date );
+        //                           const itemDate = new Date(item1.due_date ? item1.due_date : item1.start_date);
+        //                           // Zero the time part
+        //                               itemDate.setHours(0, 0, 0, 0);
+        //                               formDate.setHours(0, 0, 0, 0);
                                      
-                                  const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
-                                  return (
-                                    (form.activity_type?.toLowerCase() === expectedRequirment.split(" ")[0].toLowerCase()) &&
-                                    itemDate <= formDate &&
-                                    !usedFormDates.has(formKey)
-                                  );
-                                });
+        //                           const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
+        //                           return (
+        //                             (form.activity_type?.toLowerCase() === expectedRequirment.split(" ")[0].toLowerCase()) &&
+        //                             itemDate <= formDate &&
+        //                             !usedFormDates.has(formKey)
+        //                           );
+        //                         });
                        
-                              if (match) {
-                                const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
-                                usedFormDates.add(formKey); // ✅ Mark as used
-                              } else {
-                                incompleteForms.push(formName); // ❌ No match found for this requirement
-                              }
-                            }
+        //                       if (match) {
+        //                         const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
+        //                         usedFormDates.add(formKey); // ✅ Mark as used
+        //                       } else {
+        //                         incompleteForms.push(formName); // ❌ No match found for this requirement
+        //                       }
+        //                     }
                            
-                           else if (expectedRequirment === "requirement") {
-                              const match1 = singlelead.requirment?.trim() !== "";
-                              console.log(match1);
-                              if (!match1) {
-                                incompleteForms.push(formName);
-                              }
-                            }
+        //                    else if (expectedRequirment === "requirement") {
+        //                       const match1 = singlelead.requirment?.trim() !== "";
+        //                       console.log(match1);
+        //                       if (!match1) {
+        //                         incompleteForms.push(formName);
+        //                       }
+        //                     }
                             
-                            });
+        //                     });
                           
-                        // After collecting the incomplete forms
-                        if (incompleteForms.length > 0) {
-                        console.log(`Incomplete Forms Detected for ${item1.lead} ${incompleteForms.join(', ')}`)
+        //                 // After collecting the incomplete forms
+        //                 if (incompleteForms.length > 0) {
+        //                 console.log(`Incomplete Forms Detected for ${item1.lead} ${incompleteForms.join(', ')}`)
                  
-                        } 
-                        else {
-                          // If no incomplete forms, directly calculate the score
-                          score += parseFloat(item.score);
-                          leadstage=item.leadstage
-                        }
+        //                 } 
+        //                 else {
+        //                   // If no incomplete forms, directly calculate the score
+        //                   score += parseFloat(item.score);
+        //                   leadstage=item.leadstage
+        //                 }
                         
-                      }
-                    }
+        //               }
+        //             }
 
-                   else if (item1.activity_type.trim() === "Mail") {
+        //            else if (item1.activity_type.trim() === "Mail") {
                      
-                      if (
-                        item1.activity_type.trim() === item.available_for.trim() &&
-                        item1.direction.trim() === item.email_direction.trim() &&
-                        item1.subject.trim()=== item.email_category.trim() &&
-                        item1.status.trim()=== item.email_status.trim()
-                      ) 
+        //               if (
+        //                 item1.activity_type.trim() === item.available_for.trim() &&
+        //                 item1.direction.trim() === item.email_direction.trim() &&
+        //                 item1.subject.trim()=== item.email_category.trim() &&
+        //                 item1.status.trim()=== item.email_status.trim()
+        //               ) 
                       
-                      {
-                       const formMap = {
-                              "Call Scheduled Form":"Call scheduled",
-                              "Mail Scheduled Form":"Mail scheduled",
-                              "Meeting Scheduled Form":"Meeting scheduled",
-                              "Site Visit Scheduled Form":"Sitevisit scheduled",
-                              "Call Completed Form":"Call",
-                              "Mail Completed Form":"Mail",
-                              "Meeting Completed Form":"Meeting",
-                              "Site Visit Completed Form":"SiteVisit",
-                              "Negotiation Form": "Negotiation",
-                              "Requirment Form": "Requirement",
-                            };
-                        const requirements = item.stage_requirment || [];
-                        const incompleteForms = [];
-                        const usedFormDates = new Set();
+        //               {
+        //                const formMap = {
+        //                       "Call Scheduled Form":"Call scheduled",
+        //                       "Mail Scheduled Form":"Mail scheduled",
+        //                       "Meeting Scheduled Form":"Meeting scheduled",
+        //                       "Site Visit Scheduled Form":"Sitevisit scheduled",
+        //                       "Call Completed Form":"Call",
+        //                       "Mail Completed Form":"Mail",
+        //                       "Meeting Completed Form":"Meeting",
+        //                       "Site Visit Completed Form":"SiteVisit",
+        //                       "Negotiation Form": "Negotiation",
+        //                       "Requirment Form": "Requirement",
+        //                     };
+        //                 const requirements = item.stage_requirment || [];
+        //                 const incompleteForms = [];
+        //                 const usedFormDates = new Set();
 
-                        requirements.forEach((formName) => {
-                          const expectedRequirment = formMap[formName]?.toLowerCase();
+        //                 requirements.forEach((formName) => {
+        //                   const expectedRequirment = formMap[formName]?.toLowerCase();
 
-                            if (expectedRequirment === "sitevisit" || expectedRequirment === "meeting" || expectedRequirment === "call" || expectedRequirment === "mail") {
-                             const match = leadscoretaskdata?.find((form) => {
-                                  const formDate = new Date(form.date);
-                                  const itemDate = new Date(item1.date);
-                                  // Zero the time part
-                                      itemDate.setHours(0, 0, 0, 0);
-                                      formDate.setHours(0, 0, 0, 0);
-                                  const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
-                                  return (
-                                    form.activity_type?.toLowerCase() === expectedRequirment &&
-                                    form.complete === "true" &&
-                                    itemDate <= formDate &&
-                                    !usedFormDates.has(formKey)
-                                  );
-                                });
+        //                     if (expectedRequirment === "sitevisit" || expectedRequirment === "meeting" || expectedRequirment === "call" || expectedRequirment === "mail") {
+        //                      const match = leadscoretaskdata?.find((form) => {
+        //                           const formDate = new Date(form.date);
+        //                           const itemDate = new Date(item1.date);
+        //                           // Zero the time part
+        //                               itemDate.setHours(0, 0, 0, 0);
+        //                               formDate.setHours(0, 0, 0, 0);
+        //                           const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
+        //                           return (
+        //                             form.activity_type?.toLowerCase() === expectedRequirment &&
+        //                             form.complete === "true" &&
+        //                             itemDate <= formDate &&
+        //                             !usedFormDates.has(formKey)
+        //                           );
+        //                         });
                        
-                              if (match) {
-                                const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
-                                usedFormDates.add(formKey); // ✅ Mark as used
-                              } else {
-                                incompleteForms.push(formName); // ❌ No match found for this requirement
-                              }
-                            }
+        //                       if (match) {
+        //                         const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
+        //                         usedFormDates.add(formKey); // ✅ Mark as used
+        //                       } else {
+        //                         incompleteForms.push(formName); // ❌ No match found for this requirement
+        //                       }
+        //                     }
                           
-                               if (expectedRequirment === "call scheduled" || expectedRequirment === "mail scheduled" || expectedRequirment === "meeting scheduled" || expectedRequirment === "sitevisit scheduled") {
+        //                        if (expectedRequirment === "call scheduled" || expectedRequirment === "mail scheduled" || expectedRequirment === "meeting scheduled" || expectedRequirment === "sitevisit scheduled") {
                         
                             
-                                const match = leadscoretaskdata?.find((form) => {
-                                  const formDate = new Date(form.due_date ? form.due_date : form.start_date );
-                                  const itemDate = new Date(item1.due_date ? item1.due_date : item1.start_date);
-                                  // Zero the time part
-                                      itemDate.setHours(0, 0, 0, 0);
-                                      formDate.setHours(0, 0, 0, 0);
-                                          console.log(form.activity_type);
-                                  const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
-                                  return (
-                                    (form.activity_type?.toLowerCase() === expectedRequirment.split(" ")[0].toLowerCase()) &&
-                                    itemDate <= formDate &&
-                                    !usedFormDates.has(formKey)
-                                  );
-                                });
+        //                         const match = leadscoretaskdata?.find((form) => {
+        //                           const formDate = new Date(form.due_date ? form.due_date : form.start_date );
+        //                           const itemDate = new Date(item1.due_date ? item1.due_date : item1.start_date);
+        //                           // Zero the time part
+        //                               itemDate.setHours(0, 0, 0, 0);
+        //                               formDate.setHours(0, 0, 0, 0);
+        //                                   console.log(form.activity_type);
+        //                           const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
+        //                           return (
+        //                             (form.activity_type?.toLowerCase() === expectedRequirment.split(" ")[0].toLowerCase()) &&
+        //                             itemDate <= formDate &&
+        //                             !usedFormDates.has(formKey)
+        //                           );
+        //                         });
                        
-                              if (match) {
-                                const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
-                                usedFormDates.add(formKey); // ✅ Mark as used
-                              } else {
-                                incompleteForms.push(formName); // ❌ No match found for this requirement
-                              }
-                            }
+        //                       if (match) {
+        //                         const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
+        //                         usedFormDates.add(formKey); // ✅ Mark as used
+        //                       } else {
+        //                         incompleteForms.push(formName); // ❌ No match found for this requirement
+        //                       }
+        //                     }
                        
-                       else if (expectedRequirment === "requirement") {
-                          const match1 = singlelead.requirment?.trim() !== "";
-                          console.log(match1);
-                          if (!match1) {
-                            incompleteForms.push(formName);
-                          }
-                        }
+        //                else if (expectedRequirment === "requirement") {
+        //                   const match1 = singlelead.requirment?.trim() !== "";
+        //                   console.log(match1);
+        //                   if (!match1) {
+        //                     incompleteForms.push(formName);
+        //                   }
+        //                 }
                         
-                        });
+        //                 });
                       
-                    // After collecting the incomplete forms
+        //             // After collecting the incomplete forms
                      
-                        if (incompleteForms.length > 0) {
-                        console.log(`Incomplete Forms Detected for ${item1.lead} ${incompleteForms.join(', ')}`)
+        //                 if (incompleteForms.length > 0) {
+        //                 console.log(`Incomplete Forms Detected for ${item1.lead} ${incompleteForms.join(', ')}`)
                  
-                        }  else {
-                      // If no incomplete forms, directly calculate the score
-                      score += parseFloat(item.email_score);
-                      leadstage=item.leadstage
-                    }
+        //                 }  else {
+        //               // If no incomplete forms, directly calculate the score
+        //               score += parseFloat(item.email_score);
+        //               leadstage=item.leadstage
+        //             }
                     
-                  }
-                }
+        //           }
+        //         }
 
-                else if (item1.activity_type.trim() === "Meeting") {
+        //         else if (item1.activity_type.trim() === "Meeting") {
                      
-                  if (
-                    item1.activity_type.trim() === item.available_for.trim() &&
-                    item1.reason.trim() === item.meeting_reason.trim() &&
-                    item1.status.trim() === item.meeting_status.trim() &&
-                    item1.meeting_result.trim() === item.meeting_result.trim() 
-                  ) 
+        //           if (
+        //             item1.activity_type.trim() === item.available_for.trim() &&
+        //             item1.reason.trim() === item.meeting_reason.trim() &&
+        //             item1.status.trim() === item.meeting_status.trim() &&
+        //             item1.meeting_result.trim() === item.meeting_result.trim() 
+        //           ) 
                   
-                  {
-                    const formMap = {
-                              "Call Scheduled Form":"Call scheduled",
-                              "Mail Scheduled Form":"Mail scheduled",
-                              "Meeting Scheduled Form":"Meeting scheduled",
-                              "Site Visit Scheduled Form":"Sitevisit scheduled",
-                              "Call Completed Form":"Call",
-                              "Mail Completed Form":"Mail",
-                              "Meeting Completed Form":"Meeting",
-                              "Site Visit Completed Form":"SiteVisit",
-                              "Negotiation Form": "Negotiation",
-                              "Requirment Form": "Requirement",
-                            };
-                    const requirements = item.stage_requirment || [];
-                    const incompleteForms = [];
-                    const usedFormDates = new Set();
+        //           {
+        //             const formMap = {
+        //                       "Call Scheduled Form":"Call scheduled",
+        //                       "Mail Scheduled Form":"Mail scheduled",
+        //                       "Meeting Scheduled Form":"Meeting scheduled",
+        //                       "Site Visit Scheduled Form":"Sitevisit scheduled",
+        //                       "Call Completed Form":"Call",
+        //                       "Mail Completed Form":"Mail",
+        //                       "Meeting Completed Form":"Meeting",
+        //                       "Site Visit Completed Form":"SiteVisit",
+        //                       "Negotiation Form": "Negotiation",
+        //                       "Requirment Form": "Requirement",
+        //                     };
+        //             const requirements = item.stage_requirment || [];
+        //             const incompleteForms = [];
+        //             const usedFormDates = new Set();
 
-                    requirements.forEach((formName) => {
-                      const expectedRequirment = formMap[formName]?.toLowerCase();
+        //             requirements.forEach((formName) => {
+        //               const expectedRequirment = formMap[formName]?.toLowerCase();
                      
                       
-                        if (expectedRequirment === "sitevisit" || expectedRequirment === "meeting" || expectedRequirment === "call" || expectedRequirment === "mail") {
-                             const match = leadscoretaskdata?.find((form) => {
-                                  const formDate = new Date(form.date);
-                                  const itemDate = new Date(item1.date);
-                                  // Zero the time part
-                                      itemDate.setHours(0, 0, 0, 0);
-                                      formDate.setHours(0, 0, 0, 0);
-                                  const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
-                                  return (
-                                    form.activity_type?.toLowerCase() === expectedRequirment &&
-                                    form.complete === "true" &&
-                                    itemDate <= formDate &&
-                                    !usedFormDates.has(formKey)
-                                  );
-                                });
+        //                 if (expectedRequirment === "sitevisit" || expectedRequirment === "meeting" || expectedRequirment === "call" || expectedRequirment === "mail") {
+        //                      const match = leadscoretaskdata?.find((form) => {
+        //                           const formDate = new Date(form.date);
+        //                           const itemDate = new Date(item1.date);
+        //                           // Zero the time part
+        //                               itemDate.setHours(0, 0, 0, 0);
+        //                               formDate.setHours(0, 0, 0, 0);
+        //                           const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
+        //                           return (
+        //                             form.activity_type?.toLowerCase() === expectedRequirment &&
+        //                             form.complete === "true" &&
+        //                             itemDate <= formDate &&
+        //                             !usedFormDates.has(formKey)
+        //                           );
+        //                         });
                        
-                              if (match) {
-                                const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
-                                usedFormDates.add(formKey); // ✅ Mark as used
-                              } else {
-                                incompleteForms.push(formName); // ❌ No match found for this requirement
-                              }
-                            }
+        //                       if (match) {
+        //                         const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
+        //                         usedFormDates.add(formKey); // ✅ Mark as used
+        //                       } else {
+        //                         incompleteForms.push(formName); // ❌ No match found for this requirement
+        //                       }
+        //                     }
                           
-                               if (expectedRequirment === "call scheduled" || expectedRequirment === "mail scheduled" || expectedRequirment === "meeting scheduled" || expectedRequirment === "sitevisit scheduled") {
+        //                        if (expectedRequirment === "call scheduled" || expectedRequirment === "mail scheduled" || expectedRequirment === "meeting scheduled" || expectedRequirment === "sitevisit scheduled") {
                         
                             
-                                const match = leadscoretaskdata?.find((form) => {
-                                  const formDate = new Date(form.due_date ? form.due_date : form.start_date );
-                                  const itemDate = new Date(item1.due_date ? item1.due_date : item1.start_date);
-                                  // Zero the time part
-                                      itemDate.setHours(0, 0, 0, 0);
-                                      formDate.setHours(0, 0, 0, 0);
-                                          console.log(form.activity_type);
-                                  const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
-                                  return (
-                                    (form.activity_type?.toLowerCase() === expectedRequirment.split(" ")[0].toLowerCase()) &&
-                                    itemDate <= formDate &&
-                                    !usedFormDates.has(formKey)
-                                  );
-                                });
+        //                         const match = leadscoretaskdata?.find((form) => {
+        //                           const formDate = new Date(form.due_date ? form.due_date : form.start_date );
+        //                           const itemDate = new Date(item1.due_date ? item1.due_date : item1.start_date);
+        //                           // Zero the time part
+        //                               itemDate.setHours(0, 0, 0, 0);
+        //                               formDate.setHours(0, 0, 0, 0);
+        //                                   console.log(form.activity_type);
+        //                           const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
+        //                           return (
+        //                             (form.activity_type?.toLowerCase() === expectedRequirment.split(" ")[0].toLowerCase()) &&
+        //                             itemDate <= formDate &&
+        //                             !usedFormDates.has(formKey)
+        //                           );
+        //                         });
                        
-                              if (match) {
-                                const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
-                                usedFormDates.add(formKey); // ✅ Mark as used
-                              } else {
-                                incompleteForms.push(formName); // ❌ No match found for this requirement
-                              }
-                            }
+        //                       if (match) {
+        //                         const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
+        //                         usedFormDates.add(formKey); // ✅ Mark as used
+        //                       } else {
+        //                         incompleteForms.push(formName); // ❌ No match found for this requirement
+        //                       }
+        //                     }
                    
-                   else if (expectedRequirment === "requirement") {
-                      const match1 = singlelead.requirment?.trim() !== "";
-                      console.log(match1);
-                      if (!match1) {
-                        incompleteForms.push(formName);
-                      }
-                    }
+        //            else if (expectedRequirment === "requirement") {
+        //               const match1 = singlelead.requirment?.trim() !== "";
+        //               console.log(match1);
+        //               if (!match1) {
+        //                 incompleteForms.push(formName);
+        //               }
+        //             }
                     
-                    });
-                 // After collecting the incomplete forms
-                        if (incompleteForms.length > 0) {
-                        console.log(`Incomplete Forms Detected for ${item1.lead} ${incompleteForms.join(', ')}`)
+        //             });
+        //          // After collecting the incomplete forms
+        //                 if (incompleteForms.length > 0) {
+        //                 console.log(`Incomplete Forms Detected for ${item1.lead} ${incompleteForms.join(', ')}`)
                  
-                        } 
-                         else {
-                        // If no incomplete forms, directly calculate the score
-                        score += parseFloat(item.meeting_score);
-                        leadstage=item.leadstage
-                      }
+        //                 } 
+        //                  else {
+        //                 // If no incomplete forms, directly calculate the score
+        //                 score += parseFloat(item.meeting_score);
+        //                 leadstage=item.leadstage
+        //               }
                 
-              }
-            }
+        //       }
+        //     }
 
             
-            else if (item1.activity_type.trim() === "SiteVisit") {
+        //     else if (item1.activity_type.trim() === "SiteVisit") {
                 
                      
-              if (
-                item1.activity_type.trim() === item.available_for.trim() &&
-                item1.sitevisit_type.trim() === item.sitevisit_visittype.trim() &&
-                item1.status.trim() === item.sitevisit_status.trim() &&
-                item1.result.includes(item.sitevisit_result.trim())
-              ) 
+        //       if (
+        //         item1.activity_type.trim() === item.available_for.trim() &&
+        //         item1.sitevisit_type.trim() === item.sitevisit_visittype.trim() &&
+        //         item1.status.trim() === item.sitevisit_status.trim() &&
+        //         item1.result.includes(item.sitevisit_result.trim())
+        //       ) 
               
-              {
+        //       {
                 
-                    const formMap = {
-                              "Call Scheduled Form":"Call scheduled",
-                              "Mail Scheduled Form":"Mail scheduled",
-                              "Meeting Scheduled Form":"Meeting scheduled",
-                              "Site Visit Scheduled Form":"Sitevisit scheduled",
-                              "Call Completed Form":"Call",
-                              "Mail Completed Form":"Mail",
-                              "Meeting Completed Form":"Meeting",
-                              "Site Visit Completed Form":"SiteVisit",
-                              "Negotiation Form": "Negotiation",
-                              "Requirment Form": "Requirement",
-                            };
-                const requirements = item.stage_requirment || [];
-                const incompleteForms = [];
-                  const usedFormDates = new Set();
+        //             const formMap = {
+        //                       "Call Scheduled Form":"Call scheduled",
+        //                       "Mail Scheduled Form":"Mail scheduled",
+        //                       "Meeting Scheduled Form":"Meeting scheduled",
+        //                       "Site Visit Scheduled Form":"Sitevisit scheduled",
+        //                       "Call Completed Form":"Call",
+        //                       "Mail Completed Form":"Mail",
+        //                       "Meeting Completed Form":"Meeting",
+        //                       "Site Visit Completed Form":"SiteVisit",
+        //                       "Negotiation Form": "Negotiation",
+        //                       "Requirment Form": "Requirement",
+        //                     };
+        //         const requirements = item.stage_requirment || [];
+        //         const incompleteForms = [];
+        //           const usedFormDates = new Set();
 
-                requirements.forEach((formName) => {
-                  const expectedRequirment = formMap[formName]?.toLowerCase();
+        //         requirements.forEach((formName) => {
+        //           const expectedRequirment = formMap[formName]?.toLowerCase();
 
-                  if (expectedRequirment === "sitevisit" || expectedRequirment === "meeting" || expectedRequirment === "call" || expectedRequirment === "mail") {
-                             const match = leadscoretaskdata?.find((form) => {
-                                  const formDate = new Date(form.date);
-                                  const itemDate = new Date(item1.date);
-                                  // Zero the time part
-                                      itemDate.setHours(0, 0, 0, 0);
-                                      formDate.setHours(0, 0, 0, 0);
-                                  const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
-                                  return (
-                                    form.activity_type?.toLowerCase() === expectedRequirment &&
-                                    form.complete === "true" &&
-                                    itemDate <= formDate &&
-                                    !usedFormDates.has(formKey)
-                                  );
-                                });
+        //           if (expectedRequirment === "sitevisit" || expectedRequirment === "meeting" || expectedRequirment === "call" || expectedRequirment === "mail") {
+        //                      const match = leadscoretaskdata?.find((form) => {
+        //                           const formDate = new Date(form.date);
+        //                           const itemDate = new Date(item1.date);
+        //                           // Zero the time part
+        //                               itemDate.setHours(0, 0, 0, 0);
+        //                               formDate.setHours(0, 0, 0, 0);
+        //                           const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
+        //                           return (
+        //                             form.activity_type?.toLowerCase() === expectedRequirment &&
+        //                             form.complete === "true" &&
+        //                             itemDate <= formDate &&
+        //                             !usedFormDates.has(formKey)
+        //                           );
+        //                         });
                        
-                              if (match) {
-                                const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
-                                usedFormDates.add(formKey); // ✅ Mark as used
-                              } else {
-                                incompleteForms.push(formName); // ❌ No match found for this requirement
-                              }
-                            }
+        //                       if (match) {
+        //                         const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
+        //                         usedFormDates.add(formKey); // ✅ Mark as used
+        //                       } else {
+        //                         incompleteForms.push(formName); // ❌ No match found for this requirement
+        //                       }
+        //                     }
                           
-                               if (expectedRequirment === "call scheduled" || expectedRequirment === "mail scheduled" || expectedRequirment === "meeting scheduled" || expectedRequirment === "sitevisit scheduled") {
+        //                        if (expectedRequirment === "call scheduled" || expectedRequirment === "mail scheduled" || expectedRequirment === "meeting scheduled" || expectedRequirment === "sitevisit scheduled") {
                         
                             
-                                const match = leadscoretaskdata?.find((form) => {
-                                  const formDate = new Date(form.due_date ? form.due_date : form.start_date );
-                                  const itemDate = new Date(item1.due_date ? item1.due_date : item1.start_date);
-                                  // Zero the time part
-                                      itemDate.setHours(0, 0, 0, 0);
-                                      formDate.setHours(0, 0, 0, 0);
-                                          console.log(form.activity_type);
-                                  const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
-                                  return (
-                                    (form.activity_type?.toLowerCase() === expectedRequirment.split(" ")[0].toLowerCase()) &&
-                                    itemDate <= formDate &&
-                                    !usedFormDates.has(formKey)
-                                  );
-                                });
+        //                         const match = leadscoretaskdata?.find((form) => {
+        //                           const formDate = new Date(form.due_date ? form.due_date : form.start_date );
+        //                           const itemDate = new Date(item1.due_date ? item1.due_date : item1.start_date);
+        //                           // Zero the time part
+        //                               itemDate.setHours(0, 0, 0, 0);
+        //                               formDate.setHours(0, 0, 0, 0);
+        //                                   console.log(form.activity_type);
+        //                           const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
+        //                           return (
+        //                             (form.activity_type?.toLowerCase() === expectedRequirment.split(" ")[0].toLowerCase()) &&
+        //                             itemDate <= formDate &&
+        //                             !usedFormDates.has(formKey)
+        //                           );
+        //                         });
                        
-                              if (match) {
-                                const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
-                                usedFormDates.add(formKey); // ✅ Mark as used
-                              } else {
-                                incompleteForms.push(formName); // ❌ No match found for this requirement
-                              }
-                            }
+        //                       if (match) {
+        //                         const formKey = `${match.activity_type?.toLowerCase()}_${match.date}`;
+        //                         usedFormDates.add(formKey); // ✅ Mark as used
+        //                       } else {
+        //                         incompleteForms.push(formName); // ❌ No match found for this requirement
+        //                       }
+        //                     }
                
-               else if (expectedRequirment === "requirement") {
-                  const match1 = singlelead.requirment?.trim() !== "";
+        //        else if (expectedRequirment === "requirement") {
+        //           const match1 = singlelead.requirment?.trim() !== "";
                  
-                  if (!match1) {
-                    incompleteForms.push(formName);
-                  }
-                }
+        //           if (!match1) {
+        //             incompleteForms.push(formName);
+        //           }
+        //         }
                 
-                });
+        //         });
               
-                   // After collecting the incomplete forms
-                        if (incompleteForms.length > 0) {
-                        console.log(`Incomplete Forms Detected for ${item1.lead} ${incompleteForms.join(', ')}`)
+        //            // After collecting the incomplete forms
+        //                 if (incompleteForms.length > 0) {
+        //                 console.log(`Incomplete Forms Detected for ${item1.lead} ${incompleteForms.join(', ')}`)
                  
-                        }  else 
-                        {
-                    // If no incomplete forms, directly calculate the score
-                    score += parseFloat(item.sitevisit_score);
-                    leadstage=item.leadstage
-                  }
+        //                 }  else 
+        //                 {
+        //             // If no incomplete forms, directly calculate the score
+        //             score += parseFloat(item.sitevisit_score);
+        //             leadstage=item.leadstage
+        //           }
             
-          }
-        }
+        //   }
+        // }
 
 
-                      });
-                    });
-                  }
+        //               });
+        //             });
+        //           }
                   
-                  if (
-                    Array.isArray(areaproject) &&
-                    areaproject.length > 0 &&
-                    !(areaproject.length === 1 && areaproject[0].trim() === '')
-                  ) {
-                    score += 2;
-                  }
+        //           if (
+        //             Array.isArray(areaproject) &&
+        //             areaproject.length > 0 &&
+        //             !(areaproject.length === 1 && areaproject[0].trim() === '')
+        //           ) {
+        //             score += 2;
+        //           }
 
-                  if (
-                    Array.isArray(unit_type) &&
-                    unit_type.length > 0 &&
-                    !(unit_type.length === 1 && unit_type[0].trim() === '')
+        //           if (
+        //             Array.isArray(unit_type) &&
+        //             unit_type.length > 0 &&
+        //             !(unit_type.length === 1 && unit_type[0].trim() === '')
 
-                  ) {
-                    score += 2;
-                  }
+        //           ) {
+        //             score += 2;
+        //           }
 
-                  if (
-                    Array.isArray(propertytype) &&
-                    propertytype.length > 0 &&
-                    !(propertytype.length === 1 && propertytype[0].trim() === '')
-                  ) {
-                    score += 2;
-                  }
+        //           if (
+        //             Array.isArray(propertytype) &&
+        //             propertytype.length > 0 &&
+        //             !(propertytype.length === 1 && propertytype[0].trim() === '')
+        //           ) {
+        //             score += 2;
+        //           }
 
-                  if (
-                    Array.isArray(subtype) &&
-                    subtype.length > 0 &&
-                    !(subtype.length === 1 && subtype[0].trim() === '')
-                  ) {
-                    score += 2;
-                  }
+        //           if (
+        //             Array.isArray(subtype) &&
+        //             subtype.length > 0 &&
+        //             !(subtype.length === 1 && subtype[0].trim() === '')
+        //           ) {
+        //             score += 2;
+        //           }
 
-                  if (singlelead.unit_type2 && singlelead.unit_type2 !="") score += 1;
+        //           if (singlelead.unit_type2 && singlelead.unit_type2 !=="") score += 1;
 
-                  if (
-                    Array.isArray(facing) &&
-                    facing.length > 0 &&
-                    !(facing.length === 1 && facing[0].trim() === '')
-                  ) {
-                    score += 1;
-                  }
+        //           if (
+        //             Array.isArray(facing) &&
+        //             facing.length > 0 &&
+        //             !(facing.length === 1 && facing[0].trim() === '')
+        //           ) {
+        //             score += 1;
+        //           }
 
-                  if (
-                    Array.isArray(road) &&
-                    road.length > 0 &&
-                    !(road.length === 1 && road[0].trim() === '')
-                  ) {
-                    score += 1;
-                  }
+        //           if (
+        //             Array.isArray(road) &&
+        //             road.length > 0 &&
+        //             !(road.length === 1 && road[0].trim() === '')
+        //           ) {
+        //             score += 1;
+        //           }
         
-                  if (direction && direction !="") score += 1;
+        //           if (direction && direction !="") score += 1;
 
-                  if (singlelead.timeline) {
-                    switch (singlelead.timeline) {
-                      case "Urgent":
-                        score +=10;
-                        break;
-                      case "Within 15 days":
-                        score +=7;
-                        break;
-                      case "More then 1 month":
-                        score +=5;
-                        break;
-                      case "Not Confirmed":
-                        break;
-                      default:
-                        // optional: no points if timeline is unknown or empty
-                        break;
-                    }
-                  }
+        //           if (singlelead.timeline) {
+        //             switch (singlelead.timeline) {
+        //               case "Urgent":
+        //                 score +=10;
+        //                 break;
+        //               case "Within 15 days":
+        //                 score +=7;
+        //                 break;
+        //               case "More then 1 month":
+        //                 score +=5;
+        //                 break;
+        //               case "Not Confirmed":
+        //                 break;
+        //               default:
+        //                 // optional: no points if timeline is unknown or empty
+        //                 break;
+        //             }
+        //           }
 
-                  if (singlelead.funding) {
-                    switch (singlelead.funding) {
-                      case "Self Funding":
-                        score +=5;
-                        break;
-                        case "Home Loan":
-                        case "Loan Against Property":
-                        case "Personal Loan":
-                        case "Business Loan":
-                        score +=3;
-                        break;
-                      default:
-                        // optional: no points if timeline is unknown or empty
-                        break;
-                    }
-                  }
+        //           if (singlelead.funding) {
+        //             switch (singlelead.funding) {
+        //               case "Self Funding":
+        //                 score +=5;
+        //                 break;
+        //                 case "Home Loan":
+        //                 case "Loan Against Property":
+        //                 case "Personal Loan":
+        //                 case "Business Loan":
+        //                 score +=3;
+        //                 break;
+        //               default:
+        //                 // optional: no points if timeline is unknown or empty
+        //                 break;
+        //             }
+        //           }
 
-                  if (singlelead.transaction_type) {
-                    switch (singlelead.transaction_type) {
-                      case "Full White":
-                        score +=2;
-                        break;
-                        case "Collecter Rate":
-                        score +=5;
-                        break;
-                        case "Flexiable":
-                        score +=5;
-                        break;
-                        default:
-                        // optional: no points if timeline is unknown or empty
-                        break;
-                    }
-                  }
+        //           if (singlelead.transaction_type) {
+        //             switch (singlelead.transaction_type) {
+        //               case "Full White":
+        //                 score +=2;
+        //                 break;
+        //                 case "Collecter Rate":
+        //                 score +=5;
+        //                 break;
+        //                 case "Flexiable":
+        //                 score +=5;
+        //                 break;
+        //                 default:
+        //                 // optional: no points if timeline is unknown or empty
+        //                 break;
+        //             }
+        //           }
 
               
-                    if(singlelead.range<=1 || areaproject.length ==1)
-                    {
-                      score +=10;
-                    }
-                    else if(singlelead.range >1 && singlelead.range<=3  || areaproject.length>1 && areaproject.length<=3)
-                      {
-                        score +=8;
-                      }
-                     else if(singlelead.range>3 && singlelead.range<=6 || areaproject.length>3 &&  areaproject.length<=6)
-                        {
-                          score +=5;
-                        }
-                       else if(singlelead.range>=6 || areaproject.length >=6)
-                          {
-                            score +=2;
-                          }
+        //             if(singlelead.range<=1 || areaproject.length ==1)
+        //             {
+        //               score +=10;
+        //             }
+        //             else if(singlelead.range >1 && singlelead.range<=3  || areaproject.length>1 && areaproject.length<=3)
+        //               {
+        //                 score +=8;
+        //               }
+        //              else if(singlelead.range>3 && singlelead.range<=6 || areaproject.length>3 &&  areaproject.length<=6)
+        //                 {
+        //                   score +=5;
+        //                 }
+        //                else if(singlelead.range>=6 || areaproject.length >=6)
+        //                   {
+        //                     score +=2;
+        //                   }
                     
                   
 
-                  if (singlelead.source) {
-                    switch (singlelead.source) {
-                      case "Old Client":
-                        score +=5;
-                        break;
-                      case "Walk-In":
-                        score +=5;
-                        break;
-                      case "Friends":
-                        score +=5;
-                        break;
-                      case "Relative":
-                        score +=5;
-                        break;
-                      case "Hoarding":
-                        score +=4;
-                        break;
-                      case "Channel Partner":
-                        score +=5;
-                        break;
-                      case "SMS":
-                        score +=2;
-                        break;
-                      case "News Paper":
-                        score +=3;
-                        break;
-                      case "Whatsapp":
-                        score +=3;
-                        break;
-                      case "Website":
-                        score +=4;
-                        break;
-                      case "Cold Calling":
-                        score +=3;
-                        break;
-                      case "Facebook":
-                        score +=1;
-                        break;
-                      case "Instagram":
-                        score +=1;
-                        break;
-                      case "Google":
-                        score +=2;
-                        break;
-                      case "X":
-                        score +=1;
-                        break;
-                      case "Linkedin":
-                        score +=2;
-                        break;
-                      case "99 Acre":
-                        score +=3;
-                        break;
-                      case "Magicbricks":
-                        score +=3;
-                        break;
-                      case "Common Floor":
-                        score +=3;
-                        break;
-                      case "Sulekha":
-                        score +=3;
-                        break;
-                      case "Housing":
-                        score +=3;
-                        break;
-                      case "Square Yard":
-                        score +=3;
-                        break;
-                      case "OLX":
-                        score +=3;
-                        break;
-                      case "Real Estate India":
-                        score +=3;
-                        break;
-                        default:
-                        // optional: no points if timeline is unknown or empty
-                        break;
-                    }
-                  }
+        //           if (singlelead.source) {
+        //             switch (singlelead.source) {
+        //               case "Old Client":
+        //                 score +=5;
+        //                 break;
+        //               case "Walk-In":
+        //                 score +=5;
+        //                 break;
+        //               case "Friends":
+        //                 score +=5;
+        //                 break;
+        //               case "Relative":
+        //                 score +=5;
+        //                 break;
+        //               case "Hoarding":
+        //                 score +=4;
+        //                 break;
+        //               case "Channel Partner":
+        //                 score +=5;
+        //                 break;
+        //               case "SMS":
+        //                 score +=2;
+        //                 break;
+        //               case "News Paper":
+        //                 score +=3;
+        //                 break;
+        //               case "Whatsapp":
+        //                 score +=3;
+        //                 break;
+        //               case "Website":
+        //                 score +=4;
+        //                 break;
+        //               case "Cold Calling":
+        //                 score +=3;
+        //                 break;
+        //               case "Facebook":
+        //                 score +=1;
+        //                 break;
+        //               case "Instagram":
+        //                 score +=1;
+        //                 break;
+        //               case "Google":
+        //                 score +=2;
+        //                 break;
+        //               case "X":
+        //                 score +=1;
+        //                 break;
+        //               case "Linkedin":
+        //                 score +=2;
+        //                 break;
+        //               case "99 Acre":
+        //                 score +=3;
+        //                 break;
+        //               case "Magicbricks":
+        //                 score +=3;
+        //                 break;
+        //               case "Common Floor":
+        //                 score +=3;
+        //                 break;
+        //               case "Sulekha":
+        //                 score +=3;
+        //                 break;
+        //               case "Housing":
+        //                 score +=3;
+        //                 break;
+        //               case "Square Yard":
+        //                 score +=3;
+        //                 break;
+        //               case "OLX":
+        //                 score +=3;
+        //                 break;
+        //               case "Real Estate India":
+        //                 score +=3;
+        //                 break;
+        //                 default:
+        //                 // optional: no points if timeline is unknown or empty
+        //                 break;
+        //             }
+        //           }
 
 
 
 
-                  for (const deal of dealdata) {
+        //           for (const deal of dealdata) {
                 
                   
-                    const unitInfo = unitDetails.find(
-                      (u) =>
-                        u.unitData?.project_name?.toLowerCase().trim() === deal.project?.toLowerCase().trim() &&
-                        u.unitData?.unit_no?.toString().trim() === deal.unit_number?.toString().trim() &&
-                        u.unitData?.block?.toLowerCase().trim() === deal.block?.toLowerCase().trim()
-                    );
+        //             const unitInfo = unitDetails.find(
+        //               (u) =>
+        //                 u.unitData?.project_name?.toLowerCase().trim() === deal.project?.toLowerCase().trim() &&
+        //                 u.unitData?.unit_no?.toString().trim() === deal.unit_number?.toString().trim() &&
+        //                 u.unitData?.block?.toLowerCase().trim() === deal.block?.toLowerCase().trim()
+        //             );
                     
                 
                     
-                    const unitData = unitInfo?.unitData;
-                    if (!unitData) continue;
+        //             const unitData = unitInfo?.unitData;
+        //             if (!unitData) continue;
 
                   
-                    const distance = getDistanceFromLatLonInKm(unitData.lattitude, unitData.langitude, leadlat, leadlong);
-                    const unitsize = unitData.size;
-                    const match = unitsize?.match(/^([\d.]+)\s+([^\(]+)\s+\(([\d.]+)\s+Sq\s+Yard\)/);
+        //             const distance = getDistanceFromLatLonInKm(unitData.lattitude, unitData.langitude, leadlat, leadlong);
+        //             const unitsize = unitData.size;
+        //             const match = unitsize?.match(/^([\d.]+)\s+([^\(]+)\s+\(([\d.]+)\s+Sq\s+Yard\)/);
         
-                    let unittype = '';
-                    let size = 0;
-                    if (match) {
-                      unittype = match[1] + " " + match[2].trim();
-                      size = parseFloat(match[3]);
-                    }
+        //             let unittype = '';
+        //             let size = 0;
+        //             if (match) {
+        //               unittype = match[1] + " " + match[2].trim();
+        //               size = parseFloat(match[3]);
+        //             }
     
-                    // if (
-                    //   deal.available_for === availableFor &&
-                    //   (
-                    //     (facing && unitData.facing && facing.includes(unitData.facing)) ||
-                    //     (road && unitData.road && road.includes(unitData.road)) ||
-                    //     (direction && unitData.direction && direction === unitData.direction) ||
-                    //     (deal.expected_price >= minprice && deal.expected_price <= maxprice) ||
-                    //     (propertytype && unitData.category && propertytype.some(pt => unitData.category.includes(pt))) ||
-                    //     (subtype && unitData.sub_category && subtype.includes(unitData.sub_category)) ||
-                    //     (areaproject && unitData.project_name && areaproject.includes(unitData.project_name)) ||
-                    //     (block && unitData.block && block.includes(unitData.block)) ||
-                    //     (specificunit && unitData.unit_no && specificunit === unitData.unit_no) ||
-                    //     (unit_type.includes(unittype)) ||
-                    //     (size >= minsize && size <= maxsize) ||
-                    //     (distance <= range)
-                    //   )
-                    // ) 
+        //             // if (
+        //             //   deal.available_for === availableFor &&
+        //             //   (
+        //             //     (facing && unitData.facing && facing.includes(unitData.facing)) ||
+        //             //     (road && unitData.road && road.includes(unitData.road)) ||
+        //             //     (direction && unitData.direction && direction === unitData.direction) ||
+        //             //     (deal.expected_price >= minprice && deal.expected_price <= maxprice) ||
+        //             //     (propertytype && unitData.category && propertytype.some(pt => unitData.category.includes(pt))) ||
+        //             //     (subtype && unitData.sub_category && subtype.includes(unitData.sub_category)) ||
+        //             //     (areaproject && unitData.project_name && areaproject.includes(unitData.project_name)) ||
+        //             //     (block && unitData.block && block.includes(unitData.block)) ||
+        //             //     (specificunit && unitData.unit_no && specificunit === unitData.unit_no) ||
+        //             //     (unit_type.includes(unittype)) ||
+        //             //     (size >= minsize && size <= maxsize) ||
+        //             //     (distance <= range)
+        //             //   )
+        //             // ) 
                  
                     
-                      if (
+        //               if (
                          
-                      deal.available_for === availableFor &&  
-                        (propertytype && unitData.category && propertytype.some(pt => unitData.category.includes(pt))) &&
-                        (subtype && unitData.sub_category && subtype.includes(unitData.sub_category)) &&
-                        (unit_type.includes(unittype)) &&
-                      (
-                        (facing && unitData.facing && facing.includes(unitData.facing)) ||
-                        (road && unitData.road && road.includes(unitData.road)) ||
-                        (direction && unitData.direction && direction === unitData.direction) ||
-                        (deal.expected_price >= minprice && deal.expected_price <= maxprice) ||
-                        (areaproject && unitData.project_name && areaproject.includes(unitData.project_name)) ||
-                        (block && unitData.block && block.includes(unitData.block)) ||
-                        (specificunit && unitData.unit_no && specificunit === unitData.unit_no) ||
-                        (size >= minsize && size <= maxsize) ||
-                        (distance <= range)
-                      )
-                    )
-                    {
-                      matcheddeals.push(deal);
+        //               deal.available_for === availableFor &&  
+        //               (number(deal.expected_price) >= minprice && number(deal.expected_price) <= maxprice) &&
+        //                 // (propertytype && unitData.category && propertytype.some(pt => unitData.category.includes(pt))) &&
+        //                 // (subtype && unitData.sub_category && subtype.includes(unitData.sub_category)) &&
+        //                 // (unit_type.includes(unittype)) &&
+        //               (
+        //                 (facing && unitData.facing && facing.includes(unitData.facing)) ||
+        //                 (road && unitData.road && road.includes(unitData.road)) ||
+        //                 (direction && unitData.direction && direction === unitData.direction) ||
+                        
+        //                 (areaproject && unitData.project_name && areaproject.includes(unitData.project_name)) ||
+        //                 (block && unitData.block && block.includes(unitData.block)) ||
+        //                 (specificunit && unitData.unit_no && specificunit === unitData.unit_no) ||
+        //                 (size >= minsize && size <= maxsize) ||
+        //                 (distance <= range)
+        //               )
+        //             )
+        //             {
+
+        //               matcheddeals.push(deal);
                      
 
-                    }
-                  }
+        //             }
+        //           }
                 
                   
         
-                  return {
-                    ...singlelead,
-                    matcheddeals: matcheddeals.map((lead) => lead._id),
-                    matchingdeal: matcheddeals.length,
-                    score:score,
-                    stage:leadstage
-                  };
-                })
-              );
+        //           return {
+        //             ...singlelead,
+        //             matcheddeals: matcheddeals.map((lead) => lead._id),
+        //             matchingdeal: matcheddeals.length,
+        //             score:score,
+        //             stage:leadstage
+        //           };
+        //         })
+        //       );
   
     
     
-              // 3. Update all leads (PUT)
+        //       // 3. Update all leads (PUT)
              
-              try {
-                await api.put('bulkupdate', { leads: updatedleads });
-                console.log('All leads updated successfully');
-                // fetchdata(currentPage, itemsPerPage, activeFilters);
+        //       try {
+        //         await api.put('bulkupdate', { leads: updatedleads });
+        //         console.log('All leads updated successfully');
+        //         // fetchdata(currentPage, itemsPerPage, activeFilters);
                 
-              } catch (err) {
-                console.error('Error updating leads:', err);
-              }
-            } 
-            catch (err) {
-              console.error('Error updating leads:', err);
-            }
-            finally
-            {
-              setIsLoading(false)
-            }
-          };
+        //       } catch (err) {
+        //         console.error('Error updating leads:', err);
+        //       }
+        //     } 
+        //     catch (err) {
+        //       console.error('Error updating leads:', err);
+        //     }
+        //     finally
+        //     {
+        //       setIsLoading(false)
+        //     }
+        //   };
         
-          updateLeads();
-        }, [data, dealdata,alltaskdata]);
+        //   updateLeads();
+        // }, [data, dealdata,alltaskdata]);
         
 
-        useEffect(() => {
-  const updateLeads = async () => {
-    if (dealdata.length === 0 || data.length === 0) return;
+//         useEffect(() => {
+//   const updateLeads = async () => {
+//     if (dealdata.length === 0 || data.length === 0) return;
 
-    try {
-      setIsLoading(true);
+//     try {
+//       setIsLoading(true);
 
-      // 1️⃣ Fetch all unit details for all deals in one API call
-      const res = await api.post("/getUnitDetails", { deals: dealdata });
-      const unitDetails = res.data;
+//       // 1️⃣ Fetch all unit details for all deals in one API call
+//       const res = await api.post("/getUnitDetails", { deals: dealdata });
+//       const unitDetails = res.data;
 
-      // 2️⃣ Preprocess alltaskdata into a map for fast lookup by lead name
-      const taskMap = new Map();
-      alltaskdata.forEach((task) => {
-        if (!taskMap.has(task.lead)) taskMap.set(task.lead, []);
-        taskMap.get(task.lead).push(task);
-      });
+//       // 2️⃣ Preprocess alltaskdata into a map for fast lookup by lead name
+//       const taskMap = new Map();
+//       alltaskdata.forEach((task) => {
+//         if (!taskMap.has(task.lead)) taskMap.set(task.lead, []);
+//         taskMap.get(task.lead).push(task);
+//       });
 
-      // 3️⃣ Form map for requirement checking
-      const formMap = {
-        "Call Scheduled Form": "Call scheduled",
-        "Mail Scheduled Form": "Mail scheduled",
-        "Meeting Scheduled Form": "Meeting scheduled",
-        "Site Visit Scheduled Form": "SiteVisit scheduled",
-        "Call Completed Form": "Call",
-        "Mail Completed Form": "Mail",
-        "Meeting Completed Form": "Meeting",
-        "Site Visit Completed Form": "SiteVisit",
-        "Negotiation Form": "Negotiation",
-        "Requirment Form": "Requirement",
-      };
+//       // 3️⃣ Form map for requirement checking
+//       const formMap = {
+//         "Call Scheduled Form": "Call scheduled",
+//         "Mail Scheduled Form": "Mail scheduled",
+//         "Meeting Scheduled Form": "Meeting scheduled",
+//         "Site Visit Scheduled Form": "SiteVisit scheduled",
+//         "Call Completed Form": "Call",
+//         "Mail Completed Form": "Mail",
+//         "Meeting Completed Form": "Meeting",
+//         "Site Visit Completed Form": "SiteVisit",
+//         "Negotiation Form": "Negotiation",
+//         "Requirment Form": "Requirement",
+//       };
 
-      // 4️⃣ Process all leads
-      const updatedLeads = await Promise.all(
-        data.map(async (singlelead) => {
-          const fullname = `${singlelead.title} ${singlelead.first_name} ${singlelead.last_name}`.trim();
-          const leadscoretaskdata = taskMap.get(fullname) || [];
+//       // 4️⃣ Process all leads
+//       const updatedLeads = await Promise.all(
+//         data.map(async (singlelead) => {
+//           const fullname = `${singlelead.title} ${singlelead.first_name} ${singlelead.last_name}`.trim();
+//           const leadscoretaskdata = taskMap.get(fullname) || [];
 
-          const availableFor = singlelead.requirment === "Buy" ? "Sale" : singlelead.requirment;
-          const minprice = parseFloat(singlelead.budget_min);
-          const maxprice = parseFloat(singlelead.budget_max);
-          const minsize = parseFloat(singlelead.minimum_area);
-          const maxsize = parseFloat(singlelead.maximum_area);
-          const areaproject = singlelead.area_project || [];
-          const block = singlelead.block3 || [];
-          const specificunit = singlelead.specific_unit;
-          const leadlat = singlelead.lattitude;
-          const leadlong = singlelead.longitude;
-          const propertytype = singlelead.property_type || [];
-          const subtype = singlelead.sub_type || [];
-          const unit_type = singlelead.unit_type || [];
-          const facing = singlelead.facing || [];
-          const road = singlelead.road || [];
-          const direction = singlelead.direction || "";
-          const range = singlelead.range;
+//           const availableFor = singlelead.requirment === "Buy" ? "Sale" : singlelead.requirment;
+//           const minprice = parseFloat(singlelead.budget_min);
+//           const maxprice = parseFloat(singlelead.budget_max);
+//           const minsize = parseFloat(singlelead.minimum_area);
+//           const maxsize = parseFloat(singlelead.maximum_area);
+//           const areaproject = singlelead.area_project || [];
+//           const block = singlelead.block3 || [];
+//           const specificunit = singlelead.specific_unit;
+//           const leadlat = singlelead.lattitude;
+//           const leadlong = singlelead.longitude;
+//           const propertytype = singlelead.property_type || [];
+//           const subtype = singlelead.sub_type || [];
+//           const unit_type = singlelead.unit_type || [];
+//           const facing = singlelead.facing || [];
+//           const road = singlelead.road || [];
+//           const direction = singlelead.direction || "";
+//           const range = singlelead.range;
 
-          let score = 0;
-          let leadstage = "";
+//           let score = 0;
+//           let leadstage = "";
 
-          // 5️⃣ Task/Form scoring
-          leadscoretaskdata.forEach((task) => {
-            const incompleteForms = [];
-            const usedFormDates = new Set();
+//           // 5️⃣ Task/Form scoring
+//           leadscoretaskdata.forEach((task) => {
+//             const incompleteForms = [];
+//             const usedFormDates = new Set();
 
-            (task.stage_requirment || []).forEach((formName) => {
-              const expectedRequirment = formMap[formName]?.toLowerCase();
-              if (!expectedRequirment) return;
+//             (task.stage_requirment || []).forEach((formName) => {
+//               const expectedRequirment = formMap[formName]?.toLowerCase();
+//               if (!expectedRequirment) return;
 
-              // Check completion for Call/Mail/Meeting/SiteVisit forms
-              if (["call", "mail", "meeting", "sitevisit"].includes(expectedRequirment)) {
-                const match = leadscoretaskdata.find((form) => {
-                  const formDate = new Date(form.date);
-                  const taskDate = new Date(task.date);
-                  formDate.setHours(0, 0, 0, 0);
-                  taskDate.setHours(0, 0, 0, 0);
-                  const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
-                  return (
-                    form.activity_type?.toLowerCase() === expectedRequirment &&
-                    form.complete === "true" &&
-                    taskDate <= formDate &&
-                    !usedFormDates.has(formKey)
-                  );
-                });
-                if (match) {
-                  usedFormDates.add(`${match.activity_type?.toLowerCase()}_${match.date}`);
-                } else incompleteForms.push(formName);
-              }
+//               // Check completion for Call/Mail/Meeting/SiteVisit forms
+//               if (["call", "mail", "meeting", "sitevisit"].includes(expectedRequirment)) {
+//                 const match = leadscoretaskdata.find((form) => {
+//                   const formDate = new Date(form.date);
+//                   const taskDate = new Date(task.date);
+//                   formDate.setHours(0, 0, 0, 0);
+//                   taskDate.setHours(0, 0, 0, 0);
+//                   const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
+//                   return (
+//                     form.activity_type?.toLowerCase() === expectedRequirment &&
+//                     form.complete === "true" &&
+//                     taskDate <= formDate &&
+//                     !usedFormDates.has(formKey)
+//                   );
+//                 });
+//                 if (match) {
+//                   usedFormDates.add(`${match.activity_type?.toLowerCase()}_${match.date}`);
+//                 } else incompleteForms.push(formName);
+//               }
 
-              // Check scheduled forms
-              if (
-                [
-                  "call scheduled",
-                  "mail scheduled",
-                  "meeting scheduled",
-                  "sitevisit scheduled",
-                ].includes(expectedRequirment)
-              ) {
-                const match = leadscoretaskdata.find((form) => {
-                  const formDate = new Date(form.due_date || form.start_date);
-                  const taskDate = new Date(task.due_date || task.start_date);
-                  formDate.setHours(0, 0, 0, 0);
-                  taskDate.setHours(0, 0, 0, 0);
-                  const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
-                  return taskDate <= formDate && !usedFormDates.has(formKey);
-                });
-                if (match) usedFormDates.add(`${match.activity_type?.toLowerCase()}_${match.date}`);
-                else incompleteForms.push(formName);
-              }
+//               // Check scheduled forms
+//               if (
+//                 [
+//                   "call scheduled",
+//                   "mail scheduled",
+//                   "meeting scheduled",
+//                   "sitevisit scheduled",
+//                 ].includes(expectedRequirment)
+//               ) {
+//                 const match = leadscoretaskdata.find((form) => {
+//                   const formDate = new Date(form.due_date || form.start_date);
+//                   const taskDate = new Date(task.due_date || task.start_date);
+//                   formDate.setHours(0, 0, 0, 0);
+//                   taskDate.setHours(0, 0, 0, 0);
+//                   const formKey = `${form.activity_type?.toLowerCase()}_${form.date}`;
+//                   return taskDate <= formDate && !usedFormDates.has(formKey);
+//                 });
+//                 if (match) usedFormDates.add(`${match.activity_type?.toLowerCase()}_${match.date}`);
+//                 else incompleteForms.push(formName);
+//               }
 
-              // Check requirement form
-              if (expectedRequirment === "requirement" && singlelead.requirment?.trim() === "") {
-                incompleteForms.push(formName);
-              }
-            });
+//               // Check requirement form
+//               if (expectedRequirment === "requirement" && singlelead.requirment?.trim() === "") {
+//                 incompleteForms.push(formName);
+//               }
+//             });
 
-            if (incompleteForms.length === 0) {
-              score += parseFloat(task.score || 0);
-              leadstage = task.leadstage || leadstage;
-            }
-          });
+//             if (incompleteForms.length === 0) {
+//               score += parseFloat(task.score || 0);
+//               leadstage = task.leadstage || leadstage;
+//             }
+//           });
 
-          // 6️⃣ Lead property & preference scoring
-          if (Array.isArray(areaproject) && areaproject.length > 0 && !(areaproject.length === 1 && areaproject[0].trim() === "")) score += 2;
-          if (Array.isArray(unit_type) && unit_type.length > 0 && !(unit_type.length === 1 && unit_type[0].trim() === "")) score += 2;
-          if (Array.isArray(propertytype) && propertytype.length > 0 && !(propertytype.length === 1 && propertytype[0].trim() === "")) score += 2;
-          if (Array.isArray(subtype) && subtype.length > 0 && !(subtype.length === 1 && subtype[0].trim() === "")) score += 2;
-          if (singlelead.unit_type2) score += 1;
-          if (Array.isArray(facing) && facing.length > 0 && !(facing.length === 1 && facing[0].trim() === "")) score += 1;
-          if (Array.isArray(road) && road.length > 0 && !(road.length === 1 && road[0].trim() === "")) score += 1;
-          if (direction) score += 1;
+//           // 6️⃣ Lead property & preference scoring
+//           if (Array.isArray(areaproject) && areaproject.length > 0 && !(areaproject.length === 1 && areaproject[0].trim() === "")) score += 2;
+//           if (Array.isArray(unit_type) && unit_type.length > 0 && !(unit_type.length === 1 && unit_type[0].trim() === "")) score += 2;
+//           if (Array.isArray(propertytype) && propertytype.length > 0 && !(propertytype.length === 1 && propertytype[0].trim() === "")) score += 2;
+//           if (Array.isArray(subtype) && subtype.length > 0 && !(subtype.length === 1 && subtype[0].trim() === "")) score += 2;
+//           if (singlelead.unit_type2) score += 1;
+//           if (Array.isArray(facing) && facing.length > 0 && !(facing.length === 1 && facing[0].trim() === "")) score += 1;
+//           if (Array.isArray(road) && road.length > 0 && !(road.length === 1 && road[0].trim() === "")) score += 1;
+//           if (direction) score += 1;
 
-          // Timeline scoring
-          switch (singlelead.timeline) {
-            case "Urgent": score += 10; break;
-            case "Within 15 days": score += 7; break;
-            case "More then 1 month": score += 5; break;
-          }
+//           // Timeline scoring
+//           switch (singlelead.timeline) {
+//             case "Urgent": score += 10; break;
+//             case "Within 15 days": score += 7; break;
+//             case "More then 1 month": score += 5; break;
+//           }
 
-          // Funding scoring
-          switch (singlelead.funding) {
-            case "Self Funding": score += 5; break;
-            case "Home Loan":
-            case "Loan Against Property":
-            case "Personal Loan":
-            case "Business Loan": score += 3; break;
-          }
+//           // Funding scoring
+//           switch (singlelead.funding) {
+//             case "Self Funding": score += 5; break;
+//             case "Home Loan":
+//             case "Loan Against Property":
+//             case "Personal Loan":
+//             case "Business Loan": score += 3; break;
+//           }
 
-          // Transaction type scoring
-          switch (singlelead.transaction_type) {
-            case "Full White": score += 2; break;
-            case "Collecter Rate":
-            case "Flexiable": score += 5; break;
-          }
+//           // Transaction type scoring
+//           switch (singlelead.transaction_type) {
+//             case "Full White": score += 2; break;
+//             case "Collecter Rate":
+//             case "Flexiable": score += 5; break;
+//           }
 
-          // Range scoring
-          if (singlelead.range <= 1 || areaproject.length === 1) score += 10;
-          else if ((singlelead.range > 1 && singlelead.range <= 3) || (areaproject.length > 1 && areaproject.length <= 3)) score += 8;
-          else if ((singlelead.range > 3 && singlelead.range <= 6) || (areaproject.length > 3 && areaproject.length <= 6)) score += 5;
-          else if (singlelead.range >= 6 || areaproject.length >= 6) score += 2;
+//           // Range scoring
+//           if (singlelead.range <= 1 || areaproject.length === 1) score += 10;
+//           else if ((singlelead.range > 1 && singlelead.range <= 3) || (areaproject.length > 1 && areaproject.length <= 3)) score += 8;
+//           else if ((singlelead.range > 3 && singlelead.range <= 6) || (areaproject.length > 3 && areaproject.length <= 6)) score += 5;
+//           else if (singlelead.range >= 6 || areaproject.length >= 6) score += 2;
 
-          // Source scoring
-          const sourceScores = {
-            "Old Client": 5, "Walk-In": 5, "Friends": 5, "Relative": 5, "Hoarding": 4, "Channel Partner": 5,
-            SMS: 2, "News Paper": 3, Whatsapp: 3, Website: 4, "Cold Calling": 3, Facebook: 1, Instagram: 1,
-            Google: 2, X: 1, Linkedin: 2, "99 Acre": 3, Magicbricks: 3, "Common Floor": 3, Sulekha: 3,
-            Housing: 3, "Square Yard": 3, OLX: 3, "Real Estate India": 3,
-          };
-          score += sourceScores[singlelead.source] || 0;
+//           // Source scoring
+//           const sourceScores = {
+//             "Old Client": 5, "Walk-In": 5, "Friends": 5, "Relative": 5, "Hoarding": 4, "Channel Partner": 5,
+//             SMS: 2, "News Paper": 3, Whatsapp: 3, Website: 4, "Cold Calling": 3, Facebook: 1, Instagram: 1,
+//             Google: 2, X: 1, Linkedin: 2, "99 Acre": 3, Magicbricks: 3, "Common Floor": 3, Sulekha: 3,
+//             Housing: 3, "Square Yard": 3, OLX: 3, "Real Estate India": 3,
+//           };
+//           score += sourceScores[singlelead.source] || 0;
 
-          // 7️⃣ Deal matching
-          const matchedDeals = dealdata.filter((deal) => {
-            const unitInfo = unitDetails.find(
-              (u) =>
-                u.unitData?.project_name?.toLowerCase().trim() === deal.project?.toLowerCase().trim() &&
-                u.unitData?.unit_no?.toString().trim() === deal.unit_number?.toString().trim() &&
-                u.unitData?.block?.toLowerCase().trim() === deal.block?.toLowerCase().trim()
-            );
-            if (!unitInfo?.unitData) return false;
+//           // 7️⃣ Deal matching
+//           const matchedDeals = dealdata.filter((deal) => {
+//             const unitInfo = unitDetails.find(
+//               (u) =>
+//                 u.unitData?.project_name?.toLowerCase().trim() === deal.project?.toLowerCase().trim() &&
+//                 u.unitData?.unit_no?.toString().trim() === deal.unit_number?.toString().trim() &&
+//                 u.unitData?.block?.toLowerCase().trim() === deal.block?.toLowerCase().trim()
+//             );
+//             if (!unitInfo?.unitData) return false;
 
-            const unitData = unitInfo.unitData;
-            const distance = getDistanceFromLatLonInKm(unitData.lattitude, unitData.langitude, leadlat, leadlong);
-            const match = unitData.size?.match(/^([\d.]+)\s+([^\(]+)\s+\(([\d.]+)\s+Sq\s+Yard\)/) || [];
-            const size = parseFloat(match[3]) || 0;
+//             const unitData = unitInfo.unitData;
+//             const distance = getDistanceFromLatLonInKm(unitData.lattitude, unitData.langitude, leadlat, leadlong);
+//             const match = unitData.size?.match(/^([\d.]+)\s+([^\(]+)\s+\(([\d.]+)\s+Sq\s+Yard\)/) || [];
+//             const size = parseFloat(match[3]) || 0;
 
-            return (
-              deal.available_for === availableFor &&
-              propertytype.some((pt) => unitData.category.includes(pt)) &&
-              (
-                (facing.includes(unitData.facing)) ||
-                (road.includes(unitData.road)) ||
-                (direction === unitData.direction) ||
-                (deal.expected_price >= minprice && deal.expected_price <= maxprice) ||
-                (areaproject.includes(unitData.project_name)) ||
-                (block.includes(unitData.block)) ||
-                (specificunit === unitData.unit_no) ||
-                (unit_type.includes(match[1] + " " + match[2])) ||
-                (size >= minsize && size <= maxsize) ||
-                (distance <= range)
-              )
-            );
-          });
+//             return (
+//               deal.available_for === availableFor &&
+//               propertytype.some((pt) => unitData.category.includes(pt)) &&
+//               (
+//                 (facing.includes(unitData.facing)) ||
+//                 (road.includes(unitData.road)) ||
+//                 (direction === unitData.direction) ||
+//                 (deal.expected_price >= minprice && deal.expected_price <= maxprice) ||
+//                 (areaproject.includes(unitData.project_name)) ||
+//                 (block.includes(unitData.block)) ||
+//                 (specificunit === unitData.unit_no) ||
+//                 (unit_type.includes(match[1] + " " + match[2])) ||
+//                 (size >= minsize && size <= maxsize) ||
+//                 (distance <= range)
+//               )
+//             );
+//           });
 
-          return {
-            ...singlelead,
-            matcheddeals: matchedDeals.map((d) => d._id),
-            matchingdeal: matchedDeals.length,
-            score,
-            stage: leadstage,
-          };
-        })
-      );
+//           return {
+//             ...singlelead,
+//             matcheddeals: matchedDeals.map((d) => d._id),
+//             matchingdeal: matchedDeals.length,
+//             score,
+//             stage: leadstage,
+//           };
+//         })
+//       );
 
-      // 8️⃣ Bulk update leads
-      await api.put("bulkupdate", { leads: updatedLeads });
-      console.log("All leads updated successfully");
-    } catch (err) {
-      console.error("Error updating leads:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+//       // 8️⃣ Bulk update leads
+//       await api.put("bulkupdate", { leads: updatedLeads });
+//       console.log("All leads updated successfully");
+//     } catch (err) {
+//       console.error("Error updating leads:", err);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
 
-  updateLeads();
-}, [data, dealdata, alltaskdata]);
+//   updateLeads();
+// }, [data, dealdata, alltaskdata]);
 
         
 

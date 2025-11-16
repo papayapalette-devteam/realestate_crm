@@ -176,6 +176,7 @@ const {
   view_sitevisit_task,
   view_meeting_task,
 } = require("../controllers/all_task_list");
+const matched_deals = require("../controllers/Lead/find_matched_deals");
 
 const router = express.Router();
 
@@ -423,6 +424,6 @@ router.post("/addfeedback", add_feedback);
 
 
 
-
+router.post("/matched-deals", matched_deals);
 
 module.exports = router;
