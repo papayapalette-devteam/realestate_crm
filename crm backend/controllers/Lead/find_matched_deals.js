@@ -95,12 +95,17 @@ const matched_deals = async (req, res) => {
         const direction = lead.direction;
         const unit_type_array = lead.unit_type || [];
 
+       
+        
+
         if (
           deal.available_for === availableFor &&
           Number(deal.expected_price) >= minprice &&
           Number(deal.expected_price) <= maxprice &&
           (lead.property_type?.length === 0 || (unit.category && lead.property_type.some(pt => unit.category.includes(pt)))) &&
           (lead.sub_type?.length === 0 || (Array.isArray(unit.sub_category) && unit.sub_category.some(uc => lead.sub_type.some(st => st.toLowerCase().trim() === uc.toLowerCase().trim())))) &&
+          (unit_type_array === 0 || (Array.isArray(unit_type_array) && unit_type_array.some(uc => uc.toLowerCase().trim() === unittype.toLowerCase().trim()))) &&
+
           (
             (facing && unit.facing && facing.includes(unit.facing)) ||
             (road && unit.road && road.includes(unit.road)) ||
