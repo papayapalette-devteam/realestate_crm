@@ -381,7 +381,7 @@ function Allprojects() {
                         { id: 'location', name: 'Location' },
                         { id: 'block', name: 'Block' },
                         { id: 'category', name: ' Category' },
-                        { id: 'unit_type', name: 'Unit Type ' },
+                        // { id: 'unit_type', name: 'Unit Type ' },
                         { id: 'user', name: 'User ' },
                         { id: 'date', name: 'Date' },
                       ];
@@ -893,7 +893,7 @@ function Allprojects() {
 
 
 
-            <button onClick={handleAddColumnClick1} className="form-control form-control-sm form-control form-control-sm-sm" style={{width:"150px",marginLeft:"1%"}}>Add Fields</button>
+
         
        
        

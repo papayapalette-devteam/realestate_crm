@@ -178,7 +178,7 @@ const view_contact = async (req, res) => {
     // 🔹 Fetch contacts with filters + pagination
     const contacts = await addcontact
       .find(matchStage)
-      .sort({ createdAt: -1 })
+       .sort({ updatedAt: -1, createdAt: -1 }) 
       .skip(skip)
       .limit(limit);
 
@@ -815,6 +815,7 @@ const getGroupedData = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 
 
 

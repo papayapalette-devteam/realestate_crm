@@ -144,11 +144,7 @@ function Fetchcontact() {
               );
                     Swal.fire({
                           title: '🎉 Selected items deleted successfully...!',
-                          html: `
-                          <img src="https://cdn.vectorstock.com/i/500p/63/50/thumbs-up-smiley-face-icon-vector-10176350.jpg"
-                          alt="Thumbs up" 
-                          width="80" 
-                          style="margin-bottom: 0px;"/>`,
+                          icon:"success",
                           width: '400px', // makes it small
                           padding: '1.2em',
                           showConfirmButton: true,
@@ -4001,7 +3997,8 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
                 ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpF7BrBLmrMYynVUzMxsgv8AtIEkFjStD6cFRNYv1to6LupNkPMgkEaEzD5-HIGrjcPj4&usqp=CAU" // hover image
                 : "https://static.thenounproject.com/png/1416596-200.png" // default image
             }
-            onClick={handleShow1}
+            // onClick={handleShow1}
+            onClick={()=>navigate('/edit-contact',{state:{selectedItems}})}
             onMouseEnter={() => setIsHoveringEdit(true)}
             onMouseLeave={() => setIsHoveringEdit(false)}
             alt="edit"
