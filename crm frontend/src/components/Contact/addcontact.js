@@ -978,17 +978,27 @@ const handleOwnerChange = (event) => {
   setcontact({ ...contact, owner: selectedOwners });
 };
     return ( 
-        <div>
-            <div id='h'><Header1/></div>
-            <div onMouseOver={mousehover} onMouseOut={mouseout}><Sidebar1/></div>
+         <div>
+      <div id="h">
+        <Header1 />
+      </div>
+      <div>
+        <Sidebar1 />
+      </div>
            
            <div style={{padding:"50px"}}>
-            <div className="container rounded bg-white mt-5 mb-5" style={{width:"70%",marginLeft:"250px"}}>
+             <div className="container  bg-white mt-5 mb-5 ml-200px w-[80%] shadow-2xl rounded-xl">
     <div className="row" id='r' style={{transition:"0.5s"}}>
         <div className="col-md-12 border-right">
             <div className="p-3 py-5">
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h4 className="text-right" style={{cursor:"pointer"}} onClick={()=>window.location.reload()}>Add Contact</h4>
+                               <h1
+  className="text-right text-xl font-bold"
+  style={{ cursor: "pointer" }}
+  onClick={() => window.location.reload()}
+>
+  Add Contact
+</h1>
                     <input type='checkbox' id='checkform'  style={{marginLeft:"60%",height:"20px",width:"20px"}}  checked={isChecked} 
                     onChange={handleCheckboxChange}  />
                     <label style={{paddingTop:"5px"}}>only show required field</label>
@@ -1172,9 +1182,9 @@ const handleOwnerChange = (event) => {
          
              <div style={{display: isChecked ? "none" : "flex",gap:"80px"}}>
               
-               <span  id='basic' onClick={basicdetails} style={{cursor:'pointer',fontWeight:"bold",width:"200px"}}>Basic Details|</span>
-                {/* <span  id='professional' onClick={professionaldetails} style={{cursor:'pointer',fontWeight:"bold"}}>Professional Details</span > */}
-                <span   id='other' onClick={otherdetails} style={{cursor:'pointer',fontWeight:"bold",width:"200px"}}>Personal Details|</span > 
+               <span  id='basic' onClick={basicdetails} style={{cursor:'pointer',fontWeight:"bold",width:"200px"}}>Basic Details</span>
+                
+                <span   id='other' onClick={otherdetails} style={{cursor:'pointer',fontWeight:"bold",width:"200px"}}>Personal Details</span > 
                
 						    <span style={{marginLeft:"200px",width:"31%"}}><input type="text" class="form-control form-control-sm" placeholder={time} value={time} style={{border:"none"}}/></span>
 					</div>

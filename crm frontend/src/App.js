@@ -2,11 +2,11 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
-import EditContact from "./components/Contact/edit_contact.js";
-import Configuration from "./components/Settings/configuration.js";
+
 
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
+const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
 const Call_task_complete_form = lazy(() => import("./components/call_task_complete_form"));
 const Call_task_form = lazy(() => import("./components/Task/task_form.js"));
 const Dashboard = lazy(() => import("./components/dashboard"));
@@ -51,8 +51,8 @@ const Leadrequirmentform = lazy(() => import("./components/leadrequirmentform.js
 const Alldeals = lazy(() => import("./components/Deal/alldeals.js"));
 const Allprojects = lazy(() => import("./components/Project/allprojects.js"));
 const Allunits = lazy(() => import("./components/Units/allunits.js"));
-
 const AddSubAdmin = lazy(() => import("./components/Settings/Add_Sub_Admin.js"));
+const FormTitle = lazy(() => import("./components/Settings/Configuration/form_title.js"));
 
 function App() {
   return (
@@ -110,7 +110,7 @@ function App() {
             <Route path="/allprojects" element={<Allprojects />} />
             <Route path="/allunits" element={<Allunits />} />
             <Route path="/add-sub-admin" element={<AddSubAdmin />} />
-            {/* <Route path="/configuration" element={<Configuration />} /> */}
+            <Route path="/configuration-form-title" element={<FormTitle/>} />
             </Route>
           </Routes>
         </div>

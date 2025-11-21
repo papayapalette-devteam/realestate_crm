@@ -566,11 +566,8 @@ console.log(contact);
 
       const resp = await api.put(`updatecontact/${selectedItem}`, contact);
       toast.success("contact updated", { autoClose: 2000 });
-      // setTimeout(() => {
-      //   navigate('/contactdetails')
-      // }, 2000);
       setTimeout(() => {
-        window.location.reload();
+        navigate('/contactdetails')
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -2260,16 +2257,7 @@ console.log(contact);
 
   const [isChecked, setIsChecked] = useState(false);
 
-  const handleCheckboxChange = (event) => {
-    setIsChecked(event.target.checked);
-  };
 
-  const mousehover = () => {
-    document.getElementById("r").style.marginLeft = "15%";
-  };
-  const mouseout = () => {
-    document.getElementById("r").style.marginLeft = "0%";
-  };
 
   const asianCountries = [
     "Afghanistan",

@@ -23,9 +23,11 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
 
 //   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isConfigurationMenuOpen, setisConfigurationMenuOpen] = useState(false);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen);
+  const toggleConfigurationMenu = () => setisConfigurationMenuOpen(!isConfigurationMenuOpen);
 
   return (
     <div className="flex flex-col min-h-full ">
@@ -125,10 +127,53 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
               </ul>
             )}
 
+                        {/* Configuration Management */}
+            <li
+              className="flex items-center justify-between hover:bg-gray-700 p-2 rounded-md cursor-pointer"
+              onClick={toggleConfigurationMenu}
+            >
+              <div className="flex items-center space-x-3">
+                <FiSettings size={20} />
+                {isSidebarOpen && <span>Configuration</span>}
+              </div>
+              {isSidebarOpen &&
+                (isConfigurationMenuOpen ? <FiChevronUp /> : <FiChevronDown />)}
+            </li>
+
+            {/* Submenu */}
+            {isConfigurationMenuOpen && (
+              <ul
+                className={`ml-8 mt-1 space-y-1 border-l border-gray-700 pl-3 ${
+                  !isSidebarOpen && "hidden"
+                }`}
+              >
+                <li
+                  onClick={() => navigate("/configuration-form-title")}
+                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  FormTitle
+                </li>
+                <li
+                  onClick={() => navigate("/viewusers")}
+                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  Notifications
+                </li>
+                <li
+                  onClick={() => navigate("/roles")}
+                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  Sales Goals
+                </li>
+              </ul>
+            )}
+
+
+
             {/* Other Menu Items */}
             {[
               { icon: <FiShield />, title: "Permissions", action: () => alert("Permissions") },
-              { icon: <FiSettings />, title: "Configuration", action: () => navigate("/configuration") },
+              
               { icon: <FiDatabase />, title: "Database Backup", action: () => alert("Backup") },
               { icon: <FiBell />, title: "Notifications", action: () => alert("Notifications") },
               { icon: <FiMail />, title: "Create Templates", action: () => navigate("/createtemplets") },
