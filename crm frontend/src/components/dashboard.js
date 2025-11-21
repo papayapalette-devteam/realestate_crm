@@ -250,10 +250,10 @@ const TopDeals = ({ deals }) => (
         </div>
 
         {/* Charts and Activity */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <PipelineChart pipelineData={pipelineData} />
           <RecentActivity activities={activities} />
-        </div>
+        </div> */}
 
         {/* Top Deals and Quick Actions */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">

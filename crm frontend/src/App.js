@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 import EditContact from "./components/Contact/edit_contact.js";
+import Configuration from "./components/Settings/configuration.js";
 
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
@@ -109,6 +110,7 @@ function App() {
             <Route path="/allprojects" element={<Allprojects />} />
             <Route path="/allunits" element={<Allunits />} />
             <Route path="/add-sub-admin" element={<AddSubAdmin />} />
+            {/* <Route path="/configuration" element={<Configuration />} /> */}
             </Route>
           </Routes>
         </div>

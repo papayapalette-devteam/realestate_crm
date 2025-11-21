@@ -28,7 +28,7 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen);
 
   return (
-    <div className="flex flex-col min-h-screen ">
+    <div className="flex flex-col min-h-full ">
       <Header1 />
 
       {/* Mobile Toggle Button */}
@@ -128,7 +128,7 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
             {/* Other Menu Items */}
             {[
               { icon: <FiShield />, title: "Permissions", action: () => alert("Permissions") },
-              { icon: <FiSettings />, title: "System Settings", action: () => alert("System Settings") },
+              { icon: <FiSettings />, title: "Configuration", action: () => navigate("/configuration") },
               { icon: <FiDatabase />, title: "Database Backup", action: () => alert("Backup") },
               { icon: <FiBell />, title: "Notifications", action: () => alert("Notifications") },
               { icon: <FiMail />, title: "Create Templates", action: () => navigate("/createtemplets") },

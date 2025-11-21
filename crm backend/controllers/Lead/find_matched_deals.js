@@ -95,9 +95,6 @@ const matched_deals = async (req, res) => {
         const direction = lead.direction;
         const unit_type_array = lead.unit_type || [];
 
-       
-        
-
         if (
           deal.available_for === availableFor &&
           Number(deal.expected_price) >= minprice &&

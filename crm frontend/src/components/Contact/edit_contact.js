@@ -257,12 +257,12 @@ console.log(contact);
     }));
   }
   const deleteall4 = (index) => {
-    const neweducation = contact.education.filter((_, i) => i !== index);
-    const newdegree = contact.degree.filter((_, i) => i !== index);
-    const newschool_college = contact.school_college.filter(
+    const neweducation = contact?.education?.filter((_, i) => i !== index);
+    const newdegree = contact?.degree?.filter((_, i) => i !== index);
+    const newschool_college = contact?.school_college?.filter(
       (_, i) => i !== index
     );
-    const newaction4 = contact.action4.filter((_, i) => i !== index);
+    const newaction4 = contact?.action4?.filter((_, i) => i !== index);
 
     setcontact({
       ...contact,
@@ -310,10 +310,10 @@ console.log(contact);
     }));
   }
   const deleteall5 = (index) => {
-    const newloan = contact.loan.filter((_, i) => i !== index);
-    const newbank = contact.bank.filter((_, i) => i !== index);
-    const newamount = contact.amount.filter((_, i) => i !== index);
-    const newaction5 = contact.action5.filter((_, i) => i !== index);
+    const newloan = contact?.loan?.filter((_, i) => i !== index);
+    const newbank = contact?.bank?.filter((_, i) => i !== index);
+    const newamount = contact?.amount?.filter((_, i) => i !== index);
+    const newaction5 = contact?.action5?.filter((_, i) => i !== index);
 
     setcontact({
       ...contact,
@@ -359,9 +359,9 @@ console.log(contact);
     }));
   }
   const deleteall6 = (index) => {
-    const newsocial_media = contact.social_media.filter((_, i) => i !== index);
-    const newurl = contact.url.filter((_, i) => i !== index);
-    const newaction6 = contact.action6.filter((_, i) => i !== index);
+    const newsocial_media = contact?.social_media?.filter((_, i) => i !== index);
+    const newurl = contact?.url?.filter((_, i) => i !== index);
+    const newaction6 = contact?.action6?.filter((_, i) => i !== index);
 
     setcontact({
       ...contact,
@@ -398,9 +398,9 @@ console.log(contact);
     }));
   }
   const deleteall7 = (index) => {
-    const newincome = contact.income.filter((_, i) => i !== index);
-    const newamount1 = contact.amount1.filter((_, i) => i !== index);
-    const newaction7 = contact.action7.filter((_, i) => i !== index);
+    const newincome = contact?.income?.filter((_, i) => i !== index);
+    const newamount1 = contact?.amount1?.filter((_, i) => i !== index);
+    const newaction7 = contact?.action7?.filter((_, i) => i !== index);
 
     setcontact({
       ...contact,
@@ -438,10 +438,10 @@ console.log(contact);
     }));
   }
   const deleteall8 = (index) => {
-    const newdocumentno = contact.document_no.filter((_, i) => i !== index);
-    const newdocumentname = contact.document_name.filter((_, i) => i !== index);
-    const newdocumentpic = contact.document_pic.filter((_, i) => i !== index);
-    const newaction8 = contact.action8.filter((_, i) => i !== index);
+    const newdocumentno = contact?.document_no?.filter((_, i) => i !== index);
+    const newdocumentname = contact?.document_name?.filter((_, i) => i !== index);
+    const newdocumentpic = contact?.document_pic?.filter((_, i) => i !== index);
+    const newaction8 = contact?.action8?.filter((_, i) => i !== index);
 
     setcontact({
       ...contact,
@@ -467,30 +467,46 @@ console.log(contact);
       document_name: newdocumentname,
     }));
   };
-  const handledocumentpicchange = (index, event) => {
-    const newdocumentpic = [...contact.document_pic];
-    const files = Array.from(event.target.files);
-    newdocumentpic[index] = { files: files };
-    setcontact((prevContact) => ({
-      ...prevContact,
-      document_pic: newdocumentpic,
-    }));
-  };
+     const handledocumentpicchange = async (index, event) => {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
 
-  const [loading_owners, setloading_owners] = useState(false);
+  // 🔼 Upload files to API
+  const formData = new FormData();
+  files.forEach(file => formData.append("files", file));
+
+  try {
+    const res = await api.post("api/upload/upload-files", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    
+    const urls = res.data.urls; // array of uploaded Cloudinary URLs
+
+    // 🔥 Directly save only URLs — no preview needed
+    setcontact(prev => {
+      const updated = [...prev.document_pic];
+      updated[index] = urls;   // replace or insert new URLs for that index
+      return { ...prev, document_pic: updated };
+    });
+
+  } catch (err) {
+    console.error("Upload failed:", err);
+    alert("Upload failed!");
+  }
+};
+
+
 
   const [ownersList, setownersList] = useState([]);
 
   const getall_userdata = async () => {
     try {
-      setloading_owners(true);
       const resp = await api.get("api/settings/viewuser");
       setownersList(resp.data.user.map((item) => item.full_name));
     } catch (error) {
       console.log(error);
-    } finally {
-      setloading_owners(false);
-    }
+    } 
   };
 
   useEffect(() => {
@@ -530,15 +546,9 @@ console.log(contact);
     fetchcdata();
   }, []);
 
-  const config = {
-    headers: {
-      "Content-Type": "multipart/form-data", // Set the Content-Type here
-    },
-  };
+
   const updatecontact = async () => {
     try {
-      const id = data1._id;
-
       // Show confirmation message
       const result = await Swal.fire({
         title: "Are you sure?",
@@ -554,7 +564,7 @@ console.log(contact);
         return; // Stop execution if user cancels
       }
 
-      const resp = await api.put(`updatecontact/${id}`, contact, config);
+      const resp = await api.put(`updatecontact/${selectedItem}`, contact);
       toast.success("contact updated", { autoClose: 2000 });
       // setTimeout(() => {
       //   navigate('/contactdetails')
@@ -1248,7 +1258,7 @@ console.log(contact);
   };
 
   const states = Object.keys(statesAndCities);
-  const cities = statesAndCities[contact.state1] || [];
+  const cities = statesAndCities[contact?.state1] || [];
 
   const professtiondetails = {
     profession_category: [
@@ -2446,7 +2456,7 @@ console.log(contact);
              {/* COUNTRY */}
                 <div className="col-md-4 mb-3 custom-input">
                 <label className="form-label">Country</label>
-                {(contact.country_code || []).map((item, index) => (
+                {(contact?.country_code || []).map((item, index) => (
                     <select
                     key={index}
                     style={{ marginBottom: "2px" }}
@@ -2467,7 +2477,7 @@ console.log(contact);
                    {/* MOBILE */}
         <div className="col-md-4 mb-3 custom-input">
           <label className="form-label">Mobile Number</label>
-          {(contact.mobile_no || []).map((item, index) => (
+          {(contact?.mobile_no || []).map((item, index) => (
             <input
               key={index}
               type="text"
@@ -2483,7 +2493,7 @@ console.log(contact);
                           {/* MOBILE TYPE */}
         <div className="col-md-2 mb-3 custom-input">
           <label className="form-label">Type</label>
-          {(contact.mobile_type || []).map((item, index) => (
+          {(contact?.mobile_type || []).map((item, index) => (
             <select
               key={index}
               className="form-control form-control-sm"
@@ -2502,7 +2512,7 @@ console.log(contact);
         </div>
 
           {/* DELETE BUTTON */}
-                   <div className="col-md-1" style={{ marginTop: "70px" }}>
+                   <div className="col-md-1 mt-8">
   {(contact?.mobile_no || []).map((item, index) => (
     <div key={index} style={{ marginTop: "10px" }}>
       <span
@@ -2534,7 +2544,7 @@ console.log(contact);
                     {/* EMAIL */}
         <div className="col-md-8 mb-3 custom-input">
           <label className="form-label">Email-Address</label>
-          {(contact.email || []).map((item, index) => (
+          {(contact?.email || []).map((item, index) => (
             <input
               key={index}
               type="text"
@@ -2550,7 +2560,7 @@ console.log(contact);
                   {/* EMAIL TYPE */}
         <div className="col-md-2 mb-3 custom-input">
           <label className="form-label">Type</label>
-          {(contact.email_type || []).map((item, index) => (
+          {(contact?.email_type || []).map((item, index) => (
             <select
               key={index}
               className="form-control form-control-sm"
@@ -2568,7 +2578,7 @@ console.log(contact);
         </div>
 
                           {/* DELETE BUTTON */}
-                   <div className="col-md-1" style={{ marginTop: "70px" }}>
+                   <div className="col-md-1 mt-8">
   {(contact?.email || []).map((item, index) => (
     <div key={index} style={{ marginTop: "10px" }}>
       <span
@@ -2847,11 +2857,14 @@ console.log(contact);
                       <hr style={{ marginTop: "-5px" }}></hr>
                     </div>
 
+              {/* FATHER HUSBAND NAME */}
                     <div className="col-md-12 mb-3 custom-input">
                       <label className="form-label">Father/Husband name</label>
                       <input
                         type="text"
                         className="form-control form-control-sm"
+                        placeholder="Father Husband Name"
+                        value={contact?.father_husband_name || ""}
                         onChange={(e) =>
                           setcontact({
                             ...contact,
@@ -2861,49 +2874,59 @@ console.log(contact);
                       />
                     </div>
 
+{/* H.NO */}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">H.No</label>
                       <input
                         type="text"
                         className="form-control form-control-sm"
+                        placeholder="H. No."
+                        value={contact?.h_no || ""}
                         onChange={(e) =>
                           setcontact({ ...contact, h_no: e.target.value })
                         }
                       />
                     </div>
+                    {/* AREA*/}
                     <div className="col-md-9 mb-3 custom-input">
                       <label className="form-label">Area</label>
                       <input
                         type="text"
                         className="form-control form-control-sm"
+                        placeholder="Area"
+                        value={contact?.area1 || ""}
                         onChange={(e) =>
                           setcontact({ ...contact, area1: e.target.value })
                         }
                       />
                     </div>
-
+{/* LOCATION*/}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">Location</label>
                       <input
                         type="text"
                         className="form-control form-control-sm"
+                        placeholder="Location"
+                        value={contact?.location1 || ""}
                         onChange={(e) =>
                           setcontact({ ...contact, location1: e.target.value })
                         }
                       />
                     </div>
-                    {/* <div className="col-md-4 mb-3 custom-input"><label className="form-label">City</label><input type="text" className="form-control form-control-sm" onChange={(e)=>setcontact({...contact,city1:e.target.value})}/></div> */}
+                   
 
+{/* CITY*/}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">City</label>
                       <select
                         className="form-control form-control-sm"
-                        value={contact.city1}
+                        value={contact?.city1}
                         onChange={(e) =>
                           setcontact({ ...contact, city1: e.target.value })
                         }
-                        disabled={!contact.state1 || cities.length === 0} // Disable if no state or invalid state
+                        disabled={!contact?.state1 || cities.length === 0} // Disable if no state or invalid state
                       >
+                        <option value="">{contact?.city1}</option>
                         <option value="">--Select City--</option>
                         {cities.map((city) => (
                           <option key={city} value={city}>
@@ -2912,28 +2935,32 @@ console.log(contact);
                         ))}
                       </select>
                     </div>
+                    {/* PINCODE*/}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">Pin Code</label>
                       <input
                         type="text"
                         className="form-control form-control-sm"
+                        placeholder="Pincode"
+                        value={contact?.pincode1 || ""}
                         onChange={(e) =>
                           setcontact({ ...contact, pincode1: e.target.value })
                         }
                       />
                     </div>
 
-                    {/* <div className="col-md-6 mb-3 custom-input"><label className="form-label">State</label><input type="text" className="form-control form-control-sm" onChange={(e)=>setcontact({...contact,state1:e.target.value,city1: "" })}/></div> */}
+                     {/* STATE*/}
                     <div className="col-md-6 mb-3 custom-input">
                       <label className="form-label">State</label>
                       <select
                         className="form-control form-control-sm"
-                        value={contact.state1}
+                        value={contact?.state1}
                         onChange={(e) => {
                           const state = e.target.value;
                           setcontact({ ...contact, state1: state, city1: "" }); // Clear city when state changes
                         }}
                       >
+                        <option value="">{contact?.state1}</option>
                         <option value="">--Select State--</option>
                         {states.map((state) => (
                           <option key={state} value={state}>
@@ -2942,7 +2969,7 @@ console.log(contact);
                         ))}
                       </select>
                     </div>
-
+ {/* COUNTRY*/}
                     <div className="col-md-6 mb-3 custom-input">
                       <label className="form-label">Country</label>
                       <select
@@ -2951,7 +2978,8 @@ console.log(contact);
                           setcontact({ ...contact, country1: e.target.value })
                         }
                       >
-                        <option>India</option>
+                         <option value="">{contact?.country1}</option>
+                         <option value="">--Select Country--</option>
                         {asianCountries.map((country, index) => (
                           <option
                             key={index}
@@ -2973,6 +3001,7 @@ console.log(contact);
                       <hr style={{ marginTop: "-5px" }}></hr>
                     </div>
 
+ {/* GENDER*/}
                     <div className="col-md-5 mb-3 custom-input">
                       <label className="form-label">Gender</label>
                       <select
@@ -2981,12 +3010,14 @@ console.log(contact);
                           setcontact({ ...contact, gender: e.target.value })
                         }
                       >
+                        <option value="">{contact?.gender}</option>
                         <option>---Select gender---</option>
                         <option>Male</option>
                         <option>Female</option>
                         <option>Others</option>
                       </select>
                     </div>
+                     {/* MARITIAL STATUS*/}
                     <div className="col-md-7 mb-3 custom-input">
                       <label className="form-label">Maritial Status</label>
                       <select
@@ -2998,6 +3029,7 @@ console.log(contact);
                           })
                         }
                       >
+                        <option value="">{contact?.maritial_status}</option>
                         <option>---Select your status---</option>
                         <option>Married</option>
                         <option>Unmarried</option>
@@ -3005,21 +3037,25 @@ console.log(contact);
                       </select>
                     </div>
 
+ {/* BIRTH DATE*/}
                     <div className="col-md-5 mb-3 custom-input">
                       <label className="form-label">Birth Date</label>
                       <input
                         type="date"
                         className="form-control form-control-sm"
+                        value={contact?.birth_date || ""}
                         onChange={(e) =>
                           setcontact({ ...contact, birth_date: e.target.value })
                         }
                       />
                     </div>
+                     {/* ANNIVERSARY DATE*/}
                     <div className="col-md-7 mb-3 custom-input">
                       <label className="form-label">Anniversary Date</label>
                       <input
                         type="date"
                         className="form-control form-control-sm"
+                        value={contact?.anniversary_date || ""}
                         onChange={(e) =>
                           setcontact({
                             ...contact,
@@ -3029,17 +3065,22 @@ console.log(contact);
                       />
                     </div>
 
+
+
+
+   {/* EDUCATION*/}
                     <div className="col-md-3 mb-3 custom-input">
-                      {" "}
                       <label className="form-label">Education</label>
-                      {contact.education.map((name, index) => (
-                        <div key={index} style={{ marginTop: "10px" }}>
+                      {(contact?.education || []).map((name, index) => (
+                        <div key={index} className="multi-value">
                           <select
                             className="form-control form-control-sm"
+                            value={contact?.education?.[index] || ""}
                             onChange={(event) =>
                               handleeducationChange(index, event)
                             }
                           >
+                            <option>{contact?.education?.[index] || ""}</option>
                             <option>---choose your education---</option>
                             <option>Kindergaren</option>
                             <option>School</option>
@@ -3052,16 +3093,19 @@ console.log(contact);
                         </div>
                       ))}
                     </div>
+                      {/* DEGREE*/}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Degree</label>
-                      {contact.degree.map((name, index) => (
-                        <div key={index} style={{ marginTop: "10px" }}>
+                      {(contact?.degree || []).map((name, index) => (
+                        <div key={index} className="multi-value">
                           <select
                             className="form-control form-control-sm"
+                            value={contact?.degree?.[index] || ""}
                             onChange={(event) =>
                               handledegreeChange(index, event)
                             }
                           >
+                            <option>{contact?.degree?.[index] || ""}</option>
                             <option>---choose degree---</option>
                             <optgroup label="Bachelor’s ">
                               <option>Bachelor of Arts (BA) </option>
@@ -3149,16 +3193,17 @@ console.log(contact);
                         </div>
                       ))}
                     </div>
+                      {/* SCHOOL UNIVERSITY*/}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">
                         School/College/University
                       </label>
-                      {contact.school_college.map((name, index) => (
-                        <div key={index} style={{ marginTop: "10px" }}>
+                      {contact?.school_college.map((name, index) => (
+                        <div key={index} className="multi-value">
                           <input
                             type="text"
                             className="form-control form-control-sm"
-                            value={name}
+                            value={contact?.school_college?.[index] || ""}
                             onChange={(event) =>
                               handleschool_collegeChange(index, event)
                             }
@@ -3166,18 +3211,28 @@ console.log(contact);
                         </div>
                       ))}
                     </div>
-                    <div className="col-md-1" style={{ marginTop: "90px" }}>
-                      {contact?.action4?.map((item, index) => (
-                        <div style={{ marginTop: "10px" }}>
-                          <img
-                            src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                            alt="delete button"
-                            onClick={() => deleteall4(index)}
-                            style={{ height: "40px", cursor: "pointer" }}
-                          />
-                        </div>
-                      ))}
-                    </div>
+
+                      {/* DELETE BUTTON*/}
+
+                                      <div className="col-md-1 mt-8">
+  {(contact?.education || []).map((item, index) => (
+    <div key={index} className="multi-value-delete">
+      <span
+        className="material-icons"
+        style={{
+          color: "red",
+          fontSize: "24px",
+          cursor: "pointer",
+        }}
+        onClick={() => deleteall4(index)}
+      >
+        delete
+      </span>
+    </div>
+  ))}
+</div>
+                     {/* ADD BUTTON */}
+                 
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -3188,15 +3243,17 @@ console.log(contact);
                       </button>
                     </div>
 
+ {/* LOAN */}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">Loan</label>
-                      {contact.loan.map((item, index) => (
+                      {(contact?.loan || []).map((item, index) => (
                         <select
                           type="text"
-                          style={{ marginTop: "10px" }}
-                          className="form-control form-control-sm"
+                          className="form-control form-control-sm multi-value"
+                          value={contact?.loan?.[index] || ""}
                           onChange={(event) => handleloanchange(index, event)}
                         >
+                          <option>{contact?.loan?.[index] || ""}</option>
                           <option>---Select loan type---</option>
                           <option>Home Loan </option>
                           <option>Auto Loan</option>
@@ -3207,15 +3264,18 @@ console.log(contact);
                         </select>
                       ))}
                     </div>
+
+                     {/* BANK */}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Bank</label>
-                      {contact.bank.map((item, index) => (
+                      {(contact?.bank || []).map((item, index) => (
                         <select
                           type="text"
-                          style={{ marginTop: "10px" }}
-                          className="form-control form-control-sm"
+                          value={contact?.bank?.[index] || ""}
+                          className="form-control form-control-sm multi-value"
                           onChange={(event) => handlebankchange(index, event)}
                         >
+                          <option>{contact?.bank?.[index] || ""}</option>
                           <option>---Select bank---</option>
                           <option>State Bank of India (SBI) </option>
                           <option>Punjab National Bank (PNB)</option>
@@ -3290,31 +3350,43 @@ console.log(contact);
                         </select>
                       ))}
                     </div>
+                     {/* AMOUNT */}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Amount</label>
-                      {contact.amount.map((item, index) => (
+                      {(contact?.amount || []).map((item, index) => (
                         <input
                           type="text"
-                          style={{ marginTop: "10px" }}
-                          className="form-control form-control-sm"
-                          onCanPlay={(event) =>
+                          value={contact?.amount?.[index] || ""}
+                          placeholder="Loan Amount"
+                          className="form-control form-control-sm multi-value"
+                          style={{marginTop:"2px"}}
+                          onChange={(event) =>
                             handleamountchange(index, event)
                           }
                         />
                       ))}
                     </div>
-                    <div className="col-md-1" style={{ marginTop: "90px" }}>
-                      {contact?.action5?.map((item, index) => (
-                        <div style={{ marginTop: "10px" }}>
-                          <img
-                            src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                            alt="delete button"
-                            onClick={() => deleteall5(index)}
-                            style={{ height: "40px", cursor: "pointer" }}
-                          />
-                        </div>
-                      ))}
-                    </div>
+                                     {/* DELETE BUTTON*/}
+
+                                      <div className="col-md-1 mt-8">
+  {(contact?.loan || []).map((item, index) => (
+    <div key={index} className="multi-value-delete">
+      <span
+        className="material-icons"
+        style={{
+          color: "red",
+          fontSize: "24px",
+          cursor: "pointer",
+        }}
+        onClick={() => deleteall5(index)}
+      >
+        delete
+      </span>
+    </div>
+  ))}
+</div>
+
+  {/* ADD BUTTON*/}
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -3325,16 +3397,18 @@ console.log(contact);
                       </button>
                     </div>
 
+  {/* SOCIAL MEDIA*/}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">Social Media</label>
-                      {contact.social_media.map((item, index) => (
+                      {(contact?.social_media || []).map((item, index) => (
                         <select
-                          className="form-control form-control-sm"
-                          style={{ marginTop: "10px" }}
+                          className="form-control form-control-sm multi-value"
+                          value={contact?.social_media?.[index] || ""}
                           onChange={(event) =>
                             handlesocial_mediachange(index, event)
                           }
                         >
+                          <option>{contact?.social_media?.[index] || ""}</option>
                           <option>---select social_media---</option>
                           <option>Facebook</option>
                           <option>Twitter</option>
@@ -3344,29 +3418,40 @@ console.log(contact);
                         </select>
                       ))}
                     </div>
+                     {/* URL*/}
                     <div className="col-md-6 mb-3 custom-input">
                       <label className="form-label">Url</label>
-                      {contact.url.map((item, index) => (
+                      {(contact?.url || []).map((item, index) => (
                         <input
                           type="text"
-                          className="form-control form-control-sm"
-                          style={{ marginTop: "10px" }}
+                          className="form-control form-control-sm multi-value"
+                          style={{marginTop:"2px"}}
+                          value={contact?.url?.[index] || ""}
+                          placeholder="Social Media Url"
                           onChange={(event) => handleurlChange(index, event)}
                         />
                       ))}
                     </div>
-                    <div className="col-md-1" style={{ marginTop: "90px" }}>
-                      {contact?.action6?.map((item, index) => (
-                        <div style={{ marginTop: "10px" }}>
-                          <img
-                            src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                            alt="delete button"
-                            onClick={() => deleteall6(index)}
-                            style={{ height: "40px", cursor: "pointer" }}
-                          />
-                        </div>
-                      ))}
-                    </div>
+                                   {/* DELETE BUTTON*/}
+
+                                      <div className="col-md-1 mt-8">
+  {(contact?.social_media || []).map((item, index) => (
+    <div key={index} className="multi-value-delete">
+      <span
+        className="material-icons"
+        style={{
+          color: "red",
+          fontSize: "24px",
+          cursor: "pointer",
+        }}
+        onClick={() => deleteall6(index)}
+      >
+        delete
+      </span>
+    </div>
+  ))}
+</div>
+  {/* ADD BUTTON*/}
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -3377,45 +3462,59 @@ console.log(contact);
                       </button>
                     </div>
 
+                      {/* INCOME*/}
+
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">Income</label>
-                      {contact.income.map((item, index) => (
+                      {(contact?.income || []).map((item, index) => (
                         <select
-                          className="form-control form-control-sm"
-                          style={{ marginTop: "10px" }}
+                          className="form-control form-control-sm multi-value"
+                          value={contact?.income?.[index] || ""}
                           onChange={(event) => handleincomechange(index, event)}
                         >
+                          <option>{contact?.income?.[index] || ""}</option>
                           <option>---select your income---</option>
                           <option>Personal Income</option>
                           <option>Business Income</option>
                         </select>
                       ))}
                     </div>
+                      {/* AMOUNT*/}
                     <div className="col-md-6 mb-3 custom-input">
                       <label className="form-label">Amount</label>
-                      {contact.amount1.map((item, index) => (
+                      {(contact?.amount1 || []).map((item, index) => (
                         <input
                           type="text"
-                          style={{ marginTop: "10px" }}
-                          className="form-control form-control-sm"
+                          value={contact?.amount1?.[index] || ""}
+                          placeholder="Amount"
+                          className="form-control form-control-sm multi-value"
+                          style={{marginTop:"2px"}}
                           onChange={(event) =>
                             handleamount1change(index, event)
                           }
                         />
                       ))}
                     </div>
-                    <div className="col-md-1" style={{ marginTop: "90px" }}>
-                      {contact?.action7?.map((item, index) => (
-                        <div style={{ marginTop: "10px" }}>
-                          <img
-                            src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                            alt="delete button"
-                            onClick={() => deleteall7(index)}
-                            style={{ height: "40px", cursor: "pointer" }}
-                          />
-                        </div>
-                      ))}
-                    </div>
+                                         {/* DELETE BUTTON*/}
+
+                                      <div className="col-md-1 mt-8">
+  {(contact?.income || []).map((item, index) => (
+    <div key={index} className="multi-value-delete">
+      <span
+        className="material-icons"
+        style={{
+          color: "red",
+          fontSize: "24px",
+          cursor: "pointer",
+        }}
+        onClick={() => deleteall7(index)}
+      >
+        delete
+      </span>
+    </div>
+  ))}
+</div>
+    {/* ADD BUTTON*/}
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -3426,34 +3525,34 @@ console.log(contact);
                       </button>
                     </div>
 
+  {/* DOCUMENT NO.*/}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Document No.</label>
-                      {contact.document_no.map((item, index) => (
+                      {(contact?.document_no || []).map((item, index) => (
                         <input
                           type="text"
-                          style={{ marginTop: "10px" }}
+                          value={contact?.document_no?.[index] || ""}
+                          placeholder="Document No."
                           className="form-control form-control-sm"
+                          style={{marginTop:"2px"}}
                           onChange={(event) =>
                             handledocumentnochange(index, event)
                           }
                         />
                       ))}
                     </div>
+                      {/* DOCUMENT NAME*/}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Document Name</label>
-                      {contact.document_name.map((item, index) => (
-                        // <input type="text"
-                        // style={{marginTop:"10px"}}
-                        // className="form-control form-control-sm"
-                        // onChange={(event)=>handledocumentnamechange(index,event)}
-                        // />
+                      {(contact?.document_name || []).map((item, index) => (
                         <select
-                          className="form-control form-control-sm"
-                          style={{ marginTop: "10px" }}
+                          className="form-control form-control-sm multi-value"
+                          value={contact?.document_name?.[index] || ""}
                           onChange={(event) =>
                             handledocumentnamechange(index, event)
                           }
                         >
+                          <option>{contact?.document_name?.[index] || ""}</option>
                           <option>---select document---</option>
                           <option>Adhar Card </option>
                           <option>Pan Card </option>
@@ -3466,63 +3565,85 @@ console.log(contact);
                         </select>
                       ))}
                     </div>
-                    <div className="col-md-4 mb-3 custom-input">
-                      <label className="form-label">Document Picture</label>
-                      {contact.document_pic.map((item, index) => (
-                        <div key={index} className="custom-file-wrapper mt-2">
-                          <input
-                            type="file"
-                            id={`doc-upload-${index}`}
-                            style={{ marginTop: "10px", display: "none" }}
-                            className="form-control form-control-sm"
-                            multiple
-                            onChange={(event) =>
-                              handledocumentpicchange(index, event)
-                            }
-                          />
-                          <label
-                            htmlFor={`doc-upload-${index}`}
-                            className="upload-label"
-                          >
-                            <i
-                              className="bi bi-image-fill me-2"
-                              style={{ fontSize: "1.4rem", cursor: "pointer" }}
-                            ></i>{" "}
-                            Upload Image
-                          </label>
-                          {/* Show image previews */}
-                          <div className="d-flex flex-wrap gap-2 mt-2">
-                            {(item || []).map((obj, i) => (
-                              <div key={i} style={{ position: "relative" }}>
-                                <img
-                                  src={obj.preview}
-                                  alt="Preview"
-                                  style={{
-                                    width: "80px",
-                                    height: "80px",
-                                    objectFit: "cover",
-                                    borderRadius: "6px",
-                                    border: "1px solid #ccc",
-                                  }}
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="col-md-1" style={{ marginTop: "90px" }}>
-                      {contact?.action8?.map((item, index) => (
-                        <div style={{ marginTop: "10px" }}>
-                          <img
-                            src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                            alt="delete button"
-                            onClick={() => deleteall8(index)}
-                            style={{ height: "40px", cursor: "pointer" }}
-                          />
-                        </div>
-                      ))}
-                    </div>
+                     {/* DOCUMENT IMAGE*/}
+<div className="col-md-4 mb-3 custom-input">
+  <label className="form-label">Document Picture</label>
+
+  {(contact?.document_pic || []).map((item, index) => {
+    // item = array of URL strings
+    const urls = Array.isArray(item)
+      ? item
+      : typeof item === "string"
+      ? [item]
+      : [];
+
+    return (
+      <div key={index} className="custom-file-wrapper">
+
+        {/* Upload input */}
+        <input
+          type="file"
+          id={`doc-upload-${index}`}
+          style={{ marginTop: "2px", display: "none" }}
+          className="form-control form-control-sm"
+          multiple
+          onChange={(event) => handledocumentpicchange(index, event)}
+        />
+
+        <label htmlFor={`doc-upload-${index}`} className="upload-label">
+          <i
+            className="bi bi-image-fill me-2"
+            style={{ fontSize: "1.4rem", cursor: "pointer" }}
+          ></i>
+          Upload Image
+        </label>
+
+        {/* Show uploaded URL images */}
+        {urls.length > 0 && (
+          <div className="d-flex flex-wrap gap-2 mt-2">
+            {urls.map((url, i) => (
+              <div key={i} style={{ position: "relative" }}>
+                <img
+                  src={url}
+                  alt="Document"
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "cover",
+                    borderRadius: "6px",
+                    border: "1px solid #ccc",
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  })}
+</div>
+
+
+                                                 {/* DELETE BUTTON*/}
+
+                                      <div className="col-md-1 mt-8">
+  {(contact?.document_no || []).map((item, index) => (
+    <div key={index} >
+      <span
+        className="material-icons multi-value-delete"
+        style={{
+          color: "red",
+          fontSize: "24px",
+          cursor: "pointer",
+        }}
+        onClick={() => deleteall8(index)}
+      >
+        delete
+      </span>
+    </div>
+  ))}
+</div>
+  {/* ADD BUTTON*/}
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -3585,6 +3706,7 @@ console.log(contact);
                       style={{ marginTop: "20px" }}
                     >
                       <button
+                      onClick={updatecontact}
                         className="btn btn-primary btn-sm form-control"
                         style={{
                           fontWeight: "600",
@@ -3600,7 +3722,7 @@ console.log(contact);
                           (e.currentTarget.style.backgroundColor = "#0d6efd")
                         }
                       >
-                        Save
+                        Update
                       </button>
                     </div>
                   </div>

@@ -374,27 +374,32 @@ const searchcontact=async (req, res) => {
                                 return res.send({message:"lead not found"})
                             }
 
-                            const newDocumentPic = [];
+                            // const newDocumentPic = [];
 
-                            if (req.files) {
-                                // Upload files to Cloudinary and get the URLs
-                                for (let file of req.files) {
-                                  const result = await cloudinary.uploader.upload(file.path);
-                                  newDocumentPic.push(result.secure_url);  // Store the URL of the uploaded image
-                                  // Optionally, you could delete the file from the server after uploading (uncomment below if needed)
-                                  // fs.unlinkSync(file.path);
-                                }
-                              }
+                            // if (req.files) {
+                            //     // Upload files to Cloudinary and get the URLs
+                            //     for (let file of req.files) {
+                            //       const result = await cloudinary.uploader.upload(file.path);
+                            //       newDocumentPic.push(result.secure_url);  // Store the URL of the uploaded image
+                            //       // Optionally, you could delete the file from the server after uploading (uncomment below if needed)
+                            //       // fs.unlinkSync(file.path);
+                            //     }
+                            //   }
                         
-                        const updatedFields = {
-                            ...req.body,
-                            document_pic:newDocumentPic // Update preview field with new images if provided
-                        };
-                        const resp=await addcontact.findByIdAndUpdate(id,updatedFields,{ new: true })
+                        // const updatedFields = {
+                        //     ...req.body,
+                        //     // document_pic:newDocumentPic
+                        // };
+                        const resp = await addcontact.findByIdAndUpdate(
+                          id,
+                          { $set: req.body },
+                          { new: true, runValidators: true }
+                        );
+
 
                         // await updateDealsWithUpdatedContact(id, resp);
 
-                        res.status(200).send({message:"lead update successfully"})
+                        res.status(200).send({message:"contact update successfully"})
                     } catch (error) {
                         console.log(error)
                     }

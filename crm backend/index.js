@@ -44,6 +44,9 @@ app.use('/api/settings',require('./routes/Settings/settings'));
 // others route
 app.use('/api',require('./routes/Others/other'));
 
+// upload route
+app.use('/api/upload',require('./routes/upload'));
+
 
 const server=app.listen(process.env.PORT,()=>
 {

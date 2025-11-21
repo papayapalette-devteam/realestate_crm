@@ -17,3 +17,13 @@ code {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.multi-value
+{
+  margin-bottom: 2px;
+}
+.multi-value-delete
+{
+  margin-top: 10px;
+}

@@ -40,7 +40,8 @@ router.get("/viewcontactbyemail/:email", view_contact_Byemail);
 router.get("/viewcontactbymobile/:mobile_no", view_contact_Bymobile);
 router.get("/viewcontactbytags/:tags", view_contact_Bytags);
 router.get("/viewcontactbycompany/:company_name", view_contact_Bycompany);
-router.put("/updatecontact/:_id", upload.any("document_pic"), update_contact);
+// router.put("/updatecontact/:_id", upload.any("document_pic"), update_contact);
+router.put("/updatecontact/:_id", update_contact);
 router.put(
   "/adddocumentincontact/:_id",
   upload.any("document_pic"),

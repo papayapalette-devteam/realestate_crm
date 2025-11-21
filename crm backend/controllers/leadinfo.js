@@ -165,7 +165,7 @@ const leadinfo_find = async (req, res) => {
     
     // const allleads=await leadinfo.find()
     const leads = await leadinfo.find(matchStage)
-          .sort({ createdAt: -1 })
+          .sort({ updatedAt: -1, createdAt: -1 }) 
           .skip(skip)
           .limit(limit)
           .populate("matcheddeals")
