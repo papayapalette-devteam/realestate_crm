@@ -2,12 +2,10 @@ import {React, useState,useEffect} from 'react';
 import'../../css/addcontact.css';
 import Header1 from '../header1';
 import Sidebar1 from '../sidebar1';
-import { ToastContainer, toast} from 'react-toastify';
+import { ToastContainer} from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import api from "../../api";
-import { event } from 'jquery'; 
 import { Select, MenuItem, Checkbox, ListItemText,CircularProgress} from '@mui/material';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 
 
@@ -142,7 +140,48 @@ function Addcontact() {
           getalluserdata()
         },[])
 
-    
+        // =============================get all title==========================================
+const[select_loading,setselect_loading]=useState("")
+
+          const [All_Form_Title, setAll_Form_Title] = useState([]);
+          const getall_form_title = async () => {
+            try {
+              setselect_loading("title");
+              const params = new URLSearchParams();
+              // Always include lookup_type
+              params.append("lookup_type", "form_title");
+        
+              // Optionally, if you want to filter by parent_lookup_id
+              // params.append("parent_lookup_id", "SOME_PARENT_ID");
+        
+              const resp = await api.get(`api/LookupList?${params.toString()}`);
+        
+              setAll_Form_Title(resp.data.data);
+             
+            } catch (error) {
+              console.log(error);
+            } finally {
+              setselect_loading("");
+            }
+          };
+        
+                  // =============================get all country code==========================================
+
+       const [All_Country_Code, setAll_Country_Code] = useState([]);
+  const getall_country_code = async () => {
+    try {
+      setselect_loading("country_code");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "country_code");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Country_Code(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+      
     const professtiondetails = {
       profession_category: ["Govt. Employed", "Private Employee","Self Employed","Retired","Business Man","Student","House Wife"],
     
@@ -436,15 +475,6 @@ function Addcontact() {
     
      
 
-        const mousehover=()=>
-            {
-               document.getElementById("r").style.marginLeft="15%"
-               
-            }
-            const mouseout=()=>
-                {
-                    document.getElementById("r").style.marginLeft="0%"
-                }
 
        
         const basicdetails=()=>
@@ -1009,33 +1039,67 @@ const handleOwnerChange = (event) => {
                <div className="row" id='basicdetails11' style={{marginTop:"40px"}}>
                 <div className=" col-md-12 d-flex justify-content-between align-items-center experience"><span>Basic Details</span></div>
                 <div className='col-md-12 mb-3 custom-input'><hr></hr></div>
-                    <div className="col-md-2 mb-3 custom-input"><label className="form-label">Title</label><select className="form-control form-control-sm" required="true" onChange={(e)=>setcontact({...contact,title:e.target.value})}>
-                              
-                              <option>Mr.</option>
-                              <option>Mrs.</option>
-                              <option>Sh.</option>
-                              <option>Smt.</option>
-                              <option>Dr.</option>
-                              <option>Er.</option>
-                              <option>Col.</option>
-                              <option>Maj.</option>
-                        </select>
-                        </div>
+                    <div className="col-md-2 mb-3 custom-input">
+                      <label className="form-label">Title</label>
+
+                      <select
+                        className="form-control form-control-sm"
+                        required={true}
+                        onClick={() => {
+                          if (All_Form_Title.length === 0) {
+                            getall_form_title();
+                          }
+                        }}
+                        onChange={(e) => setcontact({ ...contact, title: e.target.value })}
+                      >
+                        {select_loading === "title" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option value="">-- Select Title --</option>
+
+                            {/* Dynamic Fetched List */}
+                            {All_Form_Title.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
+                      </select>
+                    </div>
+
                     <div className="col-md-5 mb-3 custom-input"><label className="form-label">Name</label><input type="text" required="true" className="form-control form-control-sm" placeholder="first name" onChange={(e)=>setcontact({...contact,first_name:e.target.value})}/></div>
                     <div className="col-md-5 mb-3 custom-input"><label className="form-label">Surname</label><input type="text" className="form-control form-control-sm"  placeholder="surname" onChange={(e)=>setcontact({...contact,last_name:e.target.value})}/></div>
                
-                    <div className="col-md-4 mb-3 custom-input" > <label className="form-label">Country</label>
+                    <div className="col-md-4 mb-3 custom-input" >
+                       <label className="form-label">Country</label>
                     {
                       contact.country_code.map((item,index)=>
                       (
-                        <select style={{marginTop:"10px"}} required="true" className="form-control form-control-sm" onChange={(event)=>handlecountry_codechange(index,event)}>
-                        <option value={item} >India +91</option>
-                        {
-                          countrycode.map((item)=>
-                          (
-                            <option>{item}</option>
-                          ))
-                        }
+                        <select style={{marginTop:"10px"}} required="true"
+                        className="form-control form-control-sm"
+                        value={contact?.country_code}
+                         onClick={() => {
+                          if (All_Country_Code.length === 0) {
+                            getall_country_code();
+                          }
+                        }}
+                        onChange={(event)=>handlecountry_codechange(index,event)}>
+                     {select_loading === "country_code" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option value="">-- Select Country Code --</option>
+
+                            {/* Dynamic Fetched List */}
+                            {All_Country_Code.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
                         </select> 
                       ))
                     }
@@ -1200,34 +1264,67 @@ const handleOwnerChange = (event) => {
                 <div className="row" id='basicdetails1' style={{marginTop:"40px"}}>
                 <div className=" col-md-12 d-flex justify-content-between align-items-center experience"><span>Basic Details</span></div>
                 <div className='col-md-12'><hr></hr></div>
-                    <div className="col-md-2 mb-3 custom-input"><label className="form-label">Title</label><select className="form-control form-control-sm" required="true" onChange={(e)=>setcontact({...contact,title:e.target.value})}>
-                             
-                              <option>Mr.</option>
-                              <option>Mrs.</option>
-                              <option>Sh.</option>
-                              <option>Smt.</option>
-                              <option>Dr.</option>
-                              <option>Er.</option>
-                              <option>Col.</option>
-                              <option>Maj.</option>
-                        </select>
+                    <div className="col-md-2 mb-3 custom-input">
+                      <label className="form-label">Title</label>
+                      <select className="form-control form-control-sm"
+                       required="true" 
+                       onClick={() => {
+                          if (All_Form_Title.length === 0) {
+                            getall_form_title();
+                          }
+                        }}
+
+                       value={contact?.title}
+                       onChange={(e)=>setcontact({...contact,title:e.target.value})}>
+                        {select_loading === "title" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option value="">-- Select Title --</option>
+
+                            {/* Dynamic Fetched List */}
+                            {All_Form_Title.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
+                      </select>
+                        
                         </div>
                    <div className="col-md-5 mb-3 custom-input "><label className="form-label">Name</label><input type="text" required className="form-control form-control-sm" placeholder="First name" onChange={(e) =>setcontact({ ...contact, first_name: e.target.value })}/></div>
                     <div className="col-md-5 mb-3 custom-input "><label className="form-label">Surname</label><input type="text" className="form-control form-control-sm"  placeholder="surname" onChange={(e)=>setcontact({...contact,last_name:e.target.value})}/></div>
                 </div>
                 <div className="row mt-0" id='basicdetails2'>
-                <div className="col-md-4 mb-3 custom-input" > <label className="form-label">Country</label>
+                 <div className="col-md-4 mb-3 custom-input" >
+                       <label className="form-label">Country</label>
                     {
                       contact.country_code.map((item,index)=>
                       (
-                        <select style={{marginBottom:"2px"}} required="true" className="form-control form-control-sm" onChange={(event)=>handlecountry_codechange(index,event)}>
-                        <option value={item} >India +91</option>
-                        {
-                          countrycode.map((item)=>
-                          (
-                            <option>{item}</option>
-                          ))
-                        }
+                        <select  required="true"
+                        className="form-control form-control-sm"
+                        value={contact?.country_code}
+                         onClick={() => {
+                          if (All_Country_Code.length === 0) {
+                            getall_country_code();
+                          }
+                        }}
+                        onChange={(event)=>handlecountry_codechange(index,event)}>
+                     {select_loading === "country_code" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option value="">-- Select Country Code --</option>
+
+                            {/* Dynamic Fetched List */}
+                            {All_Country_Code.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
                         </select> 
                       ))
                     }

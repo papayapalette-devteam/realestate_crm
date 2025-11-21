@@ -1,25 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  TextField,
-  FormControl,
-  Select,
-  MenuItem,
-  CircularProgress,
-  Menu,
-  Paper,
-} from "@mui/material";
-
 import api from "../../../api";
 import Swal from "sweetalert2";
 import UniqueLoader from "../../loader";
 import MainLayout from "../main_layout";
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 
 function FormTitle() {
   const [loading, setloading] = useState(false);
@@ -52,7 +35,7 @@ function FormTitle() {
       // Optionally, if you want to filter by parent_lookup_id
       // params.append("parent_lookup_id", "SOME_PARENT_ID");
 
-      const resp = await api.get(`api/admin/LookupList?${params.toString()}`);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
 
       setAll_Form_Title(resp.data.data);
       setRowCount(resp.data.total);
@@ -65,20 +48,7 @@ function FormTitle() {
 
   useEffect(() => {
     getall_form_title();
-  }, []);
-
-  const [menuAnchor, setMenuAnchor] = useState(null);
-  const [menuRowId, setMenuRowId] = useState(null);
-
-  const handleOpenMenu = (event, rowId) => {
-    setMenuAnchor(event.currentTarget);
-    setMenuRowId(rowId);
-  };
-
-  const handleCloseMenu = () => {
-    setMenuAnchor(null);
-    setMenuRowId(null);
-  };
+  }, [paginationModel]);
 
   const [lookup_id, setlookup_id] = useState(null);
   const onEdit = (row) => {
@@ -92,7 +62,7 @@ function FormTitle() {
     try {
       const confirmResult = await Swal.fire({
         title: "Are you sure?",
-        text: "Do you really want to delete this Cast Group?",
+        text: "Do you really want to delete this Title?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes, Delete it!",
@@ -108,14 +78,14 @@ function FormTitle() {
       // 🔹 If user cancels, stop execution
       if (!confirmResult.isConfirmed) return;
 
-      const resp = await api.delete(`api/admin/RemoveLookup?id=${row._id}`);
+      const resp = await api.delete(`api/RemoveLookup?id=${row._id}`);
 
       if (resp.status === 200) {
         setTimeout(() => {
           Swal.fire({
             icon: "success",
-            title: "Cast Group Deleted",
-            text: "Cast Group Deleted Successfully...",
+            title: "Form Title Deleted",
+            text: "Form Title Deleted Successfully...",
             showConfirmButton: true,
             customClass: {
               popup: "small-swal-popup",
@@ -157,17 +127,11 @@ function FormTitle() {
     }
   };
 
- 
-
- 
-
-     const allcolumns = [
-        { id: 'sno', name: '#' },
-        { id: 'form_title', name: 'Title' },
-        { id: 'action', name: 'Action' },
-      ];
-
-
+  const allcolumns = [
+    { id: "sno", name: "#" },
+    { id: "lookup_value", name: "Title" },
+    { id: "action", name: "Action" },
+  ];
 
   //================================ get religion group end==========================================
 
@@ -205,7 +169,7 @@ function FormTitle() {
   const add_form_title = async () => {
     try {
       setloading(true);
-      const resp = await api.post("api/admin/SaveLookup", {
+      const resp = await api.post("api/SaveLookup", {
         lookup_id: lookup_id ? lookup_id : null,
         lookup_type: "form_title",
         lookup_value: Form_Title.form_title,
@@ -216,7 +180,7 @@ function FormTitle() {
           Swal.fire({
             icon: "success",
             title: "Form Title Added",
-            text: "Form Title Addedd Successfully...",
+            text: "Form Title Added Successfully...",
             showConfirmButton: true,
             customClass: {
               popup: "small-swal-popup",
@@ -261,109 +225,179 @@ function FormTitle() {
   };
 
   return (
-   
-        <MainLayout>
+    <MainLayout>
+      <div className="min-h-screen bg-gray-100 p-4 rounded-2xl shadow mt-8 ">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className=" p-6 mb-2">
+            <h3 className="text-2xl font-bold text-gray-800">
+              Enter Details for Form Title
+            </h3>
+            <p className="text-gray-500 mt-1">
+              Add or update the required details of form title to keep records
+              accurate.
+            </p>
+          </div>
 
-     <div className="min-h-screen bg-gray-100 p-4 rounded-2xl shadow mt-8 ">
-  <div className="max-w-7xl mx-auto">
+          {/* Form Section */}
+          <div className="bg-white rounded-2xl shadow p-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Cast Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Form Title
+                </label>
+                <input
+                  type="text"
+                  name="form_title"
+                  defaultValue={Form_Title.form_title}
+                  onChange={handlechange}
+                  placeholder="Title"
+                  className="w-full border border-gray-300 rounded-[10px] px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
 
-    {/* Header */}
-    <div className=" p-6 mb-2">
-      <h3 className="text-2xl font-bold text-gray-800">
-        Enter Details for Form Title
-      </h3>
-      <p className="text-gray-500 mt-1">
-        Add or update the required details of form title to keep records accurate.
-      </p>
-    </div>
+            {/* Submit Button */}
+            <button
+              className="mt-6 w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
+              onClick={add_form_title}
+            >
+              Submit
+            </button>
+          </div>
 
-    {/* Form Section */}
-    <div className="bg-white rounded-2xl shadow p-6 mb-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Table Section */}
+          <div className="bg-white rounded-2xl shadow p-6">
+            <div className="overflow-auto max-h-[700px]">
+              <table className="min-w-full text-left border-collapse">
+                <thead className="sticky top-0 bg-[#0086b3] text-white">
+                  <tr>
+                    {allcolumns.map((col) => (
+                      <th
+                        key={col.id}
+                        className="px-4 py-3 text-sm font-semibold border border-gray-600 text-center"
+                      >
+                        {col.name}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
 
-        {/* Cast Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Form Title
-          </label>
-          <input
-            type="text"
-            name="form_title"
-            defaultValue={Form_Title.form_title}
-            onChange={handlechange}
-            placeholder="Title"
-            className="w-full border border-gray-300 rounded-[10px] px-3 py-2 focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+                <tbody>
+                  {All_Form_Title.map((item, index) => (
+                    <tr
+                      key={index}
+                      className="odd:bg-gray-50 hover:bg-blue-50 transition"
+                    >
+                      {/* Index */}
+                      <td className="px-4 py-3 border text-sm w-30 justify-center">
+                        {index + 1}
+                      </td>
 
-     
-      </div>
+                      {/* Value*/}
+                      <td className="px-4 py-3 border text-sm w-100 text-center">
+                        <span className="text-blue-700 font-semibold">
+                          {item.lookup_value}
+                        </span>
+                        <br />
+                      </td>
 
-      {/* Submit Button */}
-      <button
-        className="mt-6 w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
-        onClick={add_form_title}
-      >
-        Submit
-      </button>
-    </div>
+                      {/* Action*/}
+                      <td className="px-4 py-3 border text-sm ">
+                        <div className="flex items-center gap-8 w-40 justify-center">
+                          {/* Edit Button */}
+                          <button
+                            onClick={() => onEdit(item)}
+                            className="text-blue-600 hover:text-blue-800 transition"
+                          >
+                            <i className="bi bi-pencil-square text-lg"></i>
+                          </button>
 
-    {/* Table Section */}
-    <div className="bg-white rounded-2xl shadow p-6">
-      <div className="overflow-auto max-h-[700px]">
-
-        <table className="min-w-full text-left border-collapse">
-          <thead className="sticky top-0 bg-[#0086b3] text-white">
-            <tr>
-              {allcolumns.map((col) => (
-                <th
-                  key={col.id}
-                  className="px-4 py-3 text-sm font-semibold border border-gray-600"
-                >
-                  {col.name}
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {All_Form_Title.map((item, index) => (
-              <tr
-                key={index}
-                className="odd:bg-gray-50 hover:bg-blue-50 transition"
+                          {/* Delete Button */}
+                          <button
+                            onClick={() => onDelete(item)}
+                            className="text-red-600 hover:text-red-800 transition"
+                          >
+                            <i className="bi bi-trash3-fill text-lg"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {/* Pagination */}
+          <div className="flex justify-end mt-6 select-none">
+            <div className="flex items-center gap-2 bg-white shadow px-4 py-2 rounded-full">
+              {/* Previous */}
+              <button
+                disabled={paginationModel.page === 0}
+                onClick={() =>
+                  setPaginationModel({
+                    ...paginationModel,
+                    page: paginationModel.page - 1,
+                  })
+                }
+                className={`p-2 rounded-full transition ${
+                  paginationModel.page === 0
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
               >
-                {/* Checkbox + Index */}
-                <td className="px-4 py-3 border text-sm">
-                  <input type="checkbox" className="mr-2" />
-                  {index + 1}
-                </td>
+                <i className="bi bi-chevron-left text-lg"></i>
+              </button>
 
-                {/* Name + Mobile */}
-                <td className="px-4 py-3 border text-sm">
-                  <span className="text-blue-700 font-semibold">
-                    {item.title} {item.first_name} {item.last_name}
-                  </span>
-                  <br />
-                  <span className="text-gray-600 text-xs">
-                    {item.mobile_no}
-                  </span>
-                </td>
+              {/* Page Numbers */}
+              {Array.from(
+                { length: Math.ceil(rowCount / paginationModel.pageSize) },
+                (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() =>
+                      setPaginationModel({
+                        ...paginationModel,
+                        page: i,
+                      })
+                    }
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition ${
+                      paginationModel.page === i
+                        ? "bg-blue-600 text-white shadow"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                )
+              )}
 
-                {/* City + Pincode */}
-                <td className="px-4 py-3 border text-sm">
-                  {item.city1} {item.pincode1}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
+              {/* Next */}
+              <button
+                disabled={
+                  paginationModel.page + 1 >=
+                  Math.ceil(rowCount / paginationModel.pageSize)
+                }
+                onClick={() =>
+                  setPaginationModel({
+                    ...paginationModel,
+                    page: paginationModel.page + 1,
+                  })
+                }
+                className={`p-2 rounded-full transition ${
+                  paginationModel.page + 1 >=
+                  Math.ceil(rowCount / paginationModel.pageSize)
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <i className="bi bi-chevron-right text-lg"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-
-  </div>
-</div>
-
 
       {loading && (
         <div
@@ -380,7 +414,6 @@ function FormTitle() {
           <UniqueLoader />
         </div>
       )}
-  
     </MainLayout>
   );
 }

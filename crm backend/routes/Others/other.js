@@ -1,5 +1,6 @@
 const express = require("express");
 const { login } = require("../../controllers/Others/sign_in");
+const { saveLookup, getLookup, remove_lookup } = require("../../controllers/Lookup Table/lookup_table");
 
 
 const router=express.Router()
@@ -7,6 +8,12 @@ const router=express.Router()
 
 
 router.post("/sign-in",login);
+
+router.post("/SaveLookup",saveLookup);
+
+router.get("/LookupList",getLookup);
+
+router.delete("/RemoveLookup",remove_lookup);
 
 
 

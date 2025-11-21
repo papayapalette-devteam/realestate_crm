@@ -151,13 +151,13 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
                   onClick={() => navigate("/configuration-form-title")}
                   className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
-                  FormTitle
+                  Form Title
                 </li>
                 <li
-                  onClick={() => navigate("/viewusers")}
+                  onClick={() => navigate("/configuration-country-code")}
                   className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
-                  Notifications
+                  Country Code
                 </li>
                 <li
                   onClick={() => navigate("/roles")}

@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
+import CountryCode from "./components/Settings/Configuration/country_code.js";
 
 
 // Lazy imports
@@ -110,7 +111,9 @@ function App() {
             <Route path="/allprojects" element={<Allprojects />} />
             <Route path="/allunits" element={<Allunits />} />
             <Route path="/add-sub-admin" element={<AddSubAdmin />} />
+
             <Route path="/configuration-form-title" element={<FormTitle/>} />
+            <Route path="/configuration-country-code" element={<CountryCode/>} />
             </Route>
           </Routes>
         </div>
