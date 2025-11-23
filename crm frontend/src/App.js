@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
+
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -55,6 +56,7 @@ const FormTitle = lazy(() => import("./components/Settings/Configuration/form_ti
 const CountryCode = lazy(() => import("./components/Settings/Configuration/country_code.js"));
 const ProfessionCategory = lazy(() => import("./components/Settings/Configuration/profession_category.js"));
 const ProfessionSubCategory = lazy(() => import("./components/Settings/Configuration/profession_subcategory.js"));
+const Designation = lazy(() => import("./components/Settings/Configuration/desgination.js"));
 
 function App() {
   return (
@@ -117,6 +119,7 @@ function App() {
             <Route path="/configuration-country-code" element={<CountryCode/>} />
             <Route path="/configuration-profession-category" element={<ProfessionCategory/>} />
             <Route path="/configuration-profession-sub-category" element={<ProfessionSubCategory/>} />
+            <Route path="/configuration-designation" element={<Designation/>} />
             </Route>
           </Routes>
         </div>

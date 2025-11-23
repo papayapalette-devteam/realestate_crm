@@ -4,11 +4,11 @@ import Swal from "sweetalert2";
 import UniqueLoader from "../../loader";
 import MainLayout from "../main_layout";
 
-function ProfessionSubCategory() {
+function Designation() {
   const [loading, setloading] = useState(false);
-  const [Profession_Sub_Category, setProfession_Sub_Category] = useState({
+  const [Designation, setDesignation] = useState({
+    designaiton: "",
     profession_sub_category: "",
-    profession_category: "",
   });
 
   const [rowCount, setRowCount] = useState(0);
@@ -17,9 +17,8 @@ function ProfessionSubCategory() {
     pageSize: 10,
   });
 
-  const [All_Profession_Sub_Category, setAll_Profession_Sub_Category] =
-    useState([]);
-  const getall_profession_sub_category = async (
+  const [All_Designation, setAll_Designation] = useState([]);
+  const getall_designation = async (
     pageNumber = paginationModel.page,
     limitNumber = paginationModel.pageSize
   ) => {
@@ -32,14 +31,14 @@ function ProfessionSubCategory() {
       params.append("limit", limitNumber);
 
       // Always include lookup_type
-      params.append("lookup_type", "profession_sub_category");
+      params.append("lookup_type", "designation");
 
       // Optionally, if you want to filter by parent_lookup_id
       // params.append("parent_lookup_id", "SOME_PARENT_ID");
 
       const resp = await api.get(`api/LookupList?${params.toString()}`);
 
-      setAll_Profession_Sub_Category(resp.data.data);
+      setAll_Designation(resp.data.data);
       setRowCount(resp.data.total);
     } catch (error) {
       console.log(error);
@@ -49,15 +48,15 @@ function ProfessionSubCategory() {
   };
 
   useEffect(() => {
-    getall_profession_sub_category();
+    getall_designation();
   }, [paginationModel]);
 
   const [lookup_id, setlookup_id] = useState(null);
   const onEdit = (row) => {
     setlookup_id(row._id);
-    setProfession_Sub_Category({
-      profession_sub_category: row.lookup_value,
-      profession_category: row.parent_lookup_value,
+    setDesignation({
+      designaiton: row.lookup_value,
+      profession_sub_category:row.parent_lookup_value
     });
   };
 
@@ -65,7 +64,7 @@ function ProfessionSubCategory() {
     try {
       const confirmResult = await Swal.fire({
         title: "Are you sure?",
-        text: "Do you really want to delete this Profession Sub Category?",
+        text: "Do you really want to delete this Designaion?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes, Delete it!",
@@ -87,8 +86,8 @@ function ProfessionSubCategory() {
         setTimeout(() => {
           Swal.fire({
             icon: "success",
-            title: "Profession Sub Category Deleted",
-            text: "Profession Sub Category Deleted Successfully...",
+            title: "Designaiton Deleted",
+            text: "Designation Deleted Successfully...",
             showConfirmButton: true,
             customClass: {
               popup: "small-swal-popup",
@@ -132,43 +131,45 @@ function ProfessionSubCategory() {
 
   const allcolumns = [
     { id: "sno", name: "#" },
-    { id: "parent_lookup_value", name: "Profession Category" },
-    { id: "lookup_value", name: "Profession Sub Category" },
+    { id: "parent_lookup_value", name: "Profession Sub Category" },
+    { id: "lookup_value", name: "Designation" },
     { id: "action", name: "Action" },
   ];
 
-  //================================ get profession category start==========================================
-  const [loadingCategory, setLoadingCategory] = useState(false);
+  //================================ get profession sub category start==========================================
+    const [loadingSubCategory, setLoadingSubCategory] = useState(false);
 
-  const [All_Profession_Category, setAll_Profession_Category] = useState([]);
-  const getall_profession_category = async () => {
-    try {
-      setLoadingCategory(true);
-      const params = new URLSearchParams();
+    const [All_Profession_Sub_Category, setAll_Profession_Sub_Category] = useState([]);
+    const getall_profession_sub_category = async () => {
+      try {
+        setLoadingSubCategory(true);
+        const params = new URLSearchParams();
+  
+        // Always include lookup_type
+        params.append("lookup_type", "profession_sub_category");
+  
+        // Optionally, if you want to filter by parent_lookup_id
+        // params.append("parent_lookup_id", "SOME_PARENT_ID");
+  
+        const resp = await api.get(`api/LookupList?${params.toString()}`);
+  
+        setAll_Profession_Sub_Category(resp.data.data);
+        setRowCount(resp.data.total);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoadingSubCategory(false);
+      }
+    };
+  
+  
 
-      // Always include lookup_type
-      params.append("lookup_type", "profession_category");
-
-      // Optionally, if you want to filter by parent_lookup_id
-      // params.append("parent_lookup_id", "SOME_PARENT_ID");
-
-      const resp = await api.get(`api/LookupList?${params.toString()}`);
-
-      setAll_Profession_Category(resp.data.data);
-      setRowCount(resp.data.total);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingCategory(false);
-    }
-  };
-
-  //================================== get profession category end=====================================
+    //================================== get profession sub category end=====================================
 
   const handlechange = (e) => {
     const { name, value, checked, type } = e.target;
 
-    setProfession_Sub_Category((prev) => {
+    setDesignation((prev) => {
       if (Array.isArray(value)) {
         return { ...prev, [name]: value };
       }
@@ -196,22 +197,22 @@ function ProfessionSubCategory() {
     });
   };
 
-  const add_profession_sub_category = async () => {
+  const add_designation = async () => {
     try {
       setloading(true);
       const resp = await api.post("api/SaveLookup", {
         lookup_id: lookup_id ? lookup_id : null,
-        lookup_type: "profession_sub_category",
-        lookup_value: Profession_Sub_Category.profession_sub_category,
-        parent_lookup_value: Profession_Sub_Category.profession_category,
+        lookup_type: "designation",
+        lookup_value: Designation.designaiton,
+        parent_lookup_value:Designation.profession_sub_category
       });
 
       if (resp.status === 200) {
         setTimeout(() => {
           Swal.fire({
             icon: "success",
-            title: "Profession Sub Category Added",
-            text: "Profession Sub Category Added Successfully...",
+            title: "Designaiton Added",
+            text: "Designation Added Successfully...",
             showConfirmButton: true,
             customClass: {
               popup: "small-swal-popup",
@@ -255,16 +256,6 @@ function ProfessionSubCategory() {
     }
   };
 
-  // pagination
-
-  const totalPages = Math.ceil(rowCount / paginationModel.pageSize);
-  const maxVisiblePages = 5;
-
-  // Calculate start & end indexes
-  const startPage =
-    Math.floor(paginationModel.page / maxVisiblePages) * maxVisiblePages;
-  const endPage = Math.min(startPage + maxVisiblePages, totalPages);
-
   return (
     <MainLayout>
       <div className="min-h-screen bg-gray-100 p-4 rounded-2xl shadow mt-8 ">
@@ -272,11 +263,11 @@ function ProfessionSubCategory() {
           {/* Header */}
           <div className=" p-6 mb-2">
             <h3 className="text-2xl font-bold text-gray-800">
-              Enter Details for Profession Sub Category
+              Enter Details for Profession Designation
             </h3>
             <p className="text-gray-500 mt-1">
-              Add or update the required details of profession sub category to
-              keep records accurate.
+              Add or update the required details of designation to keep records
+              accurate.
             </p>
           </div>
 
@@ -285,79 +276,71 @@ function ProfessionSubCategory() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Profession Sub Category
+                  Designation
                 </label>
                 <input
                   type="text"
-                  name="profession_sub_category"
-                  defaultValue={Profession_Sub_Category.profession_sub_category}
+                  name="designaiton"
+                  defaultValue={Designation.designaiton}
                   onChange={handlechange}
-                  placeholder="Profession Sub Category"
+                  placeholder="Designation"
                   className="w-full border border-gray-300 rounded-[10px] px-3 py-2 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Profession Category
-                </label>
+            
 
-                <div className="relative">
-                  <select
-                    type="text"
-                    name="profession_category"
-                    defaultValue={Profession_Sub_Category.profession_category}
-                    onChange={handlechange}
-                    onClick={() => {
-                      if (All_Profession_Category.length === 0) {
-                        getall_profession_category();
-                      }
-                    }}
-                    // ✔ Using onClick
-                    className="w-full border border-gray-300 rounded-[10px] px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                  >
-                    {/* Show loading message inside the dropdown */}
-                    {loadingCategory ? (
-                      <option>Loading...</option>
-                    ) : (
-                      <>
-                        <option>
-                          {Profession_Sub_Category?.profession_category ||
-                            "---select profession category---"}
-                        </option>
-                        <option
-                          style={{
-                            display: Profession_Sub_Category.profession_category
-                              ? "block"
-                              : "none",
-                          }}
-                        >
-                          ---select profession category---
-                        </option>
+ <div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Profession Sub Category
+  </label>
 
-                        {All_Profession_Category.map((item) => (
-                          <option key={item.lookup_value}>
-                            {item.lookup_value}
-                          </option>
-                        ))}
-                      </>
-                    )}
-                  </select>
+  <div className="relative">
+    <select
+      type="text"
+      name="profession_sub_category"
+      defaultValue={Designation.profession_sub_category}
+      onChange={handlechange}
+      onClick={() => {
+      if (All_Profession_Sub_Category.length === 0) {
+        getall_profession_sub_category();
+      }
+    }}
+ // ✔ Using onClick
+      className="w-full border border-gray-300 rounded-[10px] px-3 py-2 focus:ring-2 focus:ring-blue-500"
+    >
+      {/* Show loading message inside the dropdown */}
+      {loadingSubCategory ? (
+        <option>Loading...</option>
+      ) : (
+        <>
+          <option>---select profession category---</option>
 
-                  {/* Spinner Icon on right */}
-                  {loadingCategory && (
-                    <div className="absolute top-3 right-3">
-                      <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                  )}
-                </div>
-              </div>
+          {All_Profession_Sub_Category.map((item) => (
+            <option key={item.lookup_value}>{item.lookup_value}</option>
+          ))}
+        </>
+      )}
+    </select>
+
+    {/* Spinner Icon on right */}
+    {loadingSubCategory && (
+      <div className="absolute top-3 right-3">
+        <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    )}
+  </div>
+</div>
+
+
+              
+
             </div>
 
             {/* Submit Button */}
             <button
               className="mt-6 w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
-              onClick={add_profession_sub_category}
+              onClick={add_designation}
             >
               Submit
             </button>
@@ -381,7 +364,7 @@ function ProfessionSubCategory() {
                 </thead>
 
                 <tbody>
-                  {All_Profession_Sub_Category?.map((item, index) => (
+                  {All_Designation?.map((item, index) => (
                     <tr
                       key={index}
                       className="odd:bg-gray-50 hover:bg-blue-50 transition"
@@ -392,7 +375,7 @@ function ProfessionSubCategory() {
                       </td>
 
                       {/* Parent Value*/}
-                      <td className="px-4 py-3 border text-sm w-50 text-center">
+                        <td className="px-4 py-3 border text-sm w-50 text-center">
                         <span className="text-blue-700 font-semibold">
                           {item.parent_lookup_value}
                         </span>
@@ -405,6 +388,7 @@ function ProfessionSubCategory() {
                         </span>
                         <br />
                       </td>
+                
 
                       {/* Action*/}
                       <td className="px-4 py-3 border text-sm ">
@@ -454,29 +438,27 @@ function ProfessionSubCategory() {
               </button>
 
               {/* Page Numbers */}
-              {/* Page Numbers (Only 10 at a time) */}
-              {Array.from({ length: endPage - startPage }, (_, i) => {
-                const pageIndex = startPage + i;
-
-                return (
+              {Array.from(
+                { length: Math.ceil(rowCount / paginationModel.pageSize) },
+                (_, i) => (
                   <button
-                    key={pageIndex}
+                    key={i}
                     onClick={() =>
                       setPaginationModel({
                         ...paginationModel,
-                        page: pageIndex,
+                        page: i,
                       })
                     }
                     className={`px-3 py-1 rounded-full text-sm font-medium transition ${
-                      paginationModel.page === pageIndex
+                      paginationModel.page === i
                         ? "bg-blue-600 text-white shadow"
                         : "text-gray-700 hover:bg-gray-100"
                     }`}
                   >
-                    {pageIndex + 1}
+                    {i + 1}
                   </button>
-                );
-              })}
+                )
+              )}
 
               {/* Next */}
               <button
@@ -523,4 +505,4 @@ function ProfessionSubCategory() {
   );
 }
 
-export default ProfessionSubCategory;
+export default Designation;

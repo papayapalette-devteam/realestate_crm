@@ -167,7 +167,7 @@ const[select_loading,setselect_loading]=useState("")
         
                   // =============================get all country code==========================================
 
-       const [All_Country_Code, setAll_Country_Code] = useState([]);
+  const [All_Country_Code, setAll_Country_Code] = useState([]);
   const getall_country_code = async () => {
     try {
       setselect_loading("country_code");
@@ -181,50 +181,68 @@ const[select_loading,setselect_loading]=useState("")
       setselect_loading("");
     }
   };
+
+// =============================get all profession category==========================================
+
+  const [All_Profession_Category, setAll_Profession_Category] = useState([]);
+  const getall_profession_category = async () => {
+    try {
+      setselect_loading("profession_category");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "profession_category");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Profession_Category(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // =============================get all profession sub category==========================================
+
+  const [All_Profession_Sub_Category, setAll_Profession_Sub_Category] = useState([]);
+  const getall_profession_sub_category = async () => {
+    try {
+      setselect_loading("profession_sub_category");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "profession_sub_category");
+      params.append("parent_lookup_value", contact.profession_category);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Profession_Sub_Category(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+ 
+
+
+    // =============================get all designation==========================================
+
+  const [All_Designation, setAll_Designation] = useState([]);
+  const getall_designation = async () => {
+    try {
+      setselect_loading("designation");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "designation");
+      params.append("parent_lookup_value", contact.profession_subcategory);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Designation(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
       
     const professtiondetails = {
-      profession_category: ["Govt. Employed", "Private Employee","Self Employed","Retired","Business Man","Student","House Wife"],
+     
     
       profession_subcategory: {
-        "Govt. Employed": ["Teacher", "Scientist","Doctor","Nurse","Clerk","Engineer","Accountant","Architect","Auditor","Police",
-                            "Mechanic","Security","Driver","Officer","Peon","Chef","Pilot","IT Person","Analyst","Sales Person",
-                            "Banker","Legal"],
-        "Private Employee": ["Officer", "Accountant", "Human Resources (HR)", "Sales Person", "Manager", "IT Person", 
-                                "Analyst", "Scientist", "Technicians", "Designer", "Author", "Videographer", "Director", 
-                                "Telle Caller", "Legel", "Executive Officer", "Operators", "Security", "Journalists", 
-                                "Doctor", "Nurse", "Teacher", "Facility", "Driver", "Contractor", "Consultant", "Chef", 
-                                "Artist", "Engineer", "Banker", "Legal", "Clerk", "Architect", "Auditor", "Mechanic", 
-                                "Peon", "Pilot"],
-      
-        "Self Employed": ["Designer", "Photographer","Videographer","Independent Artist","Illustrator","Writer","Digital Content Creator",
-                          "Social Media Influencer","Podcaster","Music Producer","Management Consultant","Financial Advisor","IT Consultant",
-                          "Business Strategist","Marketing Consultant","Life Coach","Career Counselor","Freelance Software Developer","Web Developer",
-                          "Data Analyst","App Developer","UX/UI Designer","Cybersecurity Consultant","Private Practitioner (Doctor)","Physiotherapist",
-                          "Dietitian or Nutritionist","Yoga Instructor","Personal Trainer","Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)",
-                          "Private Tutor","Test Preparation Coach","Online Educator","Language Trainer","Corporate Trainer","Independent Lawyer",
-                          "Chartered Accountant (CA)","Tax Consultant","Auditor","Financial Planner","Tailor","Carpenter","Blacksmith",
-                          "Jewelry Maker","Ceramic Artist","Real Estate Agent","Broker","Sales Representative","Freelance Chef","Event Planner",
-                          "Makeup Artist","Hairstylist","Wedding Photographer","Independent Farmer","Organic Produce Supplier","Horticulturist"],
-        
-        Retired: ["Teacher", "Scientist", "Doctor", "Nurse", "Clerk", "Engineer", "Accountant", "Architect", "Auditor", "Police",
-                  "Mechanic", "Security", "Driver", "Officer", "Peon", "Chef", "Pilot", "IT Person", "Analyst", "Sales Person", "Banker",
-                  "Legal", "Manager", "Operators", "Human Resources (HR)", "Freelance Graphic Designer", "Photographer", "Videographer",
-                  "Independent Artist", "Illustrator", "Writer (Author, Blogger, or Copywriter)", "Digital Content Creator", "Social Media Influencer",
-                  "Podcaster", "Music Producer", "Management Consultant", "Financial Advisor", "IT Consultant", "Business Strategist", "Marketing Consultant",
-                  "Life Coach", "Career Counselor", "Freelance Software Developer", "Web Developer", "Data Analyst", "App Developer", "UX/UI Designer",
-                  "Cybersecurity Consultant", "Private Practitioner (Doctor)", "Physiotherapist", "Dietitian or Nutritionist", "Yoga Instructor",
-                  "Personal Trainer", "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)", "Private Tutor", "Test Preparation Coach",
-                  "Online Educator", "Language Trainer", "Corporate Trainer", "Independent Lawyer", "Chartered Accountant (CA)", "Tax Consultant",
-                  "Auditor", "Financial Planner", "Tailor", "Carpenter", "Blacksmith", "Jewelry Maker", "Ceramic Artist", "Real Estate Agent",
-                  "Property Consultant", "Broker", "Sales Representative", "Freelance Chef", "Event Planner", "Makeup Artist", "Hairstylist",
-                  "Wedding Photographer", "Independent Farmer", "Organic Produce Supplier", "Horticulturist"
-        ],
-    
-        Student:["Investor"],
-    
-        "House Wife":["Investor"],
-        
-        "Business Man": ["Entrepreneurs", "Start-up Founders", "Retailer", "Wholesaler", "Importer/Exporter", "Distributor", "Trader",
+       
+        "Business Man": [
                           "Real Estate Developer", "Real Estate Investor", "Real Estate Agent", "Manufacturer", "Industrialist", "Financer",
                           "Stock Trader", "Hotel Owner", "Resort Owner", "Travel Agency", "Restaurant Owner", "Agriculturist", "Dairy Business Owner",
                           "IT Person", "Coaching Centre Owner", "Training Institute Owner", "Online Tutor", "Private Tutor", "Hospital Owner",
@@ -1421,35 +1439,83 @@ const handleOwnerChange = (event) => {
            
                     <div className="col-md-12 mb-3 custom-input" style={{marginTop:"10px"}}><label className="form-label" style={{fontSize:"16px",marginTop:"10px"}}>Profession Details</label><hr style={{marginTop:"-5px"}}></hr></div>
                
-                    <div className="col-md-5 mb-3 custom-input"><label className="form-label">Profession Category</label>
-                    <select className="form-control form-control-sm" onChange={handleProfessionCategoryChange}>
-                                  <option>---Select profession category---</option>    
+                    <div className="col-md-5 mb-3 custom-input">
+                      <label className="form-label">Profession Category</label>
+                    <select className="form-control form-control-sm"
+                        onClick={() => {
+                          if (All_Profession_Category.length === 0) {
+                            getall_profession_category();
+                          }
+                        }}
+                        value={contact.profession_category}
+                     onChange={handleProfessionCategoryChange}>
+                                  
                                
-                                {professtiondetails.profession_category.map((category) => (
-                                <option key={category} value={category}>
-                                  {category}
-                                </option>
-                              ))}
+                             {select_loading === "profession_category" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                             <option>---Select profession category---</option> 
+
+                            {/* Dynamic Fetched List */}
+                            {All_Profession_Category.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
                         </select>
                     </div>
-                    <div className="col-md-7 mb-3 custom-input"><label className="form-label">Profession Sub-Category</label>
-                    <select className="form-control form-control-sm" onChange={handleProfessionSubcategoryChange}>
-                                <option>---Select profession sub-category---</option>
-                                {availableSubcategories.map((subcategory) => (
-                                <option key={subcategory} value={subcategory}>
-                                  {subcategory}
-                                </option>
-                              ))}
+                    <div className="col-md-7 mb-3 custom-input" ><label className="form-label">Profession Sub-Category</label>
+                    <select className="form-control form-control-sm"
+                       onClick={() => {
+                          
+                            getall_profession_sub_category();
+                          
+                        }}
+                        style={{overflow:"scroll"}}
+                         value={contact.profession_subcategory}
+                     onChange={handleProfessionSubcategoryChange}>
+                             {select_loading === "profession_sub_category" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                             <option>---Select profession sub category---</option> 
+
+                            {/* Dynamic Fetched List */}
+                            {All_Profession_Sub_Category.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
                         </select>
                     </div>
                     <div className="col-md-5 mb-3 custom-input"><label className="form-label">Designation</label>
-                    <select className="form-control form-control-sm" onChange={handleDesignationChange}>
-                    <option>---Select designation---</option>
-                    {availableDesignations.map((designation) => (
-                      <option key={designation} value={designation}>
-                              {designation}
-                            </option>
-                        ))}
+                    <select className="form-control form-control-sm"
+                    onClick={() => {
+                          
+                            getall_designation();
+                          
+                        }}
+                         value={contact.designation}
+                     onChange={handleDesignationChange}>
+                            {select_loading === "designation" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                             <option>---Select designation---</option> 
+
+                            {/* Dynamic Fetched List */}
+                            {All_Designation.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
                         </select>
                     </div>
                     <div className="col-md-6 mb-3 custom-input"><label className="form-label">Company/Organisation/Department Name</label>

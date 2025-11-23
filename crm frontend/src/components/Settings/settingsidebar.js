@@ -171,6 +171,12 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
                 >
                   Profession Sub Category
                 </li>
+                    <li
+                  onClick={() => navigate("/configuration-designation")}
+                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  Designation
+                </li>
               </ul>
             )}
 

@@ -79,7 +79,7 @@ exports.saveLookup = async (req, res) => {
 
 exports.getLookup = async (req, res) => {
   try {
-    const { lookup_type, parent_lookup_value, page = 1, limit = 10 } = req.query;
+    const { lookup_type, parent_lookup_value, page , limit  } = req.query;
 
     if (!lookup_type) {
       return res.status(400).json({
