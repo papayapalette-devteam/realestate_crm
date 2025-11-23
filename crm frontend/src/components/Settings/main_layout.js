@@ -3,7 +3,7 @@ import Settingssidebar from "./settingsidebar";
 import Header1 from "../header1";
 
 function MainLayout({ children }) {
-   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
     <div className="flex w-full">

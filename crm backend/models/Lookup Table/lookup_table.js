@@ -8,9 +8,8 @@ const lookup_schema = new mongoose.Schema(
       type: String,
     },
 
-    parent_lookup_id: {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "admin_lookups",
+    parent_lookup_value: {
+      type: String,
     },
 
     is_active: {

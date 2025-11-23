@@ -2,8 +2,6 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
-import CountryCode from "./components/Settings/Configuration/country_code.js";
-
 
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
@@ -54,6 +52,9 @@ const Allprojects = lazy(() => import("./components/Project/allprojects.js"));
 const Allunits = lazy(() => import("./components/Units/allunits.js"));
 const AddSubAdmin = lazy(() => import("./components/Settings/Add_Sub_Admin.js"));
 const FormTitle = lazy(() => import("./components/Settings/Configuration/form_title.js"));
+const CountryCode = lazy(() => import("./components/Settings/Configuration/country_code.js"));
+const ProfessionCategory = lazy(() => import("./components/Settings/Configuration/profession_category.js"));
+const ProfessionSubCategory = lazy(() => import("./components/Settings/Configuration/profession_subcategory.js"));
 
 function App() {
   return (
@@ -114,6 +115,8 @@ function App() {
 
             <Route path="/configuration-form-title" element={<FormTitle/>} />
             <Route path="/configuration-country-code" element={<CountryCode/>} />
+            <Route path="/configuration-profession-category" element={<ProfessionCategory/>} />
+            <Route path="/configuration-profession-sub-category" element={<ProfessionSubCategory/>} />
             </Route>
           </Routes>
         </div>

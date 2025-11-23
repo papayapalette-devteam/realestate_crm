@@ -160,10 +160,16 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
                   Country Code
                 </li>
                 <li
-                  onClick={() => navigate("/roles")}
+                  onClick={() => navigate("/configuration-profession-category")}
                   className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
-                  Sales Goals
+                  Profession Category
+                </li>
+                <li
+                  onClick={() => navigate("/configuration-profession-sub-category")}
+                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  Profession Sub Category
                 </li>
               </ul>
             )}

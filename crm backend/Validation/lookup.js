@@ -25,15 +25,7 @@ const lookup_validation_schema = Joi.object({
     "any.required": `"lookup_value" is required`,
   }),
 
-  parent_lookup_id: Joi.string()
-    .custom((value, helpers) => {
-      if (!mongoose.Types.ObjectId.isValid(value)) {
-        return helpers.message('"parent_lookup_id" must be a valid ObjectId');
-      }
-      return value;
-    })
-    .allow(null,"")
-    .optional(),
+  parent_lookup_value: Joi.string().optional(),
 
   is_active: Joi.boolean().optional(),
 

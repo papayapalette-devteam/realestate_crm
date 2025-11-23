@@ -19,12 +19,13 @@ exports.saveLookup = async (req, res) => {
 
    
 
-    const {lookup_id,lookup_type,lookup_value,parent_lookup_id, is_active,other} = req.body;
+    const {lookup_id,lookup_type,lookup_value,parent_lookup_value, is_active,other} = req.body;
 
        // 2️⃣ Check for duplicates
     const exists = await LookupTable.findOne({
       lookup_type: lookup_type,
       lookup_value: lookup_value,
+      parent_lookup_value:parent_lookup_value
     });
 
     if (exists) {
@@ -39,9 +40,7 @@ exports.saveLookup = async (req, res) => {
       const newlookup_data = {
         lookup_type,
         lookup_value, 
-        parent_lookup_id: parent_lookup_id
-          ?new mongoose.Types.ObjectId(parent_lookup_id)
-          : null,
+        parent_lookup_value,
         is_active,
         other,
       };
@@ -55,9 +54,7 @@ exports.saveLookup = async (req, res) => {
       const new_lookup_data = {
         lookup_type,
         lookup_value,
-        parent_lookup_id: parent_lookup_id
-          ?new mongoose.Types.ObjectId(parent_lookup_id)
-          : null,
+        parent_lookup_value,
         is_active,
         other,
       };
@@ -82,7 +79,7 @@ exports.saveLookup = async (req, res) => {
 
 exports.getLookup = async (req, res) => {
   try {
-    const { lookup_type, parent_lookup_id, page = 1, limit = 10 } = req.query;
+    const { lookup_type, parent_lookup_value, page = 1, limit = 10 } = req.query;
 
     if (!lookup_type) {
       return res.status(400).json({
@@ -94,14 +91,8 @@ exports.getLookup = async (req, res) => {
     // Build query object
     const query = { lookup_type };
 
-    if (parent_lookup_id) {
-      if (!mongoose.Types.ObjectId.isValid(parent_lookup_id)) {
-        return res.status(400).json({
-          status: "error",
-          message: "Invalid parent_lookup_id",
-        });
-      }
-      query.parent_lookup_id =new mongoose.Types.ObjectId(parent_lookup_id);
+    if (parent_lookup_value) {
+      query.parent_lookup_value =parent_lookup_value;
     }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -111,7 +102,6 @@ exports.getLookup = async (req, res) => {
 
     // Fetch paginated data
     const lookups = await LookupTable.find(query)
-      .populate("parent_lookup_id")
       .skip(skip)
       .limit(parseInt(limit));
 
