@@ -4,6 +4,7 @@ import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
 
+
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -57,6 +58,9 @@ const CountryCode = lazy(() => import("./components/Settings/Configuration/count
 const ProfessionCategory = lazy(() => import("./components/Settings/Configuration/profession_category.js"));
 const ProfessionSubCategory = lazy(() => import("./components/Settings/Configuration/profession_subcategory.js"));
 const Designation = lazy(() => import("./components/Settings/Configuration/desgination.js"));
+const Country = lazy(() => import("./components/Settings/Configuration/country.js"));
+const State = lazy(() => import("./components/Settings/Configuration/state.js"));
+const City = lazy(() => import("./components/Settings/Configuration/city.js"));
 
 function App() {
   return (
@@ -120,6 +124,9 @@ function App() {
             <Route path="/configuration-profession-category" element={<ProfessionCategory/>} />
             <Route path="/configuration-profession-sub-category" element={<ProfessionSubCategory/>} />
             <Route path="/configuration-designation" element={<Designation/>} />
+            <Route path="/configuration-country" element={<Country/>} />
+            <Route path="/configuration-state" element={<State/>} />
+            <Route path="/configuration-city" element={<City/>} />
             </Route>
           </Routes>
         </div>

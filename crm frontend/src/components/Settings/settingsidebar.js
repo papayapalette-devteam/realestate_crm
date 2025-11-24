@@ -17,6 +17,8 @@ import { FaWhatsapp } from "react-icons/fa";
 import Header1 from "../header1";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "./main_layout";
+import {  FaUsers, FaBell, FaBullseye, FaGlobe, FaFlag, FaUserTie, FaMapMarkerAlt, FaListUl } from "react-icons/fa";
+
 
 function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
   const navigate = useNavigate();
@@ -108,20 +110,23 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
               >
                 <li
                   onClick={() => navigate("/addusers")}
-                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
+                  <FaUsers size={14} />
                   Users
                 </li>
                 <li
                   onClick={() => navigate("/viewusers")}
-                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
+                  <FaBell size={14} />
                   Notifications
                 </li>
                 <li
                   onClick={() => navigate("/roles")}
-                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
+                  <FaBullseye size={14} />
                   Sales Goals
                 </li>
               </ul>
@@ -149,33 +154,59 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
               >
                 <li
                   onClick={() => navigate("/configuration-form-title")}
-                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
+                  <FaListUl size={14} />
                   Form Title
                 </li>
                 <li
                   onClick={() => navigate("/configuration-country-code")}
-                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
+                  <FaFlag size={14} />
                   Country Code
                 </li>
                 <li
                   onClick={() => navigate("/configuration-profession-category")}
-                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
+                  <FaUserTie size={14} />
                   Profession Category
                 </li>
                 <li
                   onClick={() => navigate("/configuration-profession-sub-category")}
-                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
+                  <FaUserTie size={14} />
                   Profession Sub Category
                 </li>
                     <li
                   onClick={() => navigate("/configuration-designation")}
-                  className="text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
+                  <FaUserTie size={14} />
                   Designation
+                </li>
+                       <li
+                  onClick={() => navigate("/configuration-country")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <FaGlobe size={14} />
+                  Country
+                </li>
+                           <li
+                  onClick={() => navigate("/configuration-state")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <FaMapMarkerAlt size={14} />
+                  State
+                </li>
+                            <li
+                  onClick={() => navigate("/configuration-city")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <FaMapMarkerAlt size={14} />
+                  City
                 </li>
               </ul>
             )}

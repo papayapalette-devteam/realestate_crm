@@ -60,29 +60,57 @@ const Crmsettings = () => {
 
   return (
     <MainLayout>
-      <div className="px-6 py-8">
-        {/* Header */}
-        <h1 className="text-2xl font-semibold text-gray-800 mb-6">Settings</h1>
+     <div className="px-6 py-10">
+  {/* Header */}
+ <h1 className="flex items-center gap-2 text-xl font-semibold text-gray-800 mb-5">
+  <span className="text-blue-600 text-2xl">⚙️</span>
+  Settings
+</h1>
 
-        {/* Settings Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {settingsOptions.map((option, index) => (
-            <div
-              key={index}
-              onClick={option.onClick}
-              className="group cursor-pointer rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-3 bg-gray-50 rounded-xl group-hover:bg-gray-100 transition-colors">
-                  {option.icon}
-                </div>
-                <h3 className="text-lg font-medium text-gray-800">{option.title}</h3>
-              </div>
-              <p className="text-sm text-gray-500 leading-relaxed">{option.description}</p>
-            </div>
-          ))}
+
+  {/* Settings Grid */}
+  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {settingsOptions.map((option, index) => (
+      <div
+        key={index}
+        onClick={option.onClick}
+        className="
+          group cursor-pointer rounded-xl 
+          border border-gray-200 
+          bg-gradient-to-br from-white to-gray-50 
+          p-4 shadow-sm 
+          transition-all duration-200
+          hover:shadow-lg hover:-translate-y-1 hover:border-blue-300
+        "
+      >
+        <div className="flex items-center gap-2 mb-2">
+          {/* Icon */}
+          <div
+            className="
+              p-2.5 rounded-lg 
+              bg-blue-50 text-blue-600
+              group-hover:bg-blue-100 
+              transition-colors
+            "
+          >
+            {option.icon}
+          </div>
+
+          {/* Title */}
+          <h3 className="text-base font-semibold text-gray-700">
+            {option.title}
+          </h3>
         </div>
+
+        {/* Description (smaller + lighter) */}
+        <p className="text-sm text-gray-500 leading-snug">
+          {option.description}
+        </p>
       </div>
+    ))}
+  </div>
+</div>
+
     </MainLayout>
   );
 };
