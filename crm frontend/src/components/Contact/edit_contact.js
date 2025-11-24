@@ -16,10 +16,6 @@ import {
 import Swal from "sweetalert2";
 
 function EditContact() {
-  const countrycode = [
-    "India +91",
-  ];
-
   const location = useLocation();
 
   const selectedItem = location?.state?.selectedItems[0];
@@ -110,8 +106,7 @@ function EditContact() {
       console.log(error);
     }
   };
-console.log(contact);
-
+  console.log(contact);
 
   useEffect(() => {
     get_contact();
@@ -167,7 +162,9 @@ console.log(contact);
   }
 
   const deleteall1 = (index) => {
-    const newcountry_code = contact?.country_code?.filter((_, i) => i !== index);
+    const newcountry_code = contact?.country_code?.filter(
+      (_, i) => i !== index
+    );
     const newmobile_no = contact?.mobile_no?.filter((_, i) => i !== index);
     const newmobile_type = contact?.mobile_type?.filter((_, i) => i !== index);
     const newaction1 = contact?.action1?.filter((_, i) => i !== index);
@@ -359,7 +356,9 @@ console.log(contact);
     }));
   }
   const deleteall6 = (index) => {
-    const newsocial_media = contact?.social_media?.filter((_, i) => i !== index);
+    const newsocial_media = contact?.social_media?.filter(
+      (_, i) => i !== index
+    );
     const newurl = contact?.url?.filter((_, i) => i !== index);
     const newaction6 = contact?.action6?.filter((_, i) => i !== index);
 
@@ -439,7 +438,9 @@ console.log(contact);
   }
   const deleteall8 = (index) => {
     const newdocumentno = contact?.document_no?.filter((_, i) => i !== index);
-    const newdocumentname = contact?.document_name?.filter((_, i) => i !== index);
+    const newdocumentname = contact?.document_name?.filter(
+      (_, i) => i !== index
+    );
     const newdocumentpic = contact?.document_pic?.filter((_, i) => i !== index);
     const newaction8 = contact?.action8?.filter((_, i) => i !== index);
 
@@ -467,36 +468,34 @@ console.log(contact);
       document_name: newdocumentname,
     }));
   };
-     const handledocumentpicchange = async (index, event) => {
-  const files = Array.from(event.target.files);
-  if (!files.length) return;
+  const handledocumentpicchange = async (index, event) => {
+    const files = Array.from(event.target.files);
+    if (!files.length) return;
 
-  // 🔼 Upload files to API
-  const formData = new FormData();
-  files.forEach(file => formData.append("files", file));
+    // 🔼 Upload files to API
+    const formData = new FormData();
+    files.forEach((file) => formData.append("files", file));
 
-  try {
-    const res = await api.post("api/upload/upload-files", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+      const res = await api.post("api/upload/upload-files", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-    
-    const urls = res.data.urls; // array of uploaded Cloudinary URLs
+      const urls = res.data.urls; // array of uploaded Cloudinary URLs
 
-    // 🔥 Directly save only URLs — no preview needed
-    setcontact(prev => {
-      const updated = [...prev.document_pic];
-      updated[index] = urls;   // replace or insert new URLs for that index
-      return { ...prev, document_pic: updated };
-    });
+      // 🔥 Directly save only URLs — no preview needed
+      setcontact((prev) => {
+        const updated = [...prev.document_pic];
+        updated[index] = urls; // replace or insert new URLs for that index
+        return { ...prev, document_pic: updated };
+      });
+    } catch (err) {
+      console.error("Upload failed:", err);
+      alert("Upload failed!");
+    }
+  };
 
-  } catch (err) {
-    console.error("Upload failed:", err);
-    alert("Upload failed!");
-  }
-};
-
-
+  // get all owner
 
   const [ownersList, setownersList] = useState([]);
 
@@ -506,7 +505,7 @@ console.log(contact);
       setownersList(resp.data.user.map((item) => item.full_name));
     } catch (error) {
       console.log(error);
-    } 
+    }
   };
 
   useEffect(() => {
@@ -526,6 +525,96 @@ console.log(contact);
     setcontact({ ...contact, owner: selectedOwners });
   };
 
+  // =============================get all title==========================================
+  const [select_loading, setselect_loading] = useState("");
+
+  const [All_Form_Title, setAll_Form_Title] = useState([]);
+  const getall_form_title = async () => {
+    try {
+      setselect_loading("title");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "form_title");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Form_Title(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // =============================get all country code==========================================
+
+  const [All_Country_Code, setAll_Country_Code] = useState([]);
+  const getall_country_code = async () => {
+    try {
+      setselect_loading("country_code");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "country_code");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Country_Code(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // =============================get all profession category==========================================
+
+  const [All_Profession_Category, setAll_Profession_Category] = useState([]);
+  const getall_profession_category = async () => {
+    try {
+      setselect_loading("profession_category");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "profession_category");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Profession_Category(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // =============================get all profession sub category==========================================
+
+  const [All_Profession_Sub_Category, setAll_Profession_Sub_Category] =
+    useState([]);
+  const getall_profession_sub_category = async () => {
+    try {
+      setselect_loading("profession_sub_category");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "profession_sub_category");
+      params.append("parent_lookup_value", contact.profession_category);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Profession_Sub_Category(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // =============================get all designation==========================================
+
+  const [All_Designation, setAll_Designation] = useState([]);
+  const getall_designation = async () => {
+    try {
+      setselect_loading("designation");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "designation");
+      params.append("parent_lookup_value", contact.profession_subcategory);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Designation(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // company data
   const [cdata, setcdata] = useState([]);
   const [totalcompany, settotalcompany] = useState();
   const fetchcdata = async (event) => {
@@ -545,7 +634,6 @@ console.log(contact);
   useEffect(() => {
     fetchcdata();
   }, []);
-
 
   const updatecontact = async () => {
     try {
@@ -567,7 +655,7 @@ console.log(contact);
       const resp = await api.put(`updatecontact/${selectedItem}`, contact);
       toast.success("contact updated", { autoClose: 2000 });
       setTimeout(() => {
-        navigate('/contactdetails')
+        navigate("/contactdetails");
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -1257,957 +1345,7 @@ console.log(contact);
   const states = Object.keys(statesAndCities);
   const cities = statesAndCities[contact?.state1] || [];
 
-  const professtiondetails = {
-    profession_category: [
-      "Govt. Employed",
-      "Private Employee",
-      "Self Employed",
-      "Retired",
-      "Business Man",
-      "Student",
-      "House Wife",
-    ],
-
-    profession_subcategory: {
-      "Govt. Employed": [
-        "Teacher",
-        "Scientist",
-        "Doctor",
-        "Nurse",
-        "Clerk",
-        "Engineer",
-        "Accountant",
-        "Architect",
-        "Auditor",
-        "Police",
-        "Mechanic",
-        "Security",
-        "Driver",
-        "Officer",
-        "Peon",
-        "Chef",
-        "Pilot",
-        "IT Person",
-        "Analyst",
-        "Sales Person",
-        "Banker",
-        "Legal",
-      ],
-      "Private Employee": [
-        "Officer",
-        "Accountant",
-        "Human Resources (HR)",
-        "Sales Person",
-        "Manager",
-        "IT Person",
-        "Analyst",
-        "Scientist",
-        "Technicians",
-        "Designer",
-        "Author",
-        "Videographer",
-        "Director",
-        "Telle Caller",
-        "Legel",
-        "Executive Officer",
-        "Operators",
-        "Security",
-        "Journalists",
-        "Doctor",
-        "Nurse",
-        "Teacher",
-        "Facility",
-        "Driver",
-        "Contractor",
-        "Consultant",
-        "Chef",
-        "Artist",
-        "Engineer",
-        "Banker",
-        "Legal",
-        "Clerk",
-        "Architect",
-        "Auditor",
-        "Mechanic",
-        "Peon",
-        "Pilot",
-      ],
-
-      "Self Employed": [
-        "Designer",
-        "Photographer",
-        "Videographer",
-        "Independent Artist",
-        "Illustrator",
-        "Writer",
-        "Digital Content Creator",
-        "Social Media Influencer",
-        "Podcaster",
-        "Music Producer",
-        "Management Consultant",
-        "Financial Advisor",
-        "IT Consultant",
-        "Business Strategist",
-        "Marketing Consultant",
-        "Life Coach",
-        "Career Counselor",
-        "Freelance Software Developer",
-        "Web Developer",
-        "Data Analyst",
-        "App Developer",
-        "UX/UI Designer",
-        "Cybersecurity Consultant",
-        "Private Practitioner (Doctor)",
-        "Physiotherapist",
-        "Dietitian or Nutritionist",
-        "Yoga Instructor",
-        "Personal Trainer",
-        "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)",
-        "Private Tutor",
-        "Test Preparation Coach",
-        "Online Educator",
-        "Language Trainer",
-        "Corporate Trainer",
-        "Independent Lawyer",
-        "Chartered Accountant (CA)",
-        "Tax Consultant",
-        "Auditor",
-        "Financial Planner",
-        "Tailor",
-        "Carpenter",
-        "Blacksmith",
-        "Jewelry Maker",
-        "Ceramic Artist",
-        "Real Estate Agent",
-        "Broker",
-        "Sales Representative",
-        "Freelance Chef",
-        "Event Planner",
-        "Makeup Artist",
-        "Hairstylist",
-        "Wedding Photographer",
-        "Independent Farmer",
-        "Organic Produce Supplier",
-        "Horticulturist",
-      ],
-
-      Retired: [
-        "Teacher",
-        "Scientist",
-        "Doctor",
-        "Nurse",
-        "Clerk",
-        "Engineer",
-        "Accountant",
-        "Architect",
-        "Auditor",
-        "Police",
-        "Mechanic",
-        "Security",
-        "Driver",
-        "Officer",
-        "Peon",
-        "Chef",
-        "Pilot",
-        "IT Person",
-        "Analyst",
-        "Sales Person",
-        "Banker",
-        "Legal",
-        "Manager",
-        "Operators",
-        "Human Resources (HR)",
-        "Freelance Graphic Designer",
-        "Photographer",
-        "Videographer",
-        "Independent Artist",
-        "Illustrator",
-        "Writer (Author, Blogger, or Copywriter)",
-        "Digital Content Creator",
-        "Social Media Influencer",
-        "Podcaster",
-        "Music Producer",
-        "Management Consultant",
-        "Financial Advisor",
-        "IT Consultant",
-        "Business Strategist",
-        "Marketing Consultant",
-        "Life Coach",
-        "Career Counselor",
-        "Freelance Software Developer",
-        "Web Developer",
-        "Data Analyst",
-        "App Developer",
-        "UX/UI Designer",
-        "Cybersecurity Consultant",
-        "Private Practitioner (Doctor)",
-        "Physiotherapist",
-        "Dietitian or Nutritionist",
-        "Yoga Instructor",
-        "Personal Trainer",
-        "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)",
-        "Private Tutor",
-        "Test Preparation Coach",
-        "Online Educator",
-        "Language Trainer",
-        "Corporate Trainer",
-        "Independent Lawyer",
-        "Chartered Accountant (CA)",
-        "Tax Consultant",
-        "Auditor",
-        "Financial Planner",
-        "Tailor",
-        "Carpenter",
-        "Blacksmith",
-        "Jewelry Maker",
-        "Ceramic Artist",
-        "Real Estate Agent",
-        "Property Consultant",
-        "Broker",
-        "Sales Representative",
-        "Freelance Chef",
-        "Event Planner",
-        "Makeup Artist",
-        "Hairstylist",
-        "Wedding Photographer",
-        "Independent Farmer",
-        "Organic Produce Supplier",
-        "Horticulturist",
-      ],
-
-      Student: ["Investor"],
-
-      "House Wife": ["Investor"],
-
-      "Business Man": [
-        "Entrepreneurs",
-        "Start-up Founders",
-        "Retailer",
-        "Wholesaler",
-        "Importer/Exporter",
-        "Distributor",
-        "Trader",
-        "Real Estate Developer",
-        "Real Estate Investor",
-        "Real Estate Agent",
-        "Manufacturer",
-        "Industrialist",
-        "Financer",
-        "Stock Trader",
-        "Hotel Owner",
-        "Resort Owner",
-        "Travel Agency",
-        "Restaurant Owner",
-        "Agriculturist",
-        "Dairy Business Owner",
-        "IT Person",
-        "Coaching Centre Owner",
-        "Training Institute Owner",
-        "Online Tutor",
-        "Private Tutor",
-        "Hospital Owner",
-        "Wellness Centre Owner",
-        "Fitness Centre Owner",
-        "Advertising Agency Owner",
-        "Film Producer",
-        "Media House Owner",
-        "Designer",
-        "Transporter",
-        "Courier Servicer",
-        "Renewable Energy and Environment",
-        "Boutique",
-        "Salon Owner",
-        "Security Service Provider",
-        "Legal Firm Owner",
-        "Digital Business",
-        "Infrastructure Developer",
-        "Poultry Farm Owner",
-        "Handicrafts Business Owner",
-        "Investment Banker",
-        "Loan Consultant",
-        "IT Company Owner",
-        "Cloud Service Provider",
-        "Emigration",
-        "Catering",
-        "Baker",
-        "Car Dealership Owner",
-        "Bike Dealership Owner",
-        "Bike Rental Business Owner",
-        "Workshop Owner",
-        "Environmental Consultant",
-        "Cold Storage Business Owner",
-        "Film Studio Owner",
-        "Sports Organizer",
-        "Event Organizer",
-        "Cloth Merchant",
-      ],
-    },
-    designation: {
-      Teacher: [
-        "Primary Teacher (PRT)",
-        "Trained Graduate Teacher (TGT)",
-        "Post Graduate Teacher (PGT)",
-        "Assistant Professor",
-        "Professor",
-        "Principal",
-        "Education Officer",
-        "Laboratory Technicians",
-        "Corporate Trainers",
-        "E-learning Specialists",
-        "Academic Counselors",
-        "Kindergarten Teacher",
-        "Subject Teacher",
-        "Senior Educator",
-        "Head of Department",
-      ],
-      Scientist: [
-        "Junior Scientist",
-        "Scientist B/C/D",
-        "Senior Scientist",
-        "Chief Scientist",
-        "Director",
-        "Data Scientists",
-        "Research Scientists",
-        "Product Developers",
-        "Research Associate",
-        "Senior Research Scientist",
-        "Lead Scientist",
-      ],
-      Doctor: [
-        "Doctors",
-        "Medical Officer (MO)",
-        "Senior Medical Officer (SMO)",
-        "Specialist Doctor",
-        "Chief Medical Officer (CMO)",
-        "Director of Health Services",
-        "Physical Therapists",
-        "Dietitians",
-        "Resident Doctor",
-        "Consultant",
-        "Senior Specialist",
-        "Medical Director",
-      ],
-      Nurse: [
-        "Nurses",
-        "Auxiliary Nurse Midwife (ANM)",
-        "Staff Nurse",
-        "Nursing Superintendent",
-        "Chief Nursing Officer",
-        "Staff Nurse",
-        "Charge Nurse",
-        "Nursing Director",
-      ],
-      Clerk: [
-        "Lower Division Clerk (LDC)",
-        "Upper Division Clerk (UDC)",
-        "Assistant Section Officer (ASO)",
-        "Section Officer (SO)",
-        "Data Entry Clerk",
-        "Office Assistant",
-        "Administrative Clerk",
-      ],
-      Engineer: [
-        "Junior Engineer (JE)",
-        "Assistant Engineer (AE)",
-        "Executive Engineer (EE)",
-        "Chief Engineer",
-      ],
-      Accountant: [
-        "Junior Accountant",
-        "Senior Accountant",
-        "Accounts Officer",
-        "Senior Accounts Officer",
-        "Controller of Accounts",
-        "Accountants",
-        "Payroll Specialists",
-        "Tax Consultants",
-        "Junior Accountant",
-        "Senior Accountant",
-        "Finance Controller",
-        "Chief Financial Officer (CFO)",
-        "Accountants",
-        "Financial Analysts",
-        "Auditors",
-        "Payroll Specialists",
-        "Tax Consultants",
-      ],
-      Architect: [
-        "Assistant Architect",
-        "Architect",
-        "Senior Architect",
-        "Chief Architect",
-        "Architectural Intern",
-        "Project Architect",
-        "Design Director",
-      ],
-      Auditor: [
-        "Junior Auditor",
-        "Senior Auditor",
-        "Audit Officer",
-        "Senior Audit Officer",
-        "Principal Auditor",
-        "Auditors",
-        "Internal Auditor",
-        "Risk Auditor",
-        "Audit Manager",
-      ],
-      Police: [
-        "Constable",
-        "Head Constable",
-        "Assistant Sub-Inspector (ASI)",
-        "Sub-Inspector (SI)",
-        "Inspector",
-        "Deputy Superintendent of Police (DSP)",
-        "Superintendent of Police (SP)",
-        "Inspector General of Police (IGP)",
-        "Director General of Police (DGP)",
-      ],
-      Mechanic: [
-        "Junior Mechanic",
-        "Senior Mechanic",
-        "Workshop Superintendent",
-        "Service Technician",
-        "Workshop Supervisor",
-      ],
-      Security: [
-        "Security Guard",
-        "Security Supervisor",
-        "Security Officer",
-        "Chief Security Officer",
-        "Safety Officers",
-      ],
-      Driver: [
-        "Driver (Light/Heavy Vehicle)",
-        "Senior Driver",
-        "Motor Vehicle Inspector",
-        "Drivers",
-        "Delivery Agents",
-        "Company Driver",
-        "Heavy Vehicle Driver",
-        "Personal Driver",
-      ],
-      Officer: [
-        "Probationary Officer (PO)",
-        "Administrative Officer",
-        "Gazetted Officer (Class A, B, C)",
-        "Deputy Secretary",
-        "Under Secretary",
-        "Joint Secretary",
-        "Secretary",
-        "Administrative Assistants",
-        "Chief Executive Officer (CEO)",
-        "Chief Financial Officer (CFO)",
-        "Chief Operating Officer (COO)",
-        "Vice Presidents (VPs)",
-        "Directors",
-        "Entrepreneurs",
-        "Administrative Assistants",
-        "Office Managers",
-        "Executive Assistants",
-        "Receptionists",
-        "PData Entry Operators",
-      ],
-      Peon: [
-        "Office Attendant",
-        "Multi-Tasking Staff (MTS)",
-        "Office Helper",
-        "Support Staff",
-      ],
-      Chef: [
-        "Cook",
-        "Head Cook",
-        "Catering Supervisor",
-        "Chefs",
-        "Commis Chef",
-        "Sous Chef",
-        "Executive Chef",
-      ],
-      Pilot: [
-        "Commercial Pilot",
-        "Helicopter Pilot",
-        "Fighter Pilot",
-        "Co-Pilot",
-        "Chief Pilot",
-      ],
-      "IT Person": [
-        "Junior Programmer",
-        "Software Developer",
-        "Software Engineer",
-        "Senior Software Engineer",
-        "IT Officer",
-        "Software Developers",
-        "System Administrators",
-        "IT Support Specialists",
-        "Junior Developer",
-        "Full Stack Developer",
-      ],
-      "Sales Person": [
-        "Sales Assistant",
-        "Sales Supervisor",
-        "Marketing Executive",
-        "Sales Executives",
-        "Sales Associate",
-        "Sales Manager",
-      ],
-      Analyst: [
-        "Data Analyst",
-        "Research Analyst",
-        "Financial Analyst",
-        "System Analyst",
-        "Intelligence Analyst",
-        "Financial Analysts",
-        "Cybersecurity Analysts",
-        "Supply Chain Analysts",
-        "Business Analyst",
-        "Senior Analyst",
-        "Supply Chain Analysts",
-        "Quality Inspector",
-      ],
-      Banker: [
-        "Bank Clerk",
-        "Senior Clerk",
-        "Probationary Officer (PO)",
-        "Assistant Manager",
-        "Branch Manager",
-        "Regional Manager",
-        "Chief Manager",
-        "Assistant General Manager (AGM)",
-        "General Manager (GM)",
-        "Managing Director (MD)",
-        "Relationship Manager",
-        "Loan Officer",
-        "Branch Manager",
-        "Investment Analyst",
-      ],
-      Legal: [
-        "Civil Judge (Junior Division)",
-        "Civil Judge (Senior Division)",
-        "District Judge",
-        "High Court Judge",
-        "Supreme Court Judge",
-        "Chief Justice",
-        "Legal Officer",
-        "Public Prosecutor",
-        "Solicitor General",
-        "Legal Advisors",
-        "Compliance Officers",
-        "Contract Specialists",
-        "Risk Managers",
-        "Legal Associate",
-        "Corporate Lawyer",
-        "Compliance Manager",
-        "Legal Consultant",
-      ],
-
-      Designer: [
-        "Proprietor",
-        "Graphic Designers",
-        "UX/UI Designers",
-        "Instructional Designers",
-        "Freelance Designers/Writers",
-        "Senior Designer",
-        "Creative Director",
-      ],
-      Photographer: ["Proprietor"],
-      Videographer: ["Proprietor", "Video Editors"],
-      "Independent Artist": ["Proprietor"],
-      Illustrator: ["Proprietor"],
-      Writer: ["Proprietor"],
-      "Digital Content Creator": ["Proprietor"],
-      "Social Media Influencer": ["Proprietor"],
-      Podcaster: ["Proprietor"],
-      "Music Producer": ["Proprietor"],
-      "Management Consultant": ["Proprietor"],
-      "Financial Advisor": ["Proprietor"],
-      "IT Consultant": ["Proprietor"],
-      "Business Strategist": ["Proprietor"],
-      "Marketing Consultant": ["Proprietor"],
-      "Life Coach": ["Proprietor"],
-      "Career Counselor": ["Proprietor"],
-      "Freelance Software Developer": ["Proprietor"],
-      "Web Developer": ["Proprietor"],
-      "Data Analyst": ["Proprietor"],
-      "App Developer": ["Proprietor"],
-      "UX/UI Designer": ["Proprietor"],
-      "Cybersecurity Consultant": ["Proprietor"],
-      "Private Practitioner (Doctor)": ["Proprietor"],
-      Physiotherapist: ["Proprietor"],
-      "Dietitian or Nutritionist": ["Proprietor"],
-      "Yoga Instructor": ["Proprietor"],
-      "Personal Trainer": ["Proprietor"],
-      "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)": [
-        "Proprietor",
-      ],
-      "Private Tutor": ["Proprietor"],
-      "Test Preparation Coach": ["Proprietor"],
-      "Online Educator": ["Proprietor"],
-      "Language Trainer": ["Proprietor"],
-      "Corporate Trainer": ["Proprietor"],
-      "Independent Lawyer": ["Proprietor"],
-      "Chartered Accountant (CA)": ["Proprietor"],
-      "Tax Consultant": ["Proprietor"],
-      Auditor: ["Proprietor"],
-      "Financial Planner": ["Proprietor"],
-      Tailor: ["Proprietor"],
-      Carpenter: ["Proprietor"],
-      Blacksmith: ["Proprietor"],
-      "Jewelry Maker": ["Proprietor"],
-      "Ceramic Artist": ["Proprietor"],
-      "Real Estate Agent": ["Proprietor"],
-      Broker: ["Proprietor"],
-      "Sales Representative": ["Proprietor"],
-      "Freelance Chef": ["Proprietor"],
-      "Event Planner": ["Proprietor"],
-      "Makeup Artist": ["Proprietor"],
-      Hairstylist: ["Proprietor"],
-      "Wedding Photographer": ["Proprietor"],
-      "Independent Farmer": ["Proprietor"],
-      "Organic Produce Supplier": ["Proprietor"],
-      Horticulturist: ["Proprietor"],
-
-      "Software Developer": ["Software Developer"],
-      Manager: [],
-      Operators: [
-        "Data Entry Operators",
-        "Operations Managers",
-        "Machine Operators",
-      ],
-      "Human Resources (HR)": [
-        "HR Executives",
-        "Talent Acquisition Specialists",
-        "Employee Relations Managers",
-        "Training and Development Specialists",
-        "HR Business Partners",
-        "HR Executives",
-        "Talent Acquisition Specialists",
-        "Employee Relations Managers",
-        "Training and Development Specialists",
-        "HR Business Partners",
-      ],
-      Manager: [
-        "Marketing Managers",
-        "Brand Managers",
-        "Business Development Managers",
-        "Digital Marketing Specialists",
-        "Logistics Coordinators",
-        "Procurement Specialists",
-        "Inventory Managers",
-        "Client Relationship Managers",
-        "Social Media Managers",
-        "Event Planners",
-        "Facility Managers",
-        "Hotel Managers",
-        "Front Desk Executives",
-        "Event Coordinators",
-        "Start-up Employees",
-        "Team Manager",
-        "Operations Manager",
-        "General Manager",
-        "Operations Managers",
-        "Logistics Coordinators",
-        "Procurement Specialists",
-        "Inventory Managers",
-        "Innovation Managers",
-        "Customer Support Executives",
-        "Sales Manager",
-        "Public Relations Specialists",
-        "Office Managers",
-        "Executive Assistants",
-        "Receptionists",
-        "Innovation Managers",
-        "Customer Support Executives",
-        "Plant Managers",
-        "Quality Inspectors",
-        "Fleet Managers",
-        "Marketing Managers",
-        "Brand Managers",
-        "Business Development Managers",
-        "Digital Marketing Specialists",
-      ],
-      Author: ["Content Writers", "Editors"],
-      Director: ["Art Directors"],
-      "Tele Caller": ["Call Center Agents"],
-      Technicians: [
-        "Technical Support Specialists",
-        "Maintenance Technicians",
-        "Lab Technicians",
-        "Technical Lead",
-        "Laboratory Technicians",
-      ],
-      Jounalists: ["Journalists", "Public Relations Specialists"],
-      Hospitality: ["Housekeeping Staff"],
-      Contractor: ["Independent Contractors"],
-      Consultant: ["Management Consultants"],
-      Artist: ["Creative Artists", "Musicians"],
-      Engineer: [
-        "Junior Engineer",
-        "Project Engineer",
-        "Senior Engineer",
-        "Engineering Manager",
-      ],
-      "Freelance Graphic Designer": ["Proprietor"],
-      Photographer: ["Proprietor"],
-      Videographer: ["Proprietor"],
-      "Independent Artist": ["Proprietor"],
-      Illustrator: ["Proprietor"],
-      "Writer (Author, Blogger, or Copywriter)": ["Proprietor"],
-      "Digital Content Creator": ["Proprietor"],
-      "Social Media Influencer": ["Proprietor"],
-      Podcaster: ["Proprietor"],
-      "Music Producer": ["Proprietor"],
-      "Management Consultant": ["Proprietor"],
-      "Financial Advisor": ["Proprietor"],
-      "IT Consultant": ["Proprietor"],
-      "Business Strategist": ["Proprietor"],
-      "Marketing Consultant": ["Proprietor"],
-      "Life Coach": ["Proprietor"],
-      "Career Counselor": ["Proprietor"],
-      "Freelance Software Developer": ["Proprietor"],
-      "Web Developer": ["Proprietor"],
-      "Data Analyst": ["Proprietor"],
-      "App Developer": ["Proprietor"],
-      "UX/UI Designer": ["Proprietor"],
-      "Cybersecurity Consultant": ["Proprietor"],
-      "Private Practitioner (Doctor)": ["Proprietor"],
-      Physiotherapist: ["Proprietor"],
-      "Dietitian or Nutritionist": ["Proprietor"],
-      "Yoga Instructor": ["Proprietor"],
-      "Personal Trainer": ["Proprietor"],
-      "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)": [
-        "Proprietor",
-      ],
-      "Private Tutor": ["Proprietor"],
-      "Test Preparation Coach": ["Proprietor"],
-      "Online Educator": ["Proprietor"],
-      "Language Trainer": ["Proprietor"],
-      "Corporate Trainer": ["Proprietor"],
-      "Independent Lawyer": ["Proprietor"],
-      "Chartered Accountant (CA)": ["Proprietor"],
-      "Tax Consultant": ["Proprietor"],
-      Auditor: [
-        "Proprietor",
-        "Internal Auditor",
-        "Risk Auditor",
-        "Audit Manager",
-      ],
-      "Financial Planner": ["Proprietor"],
-      Tailor: ["Proprietor"],
-      Carpenter: ["Proprietor"],
-      Blacksmith: ["Proprietor"],
-      "Jewelry Maker": ["Proprietor"],
-      "Ceramic Artist": ["Proprietor"],
-      "Real Estate Agent": ["Proprietor"],
-      "Property Consultant": ["Proprietor"],
-      Broker: ["Proprietor"],
-      "Sales Representative": ["Proprietor"],
-      "Freelance Chef": ["Proprietor"],
-      "Event Planner": ["Proprietor"],
-      "Makeup Artist": ["Proprietor"],
-      Hairstylist: ["Proprietor"],
-      "Wedding Photographer": ["Proprietor"],
-      "Independent Farmer": ["Proprietor"],
-      "Organic Produce Supplier": ["Proprietor"],
-      Horticulturist: ["Proprietor"],
-      Investor: ["Angel Investor", "Venture Capitalist", "Portfolio Manager"],
-      Entrepreneurs: ["Founder", "Co-Founder", "CEO", "Managing Director"],
-      "Start-up Founders": ["Founder", "Co-Founder, CEO", "Visionary Leader"],
-      Retailer: [
-        "Shop Owner",
-        "Retail Manager",
-        "Proprietor",
-        "Franchise Owner",
-      ],
-      Wholesaler: [
-        "Wholesale Business Owner",
-        "Distribution Head",
-        "Supply Chain Owner",
-      ],
-      "Importer/Exporter": [
-        "Import/Export Manager",
-        "Trade Consultant",
-        "Supply Chain Owner",
-      ],
-      Distributor: [
-        "Chief Trading Officer",
-        "Trading Business Owner",
-        "Independent Trader",
-      ],
-      Trader: [
-        "Wholesale Business Owner",
-        "Distribution Head",
-        "Supply Chain Owner",
-      ],
-      "Real Estate Developer": [
-        "Real Estate Developer",
-        "Managing Partner",
-        "Property Consultant",
-      ],
-      "Real Eastate Investor": [
-        "Property Investor",
-        "Real Estate Strategist",
-        "Investment Manager",
-      ],
-      "Real Estate Agent": [
-        "Real Estate Consultant",
-        "Real Estate Advisor",
-        "Realtor",
-      ],
-      Manufacturer: [
-        "Factory Owner",
-        "Production Head",
-        "Chief Manufacturing Officer",
-      ],
-      Industrialist: [
-        "Business Tycoon",
-        "Industry Leader",
-        "Managing Director",
-      ],
-      Financer: [
-        "Chief Financial Officer (CFO)",
-        "Financial Advisor",
-        "Investment Consultant",
-      ],
-      "Stock Trader": ["Equity Investor", "Day Trader", "Portfolio Manager"],
-      "Hotel Owner": [
-        "Hospitality Owner",
-        "General Manager (GM)",
-        "Managing Director",
-      ],
-      "Resort Owner": [
-        "Resort Manager",
-        "Owner and Operator",
-        "Hospitality Director",
-      ],
-      "Travel Agency": [
-        "Travel Consultant",
-        "Tourism Business Owner",
-        "Founder",
-      ],
-      "Restaurant Owner": [
-        "Restaurant Manager",
-        "Food Entrepreneur",
-        "Culinary Director",
-      ],
-      Agriculturist: [
-        "Farm Owner",
-        "Agriculture Consultant",
-        "Rural Entrepreneur",
-      ],
-      "Dairy Business Owner": [
-        "Dairy Farmer",
-        "Milk Processing Entrepreneur",
-        "Managing Partner",
-      ],
-      "IT Person": [
-        "IT Consultant",
-        "Software Solutions Owner",
-        "IT Entrepreneur",
-        "Software Developers",
-        "System Administrators",
-        "IT Support Specialists",
-        "Data Scientists",
-        "Cybersecurity Analysts",
-        "Junior Developer",
-        "Full Stack Developer",
-        "Senior Software Engineer",
-        "Technical Lead",
-      ],
-      "Coaching Centre Owner": [
-        "Education Entrepreneur",
-        "Coaching Director",
-        "Academic Manager",
-      ],
-      "Training Institute Owner": [
-        "Training Consultant",
-        "Institute Director",
-        "Founder",
-      ],
-      "Online Tutor": ["Founder and Educator", "Academic Content Creator"],
-      "Private Tutor": ["Independent Tutor", "Education Consultant"],
-      "Hospital Owner": [
-        "Healthcare Entrepreneur",
-        "Medical Director",
-        "Hospital Administrator",
-      ],
-      "Wellness Centre Owner": [
-        "Wellness Consultant",
-        "Health and Fitness Director",
-        "Gym Owner",
-      ],
-      "Fitness Centre Owner": [
-        "Gym Owner",
-        "Fitness Director",
-        "Health Entrepreneur",
-      ],
-      "Advertising Agency Owner": [
-        "Creative Director",
-        "Marketing Strategist",
-        "Founder",
-      ],
-      "Film Producer": ["Producer", "Film Studio Owner", "Creative Producer"],
-      "Media House Owner": ["Media Entrepreneur", "Chief Editor", "Publisher"],
-      Designer: ["Creative Director", "Fashion Entrepreneur"],
-      Transporter: ["Logistics Manager", "Transport Business Owner"],
-      "Courier Servicer": ["Courier Business Owner", "Operations Manager"],
-      "Renewable Energy and Environment": [
-        "Renewable Energy Consultant",
-        "Sustainable Entrepreneur",
-      ],
-      Boutique: ["Fashion Boutique Owner", "Creative Head"],
-      "Salon Owner": ["Salon Manager", "Beauty Entrepreneur"],
-      "Security Service Provider": ["Security Agency Owner", "Operations Head"],
-      "Legal Firm Owner": ["Advocate and Owner", "Managing Partner"],
-      "Digital Business": ["Founder", "Digital Marketing Consultant"],
-      "Infrastructure Developer": [
-        "Real Estate Developer",
-        "Project Consultant",
-      ],
-      Agriculturist: ["Agribusiness Entrepreneur", "Food Processing Director"],
-      "Poultry Farm Owner": ["Poultry Business Owner", "Farm Manager"],
-      "Handicrafts Business Owner": [
-        "Artisan Entrepreneur",
-        "Creative Entrepreneur",
-      ],
-      "Investment Banker": ["Investment Advisor", "Wealth Manager"],
-      "Loan Cosultant": ["Financial Consultant", "Loan Advisor"],
-      "IT Company Owner": ["IT Entrepreneur", "Chief Technology Officer (CTO)"],
-      "Cloud Service Provider": [
-        "Cloud Solutions Architect",
-        "IT Entrepreneur",
-      ],
-      Emigration: ["Immigration Consultant", "Visa Solutions Provider"],
-      Catering: ["Catering Business Owner", "Culinary Director"],
-      Baker: ["Bakery Owner", "Culinary Entrepreneur"],
-      "Car Dealership Owner": ["Dealership Manager", "Auto Entrepreneur"],
-      "Bike Dealership Owner": ["Franchise Owner"],
-      "Bike Rental Business Owner": [
-        "Rental Business Owner",
-        "Operations Head",
-      ],
-      "Workshop Owner": ["Mechanic Entrepreneur", "Service Manager"],
-      "Environmental Consultant": [
-        "Sustainability Consultant",
-        "Environmental Advisor",
-      ],
-      "Cold Storage Business Owner": [
-        "Logistics Entrepreneur",
-        "Warehouse Manager",
-      ],
-      "Film Studio Owner": ["Film Producer", "Studio Head"],
-      "Sports Organizer": ["Event Manager", "Sports Entrepreneur"],
-      "Event Organizer": ["Founder, Director", "Creative Planner"],
-      "Cloth Merchant": ["Textile Business Owner", "Retail Manager"],
-      ExecutiveOfficer: [
-        "Chief Executive Officer (CEO)",
-        "Entrepreneurs",
-        "Chief Financial Officer (CFO)",
-        "Chief Operating Officer (COO)",
-        "Vice Presidents (VPs)",
-        "Directors",
-      ],
-      Facility: ["Housekeeping Staff"],
-    },
-  };
+ 
 
   const [availableSubcategories, setAvailableSubcategories] = useState([]);
   const [availableDesignations, setAvailableDesignations] = useState([]);
@@ -2222,11 +1360,6 @@ console.log(contact);
       profession_subcategory: "", // Reset subcategory when category changes
       designation: "", // Reset designation when category changes
     }));
-
-    // Update available subcategories based on selected profession category
-    setAvailableSubcategories(
-      professtiondetails.profession_subcategory[selectedCategory] || []
-    );
   };
 
   // Handle profession subcategory change
@@ -2238,11 +1371,6 @@ console.log(contact);
       profession_subcategory: selectedSubcategory,
       designation: "", // Reset designation when subcategory changes
     }));
-
-    // Update available designations based on selected profession subcategory
-    setAvailableDesignations(
-      professtiondetails.designation[selectedSubcategory] || []
-    );
   };
 
   // Handle designation change
@@ -2256,8 +1384,6 @@ console.log(contact);
   };
 
   const [isChecked, setIsChecked] = useState(false);
-
-
 
   const asianCountries = [
     "Afghanistan",
@@ -2324,15 +1450,15 @@ console.log(contact);
             <div className="col-md-12 border-right">
               <div className="p-3 py-5">
                 <div className="d-flex justify-content-between align-items-center mb-3">
-           <h1
-  className="text-right text-2xl font-bold"
-  style={{ cursor: "pointer" }}
-  onClick={() => window.location.reload()}
->
-  Edit Contact
-</h1>
+                  <h1
+                    className="text-right text-2xl font-bold"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => window.location.reload()}
+                  >
+                    Edit Contact
+                  </h1>
 
-              <span style={{ marginLeft: "200px", width: "31%" }}>
+                  <span style={{ marginLeft: "200px", width: "31%" }}>
                     <input
                       type="text"
                       class="form-control form-control-sm"
@@ -2343,8 +1469,6 @@ console.log(contact);
                   </span>
                 </div>
                 <hr></hr>
-
-             
 
                 <div
                   style={{ display: isChecked ? "none" : "flex", gap: "80px" }}
@@ -2372,8 +1496,6 @@ console.log(contact);
                   >
                     Personal Details
                   </span>
-
-                 
                 </div>
 
                 {/*------------------------------------------ basic details start------------------------------------------------------------------------ */}
@@ -2390,7 +1512,7 @@ console.log(contact);
                     style={{ marginTop: "40px" }}
                   >
                     <div className=" col-md-12 d-flex justify-content-between align-items-center experience font-bold">
-                      <span >Basic Details</span>
+                      <span>Basic Details</span>
                     </div>
                     <div className="col-md-12">
                       <hr></hr>
@@ -2403,122 +1525,166 @@ console.log(contact);
                         onChange={(e) =>
                           setcontact({ ...contact, title: e.target.value })
                         }
+                        onClick={() => {
+                          if (All_Form_Title.length === 0) {
+                            getall_form_title();
+                          }
+                        }}
                       >
-                        <option value={contact?.title|| ""}>{contact?.title|| ""}</option>
-                        <option>Mr.</option>
-                        <option>Mrs.</option>
-                        <option>Sh.</option>
-                        <option>Smt.</option>
-                        <option>Dr.</option>
-                        <option>Er.</option>
-                        <option>Col.</option>
-                        <option>Maj.</option>
+                        <option value={contact?.title || "---select title---"}>
+                          {contact?.title || ""}
+                        </option>
+                        {select_loading === "title" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option value="">-- Select Title --</option>
+
+                            {/* Dynamic Fetched List */}
+                            {All_Form_Title.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
                       </select>
                     </div>
-                 {/* FIRST NAME */}
+                    {/* FIRST NAME */}
                     <div className="col-md-5 mb-3 custom-input ">
-                    <label className="form-label">Name</label>
-                    <input
+                      <label className="form-label">Name</label>
+                      <input
                         type="text"
                         required
                         className="form-control form-control-sm"
                         placeholder="First name"
                         value={contact?.first_name || ""}
-                        onChange={(e) => setcontact({ ...contact, first_name: e.target.value })}
-                    />
+                        onChange={(e) =>
+                          setcontact({ ...contact, first_name: e.target.value })
+                        }
+                      />
                     </div>
-                     {/* SURNAME */}
-                      <div className="col-md-5 mb-3 custom-input ">
-                        <label className="form-label">Surname</label>
-                        <input
-                            type="text"
-                            className="form-control form-control-sm"
-                            placeholder="surname"
-                            value={contact?.last_name || ""}
-                            onChange={(e) => setcontact({ ...contact, last_name: e.target.value })}
-                        />
-                        </div>
+                    {/* SURNAME */}
+                    <div className="col-md-5 mb-3 custom-input ">
+                      <label className="form-label">Surname</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        placeholder="surname"
+                        value={contact?.last_name || ""}
+                        onChange={(e) =>
+                          setcontact({ ...contact, last_name: e.target.value })
+                        }
+                      />
+                    </div>
                   </div>
-                  
+
                   <div className="row mt-0" id="basicdetails2">
-             {/* COUNTRY */}
-                <div className="col-md-4 mb-3 custom-input">
-                <label className="form-label">Country</label>
-                {(contact?.country_code || []).map((item, index) => (
-                    <select
-                    key={index}
-                    style={{ marginBottom: "2px" }}
-                    required
-                    className="form-control form-control-sm"
-                    value={contact?.country_code?.[index] || ""}
-                    onChange={(event) => handlecountry_codechange(index, event)}
-                    >
-                    <option value={contact?.country_code?.[index] || ""}>{contact?.country_code?.[index] || ""}</option>
-                    {(countrycode || []).map((cc, idx) => (
-                        <option key={idx} value={cc}>
-                        {cc}
-                        </option>
-                    ))}
-                    </select>
-                ))}
-                </div>
-                   {/* MOBILE */}
-        <div className="col-md-4 mb-3 custom-input">
-          <label className="form-label">Mobile Number</label>
-          {(contact?.mobile_no || []).map((item, index) => (
-            <input
-              key={index}
-              type="text"
-              required
-              style={{ marginBottom: "2px" }}
-              className="form-control form-control-sm"
-              placeholder="enter phone number"
-              value={contact?.mobile_no?.[index] || ""}
-              onChange={(event) => handlemobile_nochange(index, event)}
-            />
-          ))}
-        </div>
-                          {/* MOBILE TYPE */}
-        <div className="col-md-2 mb-3 custom-input">
-          <label className="form-label">Type</label>
-          {(contact?.mobile_type || []).map((item, index) => (
-            <select
-              key={index}
-              className="form-control form-control-sm"
-              style={{ marginBottom: "2px" }}
-              value={contact?.mobile_type?.[index] || ""}
-              onChange={(event) => handlemobile_typechange(index, event)}
-            >
-              <option>{contact?.mobile_type?.[index] || ""}</option>
-              <option>---Select mobile type---</option>
-              <option>Personal</option>
-              <option>Official</option>
-              <option>Home</option>
-              <option>Phone</option>
-            </select>
-          ))}
-        </div>
+                    {/* COUNTRY */}
+                    <div className="col-md-4 mb-3 custom-input">
+                      <label className="form-label">Country</label>
+                      {(contact?.country_code || []).map((item, index) => (
+                        <select
+                          key={index}
+                          style={{ marginBottom: "2px" }}
+                          required
+                          className="form-control form-control-sm"
+                          value={
+                            contact?.country_code?.[index] ||
+                            "---select contry code---"
+                          }
+                          onChange={(event) =>
+                            handlecountry_codechange(index, event)
+                          }
+                          onClick={() => {
+                            if (All_Country_Code.length === 0) {
+                              getall_country_code();
+                            }
+                          }}
+                        >
+                          <option value={contact?.country_code?.[index] || ""}>
+                            {contact?.country_code?.[index] || ""}
+                          </option>
+                          {select_loading === "country_code" ? (
+                            <option>⏳ Loading...</option>
+                          ) : (
+                            <>
+                              <option value="">
+                                -- Select Country Code --
+                              </option>
 
-          {/* DELETE BUTTON */}
-                   <div className="col-md-1 mt-8">
-  {(contact?.mobile_no || []).map((item, index) => (
-    <div key={index} style={{ marginTop: "10px" }}>
-      <span
-        className="material-icons"
-        style={{
-          color: "red",
-          fontSize: "24px",
-          cursor: "pointer",
-        }}
-        onClick={() => deleteall1(index)}
-      >
-        delete
-      </span>
-    </div>
-  ))}
-</div>
+                              {/* Dynamic Fetched List */}
+                              {All_Country_Code.map((val, i) => (
+                                <option key={i} value={val.lookup_value}>
+                                  {val.lookup_value}
+                                </option>
+                              ))}
+                            </>
+                          )}
+                        </select>
+                      ))}
+                    </div>
+                    {/* MOBILE */}
+                    <div className="col-md-4 mb-3 custom-input">
+                      <label className="form-label">Mobile Number</label>
+                      {(contact?.mobile_no || []).map((item, index) => (
+                        <input
+                          key={index}
+                          type="text"
+                          required
+                          style={{ marginBottom: "2px" }}
+                          className="form-control form-control-sm"
+                          placeholder="enter phone number"
+                          value={contact?.mobile_no?.[index] || ""}
+                          onChange={(event) =>
+                            handlemobile_nochange(index, event)
+                          }
+                        />
+                      ))}
+                    </div>
+                    {/* MOBILE TYPE */}
+                    <div className="col-md-2 mb-3 custom-input">
+                      <label className="form-label">Type</label>
+                      {(contact?.mobile_type || []).map((item, index) => (
+                        <select
+                          key={index}
+                          className="form-control form-control-sm"
+                          style={{ marginBottom: "2px" }}
+                          value={contact?.mobile_type?.[index] || ""}
+                          onChange={(event) =>
+                            handlemobile_typechange(index, event)
+                          }
+                        >
+                          <option>{contact?.mobile_type?.[index] || ""}</option>
+                          <option>---Select mobile type---</option>
+                          <option>Personal</option>
+                          <option>Official</option>
+                          <option>Home</option>
+                          <option>Phone</option>
+                        </select>
+                      ))}
+                    </div>
 
-  {/* ADD BUTTON */}
+                    {/* DELETE BUTTON */}
+                    <div className="col-md-1 mt-8">
+                      {(contact?.mobile_no || []).map((item, index) => (
+                        <div key={index} style={{ marginTop: "10px" }}>
+                          <span
+                            className="material-icons"
+                            style={{
+                              color: "red",
+                              fontSize: "24px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => deleteall1(index)}
+                          >
+                            delete
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* ADD BUTTON */}
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -2530,61 +1696,63 @@ console.log(contact);
                     </div>
 
                     {/* EMAIL */}
-        <div className="col-md-8 mb-3 custom-input">
-          <label className="form-label">Email-Address</label>
-          {(contact?.email || []).map((item, index) => (
-            <input
-              key={index}
-              type="text"
-              style={{ marginBottom: "2px" }}
-              className="form-control form-control-sm"
-              placeholder="enter email-id"
-              value={contact?.email?.[index] || ""}
-              onChange={(event) => handleemailchange(index, event)}
-            />
-          ))}
-        </div>
+                    <div className="col-md-8 mb-3 custom-input">
+                      <label className="form-label">Email-Address</label>
+                      {(contact?.email || []).map((item, index) => (
+                        <input
+                          key={index}
+                          type="text"
+                          style={{ marginBottom: "2px" }}
+                          className="form-control form-control-sm"
+                          placeholder="enter email-id"
+                          value={contact?.email?.[index] || ""}
+                          onChange={(event) => handleemailchange(index, event)}
+                        />
+                      ))}
+                    </div>
 
-                  {/* EMAIL TYPE */}
-        <div className="col-md-2 mb-3 custom-input">
-          <label className="form-label">Type</label>
-          {(contact?.email_type || []).map((item, index) => (
-            <select
-              key={index}
-              className="form-control form-control-sm"
-              style={{ marginBottom: "2px" }}
-              value={contact?.email_type?.[index] || ""}
-              onChange={(event) => handleemail_typechange(index, event)}
-            >
- <option>{contact?.email_type?.[index] || ""}</option>
- <option>---Select email type---</option>
-              <option>Personal</option>
-              <option>Official</option>
-              <option>Business</option>
-            </select>
-          ))}
-        </div>
+                    {/* EMAIL TYPE */}
+                    <div className="col-md-2 mb-3 custom-input">
+                      <label className="form-label">Type</label>
+                      {(contact?.email_type || []).map((item, index) => (
+                        <select
+                          key={index}
+                          className="form-control form-control-sm"
+                          style={{ marginBottom: "2px" }}
+                          value={contact?.email_type?.[index] || ""}
+                          onChange={(event) =>
+                            handleemail_typechange(index, event)
+                          }
+                        >
+                          <option>{contact?.email_type?.[index] || ""}</option>
+                          <option>---Select email type---</option>
+                          <option>Personal</option>
+                          <option>Official</option>
+                          <option>Business</option>
+                        </select>
+                      ))}
+                    </div>
 
-                          {/* DELETE BUTTON */}
-                   <div className="col-md-1 mt-8">
-  {(contact?.email || []).map((item, index) => (
-    <div key={index} style={{ marginTop: "10px" }}>
-      <span
-        className="material-icons"
-        style={{
-          color: "red",
-          fontSize: "24px",
-          cursor: "pointer",
-        }}
-        onClick={() => deleteall2(index)}
-      >
-        delete
-      </span>
-    </div>
-  ))}
-</div>
+                    {/* DELETE BUTTON */}
+                    <div className="col-md-1 mt-8">
+                      {(contact?.email || []).map((item, index) => (
+                        <div key={index} style={{ marginTop: "10px" }}>
+                          <span
+                            className="material-icons"
+                            style={{
+                              color: "red",
+                              fontSize: "24px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => deleteall2(index)}
+                          >
+                            delete
+                          </span>
+                        </div>
+                      ))}
+                    </div>
 
-  {/* ADD BUTTON */}
+                    {/* ADD BUTTON */}
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -2595,204 +1763,301 @@ console.log(contact);
                       </button>
                     </div>
 
-               {/* TAGS */}
-        <div className="col-md-12 mb-3 custom-input">
-          <label className="form-label">Tags</label>
-          <input
-            type="text"
-            className="form-control form-control-sm"
-            value={contact?.tags || ""}
-            onChange={(e) => setcontact({ ...contact, tags: e.target.value })}
-          />
-        </div>
+                    {/* TAGS */}
+                    <div className="col-md-12 mb-3 custom-input">
+                      <label className="form-label">Tags</label>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        value={contact?.tags || ""}
+                        onChange={(e) =>
+                          setcontact({ ...contact, tags: e.target.value })
+                        }
+                      />
+                    </div>
 
-                  {/* DESCRIPTIONS */}
-        <div className="col-md-10 mb-3 custom-input">
-          <label className="form-label">Descriptions</label>
-          <textarea
-            className="form-control form-control-sm"
-            style={{ borderRadius: "8px", height: "100px" }}
-            value={contact?.descriptions || ""}
-            onChange={(e) => setcontact({ ...contact, descriptions: e.target.value })}
-          />
-        </div>
+                    {/* DESCRIPTIONS */}
+                    <div className="col-md-10 mb-3 custom-input">
+                      <label className="form-label">Descriptions</label>
+                      <textarea
+                        className="form-control form-control-sm"
+                        style={{ borderRadius: "8px", height: "100px" }}
+                        value={contact?.descriptions || ""}
+                        onChange={(e) =>
+                          setcontact({
+                            ...contact,
+                            descriptions: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
                     <div className="col-md-2 mb-3 custom-input"></div>
 
-          {/* PROFESSION DETAILS HEADER */}
-        <div className="col-md-12 mb-3 custom-input" style={{ marginTop: "10px" }}>
-          <label className="form-label" style={{ fontSize: "16px", marginTop: "10px" }}>
-            Profession Details
-          </label>
-          <hr style={{ marginTop: "-5px" }} />
-        </div>
+                    {/* PROFESSION DETAILS HEADER */}
+                    <div
+                      className="col-md-12 mb-3 custom-input"
+                      style={{ marginTop: "10px" }}
+                    >
+                      <label
+                        className="form-label"
+                        style={{ fontSize: "16px", marginTop: "10px" }}
+                      >
+                        Profession Details
+                      </label>
+                      <hr style={{ marginTop: "-5px" }} />
+                    </div>
 
-             {/* PROFESSION CATEGORY */}
-        <div className="col-md-5 mb-3 custom-input">
-          <label className="form-label">Profession Category</label>
-          <select
-            className="form-control form-control-sm"
-            value={contact?.profession_category || ""}
-            onChange={handleProfessionCategoryChange}
-          >
-            <option>{contact?.profession_category?contact.profession_category:""}</option>
-            <option>---Select profession category---</option>
-            {(professtiondetails?.profession_category || []).map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </div>
-                     {/* SUB-CATEGORY */}
-        <div className="col-md-7 mb-3 custom-input">
-          <label className="form-label">Profession Sub-Category</label>
-          <select
-            className="form-control form-control-sm"
-            value={contact?.profession_subcategory || ""}
-            onChange={handleProfessionSubcategoryChange}
-          >
-            <option>{contact?.profession_subcategory?contact.profession_subcategory:""}</option>
-            <option>---Select profession sub-category---</option>
-            {(availableSubcategories || []).map((subcategory) => (
-              <option key={subcategory} value={subcategory}>
-                {subcategory}
-              </option>
-            ))}
-          </select>
-        </div>
-                {/* DESIGNATION */}
-        <div className="col-md-5 mb-3 custom-input">
-          <label className="form-label">Designation</label>
-          <select
-            className="form-control form-control-sm"
-            value={contact?.designation || ""}
-            onChange={handleDesignationChange}
-          >
-            <option>{contact?.designation?contact.designation:""}</option>
-            <option>---Select designation---</option>
-            {(availableDesignations || []).map((designation) => (
-              <option key={designation} value={designation}>
-                {designation}
-              </option>
-            ))}
-          </select>
-        </div>
-                   {/* COMPANY */}
-        <div className="col-md-6 mb-3 custom-input">
-          <label className="form-label">Company/Organisation/Department Name</label>
-          <select
-            className="form-control form-control-sm"
-            value={contact?.company_name || ""}
-            onChange={(e) => setcontact({ ...contact, company_name: e.target.value })}
-          >
-             <option>{contact?.company_name?contact.company_name:""}</option>
-            <option>---Select company---</option>
-            {(cdata || []).map((item) => (
-              <option key={item?._id || item?.name} value={item?.name || ""}>
-                {item?.name}
-              </option>
-            ))}
-          </select>
-        </div>
+                    {/* PROFESSION CATEGORY */}
+                    <div className="col-md-5 mb-3 custom-input">
+                      <label className="form-label">Profession Category</label>
+                      <select
+                        className="form-control form-control-sm"
+                        value={contact?.profession_category || ""}
+                        onChange={handleProfessionCategoryChange}
+                        onClick={() => {
+                          if (All_Profession_Category.length === 0) {
+                            getall_profession_category();
+                          }
+                        }}
+                      >
+                        <option>
+                          {contact?.profession_category
+                            ? contact.profession_category
+                            : ""}
+                        </option>
+                        {select_loading === "profession_category" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option>---Select profession category---</option>
 
-        <div className="col-md-1">
-          <label className="form-label">Add</label>
-          <button className="form-control form-control-sm" onClick={() => navigate("/addcompany")}>
-            +
-          </button>
-        </div>
+                            {/* Dynamic Fetched List */}
+                            {All_Profession_Category.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
+                      </select>
+                    </div>
+                    {/* SUB-CATEGORY */}
+                    <div className="col-md-7 mb-3 custom-input">
+                      <label className="form-label">
+                        Profession Sub-Category
+                      </label>
+                      <select
+                        className="form-control form-control-sm"
+                        value={contact?.profession_subcategory || ""}
+                        onChange={handleProfessionSubcategoryChange}
+                        onClick={() => {
+                          getall_profession_sub_category();
+                        }}
+                      >
+                        <option>
+                          {contact?.profession_subcategory
+                            ? contact.profession_subcategory
+                            : ""}
+                        </option>
+                        {select_loading === "profession_sub_category" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option>
+                              ---Select profession sub category---
+                            </option>
 
-                  {/* SYSTEM DETAILS HEADER */}
-        <div className="col-md-12" style={{ marginTop: "10px" }}>
-          <label className="form-label" style={{ fontSize: "16px", marginTop: "10px" }}>
-            System Details
-          </label>
-          <hr style={{ marginTop: "-5px" }} />
-        </div>
+                            {/* Dynamic Fetched List */}
+                            {All_Profession_Sub_Category.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
+                      </select>
+                    </div>
+                    {/* DESIGNATION */}
+                    <div className="col-md-5 mb-3 custom-input">
+                      <label className="form-label">Designation</label>
+                      <select
+                        className="form-control form-control-sm"
+                        value={contact?.designation || ""}
+                        onChange={handleDesignationChange}
+                        onClick={() => {
+                          getall_designation();
+                        }}
+                      >
+                        <option>
+                          {contact?.designation ? contact.designation : ""}
+                        </option>
+                        {select_loading === "designation" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option>---Select designation---</option>
 
-                  {/* SOURCE */}
-        <div className="col-md-6 mb-3 custom-input">
-          <label className="form-label">Source</label>
-          <select
-            className="form-control form-control-sm"
-            value={contact?.source || ""}
-            onChange={(e) => setcontact({ ...contact, source: e.target.value })}
-          >
-            <option>{contact?.source?contact.source:""}</option>
-            <option>---Select source---</option>
-            <option>Friends</option>
-            <option>Relative</option>
-            <option>Website</option>
-            <option>Walkin</option>
-            <option>Magicbricks</option>
-            <option>Common Floor</option>
-            <option>Housing</option>
-            <option>99acre</option>
-            <option>Olx</option>
-            <option>Square Yard</option>
-            <option>Real Estate India</option>
-            <option>Refrence</option>
-            <option>Facebook</option>
-            <option>Instagram</option>
-            <option>Linkdin</option>
-            <option>Old Client</option>
-            <option>Google</option>
-            <option>Whatsapp</option>
-          </select>
-        </div>
+                            {/* Dynamic Fetched List */}
+                            {All_Designation.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
+                      </select>
+                    </div>
+                    {/* COMPANY */}
+                    <div className="col-md-6 mb-3 custom-input">
+                      <label className="form-label">
+                        Company/Organisation/Department Name
+                      </label>
+                      <select
+                        className="form-control form-control-sm"
+                        value={contact?.company_name || ""}
+                        onChange={(e) =>
+                          setcontact({
+                            ...contact,
+                            company_name: e.target.value,
+                          })
+                        }
+                      >
+                        <option>
+                          {contact?.company_name ? contact.company_name : ""}
+                        </option>
+                        <option>---Select company---</option>
+                        {(cdata || []).map((item) => (
+                          <option
+                            key={item?._id || item?.name}
+                            value={item?.name || ""}
+                          >
+                            {item?.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="col-md-1">
+                      <label className="form-label">Add</label>
+                      <button
+                        className="form-control form-control-sm"
+                        onClick={() => navigate("/addcompany")}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    {/* SYSTEM DETAILS HEADER */}
+                    <div className="col-md-12" style={{ marginTop: "10px" }}>
+                      <label
+                        className="form-label"
+                        style={{ fontSize: "16px", marginTop: "10px" }}
+                      >
+                        System Details
+                      </label>
+                      <hr style={{ marginTop: "-5px" }} />
+                    </div>
+
+                    {/* SOURCE */}
+                    <div className="col-md-6 mb-3 custom-input">
+                      <label className="form-label">Source</label>
+                      <select
+                        className="form-control form-control-sm"
+                        value={contact?.source || ""}
+                        onChange={(e) =>
+                          setcontact({ ...contact, source: e.target.value })
+                        }
+                      >
+                        <option>{contact?.source ? contact.source : ""}</option>
+                        <option>---Select source---</option>
+                        <option>Friends</option>
+                        <option>Relative</option>
+                        <option>Website</option>
+                        <option>Walkin</option>
+                        <option>Magicbricks</option>
+                        <option>Common Floor</option>
+                        <option>Housing</option>
+                        <option>99acre</option>
+                        <option>Olx</option>
+                        <option>Square Yard</option>
+                        <option>Real Estate India</option>
+                        <option>Refrence</option>
+                        <option>Facebook</option>
+                        <option>Instagram</option>
+                        <option>Linkdin</option>
+                        <option>Old Client</option>
+                        <option>Google</option>
+                        <option>Whatsapp</option>
+                      </select>
+                    </div>
                     {/* TEAM */}
-        <div className="col-md-6 mb-3 custom-input">
-          <label className="form-label">Team</label>
-          <select
-            className="form-control form-control-sm"
-            value={contact?.team || ""}
-            onChange={(e) => setcontact({ ...contact, team: e.target.value })}
-          >
-            <option>{contact?.team?contact.team:""}</option>
-            <option>---Select team---</option>
-            <option>Sales</option>
-            <option>Marketing</option>
-            <option>Post Sales</option>
-            <option>Pre Sales</option>
-          </select>
-        </div>
-                  {/* OWNER MULTISELECT */}
-        <div className="col-md-6 mb-3 custom-input">
-          <label className="form-label">Owner</label>
-          <Select
-            className="form-control form-control-sm"
-            multiple
-            value={owners?.length ? owners : contact?.owner || []} 
-            onChange={handleOwnerChange}
-                renderValue={() => {
-      const finalOwners = owners?.length ? owners : contact?.owner || [];
-      return finalOwners.join(", ");
-    }}
-            style={{ borderRadius: "8px", border: "none" }}
-          >
-            {(ownersList || []).map((name, idx) => (
-              <MenuItem key={idx} value={name}>
-                <Checkbox checked={(contact?.owner?contact.owner:owners).indexOf(name) > -1} />
-                <ListItemText primary={name} />
-              </MenuItem>
-            ))}
-          </Select>
-        </div>
-                  {/* VISIBLE TO */}
-        <div className="col-md-6 mb-3 custom-input">
-          <label className="form-label">Visible to</label>
-          <select
-            className="form-control form-control-sm"
-            value={contact?.visible_to || ""}
-            onChange={(e) => setcontact({ ...contact, visible_to: e.target.value })}
-          >
-            <option>{contact?.visible_to?contact.visible_to:""}</option>
-            <option>---Select---</option>
-            <option>My Team</option>
-            <option>My Self</option>
-            <option>All Users</option>
-          </select>
-        </div>
+                    <div className="col-md-6 mb-3 custom-input">
+                      <label className="form-label">Team</label>
+                      <select
+                        className="form-control form-control-sm"
+                        value={contact?.team || ""}
+                        onChange={(e) =>
+                          setcontact({ ...contact, team: e.target.value })
+                        }
+                      >
+                        <option>{contact?.team ? contact.team : ""}</option>
+                        <option>---Select team---</option>
+                        <option>Sales</option>
+                        <option>Marketing</option>
+                        <option>Post Sales</option>
+                        <option>Pre Sales</option>
+                      </select>
+                    </div>
+                    {/* OWNER MULTISELECT */}
+                    <div className="col-md-6 mb-3 custom-input">
+                      <label className="form-label">Owner</label>
+                      <Select
+                        className="form-control form-control-sm"
+                        multiple
+                        value={owners?.length ? owners : contact?.owner || []}
+                        onChange={handleOwnerChange}
+                        renderValue={() => {
+                          const finalOwners = owners?.length
+                            ? owners
+                            : contact?.owner || [];
+                          return finalOwners.join(", ");
+                        }}
+                        style={{ borderRadius: "8px", border: "none" }}
+                      >
+                        {(ownersList || []).map((name, idx) => (
+                          <MenuItem key={idx} value={name}>
+                            <Checkbox
+                              checked={
+                                (contact?.owner
+                                  ? contact.owner
+                                  : owners
+                                ).indexOf(name) > -1
+                              }
+                            />
+                            <ListItemText primary={name} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </div>
+                    {/* VISIBLE TO */}
+                    <div className="col-md-6 mb-3 custom-input">
+                      <label className="form-label">Visible to</label>
+                      <select
+                        className="form-control form-control-sm"
+                        value={contact?.visible_to || ""}
+                        onChange={(e) =>
+                          setcontact({ ...contact, visible_to: e.target.value })
+                        }
+                      >
+                        <option>
+                          {contact?.visible_to ? contact.visible_to : ""}
+                        </option>
+                        <option>---Select---</option>
+                        <option>My Team</option>
+                        <option>My Self</option>
+                        <option>All Users</option>
+                      </select>
+                    </div>
 
                     <div className="col-md-12">
                       <hr></hr>
@@ -2845,7 +2110,7 @@ console.log(contact);
                       <hr style={{ marginTop: "-5px" }}></hr>
                     </div>
 
-              {/* FATHER HUSBAND NAME */}
+                    {/* FATHER HUSBAND NAME */}
                     <div className="col-md-12 mb-3 custom-input">
                       <label className="form-label">Father/Husband name</label>
                       <input
@@ -2862,7 +2127,7 @@ console.log(contact);
                       />
                     </div>
 
-{/* H.NO */}
+                    {/* H.NO */}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">H.No</label>
                       <input
@@ -2888,7 +2153,7 @@ console.log(contact);
                         }
                       />
                     </div>
-{/* LOCATION*/}
+                    {/* LOCATION*/}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">Location</label>
                       <input
@@ -2901,9 +2166,8 @@ console.log(contact);
                         }
                       />
                     </div>
-                   
 
-{/* CITY*/}
+                    {/* CITY*/}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">City</label>
                       <select
@@ -2937,7 +2201,7 @@ console.log(contact);
                       />
                     </div>
 
-                     {/* STATE*/}
+                    {/* STATE*/}
                     <div className="col-md-6 mb-3 custom-input">
                       <label className="form-label">State</label>
                       <select
@@ -2957,7 +2221,7 @@ console.log(contact);
                         ))}
                       </select>
                     </div>
- {/* COUNTRY*/}
+                    {/* COUNTRY*/}
                     <div className="col-md-6 mb-3 custom-input">
                       <label className="form-label">Country</label>
                       <select
@@ -2966,8 +2230,8 @@ console.log(contact);
                           setcontact({ ...contact, country1: e.target.value })
                         }
                       >
-                         <option value="">{contact?.country1}</option>
-                         <option value="">--Select Country--</option>
+                        <option value="">{contact?.country1}</option>
+                        <option value="">--Select Country--</option>
                         {asianCountries.map((country, index) => (
                           <option
                             key={index}
@@ -2989,7 +2253,7 @@ console.log(contact);
                       <hr style={{ marginTop: "-5px" }}></hr>
                     </div>
 
- {/* GENDER*/}
+                    {/* GENDER*/}
                     <div className="col-md-5 mb-3 custom-input">
                       <label className="form-label">Gender</label>
                       <select
@@ -3005,7 +2269,7 @@ console.log(contact);
                         <option>Others</option>
                       </select>
                     </div>
-                     {/* MARITIAL STATUS*/}
+                    {/* MARITIAL STATUS*/}
                     <div className="col-md-7 mb-3 custom-input">
                       <label className="form-label">Maritial Status</label>
                       <select
@@ -3025,7 +2289,7 @@ console.log(contact);
                       </select>
                     </div>
 
- {/* BIRTH DATE*/}
+                    {/* BIRTH DATE*/}
                     <div className="col-md-5 mb-3 custom-input">
                       <label className="form-label">Birth Date</label>
                       <input
@@ -3037,7 +2301,7 @@ console.log(contact);
                         }
                       />
                     </div>
-                     {/* ANNIVERSARY DATE*/}
+                    {/* ANNIVERSARY DATE*/}
                     <div className="col-md-7 mb-3 custom-input">
                       <label className="form-label">Anniversary Date</label>
                       <input
@@ -3053,10 +2317,7 @@ console.log(contact);
                       />
                     </div>
 
-
-
-
-   {/* EDUCATION*/}
+                    {/* EDUCATION*/}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Education</label>
                       {(contact?.education || []).map((name, index) => (
@@ -3081,7 +2342,7 @@ console.log(contact);
                         </div>
                       ))}
                     </div>
-                      {/* DEGREE*/}
+                    {/* DEGREE*/}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Degree</label>
                       {(contact?.degree || []).map((name, index) => (
@@ -3181,7 +2442,7 @@ console.log(contact);
                         </div>
                       ))}
                     </div>
-                      {/* SCHOOL UNIVERSITY*/}
+                    {/* SCHOOL UNIVERSITY*/}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">
                         School/College/University
@@ -3200,27 +2461,27 @@ console.log(contact);
                       ))}
                     </div>
 
-                      {/* DELETE BUTTON*/}
+                    {/* DELETE BUTTON*/}
 
-                                      <div className="col-md-1 mt-8">
-  {(contact?.education || []).map((item, index) => (
-    <div key={index} className="multi-value-delete">
-      <span
-        className="material-icons"
-        style={{
-          color: "red",
-          fontSize: "24px",
-          cursor: "pointer",
-        }}
-        onClick={() => deleteall4(index)}
-      >
-        delete
-      </span>
-    </div>
-  ))}
-</div>
-                     {/* ADD BUTTON */}
-                 
+                    <div className="col-md-1 mt-8">
+                      {(contact?.education || []).map((item, index) => (
+                        <div key={index} className="multi-value-delete">
+                          <span
+                            className="material-icons"
+                            style={{
+                              color: "red",
+                              fontSize: "24px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => deleteall4(index)}
+                          >
+                            delete
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    {/* ADD BUTTON */}
+
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -3231,7 +2492,7 @@ console.log(contact);
                       </button>
                     </div>
 
- {/* LOAN */}
+                    {/* LOAN */}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">Loan</label>
                       {(contact?.loan || []).map((item, index) => (
@@ -3253,7 +2514,7 @@ console.log(contact);
                       ))}
                     </div>
 
-                     {/* BANK */}
+                    {/* BANK */}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Bank</label>
                       {(contact?.bank || []).map((item, index) => (
@@ -3338,7 +2599,7 @@ console.log(contact);
                         </select>
                       ))}
                     </div>
-                     {/* AMOUNT */}
+                    {/* AMOUNT */}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Amount</label>
                       {(contact?.amount || []).map((item, index) => (
@@ -3347,34 +2608,32 @@ console.log(contact);
                           value={contact?.amount?.[index] || ""}
                           placeholder="Loan Amount"
                           className="form-control form-control-sm multi-value"
-                          style={{marginTop:"2px"}}
-                          onChange={(event) =>
-                            handleamountchange(index, event)
-                          }
+                          style={{ marginTop: "2px" }}
+                          onChange={(event) => handleamountchange(index, event)}
                         />
                       ))}
                     </div>
-                                     {/* DELETE BUTTON*/}
+                    {/* DELETE BUTTON*/}
 
-                                      <div className="col-md-1 mt-8">
-  {(contact?.loan || []).map((item, index) => (
-    <div key={index} className="multi-value-delete">
-      <span
-        className="material-icons"
-        style={{
-          color: "red",
-          fontSize: "24px",
-          cursor: "pointer",
-        }}
-        onClick={() => deleteall5(index)}
-      >
-        delete
-      </span>
-    </div>
-  ))}
-</div>
+                    <div className="col-md-1 mt-8">
+                      {(contact?.loan || []).map((item, index) => (
+                        <div key={index} className="multi-value-delete">
+                          <span
+                            className="material-icons"
+                            style={{
+                              color: "red",
+                              fontSize: "24px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => deleteall5(index)}
+                          >
+                            delete
+                          </span>
+                        </div>
+                      ))}
+                    </div>
 
-  {/* ADD BUTTON*/}
+                    {/* ADD BUTTON*/}
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -3385,7 +2644,7 @@ console.log(contact);
                       </button>
                     </div>
 
-  {/* SOCIAL MEDIA*/}
+                    {/* SOCIAL MEDIA*/}
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">Social Media</label>
                       {(contact?.social_media || []).map((item, index) => (
@@ -3396,7 +2655,9 @@ console.log(contact);
                             handlesocial_mediachange(index, event)
                           }
                         >
-                          <option>{contact?.social_media?.[index] || ""}</option>
+                          <option>
+                            {contact?.social_media?.[index] || ""}
+                          </option>
                           <option>---select social_media---</option>
                           <option>Facebook</option>
                           <option>Twitter</option>
@@ -3406,40 +2667,40 @@ console.log(contact);
                         </select>
                       ))}
                     </div>
-                     {/* URL*/}
+                    {/* URL*/}
                     <div className="col-md-6 mb-3 custom-input">
                       <label className="form-label">Url</label>
                       {(contact?.url || []).map((item, index) => (
                         <input
                           type="text"
                           className="form-control form-control-sm multi-value"
-                          style={{marginTop:"2px"}}
+                          style={{ marginTop: "2px" }}
                           value={contact?.url?.[index] || ""}
                           placeholder="Social Media Url"
                           onChange={(event) => handleurlChange(index, event)}
                         />
                       ))}
                     </div>
-                                   {/* DELETE BUTTON*/}
+                    {/* DELETE BUTTON*/}
 
-                                      <div className="col-md-1 mt-8">
-  {(contact?.social_media || []).map((item, index) => (
-    <div key={index} className="multi-value-delete">
-      <span
-        className="material-icons"
-        style={{
-          color: "red",
-          fontSize: "24px",
-          cursor: "pointer",
-        }}
-        onClick={() => deleteall6(index)}
-      >
-        delete
-      </span>
-    </div>
-  ))}
-</div>
-  {/* ADD BUTTON*/}
+                    <div className="col-md-1 mt-8">
+                      {(contact?.social_media || []).map((item, index) => (
+                        <div key={index} className="multi-value-delete">
+                          <span
+                            className="material-icons"
+                            style={{
+                              color: "red",
+                              fontSize: "24px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => deleteall6(index)}
+                          >
+                            delete
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    {/* ADD BUTTON*/}
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -3450,7 +2711,7 @@ console.log(contact);
                       </button>
                     </div>
 
-                      {/* INCOME*/}
+                    {/* INCOME*/}
 
                     <div className="col-md-4 mb-3 custom-input">
                       <label className="form-label">Income</label>
@@ -3467,7 +2728,7 @@ console.log(contact);
                         </select>
                       ))}
                     </div>
-                      {/* AMOUNT*/}
+                    {/* AMOUNT*/}
                     <div className="col-md-6 mb-3 custom-input">
                       <label className="form-label">Amount</label>
                       {(contact?.amount1 || []).map((item, index) => (
@@ -3476,33 +2737,33 @@ console.log(contact);
                           value={contact?.amount1?.[index] || ""}
                           placeholder="Amount"
                           className="form-control form-control-sm multi-value"
-                          style={{marginTop:"2px"}}
+                          style={{ marginTop: "2px" }}
                           onChange={(event) =>
                             handleamount1change(index, event)
                           }
                         />
                       ))}
                     </div>
-                                         {/* DELETE BUTTON*/}
+                    {/* DELETE BUTTON*/}
 
-                                      <div className="col-md-1 mt-8">
-  {(contact?.income || []).map((item, index) => (
-    <div key={index} className="multi-value-delete">
-      <span
-        className="material-icons"
-        style={{
-          color: "red",
-          fontSize: "24px",
-          cursor: "pointer",
-        }}
-        onClick={() => deleteall7(index)}
-      >
-        delete
-      </span>
-    </div>
-  ))}
-</div>
-    {/* ADD BUTTON*/}
+                    <div className="col-md-1 mt-8">
+                      {(contact?.income || []).map((item, index) => (
+                        <div key={index} className="multi-value-delete">
+                          <span
+                            className="material-icons"
+                            style={{
+                              color: "red",
+                              fontSize: "24px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => deleteall7(index)}
+                          >
+                            delete
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    {/* ADD BUTTON*/}
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -3513,7 +2774,7 @@ console.log(contact);
                       </button>
                     </div>
 
-  {/* DOCUMENT NO.*/}
+                    {/* DOCUMENT NO.*/}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Document No.</label>
                       {(contact?.document_no || []).map((item, index) => (
@@ -3522,14 +2783,14 @@ console.log(contact);
                           value={contact?.document_no?.[index] || ""}
                           placeholder="Document No."
                           className="form-control form-control-sm"
-                          style={{marginTop:"2px"}}
+                          style={{ marginTop: "2px" }}
                           onChange={(event) =>
                             handledocumentnochange(index, event)
                           }
                         />
                       ))}
                     </div>
-                      {/* DOCUMENT NAME*/}
+                    {/* DOCUMENT NAME*/}
                     <div className="col-md-3 mb-3 custom-input">
                       <label className="form-label">Document Name</label>
                       {(contact?.document_name || []).map((item, index) => (
@@ -3540,7 +2801,9 @@ console.log(contact);
                             handledocumentnamechange(index, event)
                           }
                         >
-                          <option>{contact?.document_name?.[index] || ""}</option>
+                          <option>
+                            {contact?.document_name?.[index] || ""}
+                          </option>
                           <option>---select document---</option>
                           <option>Adhar Card </option>
                           <option>Pan Card </option>
@@ -3553,85 +2816,91 @@ console.log(contact);
                         </select>
                       ))}
                     </div>
-                     {/* DOCUMENT IMAGE*/}
-<div className="col-md-4 mb-3 custom-input">
-  <label className="form-label">Document Picture</label>
+                    {/* DOCUMENT IMAGE*/}
+                    <div className="col-md-4 mb-3 custom-input">
+                      <label className="form-label">Document Picture</label>
 
-  {(contact?.document_pic || []).map((item, index) => {
-    // item = array of URL strings
-    const urls = Array.isArray(item)
-      ? item
-      : typeof item === "string"
-      ? [item]
-      : [];
+                      {(contact?.document_pic || []).map((item, index) => {
+                        // item = array of URL strings
+                        const urls = Array.isArray(item)
+                          ? item
+                          : typeof item === "string"
+                          ? [item]
+                          : [];
 
-    return (
-      <div key={index} className="custom-file-wrapper">
+                        return (
+                          <div key={index} className="custom-file-wrapper">
+                            {/* Upload input */}
+                            <input
+                              type="file"
+                              id={`doc-upload-${index}`}
+                              style={{ marginTop: "2px", display: "none" }}
+                              className="form-control form-control-sm"
+                              multiple
+                              onChange={(event) =>
+                                handledocumentpicchange(index, event)
+                              }
+                            />
 
-        {/* Upload input */}
-        <input
-          type="file"
-          id={`doc-upload-${index}`}
-          style={{ marginTop: "2px", display: "none" }}
-          className="form-control form-control-sm"
-          multiple
-          onChange={(event) => handledocumentpicchange(index, event)}
-        />
+                            <label
+                              htmlFor={`doc-upload-${index}`}
+                              className="upload-label"
+                            >
+                              <i
+                                className="bi bi-image-fill me-2"
+                                style={{
+                                  fontSize: "1.4rem",
+                                  cursor: "pointer",
+                                }}
+                              ></i>
+                              Upload Image
+                            </label>
 
-        <label htmlFor={`doc-upload-${index}`} className="upload-label">
-          <i
-            className="bi bi-image-fill me-2"
-            style={{ fontSize: "1.4rem", cursor: "pointer" }}
-          ></i>
-          Upload Image
-        </label>
+                            {/* Show uploaded URL images */}
+                            {urls.length > 0 && (
+                              <div className="d-flex flex-wrap gap-2 mt-2">
+                                {urls.map((url, i) => (
+                                  <div key={i} style={{ position: "relative" }}>
+                                    <img
+                                      src={url}
+                                      alt="Document"
+                                      style={{
+                                        width: "80px",
+                                        height: "80px",
+                                        objectFit: "cover",
+                                        borderRadius: "6px",
+                                        border: "1px solid #ccc",
+                                      }}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
 
-        {/* Show uploaded URL images */}
-        {urls.length > 0 && (
-          <div className="d-flex flex-wrap gap-2 mt-2">
-            {urls.map((url, i) => (
-              <div key={i} style={{ position: "relative" }}>
-                <img
-                  src={url}
-                  alt="Document"
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    objectFit: "cover",
-                    borderRadius: "6px",
-                    border: "1px solid #ccc",
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  })}
-</div>
+                    {/* DELETE BUTTON*/}
 
-
-                                                 {/* DELETE BUTTON*/}
-
-                                      <div className="col-md-1 mt-8">
-  {(contact?.document_no || []).map((item, index) => (
-    <div key={index} >
-      <span
-        className="material-icons multi-value-delete"
-        style={{
-          color: "red",
-          fontSize: "24px",
-          cursor: "pointer",
-        }}
-        onClick={() => deleteall8(index)}
-      >
-        delete
-      </span>
-    </div>
-  ))}
-</div>
-  {/* ADD BUTTON*/}
+                    <div className="col-md-1 mt-8">
+                      {(contact?.document_no || []).map((item, index) => (
+                        <div key={index}>
+                          <span
+                            className="material-icons multi-value-delete"
+                            style={{
+                              color: "red",
+                              fontSize: "24px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => deleteall8(index)}
+                          >
+                            delete
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    {/* ADD BUTTON*/}
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
@@ -3694,7 +2963,7 @@ console.log(contact);
                       style={{ marginTop: "20px" }}
                     >
                       <button
-                      onClick={updatecontact}
+                        onClick={updatecontact}
                         className="btn btn-primary btn-sm form-control"
                         style={{
                           fontWeight: "600",

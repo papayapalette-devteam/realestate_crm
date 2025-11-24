@@ -165,7 +165,7 @@ const[select_loading,setselect_loading]=useState("")
             }
           };
         
-                  // =============================get all country code==========================================
+   // =============================get all country code==========================================
 
   const [All_Country_Code, setAll_Country_Code] = useState([]);
   const getall_country_code = async () => {
@@ -239,28 +239,11 @@ const[select_loading,setselect_loading]=useState("")
       
     const professtiondetails = {
      
-    
-      profession_subcategory: {
-       
-      
-        
-      },
       designation: {
+
     
-     
-   
-        Clerk:["","","Assistant Section Officer (ASO)","Section Officer (SO)",
-                "Data Entry Clerk","Office Assistant","Administrative Clerk"],
-        Engineer:["Junior Engineer (JE)","Assistant Engineer (AE)","Executive Engineer (EE)","Chief Engineer",],
-        Accountant:["Junior Accountant","Senior Accountant","Accounts Officer","Senior Accounts Officer","Controller of Accounts",
-                    "Accountants","Payroll Specialists","Tax Consultants","Junior Accountant","Senior Accountant","Finance Controller",
-                    "Chief Financial Officer (CFO)","Accountants", "Financial Analysts","Auditors","Payroll Specialists","Tax Consultants"],
-        Architect:["Assistant Architect","Architect","Senior Architect","Chief Architect","Architectural Intern","Project Architect",
-                    "Design Director"],
-        Auditor:["Junior Auditor","Senior Auditor","Audit Officer","Senior Audit Officer","Principal Auditor","Auditors","Internal Auditor",
-                  "Risk Auditor","Audit Manager"],
-        Police:["Constable","Head Constable","Assistant Sub-Inspector (ASI)","Sub-Inspector (SI)","Inspector","Deputy Superintendent of Police (DSP)",
-                "Superintendent of Police (SP)","Inspector General of Police (IGP)","Director General of Police (DGP)"],
+      
+ 
         Mechanic:["Junior Mechanic","Senior Mechanic","Workshop Superintendent","Service Technician","Workshop Supervisor"],
         Security:["Security Guard","Security Supervisor","Security Officer","Chief Security Officer","Safety Officers"],
         Driver:["Driver (Light/Heavy Vehicle)","Senior Driver","Motor Vehicle Inspector","Drivers","Delivery Agents","Company Driver",
@@ -269,13 +252,12 @@ const[select_loading,setselect_loading]=useState("")
                 "Under Secretary","Joint Secretary","Secretary","Administrative Assistants","Chief Executive Officer (CEO)",
                 "Chief Financial Officer (CFO)","Chief Operating Officer (COO)","Vice Presidents (VPs)","Directors","Entrepreneurs",
               "Administrative Assistants","Office Managers","Executive Assistants","Receptionists","PData Entry Operators"],
-        Peon:["Office Attendant","Multi-Tasking Staff (MTS)","Office Helper","Support Staff"],
-        Chef:["Cook","Head Cook","Catering Supervisor","Chefs","Commis Chef","Sous Chef","Executive Chef"],
+  
         Pilot:["Commercial Pilot","Helicopter Pilot","Fighter Pilot","Co-Pilot","Chief Pilot"],
         "IT Person":["Junior Programmer","Software Developer","Software Engineer","Senior Software Engineer","IT Officer",
                     "Software Developers","System Administrators","IT Support Specialists","Junior Developer","Full Stack Developer"
                     ],
-        "Sales Person":["Sales Assistant","Sales Supervisor","Marketing Executive","Sales Executives","Sales Associate","Sales Manager"],
+      
         Analyst:["Data Analyst","Research Analyst","Financial Analyst","System Analyst","Intelligence Analyst","Financial Analysts",
                   "Cybersecurity Analysts","Supply Chain Analysts","Business Analyst","Senior Analyst","Supply Chain Analysts","Quality Inspector"],
         Banker:["Bank Clerk","Senior Clerk","Probationary Officer (PO)","Assistant Manager","Branch Manager","Regional Manager",
@@ -304,7 +286,7 @@ const[select_loading,setselect_loading]=useState("")
     
         "Software Developer":["Software Developer"],
         Manager:[],
-        Operators:["Data Entry Operators","Operations Managers","Machine Operators"],
+        
         "Human Resources (HR)":["HR Executives","Talent Acquisition Specialists","Employee Relations Managers","Training and Development Specialists",
                                 "HR Business Partners","HR Executives","Talent Acquisition Specialists","Employee Relations Managers","Training and Development Specialists","HR Business Partners"],
         Manager:["Marketing Managers","Brand Managers","Business Development Managers","Digital Marketing Specialists",
@@ -314,14 +296,13 @@ const[select_loading,setselect_loading]=useState("")
                   "Inventory Managers","Innovation Managers","Customer Support Executives","Sales Manager","Public Relations Specialists",
                 "Office Managers","Executive Assistants","Receptionists","Innovation Managers","Customer Support Executives",
                   "Plant Managers","Quality Inspectors","Fleet Managers","Marketing Managers","Brand Managers","Business Development Managers","Digital Marketing Specialists"],
-        Author:["Content Writers","Editors"],
-        Director:["Art Directors"],
+     
+      
         "Tele Caller":["Call Center Agents"],
         Technicians:["Technical Support Specialists","Maintenance Technicians","Lab Technicians","Technical Lead","Laboratory Technicians"],
-        Jounalists:["Journalists","Public Relations Specialists"],
         Hospitality:["Housekeeping Staff"],
-        Contractor:["Independent Contractors"],
-        Consultant:["Management Consultants"],
+     
+        
         Artist:["Creative Artists","Musicians"],
         Engineer:["Junior Engineer","Project Engineer","Senior Engineer","Engineering Manager"],
         "Freelance Graphic Designer":["Proprietor"],Photographer:["Proprietor"],Videographer:["Proprietor"],"Independent Artist":["Proprietor"],
@@ -392,21 +373,10 @@ const[select_loading,setselect_loading]=useState("")
         "Cloud Service Provider":["Cloud Solutions Architect", "IT Entrepreneur"],
         Emigration:	["Immigration Consultant", "Visa Solutions Provider"],
         Catering:	["Catering Business Owner", "Culinary Director"],
-        Baker:["Bakery Owner", "Culinary Entrepreneur"],
-        "Car Dealership Owner":["Dealership Manager", "Auto Entrepreneur"],
-        "Bike Dealership Owner":	["Franchise Owner"],
-        "Bike Rental Business Owner":["Rental Business Owner", "Operations Head"],
-        "Workshop Owner":["Mechanic Entrepreneur", "Service Manager"],
-        "Environmental Consultant":["Sustainability Consultant", "Environmental Advisor"],
-        "Cold Storage Business Owner":["Logistics Entrepreneur", "Warehouse Manager"],
-        "Film Studio Owner":	["Film Producer", "Studio Head"],
-        "Sports Organizer":	["Event Manager", "Sports Entrepreneur"],
-        "Event Organizer":	["Founder, Director", "Creative Planner"],
-        "Cloth Merchant":	["Textile Business Owner", "Retail Manager"],
+  
       
-       
     
-    
+  
       },
     };
     
@@ -1431,7 +1401,7 @@ const handleOwnerChange = (event) => {
                           }
                         }}
                         value={contact.profession_category}
-                     onChange={handleProfessionCategoryChange}>
+                      onChange={handleProfessionCategoryChange}>
                                   
                                
                              {select_loading === "profession_category" ? (
