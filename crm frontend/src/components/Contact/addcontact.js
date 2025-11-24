@@ -246,16 +246,10 @@ const[select_loading,setselect_loading]=useState("")
         
       },
       designation: {
-        Teacher: ["Primary Teacher (PRT)","Trained Graduate Teacher (TGT)","Post Graduate Teacher (PGT)","Assistant Professor",
-                  "Professor","Principal","Education Officer","Laboratory Technicians","Corporate Trainers","E-learning Specialists",
-                  "Academic Counselors","Kindergarten Teacher","Subject Teacher","Senior Educator","Head of Department"],
-        Scientist: ["Junior Scientist","Scientist B/C/D","Senior Scientist","Chief Scientist","Director","Data Scientists",
-                    "Research Scientists","Product Developers","Research Associate","Senior Research Scientist","Lead Scientist"],
-        Doctor: ["Doctors","Medical Officer (MO)","Senior Medical Officer (SMO)","Specialist Doctor","Chief Medical Officer (CMO)","Director of Health Services",
-                "Physical Therapists","Dietitians","Resident Doctor","Consultant","Senior Specialist","Medical Director"],
-        Nurse:["Nurses","Auxiliary Nurse Midwife (ANM)","Staff Nurse","Nursing Superintendent","Chief Nursing Officer","Staff Nurse",
-                "Charge Nurse","Nursing Director"],
-        Clerk:["Lower Division Clerk (LDC)","Upper Division Clerk (UDC)","Assistant Section Officer (ASO)","Section Officer (SO)",
+    
+     
+   
+        Clerk:["","","Assistant Section Officer (ASO)","Section Officer (SO)",
                 "Data Entry Clerk","Office Assistant","Administrative Clerk"],
         Engineer:["Junior Engineer (JE)","Assistant Engineer (AE)","Executive Engineer (EE)","Chief Engineer",],
         Accountant:["Junior Accountant","Senior Accountant","Accounts Officer","Senior Accounts Officer","Controller of Accounts",
@@ -409,8 +403,8 @@ const[select_loading,setselect_loading]=useState("")
         "Sports Organizer":	["Event Manager", "Sports Entrepreneur"],
         "Event Organizer":	["Founder, Director", "Creative Planner"],
         "Cloth Merchant":	["Textile Business Owner", "Retail Manager"],
-        ExecutiveOfficer:["Chief Executive Officer (CEO)","Entrepreneurs","Chief Financial Officer (CFO)","Chief Operating Officer (COO)","Vice Presidents (VPs)","Directors",],
-        Facility:["Housekeeping Staff"]
+      
+       
     
     
       },

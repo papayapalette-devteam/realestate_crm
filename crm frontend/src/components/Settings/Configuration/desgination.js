@@ -256,6 +256,16 @@ function Designation() {
     }
   };
 
+    // pagination
+
+  const totalPages = Math.ceil(rowCount / paginationModel.pageSize);
+  const maxVisiblePages = 5;
+
+  // Calculate start & end indexes
+  const startPage =
+    Math.floor(paginationModel.page / maxVisiblePages) * maxVisiblePages;
+  const endPage = Math.min(startPage + maxVisiblePages, totalPages);
+
   return (
     <MainLayout>
       <div className="min-h-screen bg-gray-100 p-4 rounded-2xl shadow mt-8 ">
@@ -438,27 +448,28 @@ function Designation() {
               </button>
 
               {/* Page Numbers */}
-              {Array.from(
-                { length: Math.ceil(rowCount / paginationModel.pageSize) },
-                (_, i) => (
+             {Array.from({ length: endPage - startPage }, (_, i) => {
+                const pageIndex = startPage + i;
+
+                return (
                   <button
-                    key={i}
+                    key={pageIndex}
                     onClick={() =>
                       setPaginationModel({
                         ...paginationModel,
-                        page: i,
+                        page: pageIndex,
                       })
                     }
                     className={`px-3 py-1 rounded-full text-sm font-medium transition ${
-                      paginationModel.page === i
+                      paginationModel.page === pageIndex
                         ? "bg-blue-600 text-white shadow"
                         : "text-gray-700 hover:bg-gray-100"
                     }`}
                   >
-                    {i + 1}
+                    {pageIndex + 1}
                   </button>
-                )
-              )}
+                );
+              })}
 
               {/* Next */}
               <button

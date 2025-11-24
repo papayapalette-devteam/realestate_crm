@@ -454,7 +454,6 @@ function ProfessionSubCategory() {
               </button>
 
               {/* Page Numbers */}
-              {/* Page Numbers (Only 10 at a time) */}
               {Array.from({ length: endPage - startPage }, (_, i) => {
                 const pageIndex = startPage + i;
 
