@@ -27,6 +27,7 @@ import Swal from "sweetalert2";
 import { useDropzone } from "react-dropzone";
 import deallogo from "../../icons/deal.jpg";
 import UniqueLoader from "../loader";
+import { Select, MenuItem, Checkbox, ListItemText  } from '@mui/material';
 
 function Allunits() {
      const logged_user=JSON.parse(localStorage.getItem('user'))
@@ -2089,7 +2090,8 @@ function Allunits() {
   const [units, setunits] = useState({
     unit_no: "",
     unit_type: "",
-    category: "",
+    category: [],
+    sub_category:[],
     block: "",
     size: "",
     land_type: "",
@@ -2153,6 +2155,9 @@ function Allunits() {
     action12: [],
   });
 
+
+  
+
   const [show9, setshow9] = useState(false);
 
   const handleClose9 = () => setshow9(false);
@@ -2178,6 +2183,8 @@ function Allunits() {
       "Content-Type": "multipart/form-data", // Set the Content-Type here
     },
   };
+
+
 
   const updateinventories = async () => {
     const project = selectedItems3[0].project_name;
@@ -2429,6 +2436,15 @@ function Allunits() {
       category: type,
     }));
   };
+
+const handleSubCategoryChange1 = (event) => {
+              const {
+                target: { value },
+              } = event;
+              // Ensure the value is an array if multiple options are selected
+              setunits({ ...units, sub_category: typeof value === "string" ? value.split(",") : value });
+          
+            };
 
   function addFn12() {
     setunits({
@@ -6128,6 +6144,33 @@ function Allunits() {
                   ))}
                 </div>
               </div>
+
+                 <div className="col-md-6"><label className="labels">Sub Category</label>
+                    
+                    <Select
+                    className='form-control form-control-sm'
+                    style={{border:"none"}}
+          labelId="subcategory-label"
+          id="subcategory"
+          multiple
+          value={units.sub_category || []}
+          onChange={handleSubCategoryChange1}
+          renderValue={(selected) => selected.join(", ")} 
+        >
+          <MenuItem value="">
+            <em>Select</em>
+          </MenuItem>
+          {project.sub_category.map((subCategory) => (
+            <MenuItem key={subCategory} value={subCategory}>
+              <Checkbox
+                checked={units.sub_category.indexOf(subCategory) > -1}
+                onChange={() => handleToggle1(subCategory)}
+              />
+              <ListItemText primary={subCategory} />
+            </MenuItem>
+          ))}
+        </Select>
+                    </div>
 
               <div className="col-md-6">
                 <label className="labels">Block</label>
