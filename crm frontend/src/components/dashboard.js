@@ -181,8 +181,9 @@ const TopDeals = ({ deals }) => (
 
   return (
     <div>
-      <Header1 />
+     
       <Sidebar1 />
+       <Header1 />
       <div className="space-y-6 ml-20 mt-20 p-6">
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg text-white p-6">

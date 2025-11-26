@@ -17,7 +17,8 @@ import { FaWhatsapp } from "react-icons/fa";
 import Header1 from "../header1";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "./main_layout";
-import {  FaUsers, FaBell, FaBullseye, FaGlobe, FaFlag, FaUserTie, FaMapMarkerAlt, FaListUl } from "react-icons/fa";
+import {  FaUsers, FaBell, FaBullseye, FaGlobe, FaFlag, FaUserTie, FaMapMarkerAlt, FaListUl,FaHome,FaThLarge  } from "react-icons/fa";
+import { MdCategory } from "react-icons/md";
 
 
 function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
@@ -207,6 +208,27 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
                 >
                   <FaMapMarkerAlt size={14} />
                   City
+                </li>
+                                      <li
+                  onClick={() => navigate("/configuration-property-type")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <FaHome  size={14} />
+                  Property Type
+                </li>
+                                      <li
+                  onClick={() => navigate("/configuration-property-sub-type")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <MdCategory size={14} />
+                  Property Sub-Type
+                </li>
+                                      <li
+                  onClick={() => navigate("/configuration-property-unit-type")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <FaThLarge  size={14} />
+                  Unit Type
                 </li>
               </ul>
             )}

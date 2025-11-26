@@ -4,7 +4,6 @@ import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
 
-
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -61,6 +60,12 @@ const Designation = lazy(() => import("./components/Settings/Configuration/desgi
 const Country = lazy(() => import("./components/Settings/Configuration/country.js"));
 const State = lazy(() => import("./components/Settings/Configuration/state.js"));
 const City = lazy(() => import("./components/Settings/Configuration/city.js"));
+const PropertyType = lazy(() => import("./components/Settings/Configuration/property_type.js"));
+const PropertySubType = lazy(() => import("./components/Settings/Configuration/property_sub_type.js"));
+const PropertyUnitType = lazy(() => import("./components/Settings/Configuration/property_unit_type.js"));
+
+
+
 
 function App() {
   return (
@@ -127,6 +132,9 @@ function App() {
             <Route path="/configuration-country" element={<Country/>} />
             <Route path="/configuration-state" element={<State/>} />
             <Route path="/configuration-city" element={<City/>} />
+            <Route path="/configuration-property-type" element={<PropertyType/>} />
+            <Route path="/configuration-property-sub-type" element={<PropertySubType/>} />
+            <Route path="/configuration-property-unit-type" element={<PropertyUnitType/>} />
             </Route>
           </Routes>
         </div>
