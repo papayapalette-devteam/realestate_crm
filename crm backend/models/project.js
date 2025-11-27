@@ -89,7 +89,9 @@ const blockSchema = new mongoose.Schema({
     document_no: {type: Array},
     document_Date: {type: Array},
     linkded_contact: {type: Array},
-    image: {type: Array}
+    image: {type: Array},
+    follow_up: {type: String},
+    last_conduct_date_time: {type: String},
   },{ timestamps: true })
   
 const priceschema = new mongoose.Schema({

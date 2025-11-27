@@ -32,12 +32,7 @@ import { Select, MenuItem, Checkbox, ListItemText  } from '@mui/material';
 function Allunits() {
      const logged_user=JSON.parse(localStorage.getItem('user'))
 
-  const [animationData, setAnimationData] = useState(null);
-  useEffect(() => {
-    fetch("https://assets6.lottiefiles.com/packages/lf20_usmfx6bp.json")
-      .then((res) => res.json())
-      .then((data) => setAnimationData(data));
-  }, []);
+
 
   const [isLoading4, setIsLoading4] = useState(false);
 
@@ -127,90 +122,14 @@ function Allunits() {
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
-  // Handle items per page change
-  const handleItemsPerPageChange = (e) => {
-    setItemsPerPage(Number(e.target.value));
-    setCurrentPage(1); // Reset to first page whenever items per page changes
-  };
 
-  // Function to handle page changes
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Function to handle "Next" and "Previous" page changes
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
 
-  const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
-  const renderPageNumbers = () => {
-    // Define the range of page numbers to display
-    const maxPageNumbersToShow = 5;
-    const startPage = Math.max(
-      1,
-      currentPage - Math.floor(maxPageNumbersToShow / 2)
-    );
-    const endPage = Math.min(totalPages, startPage + maxPageNumbersToShow - 1);
 
-    return (
-      <div
-        style={{
-          display: "flex",
+ 
 
-          whiteSpace: "nowrap",
-          padding: "10px-15px",
-          width: "100%",
-          position: "relative",
-        }}
-      >
-        {/* Previous Button */}
-        {currentPage > 1 && (
-          <button
-            onClick={goToPreviousPage}
-            style={{ width: "50px", borderRadius: "5px", marginRight: "5px" }}
-          >
-            Prev
-          </button>
-        )}
 
-        {/* Page Numbers */}
-        {Array.from(
-          { length: endPage - startPage + 1 },
-          (_, i) => startPage + i
-        ).map((number) => (
-          <button
-            key={number}
-            onClick={() => paginate(number)}
-            style={{
-              width: "30px",
-              borderRadius: "5px",
-              marginRight: "5px",
-              flexShrink: 0, // Prevent buttons from shrinking
-              backgroundColor: number === currentPage ? "lightblue" : "white",
-            }}
-          >
-            {number}
-          </button>
-        ))}
-
-        {/* Next Button */}
-        {currentPage < totalPages && (
-          <button
-            onClick={goToNextPage}
-            style={{ width: "50px", borderRadius: "5px", marginRight: "5px" }}
-          >
-            Next
-          </button>
-        )}
-      </div>
-    );
-  };
 
   const allColumns = [
     { id: "sno", name: "#" },
@@ -489,27 +408,7 @@ function Allunits() {
     }, 500); // Wait for flip animation to complete before hiding/showing the divs
   };
 
-  const pagereload3 = () => {
-    // Flip effect for companylistview to contactlistview
-    setIsFlipped(false);
-    setTimeout(() => {
-      document.getElementById("unitlistview").style.display = "none";
-      document.getElementById("contactlistview").style.display = "block";
-    }, 500); // Wait for flip animation to complete before hiding/showing the divs
-  };
 
-  const formatDate = (isoString) => {
-    if (!isoString) return "-"; // Fallback for missing date
-    const date = new Date(isoString);
-    const localDate = date.toLocaleDateString();
-    const localTime = date.toLocaleTimeString();
-    return (
-      <>
-        <div>{localDate}</div>
-        <div>{localTime}</div>
-      </>
-    );
-  };
 
   const [searchdata, setsearchdata] = useState();
   const fetchdatabyemail_mobile_tags_company = async (e) => {
@@ -554,12 +453,7 @@ function Allunits() {
       console.log(error);
     }
   };
-  const handlekeypress1 = (event) => {
-    if (event.key === "Enter") {
-      fetchdatabyemail_mobile_tags_company();
-      setsearchdata("");
-    }
-  };
+
 
   const [currentPage1, setCurrentPage1] = useState(1);
   const [itemsPerPage1, setItemsPerPage1] = useState(10); // User-defined items per page
@@ -568,93 +462,12 @@ function Allunits() {
   const currentItems2 = cdata.slice(indexOfFirstItem1, indexOfLastItem1);
   const totalPages1 = Math.ceil(cdata.length / itemsPerPage1);
 
-  // Handle items per page change
-  const handleItemsPerPageChange1 = (e) => {
-    setItemsPerPage1(Number(e.target.value));
-    setCurrentPage1(1); // Reset to first page whenever items per page changes
-  };
 
-  // Function to handle page changes
-  const paginate1 = (pageNumber) => setCurrentPage1(pageNumber);
 
-  // Function to handle "Next" and "Previous" page changes
-  const goToNextPage1 = () => {
-    if (currentPage1 < totalPages1) {
-      setCurrentPage1(currentPage1 + 1);
-    }
-  };
 
-  const goToPreviousPage1 = () => {
-    if (currentPage1 > 1) {
-      setCurrentPage1(currentPage1 - 1);
-    }
-  };
 
-  const renderPageNumbers1 = () => {
-    // Define the range of page numbers to display
-    const maxPageNumbersToShow1 = 5;
-    const startPage1 = Math.max(
-      1,
-      currentPage1 - Math.floor(maxPageNumbersToShow1 / 2)
-    );
-    const endPage1 = Math.min(
-      totalPages1,
-      startPage1 + maxPageNumbersToShow1 - 1
-    );
 
-    return (
-      <div
-        style={{
-          display: "flex",
 
-          whiteSpace: "nowrap",
-          padding: "10px-15px",
-          width: "100%",
-          position: "relative",
-        }}
-      >
-        {/* Previous Button */}
-        {currentPage1 > 1 && (
-          <button
-            onClick={goToPreviousPage1}
-            style={{ width: "50px", borderRadius: "5px", marginRight: "5px" }}
-          >
-            Prev
-          </button>
-        )}
-
-        {/* Page Numbers */}
-        {Array.from(
-          { length: endPage1 - startPage1 + 1 },
-          (_, i) => startPage1 + i
-        ).map((number) => (
-          <button
-            key={number}
-            onClick={() => paginate1(number)}
-            style={{
-              width: "30px",
-              borderRadius: "5px",
-              marginRight: "5px",
-              flexShrink: 0, // Prevent buttons from shrinking
-              backgroundColor: number === currentPage1 ? "lightblue" : "white",
-            }}
-          >
-            {number}
-          </button>
-        ))}
-
-        {/* Next Button */}
-        {currentPage1 < totalPages1 && (
-          <button
-            onClick={goToNextPage1}
-            style={{ width: "50px", borderRadius: "5px", marginRight: "5px" }}
-          >
-            Next
-          </button>
-        )}
-      </div>
-    );
-  };
 
   const allprojectColumns = [
     { id: "sno", name: "#" },
@@ -677,49 +490,10 @@ function Allunits() {
     setShowColumnList1(!showColumnList1);
   };
 
-  const handleCheckboxChange1 = (column) => {
-    if (visibleColumns2.some((col) => col.id === column.id)) {
-      // Remove column from visibleColumns if it's already present
-      setVisibleColumns2(visibleColumns2.filter((col) => col.id !== column.id));
-    } else {
-      // Add column to visibleColumns
-      setVisibleColumns2([...visibleColumns2, column]);
-    }
-  };
-  const handleSelectAll2 = () => {
-    setSelectAll2(!selectAll2);
-    if (!selectAll2) {
-      // Add all current page item IDs to selectedItems
-      setSelectedItems2(currentItems2.map((item) => item._id));
-    } else {
-      // Deselect all
-      setSelectedItems2([]);
-    }
-  };
 
-  const handleRowSelect2 = (id) => {
-    if (selectedItems2.includes(id)) {
-      setSelectedItems2(selectedItems2.filter((itemId) => itemId !== id));
-    } else {
-      setSelectedItems2([...selectedItems2, id]);
-    }
-  };
 
-  // ===================================search deal via search box start========================================================
 
-  const [projectsearchinput, setprojectsearchinput] = useState("");
-  const handleprojectsearchchange = (e) => {
-    setprojectsearchinput(e.target.value);
-  };
 
-  const handlekeypress3 = (event) => {
-    if (event.key === "Enter") {
-      setcdata(cdata.filter((item) => item.name == projectsearchinput));
-      document.getElementById("projectsearch").value = "";
-    }
-  };
-
-  //=========================================== search deal via search box end===============================================
 
   //========================================= units code start =======================================================================
 
@@ -735,8 +509,8 @@ function Allunits() {
     { id: "remarks", name: "Remarks " },
     { id: "locationbrief", name: "Location_Brief" },
     { id: "ownership", name: "OwnerShip" },
-    { id: "followup", name: "Follow_Up" },
-    { id: "lastconduct", name: "Last_Conduct_Date_&_Time" },
+    { id: "follow_up", name: "Follow_Up" },
+    { id: "last_conduct_date_time", name: "Last_Conduct_Date_&_Time" },
   ];
   const [selectedItems3, setSelectedItems3] = useState([]); // To track selected rows
   const [selectAll3, setSelectAll3] = useState(false); // To track the state of the "Select All" checkbox
@@ -745,9 +519,7 @@ function Allunits() {
   );
   const [showColumnList2, setShowColumnList2] = useState(false);
 
-  const handleAddColumnClick2 = () => {
-    setShowColumnList2(!showColumnList2);
-  };
+
 
   const handleCheckboxChange2 = (column) => {
     if (visibleColumns3.some((col) => col.id === column.id)) {
@@ -1451,11 +1223,7 @@ function Allunits() {
     return `${formattedDay} ${month} ${year}`;
   };
 
-  const handleDateChangesite1 = (e) => {
-    const selectedDate = e.target.value;
-    const formattedDate = formatDatesite1(selectedDate);
-    setsitevisit({ ...sitevisit, end_date: formattedDate });
-  };
+ 
 
   const formatTimesite = (timeString) => {
     let [hours, minutes] = timeString.split(":").map(Number);
@@ -1469,105 +1237,16 @@ function Allunits() {
     return `${hours}:${minutes < 10 ? "0" + minutes : minutes} ${period}`;
   };
 
-  const handleTimeChangesite = (e) => {
-    const selectedTime = e.target.value;
-    const formattedTime = formatTimesite(selectedTime);
-    setsitevisit({ ...sitevisit, start_time: formattedTime });
-  };
 
-  const formatTimesite1 = (timeString) => {
-    let [hours, minutes] = timeString.split(":").map(Number);
-    const isPM = hours >= 12;
 
-    // Convert to 12-hour format
-    if (hours > 12) hours -= 12;
-    if (hours === 0) hours = 12; // midnight or noon should display as 12, not 0
-    const period = isPM ? "PM" : "AM";
-
-    return `${hours}:${minutes < 10 ? "0" + minutes : minutes} ${period}`;
-  };
-
-  const handleTimeChangesite1 = (e) => {
-    const selectedTime = e.target.value;
-    const formattedTime = formatTimesite1(selectedTime);
-    setsitevisit({ ...sitevisit, end_time: formattedTime });
-  };
 
   // ===============================================add to task for sitevisit end=========================================================
 
   //================================ add to task for meeting start======================================================================
 
-  const activity = ["Call", "Email", "Meeting", "Site Visit"];
-  const location = ["Home", "Office", "Company", "Site"];
-  const [leadidmeeting, setleadidmeeting] = useState("");
 
-  const [updatestagemeeting, setupdatestagemeeting] = useState("");
-  const [updatestagemeeting1, setupdatestagemeeting1] = useState("");
-  const handlereasonchangemeeting = (e) => {
-    const newreason = e.target.value;
 
-    // Update the status first
-    setmeetingtask((prevState) => {
-      return {
-        ...prevState,
-        reason: newreason,
-      };
-    });
 
-    // Now check if status is "Conducted" and update the stage
-    if (newreason === "Negotiation") {
-      setupdatestagemeeting("Negotiation");
-      setupdatestagemeeting1("Negotiation");
-    } else if (newreason === "Agreement" || newreason === "Token") {
-      setupdatestagemeeting("Booked");
-      setupdatestagemeeting1("Booked");
-    } else if (newreason === "Discuss") {
-      setupdatestagemeeting("Prospect & Opurtunity");
-      setupdatestagemeeting1("Qoute");
-    }
-  };
-
-  const handleToggle2 = (e) => {
-    const isChecked = e.target.checked; // Get the checked state
-    setmeetingtask({ ...meetingtask, complete: isChecked }); // Update the calltask state
-
-    // Open the modal only if the checkbox is checked
-    if (isChecked) {
-      document.getElementById("meetingdetails").style.display = "block";
-    } else {
-      document.getElementById("meetingdetails").style.display = "none";
-    }
-  };
-
-  const [sitevisitdata, setsitevisitdata] = useState([]);
-  const fetchsitevisitdata = async (event) => {
-    try {
-      const resp = await api.get("viewsitevisit");
-      const result =
-        resp.data?.sitevisit?.flatMap((item) => item.intrested_inventory) || [];
-      setsitevisitdata(result);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchsitevisitdata();
-  }, []);
-
-  const handleallunitschange2 = (event) => {
-    const {
-      target: { value },
-    } = event;
-
-    const selectunits = typeof value === "string" ? value.split(",") : value;
-
-    setmeetingtask((prev) => {
-      const updatedSiteVisit = { ...prev, inventory: selectunits };
-      //   fetchdatabyprojectname(selectproject); // Fetch data with the updated project names
-      return updatedSiteVisit; // Return the updated state
-    });
-  };
 
   const [meetingtask, setmeetingtask] = useState({
     activity_type: "Meeting",
@@ -1597,137 +1276,11 @@ function Allunits() {
     feedback: "",
   });
 
-  const meetingtaskdetails = async () => {
-    const title1 = document.getElementById("meetingtitle").innerText;
 
-    const data = { stage: updatestagemeeting };
-    // Update state
-    const updatemeetingtask = { ...meetingtask, title: title1 };
-    try {
-      const resp = await api.post("meetingtask", updatemeetingtask);
 
-      const data1 = { newstage: updatestagemeeting1 };
+ 
 
-      // Loop through each selected project-block-unit combination
-      if (meetingtask.reason === "Negotiation") {
-        let isValidCombination = true;
-        for (let i = 0; i < meetingtask.inventory.length; i++) {
-          const selectedCombination = meetingtask.inventory[i];
-          const [unit_number, block, project] = selectedCombination.split("-");
-          console.log(
-            `Calling API: updatedealstage/${project}/${block}/${unit_number}`
-          );
-
-          // Check if the unit_number, block, and project exist
-          if (unit_number && block && project) {
-            console.log(
-              `Calling API: updatedealstage/${project}/${block}/${unit_number}`
-            );
-
-            try {
-              // Call API for each valid combination
-              const resp2 = await api.put(
-                `updatedealstage/${project}/${block}/${unit_number}`,
-                data1
-              );
-            } catch (error) {
-              // Handle API errors for the individual combination
-              toast.error(
-                `API request faileddddddddddd for ${project} - ${block} - ${unit_number}`
-              );
-              isValidCombination = false; // Set to false if the combination fails
-            }
-          } else {
-            // If any part is missing, skip the combination
-            toast.warn(
-              `Skipping API call for invalid combination: ${selectedCombination}`
-            );
-            isValidCombination = false;
-          }
-        }
-      }
-
-      if (meetingtask.reason === "Discuss") {
-        if (meetingtask.project && meetingtask.block && meetingtask.inventory) {
-          const project = meetingtask.project[0];
-          const block = meetingtask.block[0];
-          const unit_number = meetingtask.inventory[0];
-          try {
-            // Call API for each valid combination
-            const resp2 = await api.put(
-              `updatedealstage/${project}/${block}/${unit_number}`,
-              data1
-            );
-          } catch (error) {
-            // Handle API errors for the individual combination
-            toast.error(
-              `API request failed for ${project} - ${block} - ${unit_number}`
-            );
-          }
-        } else {
-          // If any part is missing, skip the combination
-          toast.warn(`Skipping API call for invalid combination`);
-        }
-      }
-
-      if (leadidmeeting) {
-        const resp1 = await api.put(`updatelead/${leadidmeeting}`, data);
-      }
-      if (resp.status === 200) {
-        toast.success(resp.data.message);
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000); // 2000 milliseconds = 2 seconds
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  const formatDatemeeting = (dateString) => {
-    const date = new Date(dateString);
-
-    // Day of the month with suffix
-    const day = date.getDate();
-    const suffix =
-      day === 1 || day === 21 || day === 31
-        ? "st"
-        : day === 2 || day === 22
-        ? "nd"
-        : day === 3 || day === 23
-        ? "rd"
-        : "th";
-
-    const formattedDay = `${day}${suffix}`;
-
-    // Month (abbreviated to 3 letters)
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const month = months[date.getMonth()];
-
-    // Year (4 digits)
-    const year = date.getFullYear();
-
-    return `${formattedDay} ${month} ${year}`;
-  };
-
-  const handleDateChangemeeting = (e) => {
-    const selectedDate = e.target.value;
-    const formattedDate = formatDatemeeting(selectedDate);
-    setmeetingtask({ ...meetingtask, due_date: formattedDate });
-  };
+ 
 
   const formatTimemeeting = (timeString) => {
     let [hours, minutes] = timeString.split(":").map(Number);
@@ -1777,61 +1330,12 @@ function Allunits() {
     feedback: "",
   });
 
-  const reason = ["Meeting", "Site Visit", "Discuss", "For Requirment", "etc"];
-  const direction = ["Incoming", "Outgoing"];
-  const result = [
-    "Interested",
-    "Not Interested",
-    "Postponed",
-    "Low Budget",
-    "Location Mismatch",
-  ];
-  const status = [
-    "Answered",
-    "Missed",
-    "Not Pic",
-    "Busy",
-    "Cut Call",
-    "Number Not Reachable",
-    "Switch Off",
-    "Incoming",
-    "Not Available",
-    "Number Invalid",
-  ];
 
-  const handler1 = () => {
-    document.getElementById("date1").style.color = "black";
-  };
 
-  const handleToggle = (e) => {
-    const isChecked = e.target.checked; // Get the checked state
-    setcalltask({ ...calltask, complete: isChecked }); // Update the calltask state
 
-    // Open the modal only if the checkbox is checked
-    if (isChecked) {
-      document.getElementById("calldetails").style.display = "flex";
-    } else {
-      document.getElementById("calldetails").style.display = "none";
-    }
-  };
 
-  const calltaskdetails = async () => {
-    const title1 = document.getElementById("title").innerText;
-    // Update state
-    const updatedCallTask = { ...calltask, title: title1 };
 
-    try {
-      const resp = await api.post("calltask", updatedCallTask);
-      if (resp.status === 200) {
-        toast.success(resp.data.message);
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000); // 2000 milliseconds = 2 seconds
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+
 
   const formatdate = (dateString) => {
     const date = new Date(dateString);
@@ -3590,51 +3094,11 @@ const handleSubCategoryChange1 = (event) => {
     window.removeEventListener("mouseup", handleMouseUp);
   };
 
-  function available_for() {
-    const available = document.getElementById("availablefor").value;
-    if (available === "Sale") {
-      document.getElementById("sale").style.display = "flex";
-      document.getElementById("rent").style.display = "none";
-      setdeal({ ...deal, available_for: "Sale" });
-    }
-    if (available === "Rent") {
-      document.getElementById("rent").style.display = "flex";
-      document.getElementById("sale").style.display = "none";
-      setdeal({ ...deal, available_for: "Rent" });
-    }
-    if (available === "Select") {
-      document.getElementById("rent").style.display = "none";
-      document.getElementById("sale").style.display = "none";
-    }
-  }
 
-  const handleprojectchange = (event) => {
-    const selectproject = event.target.value;
 
-    setdeal((prev) => {
-      const updateproject = { ...prev, project: selectproject };
-      //  fetchdatabyprojectname(selectproject); // Fetch data with the updated project names
-      return updateproject; // Return the updated state
-    });
-  };
+ 
 
-  const handleallunitschange = (event) => {
-    const selectunit = event.target.value;
-
-    setdeal((prev) => {
-      const updateunit = { ...prev, unit_number: selectunit };
-      return updateunit; // Return the updated state
-    });
-  };
-
-  const handleallblockchange = (event) => {
-    const selectblocks = event.target.value;
-
-    setdeal((prev) => {
-      const updateblock = { ...prev, block: selectblocks };
-      return updateblock; // Return the updated state
-    });
-  };
+ 
 
   const [data1, setdata1] = useState([]);
   const fetchdata1 = async () => {
@@ -3725,150 +3189,18 @@ const handleSubCategoryChange1 = (event) => {
     }
   }, [units1, deal.block, deal.unit_number]);
 
-  const handleselectpricetypechang = (e) => {
-    const selectedValue = e.target.value;
+  
 
-    if (selectedValue === "absolute") {
-      document.getElementById("price1").style.display = "none";
-      document.getElementById("multiply").style.display = "none";
-      document.getElementById("totalarea").style.display = "none";
-      document.getElementById("measurment").style.display = "none";
-      document.getElementById("priceintext").style.display = "none";
 
-      document.getElementById("totalprice").style.display = "block";
-      document.getElementById("divforprice1").style.display = "block";
-    } else if (selectedValue === "calculated") {
-      document.getElementById("price1").style.display = "block";
-      document.getElementById("multiply").style.display = "block";
-      document.getElementById("totalarea").style.display = "block";
-      document.getElementById("measurment").style.display = "block";
-      document.getElementById("priceintext").style.display = "block";
 
-      document.getElementById("totalprice").style.display = "none";
-      document.getElementById("divforprice1").style.display = "none";
-    }
-    setdeal((prev) => ({
-      ...prev,
-      calculated_type: e.target.value,
-    }));
-  };
+  
 
-  const ehandleselectpricetypechang = (e) => {
-    const selectedValue = e.target.value;
-
-    if (selectedValue === "absolute") {
-      document.getElementById("price11").style.display = "none";
-      document.getElementById("multiply1").style.display = "none";
-      document.getElementById("totalarea1").style.display = "none";
-      document.getElementById("measurment1").style.display = "none";
-      document.getElementById("priceintext1").style.display = "none";
-
-      document.getElementById("totalprice1").style.display = "block";
-      document.getElementById("divforprice11").style.display = "block";
-    } else if (selectedValue === "calculated") {
-      document.getElementById("price11").style.display = "block";
-      document.getElementById("multiply1").style.display = "block";
-      document.getElementById("totalarea1").style.display = "block";
-      document.getElementById("measurment1").style.display = "block";
-      document.getElementById("priceintext1").style.display = "block";
-
-      document.getElementById("totalprice1").style.display = "none";
-      document.getElementById("divforprice11").style.display = "none";
-    }
-    setdeal((prev) => ({
-      ...prev,
-      calculated_type: e.target.value,
-    }));
-  };
-
-  const rhandleselectpricetypechang = (e) => {
-    const selectedValue1 = e.target.value;
-
-    if (selectedValue1 === "absolute") {
-      document.getElementById("rprice1").style.display = "none";
-      document.getElementById("rmultiply").style.display = "none";
-      document.getElementById("rtotalarea").style.display = "none";
-      document.getElementById("rmeasurment").style.display = "none";
-      document.getElementById("rpriceintext").style.display = "none";
-
-      document.getElementById("rtotalprice").style.display = "block";
-      document.getElementById("rdivforprice1").style.display = "block";
-    } else if (selectedValue1 === "calculated") {
-      document.getElementById("rprice1").style.display = "block";
-      document.getElementById("rmultiply").style.display = "block";
-      document.getElementById("rtotalarea").style.display = "block";
-      document.getElementById("rmeasurment").style.display = "block";
-      document.getElementById("rpriceintext").style.display = "block";
-
-      document.getElementById("rtotalprice").style.display = "none";
-      document.getElementById("rdivforprice1").style.display = "none";
-    }
-    setdeal((prev) => ({
-      ...prev,
-      calculated_type: e.target.value,
-    }));
-  };
-
-  const rhandleselectpricetypechang1 = (e) => {
-    const selectedValue1 = e.target.value;
-
-    if (selectedValue1 === "absolute") {
-      document.getElementById("rprice11").style.display = "none";
-      document.getElementById("rmultiply1").style.display = "none";
-      document.getElementById("rtotalarea1").style.display = "none";
-      document.getElementById("rmeasurment1").style.display = "none";
-      document.getElementById("rpriceintext1").style.display = "none";
-
-      document.getElementById("rtotalprice1").style.display = "block";
-      document.getElementById("rdivforprice11").style.display = "block";
-    } else if (selectedValue1 === "calculated") {
-      document.getElementById("rprice11").style.display = "block";
-      document.getElementById("rmultiply1").style.display = "block";
-      document.getElementById("rtotalarea1").style.display = "block";
-      document.getElementById("rmeasurment1").style.display = "block";
-      document.getElementById("rpriceintext1").style.display = "block";
-
-      document.getElementById("rtotalprice1").style.display = "none";
-      document.getElementById("rdivforprice11").style.display = "none";
-    }
-    setdeal((prev) => ({
-      ...prev,
-      calculated_type: e.target.value,
-    }));
-  };
-
-  const formatCurrency = (num) => {
-    if (num === 0) return "₹0"; // Handle zero case
-
-    // Convert number to string
-    const numStr = num.toString();
-
-    // Split the number into whole and decimal parts
-    const [whole, decimal] = numStr.split(".");
-
-    // Format the whole part for Indian currency style
-    const lastThreeDigits = whole.slice(-3);
-    const otherDigits = whole.slice(0, -3);
-    const formattedWhole =
-      otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",") +
-      (otherDigits.length > 0 ? "," : "") +
-      lastThreeDigits;
-
-    // Combine whole and decimal parts, if any
-    return `${formattedWhole}${decimal ? "." + decimal : ""}`;
-  };
+  
 
   const [result0, setResult0] = useState("");
   const [resultText, setResultText] = useState("");
 
-  const calculateResult = () => {
-    const areaValue = parseFloat(document.getElementById("earea").value) || 0; // Ensure valid number
-    const priceValue = parseFloat(document.getElementById("eprice").value) || 0; // Ensure valid number
-    const calculatedResult = areaValue * priceValue;
-
-    setResult0(calculatedResult);
-    setdeal((prevDeal) => ({ ...prevDeal, expected_price: calculatedResult }));
-  };
+  
 
   React.useEffect(() => {
     // Convert result to text format
@@ -3883,14 +3215,7 @@ const handleSubCategoryChange1 = (event) => {
   const [result1, setResult1] = useState("");
   const [resultText1, setResultText1] = useState("");
 
-  const calculateResult1 = () => {
-    const areaValue = parseFloat(document.getElementById("qarea").value) || 0; // Ensure valid number
-    const priceValue = parseFloat(document.getElementById("qprice").value) || 0; // Ensure valid number
-    const calculatedResult = areaValue * priceValue;
 
-    setResult1(calculatedResult);
-    setdeal((prevDeal) => ({ ...prevDeal, quote_price: calculatedResult }));
-  };
 
   React.useEffect(() => {
     // Convert result to text format
@@ -3905,15 +3230,7 @@ const handleSubCategoryChange1 = (event) => {
   const [result2, setResult2] = useState("");
   const [resultText2, setResultText2] = useState("");
 
-  const calculateResult2 = () => {
-    const areaValue = parseFloat(document.getElementById("rearea").value) || 0; // Ensure valid number
-    const priceValue =
-      parseFloat(document.getElementById("reprice").value) || 0; // Ensure valid number
-    const calculatedResult = areaValue * priceValue;
-
-    setResult2(calculatedResult);
-    setdeal((prevDeal) => ({ ...prevDeal, expected_price: calculatedResult }));
-  };
+ 
 
   React.useEffect(() => {
     // Convert result to text format
@@ -3928,15 +3245,7 @@ const handleSubCategoryChange1 = (event) => {
   const [result3, setResult3] = useState("");
   const [resultText3, setResultText3] = useState("");
 
-  const calculateResult3 = () => {
-    const areaValue = parseFloat(document.getElementById("rqarea1").value) || 0; // Ensure valid number
-    const priceValue =
-      parseFloat(document.getElementById("rqprice1").value) || 0; // Ensure valid number
-    const calculatedResult = areaValue * priceValue;
 
-    setResult3(calculatedResult);
-    setdeal((prevDeal) => ({ ...prevDeal, quote_price: calculatedResult }));
-  };
 
   React.useEffect(() => {
     // Convert result to text format
@@ -3948,34 +3257,6 @@ const handleSubCategoryChange1 = (event) => {
     }
   }, [result3]);
 
-  const updatedeal = async () => {
-    try {
-      // Show confirmation message
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, update it!",
-      });
-
-      if (!result.isConfirmed) {
-        return; // Stop execution if user cancels
-      }
-
-      const resp = await api.put(`updatedeal/${selectedItems}`, deal);
-      if (resp.status === 200) {
-        toast.success(resp.data.message, { autoClose: 2000 });
-      }
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   // ===================================================edit deal end====================================================================
 
@@ -4106,6 +3387,8 @@ const handleSubCategoryChange1 = (event) => {
 
   const [feedbackform, setfeedbackform] = useState({
     owner: "",
+    direction:"",
+    status:"",
     unit_no: "",
     owner_response: "",
     discussed_reason: "",
@@ -4215,6 +3498,8 @@ const handleSubCategoryChange1 = (event) => {
         ...units,
         stage: feedbackform.stage,
         remarks: feedbackform.owner_response,
+        last_conduct_date_time: new Date(),
+        follow_up:feedbackform.next_call_date
       };
       const resp = await api.post("addfeedback", feedbackform);
       if (resp.status === 200) {
@@ -4309,6 +3594,15 @@ const handleSubCategoryChange1 = (event) => {
               <i class="bi bi-handshake-fill" style="margin-right: 6px;"></i>Add Lead
             </button>
           `;
+            break;
+
+            case "Thinking may/be in future":
+            await api.put(
+              `updateprojectforinventories/${project}/${unit}/${block}`,
+              updatedUnits,
+              config
+            );
+           
             break;
 
           default:
@@ -4775,81 +4069,7 @@ const handleSubCategoryChange1 = (event) => {
     );
   }
 
-  // useEffect(() => {
-  //   const filteredData = allunitsforsearch.filter(item =>
-  //     activeFilters.every(filter => {
-  //       const fieldVal = item[filter.field] ?? "";
-
-  //       // Checkbox logic
-  //       if (filter.checked && filter.checked.length > 0) {
-  //         if (Array.isArray(fieldVal)) {
-  //           if (filter.radio === 'with') {
-  //             // keep only if at least one value in fieldVal is in filter.checked
-  //             if (!fieldVal.some(val => filter.checked.includes(val))) {
-  //               return false;
-  //             }
-  //           }
-  //           if (filter.radio === 'without') {
-  //             // remove if any value in fieldVal is in filter.checked
-  //             if (fieldVal.some(val => filter.checked.includes(val))) {
-  //               return false;
-  //             }
-  //           }
-  //         } else {
-  //           // fieldVal is string or other single value
-  //           if (filter.radio === 'with') {
-  //             if (!filter.checked.includes(fieldVal)) {
-  //               return false;
-  //             }
-  //           }
-  //           if (filter.radio === 'without') {
-  //             if (filter.checked.includes(fieldVal)) {
-  //               return false;
-  //             }
-  //           }
-  //         }
-  //       }
-
-  //       // Input logic
-  //       if (filter.input) {
-  //         const inputVal = filter.input.toLowerCase();
-
-  //         if (Array.isArray(fieldVal)) {
-  //           if (filter.radio === 'with') {
-  //             // keep if any item in array includes the input
-  //             if (!fieldVal.some(val => String(val).toLowerCase().includes(inputVal))) {
-  //               return false;
-  //             }
-  //           }
-  //           if (filter.radio === 'without') {
-  //             // remove if any item in array includes the input
-  //             if (fieldVal.some(val => String(val).toLowerCase().includes(inputVal))) {
-  //               return false;
-  //             }
-  //           }
-  //         } else if (typeof fieldVal === 'string') {
-  //           if (filter.radio === 'with') {
-  //             if (!fieldVal.toLowerCase().includes(inputVal)) {
-  //               return false;
-  //             }
-  //           }
-  //           if (filter.radio === 'without') {
-  //             if (fieldVal.toLowerCase().includes(inputVal)) {
-  //               return false;
-  //             }
-  //           }
-  //         }
-  //       }
-
-  //       // Pass if neither checkbox nor input logic applies
-  //       return true;
-  //     })
-  //   );
-  //   setFlattenedUnits(filteredData);
-  // }, [activeFilters, allunitsforsearch]);
-
-  //================================================== filter code end==================================================================
-
+  
   //=============================================== deal action buttons toggle start=============================================================
 
   useEffect(() => {
@@ -4901,6 +4121,8 @@ const handleSubCategoryChange1 = (event) => {
     const jsDate = new Date(excelEpoch.getTime() + (serial - 1) * 86400000);
     return jsDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
   };
+
+
 
   return (
     <div>
@@ -5950,6 +5172,30 @@ const handleSubCategoryChange1 = (event) => {
                                   </div>
                                 ))}
                               </>
+                            ) :  col.id === "follow_up" ? (
+                              <>
+                              {item?.follow_up
+                                ? new Date(item.follow_up).toLocaleString("en")
+                                : "-"}
+                            </>
+
+                            ) :  col.id === "last_conduct_date_time" ? (
+                              <>
+                              {item?.last_conduct_date_time ? (
+                                <div className="flex flex-col leading-tight">
+                                  <span className="font-medium">
+                                    {new Date(item.last_conduct_date_time).toLocaleDateString("en")}
+                                  </span>
+                                  <span className="font-medium">
+                                    {new Date(item.last_conduct_date_time).toLocaleTimeString("en")}
+                                  </span>
+                                </div>
+                              ) : (
+                                "-"
+                              )}
+                            </>
+
+
                             ) : col.id === "locationbrief" ? (
                               <>
                                 {item.direction}(Direction)<br></br>
@@ -8154,6 +7400,49 @@ const handleSubCategoryChange1 = (event) => {
               </div>
             </div>
 
+             <div className="mb-2">
+              <label className="form-label">Direction</label>
+              <select
+                className="form-control form-control-sm"
+                name="owner_response"
+                onChange={(e) =>
+                  setfeedbackform({
+                    ...feedbackform,
+                    owner_response: e.target.value,
+                  })
+                }
+              >
+                <option>---select direction---</option>
+                <option>Outgoing</option>
+                <option>Incoming</option>
+              </select>
+            </div>
+
+               <div className="mb-2">
+              <label className="form-label">Status</label>
+              <select
+                className="form-control form-control-sm"
+                name="owner_response"
+                onChange={(e) =>
+                  setfeedbackform({
+                    ...feedbackform,
+                    owner_response: e.target.value,
+                  })
+                }
+              >
+                <option>---select status---</option>
+                <option>Answered</option>
+                <option>Cut Call</option>
+                <option>Not Picked</option>
+                <option>Busy</option>
+                <option>Missed</option>
+                <option>Not Reachable</option>
+                <option>Switch Off</option>
+                <option>Number Invalid</option>
+                <option>Waiting</option>
+              </select>
+            </div>
+
             {/* <div className="mb-2">
         <label className="form-label">Unit No.</label>
         <input type="text" name="unit_no"  className="form-control form-control-sm"  value={feedbackform.unit_no || ""}/>
@@ -8397,16 +7686,22 @@ const handleSubCategoryChange1 = (event) => {
               ></textarea>
             </div>
 
-            <button className="btn btn-danger w-30" onClick={handleCancel}>
-              Cancel
-            </button>
-            <button
-              className="btn btn-success w-60"
-              style={{ marginLeft: "10%" }}
-              onClick={addfeedback}
-            >
-              Submit Feedback
-            </button>
+<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full mt-4">
+  <button
+    onClick={handleCancel}
+    className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded w-full sm:w-1/3"
+  >
+    Cancel
+  </button>
+
+  <button
+    onClick={addfeedback}
+    className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded w-full sm:w-2/3"
+  >
+    Submit Feedback
+  </button>
+</div>
+
           </div>
         </div>
       </div>

@@ -2,6 +2,8 @@ const mongoose=require('mongoose')
 
 const add_feedback=new mongoose.Schema({
     owner:{type:String},
+    direction:{type:String},
+    status:{type:String},
     unit_no:{type:String},
     owner_response:{type:String},
     discussed_reason:{type:String},
