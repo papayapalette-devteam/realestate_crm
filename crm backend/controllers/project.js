@@ -541,12 +541,49 @@ const view_units = async (req, res) => {
     const total = totalCount[0]?.count || 0;
     const totalPages = Math.ceil(total / limit);
 
+    // Category Count
+const categoryCount = await addproject.aggregate(
+  [
+    { $unwind: "$add_unit" },
+    { $unwind: "$add_unit.category" }, // because category is array
+    {
+      $group: {
+        _id: "$add_unit.category",
+        count: { $sum: 1 }
+      }
+    }
+  ]
+);
+
+let categoryResult = {};
+categoryCount.forEach((item) => {
+  categoryResult[item._id] = item.count;
+});
+
+const statusCounts = await addproject.aggregate([
+  { $unwind: "$add_unit" },
+  {
+    $group: {
+      _id: "$add_unit.stage",
+      count: { $sum: 1 },
+    },
+  },
+]);
+
+let statusResult = {};
+statusCounts.forEach((item) => {
+  statusResult[item._id] = item.count;
+});
+
+
     res.status(200).json({
       message: "Units fetched successfully",
       units: units.map((u) => u.add_unit),
       total,
       page,
       totalPages,
+      categoryCount: categoryResult,
+      statusCounts:statusResult
     });
   } catch (error) {
     console.error("view_units error:", error);

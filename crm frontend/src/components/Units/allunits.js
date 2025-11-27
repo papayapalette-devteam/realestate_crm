@@ -24,7 +24,6 @@ import api from "../../api";
 import "../../css/deal.css";
 import { toWords } from "number-to-words";
 import Swal from "sweetalert2";
-import { useDropzone } from "react-dropzone";
 import deallogo from "../../icons/deal.jpg";
 import UniqueLoader from "../loader";
 import { Select, MenuItem, Checkbox, ListItemText  } from '@mui/material';
@@ -32,7 +31,9 @@ import { Select, MenuItem, Checkbox, ListItemText  } from '@mui/material';
 function Allunits() {
      const logged_user=JSON.parse(localStorage.getItem('user'))
 
+ const [flattenedUnits, setFlattenedUnits] = useState([]);
 
+ 
 
   const [isLoading4, setIsLoading4] = useState(false);
 
@@ -89,10 +90,8 @@ function Allunits() {
     writeFile(workbook, "inventory_data.xlsx");
   };
 
-  const [ischecked, setischecked] = useState(false);
-  const handleischeckedchange = (e) => {
-    setischecked(e.target.checked);
-  };
+
+
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -114,20 +113,6 @@ function Allunits() {
       border: 0,
     },
   }));
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10); // User-defined items per page
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
-
-
-
-
-
- 
 
 
 
@@ -233,15 +218,11 @@ function Allunits() {
 
   const [allprojectforsearch, setallprojectforsearch] = useState([]);
   const [cdata, setcdata] = useState([]);
-  const [flattenedUnits, setFlattenedUnits] = useState([]);
+
 
   const [allunitsforsearch, setallunitsforsearch] = useState([]);
   // const [filteredData, setFilteredData] = useState([]);
   const [totalproject, settotalproject] = useState();
-  const [totalupcoming, settotalupcoming] = useState();
-  const [totalprelaunch, settotalprelaunch] = useState();
-  const [totalreadytomove, settotalreadytomove] = useState();
-  const [totalunderconstruction, settotalunderconstrction] = useState();
   const fetchcdata = async (event) => {
     try {
       const resp = await api.get("viewproject");
@@ -252,25 +233,6 @@ function Allunits() {
         : [resp.data.project];
       settotalproject(countproject.length);
 
-      const totalaupcomingproject = resp.data.project.filter(
-        (item) => item.status === "Upcoming"
-      ).length;
-      settotalupcoming(totalaupcomingproject);
-
-      const totalprelaunchproject = resp.data.project.filter(
-        (item) => item.status === "Pre Launch"
-      ).length;
-      settotalprelaunch(totalprelaunchproject);
-
-      const totalreadytomoveproject = resp.data.project.filter(
-        (item) => item.status === "Ready to Move"
-      ).length;
-      settotalreadytomove(totalreadytomoveproject);
-
-      const totalunderconstrctionproject = resp.data.project.filter(
-        (item) => item.status === "Under Construction"
-      ).length;
-      settotalunderconstrction(totalunderconstrctionproject);
     } catch (error) {
       console.log(error);
     }
@@ -463,38 +425,6 @@ function Allunits() {
   const totalPages1 = Math.ceil(cdata.length / itemsPerPage1);
 
 
-
-
-
-
-
-
-  const allprojectColumns = [
-    { id: "sno", name: "#" },
-    { id: "projectname", name: "Project Name" },
-    { id: "location", name: "Location" },
-    { id: "block", name: "Block" },
-    { id: "category", name: " Category" },
-    { id: "unit_type", name: "Unit Type " },
-    { id: "user", name: "User " },
-    { id: "date", name: "Date" },
-  ];
-  const [selectedItems2, setSelectedItems2] = useState([]); // To track selected rows
-  const [selectAll2, setSelectAll2] = useState(false); // To track the state of the "Select All" checkbox
-  const [visibleColumns2, setVisibleColumns2] = useState(
-    allprojectColumns.slice(1, 8)
-  );
-  const [showColumnList1, setShowColumnList1] = useState(false);
-
-  const handleAddColumnClick1 = () => {
-    setShowColumnList1(!showColumnList1);
-  };
-
-
-
-
-
-
   //========================================= units code start =======================================================================
 
   const [loading, setLoading] = useState(false);
@@ -502,13 +432,13 @@ function Allunits() {
   const allunitColumns = [
     { id: "sno", name: "#" },
     { id: "details", name: "Details" },
+    { id: "location", name: "Location" },
+    { id: "locationbrief", name: "Location_Brief" },
     { id: "stage", name: "Status" },
     { id: "ownerdetails", name: "Owner_Details" },
     { id: "owneraddress", name: " Owner_Address" },
     { id: "associatedcontact", name: "Associated_Contact " },
     { id: "remarks", name: "Remarks " },
-    { id: "locationbrief", name: "Location_Brief" },
-    { id: "ownership", name: "OwnerShip" },
     { id: "follow_up", name: "Follow_Up" },
     { id: "last_conduct_date_time", name: "Last_Contacted" },
   ];
@@ -655,6 +585,10 @@ function Allunits() {
     );
   };
 
+   
+const[category_count,setcategory_count]=useState()
+const[status_count,setstatus_count]=useState()
+
   const fetchunitsdata = async (
     page,
     limit,
@@ -683,9 +617,13 @@ function Allunits() {
     }
 
       const resp1 = await api.get(`viewallunits?${params.toString()}`);
+      console.log(resp1);
+      
 
       settotalinventories(resp1.data.total);
       setFlattenedUnits(resp1.data.units);
+      setcategory_count(resp1.data.categoryCount)
+      setstatus_count(resp1.data.statusCounts)
     } catch (error) {
       console.log(error);
     } finally {
@@ -4220,26 +4158,7 @@ const handleSubCategoryChange1 = (event) => {
           <ul class="dropdown-menu" id="exporttoexcel">
             <li onClick={exportToExcel}>Export Data</li>
           </ul>
-          {/* <button  className="form-control form-control-sm form-control form-control-sm-sm" style={{width:"150px",marginLeft:"65%"}}>Filter</button> */}
-          <button
-            onClick={handleAddColumnClick1}
-            className="form-control form-control-sm form-control form-control-sm-sm"
-            style={{
-              padding: "5px",
-              background: "#007bff",
-              color: "#fff",
-              border: "none",
-              borderRadius: 6,
-              fontWeight: 600,
-              marginBottom: 16,
-              cursor: "pointer",
-              marginTop: "0px",
-              marginLeft: "75%",
-              width: "100px",
-            }}
-          >
-            Add Fields
-          </button>
+        
         </div>
 
         <div
@@ -4464,38 +4383,57 @@ const handleSubCategoryChange1 = (event) => {
           )}
         </div>
 
-        <div
-          style={{
-            marginTop: "2px",
-            backgroundColor: "white",
-            height: "60px",
-            paddingLeft: "80px",
-            display: "flex",
-            gap: "20px",
-          }}
-        >
-          <div
-            className="lead"
-            style={{ width: "200px", padding: "10px", borderRadius: "10px" }}
-            onClick={() => setFlattenedUnits(activeunits)}
-          >
-            <h6>Active</h6>
-            <p>{activeunits.length}</p>
-          </div>
-          <div
-            className="lead"
-            style={{
-              width: "200px",
-              borderTopRightRadius: "10px",
-              borderBottomRightRadius: "10px",
-              padding: "10px",
-            }}
-            onClick={() => setFlattenedUnits(inactiveunits)}
-          >
-            <h6>Inactive</h6>
-            <p>{inactiveunits.length}</p>
-          </div>
-        </div>
+<div className="mt-1 bg-white py-1 px-6 sm:px-20 lg:px-30 flex flex-col sm:flex-row gap-2 sm:gap-2">
+
+  {/* 🔵 Active Card */}
+  <div
+    onClick={() => setFlattenedUnits(activeunits)}
+    className="
+      w-full sm:w-52
+      border border-green-300
+      rounded-xl
+      p-1
+      flex flex-col items-center justify-center
+      shadow-sm
+      cursor-pointer
+      hover:shadow-lg
+      hover:scale-105
+      hover:bg-green-100
+      transition-all duration-300
+    "
+  >
+    <h6 className="text-lg font-semibold text-green-700 text-center">🔵Active</h6>
+    <p className="text-xl font-bold text-green-900 text-center">
+      {status_count?.Active}
+    </p>
+  </div>
+
+  {/* 🔴 Inactive Card */}
+  <div
+    onClick={() => setFlattenedUnits(inactiveunits)}
+    className="
+      w-full sm:w-52
+      border border-red-300
+      rounded-xl
+      p-1
+      flex flex-col items-center justify-center
+      shadow-sm
+      cursor-pointer
+      hover:shadow-lg
+      hover:scale-105
+      hover:bg-red-100
+      transition-all duration-300
+    "
+  >
+    <h6 className="text-lg font-semibold text-red-700 text-center">🔴Inactive</h6>
+    <p className="text-xl font-bold text-red-900 text-center">
+      {status_count?.InActive}
+    </p>
+  </div>
+  
+</div>
+
+
 
         <div
           style={{
@@ -4862,9 +4800,9 @@ const handleSubCategoryChange1 = (event) => {
                     ? "https://cdn-icons-png.flaticon.com/512/143/143594.png" // hover image
                     : "https://icon-library.com/images/preview-icon-png/preview-icon-png-26.jpg" // default image
                 }
-                onClick={() =>
-                  navigate("projectpreview", { state: selectedItems2 })
-                }
+                // onClick={() =>
+                //   navigate("projectpreview", { state: selectedItems2 })
+                // }
                 onMouseEnter={() => setIsHoveringpreview(true)}
                 onMouseLeave={() => setIsHoveringpreview(false)}
                 alt="edit"
@@ -5105,7 +5043,6 @@ const handleSubCategoryChange1 = (event) => {
                               {item.sub_category.join(",")}
                               <br />
                               {item.category} {item.size} <br />
-                              {item.project_name}
                             </>
                           );
                         })()}
@@ -5228,7 +5165,18 @@ const handleSubCategoryChange1 = (event) => {
                                   </div>
                                 ))}
                               </>
-                            ) :  col.id === "follow_up" ? (
+                            ) : 
+                            col.id === "location" ? (
+                              <>
+                              {item?.block
+                                ? item.block
+                                : "-"}<br></br>
+                                 {item?.project_name
+                                ? item.project_name
+                                : "-"}
+                            </>
+
+                            ): col.id === "follow_up" ? (
                               <>
                               {item?.follow_up
                                 ? new Date(item.follow_up).toLocaleString("en")
@@ -5268,61 +5216,79 @@ const handleSubCategoryChange1 = (event) => {
               </tbody>
             </Table>
           </TableContainer>
-          <footer
-            style={{
-              height: "50px",
-              width: "100%",
-              position: "sticky",
-              display: "flex",
-              gap: "50px",
-              bottom: "0",
-              backgroundColor: "#f8f9fa",
-              marginLeft: "10px",
-            }}
-          >
-            <h6 style={{ lineHeight: "50px", color: "GrayText" }}>Summary</h6>
-            <h6 style={{ lineHeight: "50px" }}>
-              Total Inventories{" "}
-              <span style={{ color: "black", fontSize: "20px" }}>
-                {totalinventories}
-              </span>
-            </h6>
-            <h6 style={{ lineHeight: "50px" }}>
-              {" "}
-              Residential{" "}
-              <span style={{ color: "green", fontSize: "20px" }}>
-                {totalResidential}
-              </span>
-            </h6>
-            <h6 style={{ lineHeight: "50px" }}>
-              {" "}
-              Commercial{" "}
-              <span style={{ color: "blue", fontSize: "20px" }}>
-                {totalcommercial}
-              </span>
-            </h6>
-            <h6 style={{ lineHeight: "50px" }}>
-              {" "}
-              Agriculture{" "}
-              <span style={{ color: "orange", fontSize: "20px" }}>
-                {totalagriculture}
-              </span>
-            </h6>
-            <h6 style={{ lineHeight: "50px" }}>
-              {" "}
-              Industrial{" "}
-              <span style={{ color: "red", fontSize: "20px" }}>
-                {totalindustrial}
-              </span>
-            </h6>
-            <h6 style={{ lineHeight: "50px" }}>
-              {" "}
-              Institutional{" "}
-              <span style={{ color: "gray", fontSize: "20px" }}>
-                {totalinstitutional}
-              </span>
-            </h6>
-          </footer>
+  <footer className="sticky bottom-0 w-full bg-gray-100 border-t shadow-md">
+  <div className="max-w-full mx-auto px-1 py-1 grid 
+                  grid-cols-2 sm:grid-cols-3 md:grid-cols-7 
+                  gap-2 text-center">
+
+    {/* Summary */}
+    <div className="flex flex-col items-center">
+      <h6 className="text-gray-600 font-medium">Summary</h6>
+    </div>
+
+    {/* Total Inventories */}
+    <div className="flex flex-col items-center">
+      <h6 className="text-gray-700 font-medium">
+        Total Inventories
+        <span className="block text-black text-xl font-bold animate-pulse">
+          {totalinventories}
+        </span>
+      </h6>
+    </div>
+
+    {/* Residential */}
+    <div className="flex flex-col items-center">
+      <h6 className="text-gray-700 font-medium">
+        Residential
+        <span className="block text-green-600 text-xl font-bold animate-pulse">
+          {category_count?.Residential}
+        </span>
+      </h6>
+    </div>
+
+    {/* Commercial */}
+    <div className="flex flex-col items-center">
+      <h6 className="text-gray-700 font-medium">
+        Commercial
+        <span className="block text-blue-600 text-xl font-bold animate-pulse">
+          {category_count?.Commercial}
+        </span>
+      </h6>
+    </div>
+
+    {/* Agriculture */}
+    <div className="flex flex-col items-center">
+      <h6 className="text-gray-700 font-medium">
+        Agriculture
+        <span className="block text-orange-500 text-xl font-bold animate-pulse">
+          {category_count?.Agricultural}
+        </span>
+      </h6>
+    </div>
+
+    {/* Industrial */}
+    <div className="flex flex-col items-center">
+      <h6 className="text-gray-700 font-medium">
+        Industrial
+        <span className="block text-red-600 text-xl font-bold animate-pulse">
+          {category_count?.Industrial}
+        </span>
+      </h6>
+    </div>
+
+    {/* Institutional */}
+    <div className="flex flex-col items-center md:col-span-6 lg:col-span-1">
+      <h6 className="text-gray-700 font-medium">
+        Institutional
+        <span className="block text-gray-700 text-xl font-bold animate-pulse">
+          {category_count?.Institutional}
+        </span>
+      </h6>
+    </div>
+
+  </div>
+</footer>
+
         </div>
       </div>
 
