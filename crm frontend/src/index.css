@@ -13,6 +13,11 @@ code {
 }
 
 
+:root {
+  --main-color: #0086b3;
+}
+
+
 
 @tailwind base;
 @tailwind components;

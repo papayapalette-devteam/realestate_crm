@@ -142,7 +142,7 @@ function Allunits() {
     { id: "user", name: "Assigned To" },
     { id: "remarks", name: "Remarks" },
     { id: "follow_up", name: "Follow_Up" },
-    { id: "last_contacted", name: "Last_Contacted_Date_&_Time" },
+    { id: "last_contacted", name: "Last Contacted" },
     { id: "available_for", name: "Available For" },
     { id: "mobile_type", name: "Mobile Type" },
     { id: "email_type", name: "Email Type" },
@@ -510,7 +510,7 @@ function Allunits() {
     { id: "locationbrief", name: "Location_Brief" },
     { id: "ownership", name: "OwnerShip" },
     { id: "follow_up", name: "Follow_Up" },
-    { id: "last_conduct_date_time", name: "Last_Conduct_Date_&_Time" },
+    { id: "last_conduct_date_time", name: "Last_Contacted" },
   ];
   const [selectedItems3, setSelectedItems3] = useState([]); // To track selected rows
   const [selectAll3, setSelectAll3] = useState(false); // To track the state of the "Select All" checkbox
@@ -3461,7 +3461,53 @@ const handleSubCategoryChange1 = (event) => {
         stage: "Inactive",
       }));
     }
+    else
+    {
+       setfeedbackform((prev) => ({
+        ...prev,
+        stage: "Active",
+      }));
+    }
+    
   }, [feedbackform.owner_response]);
+
+  // get owner response
+
+    const[select_loading,setselect_loading]=useState("")
+
+    const [All_Owner_Response, setAll_Owner_Response] = useState([]);
+    const getall_owner_response = async () => {
+      try {
+        setselect_loading("owner_response")
+        const params = new URLSearchParams();
+        params.append("lookup_type", "owner_response");
+        const resp = await api.get(`api/LookupList?${params.toString()}`);
+  
+        setAll_Owner_Response(resp.data.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setselect_loading("");
+      }
+    };
+
+      const [All_Call_Status, setAll_Call_Status] = useState([]);
+    const getall_call_status = async () => {
+      try {
+        setselect_loading("call_status")
+        const params = new URLSearchParams();
+        params.append("lookup_type", "call_status");
+        const resp = await api.get(`api/LookupList?${params.toString()}`);
+  
+        setAll_Call_Status(resp.data.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setselect_loading("");
+      }
+    };
+  
+
 
   const reasonsList = [
     "Had bad experience with previous agent",
@@ -3563,6 +3609,11 @@ const handleSubCategoryChange1 = (event) => {
             break;
 
           case "No -But wants to buy another property":
+            await api.put(
+              `updateprojectforinventories/${project}/${unit}/${block}`,
+              updatedUnits,
+              config
+            );
             htmlContent += `
             <button id="leadRequirementBtn" style="${buttonStyle}">
               <i class="bi bi-handshake-fill" style="margin-right: 6px;"></i>Lead Requirement
@@ -3607,6 +3658,11 @@ const handleSubCategoryChange1 = (event) => {
 
           default:
             // no buttons for other values
+            await api.put(
+              `updateprojectforinventories/${project}/${unit}/${block}`,
+              updatedUnits,
+              config
+            );
             break;
         }
 
@@ -7362,9 +7418,9 @@ const handleSubCategoryChange1 = (event) => {
       >
         <div className="toast show">
           <div className="toast-header">
-            <strong className="me-auto">
+            <strong className="me-auto" style={{ fontWeight: "bold", color:"var(--main-color)"}}>
               Customer Feedback of unit{" "}
-              <span style={{ fontWeight: "bold", color: "green" }}>
+              <span style={{ fontWeight: "bold", color:"var(--main-color)"}}>
                 {feedbackform.unit_no}
               </span>
             </strong>
@@ -7404,11 +7460,11 @@ const handleSubCategoryChange1 = (event) => {
               <label className="form-label">Direction</label>
               <select
                 className="form-control form-control-sm"
-                name="owner_response"
+                name="direction"
                 onChange={(e) =>
                   setfeedbackform({
                     ...feedbackform,
-                    owner_response: e.target.value,
+                    direction: e.target.value,
                   })
                 }
               >
@@ -7422,24 +7478,34 @@ const handleSubCategoryChange1 = (event) => {
               <label className="form-label">Status</label>
               <select
                 className="form-control form-control-sm"
-                name="owner_response"
+                name="status"
+                value={feedbackform?.status}
+                onClick={() => {
+                  if (All_Call_Status.length === 0) {
+                    getall_call_status();
+                  }
+                }}
                 onChange={(e) =>
                   setfeedbackform({
                     ...feedbackform,
-                    owner_response: e.target.value,
+                    status: e.target.value,
                   })
                 }
               >
-                <option>---select status---</option>
-                <option>Answered</option>
-                <option>Cut Call</option>
-                <option>Not Picked</option>
-                <option>Busy</option>
-                <option>Missed</option>
-                <option>Not Reachable</option>
-                <option>Switch Off</option>
-                <option>Number Invalid</option>
-                <option>Waiting</option>
+                 {select_loading === "call_status" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option>---Select status---</option>
+
+                            {/* Dynamic Fetched List */}
+                            {All_Call_Status.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
               </select>
             </div>
 
@@ -7458,18 +7524,27 @@ const handleSubCategoryChange1 = (event) => {
                     owner_response: e.target.value,
                   })
                 }
+                value={feedbackform?.owner_response}
+                onClick={() => {
+                  if (All_Owner_Response.length === 0) {
+                    getall_owner_response();
+                  }
+                }}
               >
-                <option>---select response---</option>
-                <option>Yes</option>
-                <option>Rent</option>
-                <option>Yes -Sell this property but buy another</option>
-                <option>Sold</option>
-                <option>No -But discussed about price</option>
-                <option>No -But wants to buy another property</option>
-                <option>Thinking may/be in future</option>
-                <option>No</option>
-                <option>Sold -But Interested to Buy Another Property</option>
-                <option>Sold -But Interested to sell Another Property</option>
+                 {select_loading === "owner_response" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option>---Select owner response---</option>
+
+                            {/* Dynamic Fetched List */}
+                            {All_Owner_Response.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
               </select>
             </div>
 

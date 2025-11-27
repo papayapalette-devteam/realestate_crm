@@ -17,7 +17,8 @@ import { FaWhatsapp } from "react-icons/fa";
 import Header1 from "../header1";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "./main_layout";
-import {  FaUsers, FaBell, FaBullseye, FaGlobe, FaFlag, FaUserTie, FaMapMarkerAlt, FaListUl,FaHome,FaThLarge  } from "react-icons/fa";
+import {  FaUsers, FaBell, FaBullseye, FaGlobe, FaFlag, FaUserTie, FaMapMarkerAlt, 
+  FaListUl,FaHome,FaThLarge,FaRegCommentDots,FaPhoneAlt   } from "react-icons/fa";
 import { MdCategory } from "react-icons/md";
 
 
@@ -229,6 +230,20 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
                 >
                   <FaThLarge  size={14} />
                   Unit Type
+                </li>
+                                        <li
+                  onClick={() => navigate("/configuration-owner-response")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <FaRegCommentDots  size={14} />
+                  Owner Response
+                </li>
+                                                  <li
+                  onClick={() => navigate("/configuration-call-status")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <FaPhoneAlt   size={14} />
+                  Call Status
                 </li>
               </ul>
             )}

@@ -4,11 +4,10 @@ import Swal from "sweetalert2";
 import UniqueLoader from "../../loader";
 import MainLayout from "../main_layout";
 
-function State() {
+function CallStatus() {
   const [loading, setloading] = useState(false);
-  const [State, setState] = useState({
-    state: "",
-    country: "",
+  const [Call_Status,setCall_Status] = useState({
+    call_status: "",
   });
 
   const [rowCount, setRowCount] = useState(0);
@@ -17,8 +16,8 @@ function State() {
     pageSize: 10,
   });
 
-  const [All_State, setAll_State] = useState([]);
-  const getall_state = async (
+  const [All_Call_Status, setAll_Call_Status] = useState([]);
+  const getall_call_status = async (
     pageNumber = paginationModel.page,
     limitNumber = paginationModel.pageSize
   ) => {
@@ -31,11 +30,12 @@ function State() {
       params.append("limit", limitNumber);
 
       // Always include lookup_type
-      params.append("lookup_type", "state");
+      params.append("lookup_type", "call_status");
+
 
       const resp = await api.get(`api/LookupList?${params.toString()}`);
 
-      setAll_State(resp.data.data);
+      setAll_Call_Status(resp.data.data);
       setRowCount(resp.data.total);
     } catch (error) {
       console.log(error);
@@ -45,15 +45,14 @@ function State() {
   };
 
   useEffect(() => {
-    getall_state();
+    getall_call_status();
   }, [paginationModel]);
 
   const [lookup_id, setlookup_id] = useState(null);
   const onEdit = (row) => {
     setlookup_id(row._id);
-    setState({
-      state: row.lookup_value,
-      country: row.parent_lookup_value,
+    setCall_Status({
+      call_status: row.lookup_value,
     });
   };
 
@@ -61,7 +60,7 @@ function State() {
     try {
       const confirmResult = await Swal.fire({
         title: "Are you sure?",
-        text: "Do you really want to delete this State?",
+        text: "Do you really want to delete this Call Status?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes, Delete it!",
@@ -83,8 +82,8 @@ function State() {
         setTimeout(() => {
           Swal.fire({
             icon: "success",
-            title: "State Deleted",
-            text: "State Deleted Successfully...",
+            title: "Call Status Deleted",
+            text: "Call Status Deleted Successfully...",
             showConfirmButton: true,
             customClass: {
               popup: "small-swal-popup",
@@ -128,40 +127,16 @@ function State() {
 
   const allcolumns = [
     { id: "sno", name: "#" },
-    { id: "parent_lookup_value", name: "Country" },
-    { id: "lookup_value", name: "State" },
+    { id: "lookup_value", name: "Call Status" },
     { id: "action", name: "Action" },
   ];
 
-  //================================ get country start==========================================
-  const [loadingstate, setloadingstate] = useState(false);
-
-  const [All_Country, setAll_Country] = useState([]);
-  const getall_country = async () => {
-    try {
-      setloadingstate(true);
-      const params = new URLSearchParams();
-
-      // Always include lookup_type
-      params.append("lookup_type", "country");
-
-      const resp = await api.get(`api/LookupList?${params.toString()}`);
-
-      setAll_Country(resp.data.data);
-      setRowCount(resp.data.total);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setloadingstate(false);
-    }
-  };
-
-  //================================== get country end=====================================
+  //================================ get religion group end==========================================
 
   const handlechange = (e) => {
     const { name, value, checked, type } = e.target;
 
-    setState((prev) => {
+    setCall_Status((prev) => {
       if (Array.isArray(value)) {
         return { ...prev, [name]: value };
       }
@@ -189,22 +164,21 @@ function State() {
     });
   };
 
-  const add_state = async () => {
+  const add_call_status = async () => {
     try {
       setloading(true);
       const resp = await api.post("api/SaveLookup", {
         lookup_id: lookup_id ? lookup_id : null,
-        lookup_type: "state",
-        lookup_value: State.state,
-        parent_lookup_value: State.country,
+        lookup_type: "call_status",
+        lookup_value: Call_Status.call_status,
       });
 
       if (resp.status === 200) {
         setTimeout(() => {
           Swal.fire({
             icon: "success",
-            title: "State Added",
-            text: "State Added Successfully...",
+            title: "Call Status Added",
+            text: "Call Status Added Successfully...",
             showConfirmButton: true,
             customClass: {
               popup: "small-swal-popup",
@@ -248,16 +222,6 @@ function State() {
     }
   };
 
-  // pagination
-
-  const totalPages = Math.ceil(rowCount / paginationModel.pageSize);
-  const maxVisiblePages = 5;
-
-  // Calculate start & end indexes
-  const startPage =
-    Math.floor(paginationModel.page / maxVisiblePages) * maxVisiblePages;
-  const endPage = Math.min(startPage + maxVisiblePages, totalPages);
-
   return (
     <MainLayout>
       <div className="min-h-screen bg-gray-100 p-4 rounded-2xl shadow mt-8 ">
@@ -265,10 +229,10 @@ function State() {
           {/* Header */}
           <div className=" p-6 mb-2">
             <h3 className="text-2xl font-bold text-gray-800">
-              Enter Details for State
+              Enter Details for Call Status
             </h3>
             <p className="text-gray-500 mt-1">
-              Add or update the required details of state to keep records
+              Add or update the required details for call status to keep records
               accurate.
             </p>
           </div>
@@ -276,69 +240,26 @@ function State() {
           {/* Form Section */}
           <div className="bg-white rounded-2xl shadow p-6 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Cast Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  State Name
+                  Call Status
                 </label>
                 <input
                   type="text"
-                  name="state"
-                  defaultValue={State.state}
+                  name="call_status"
+                  defaultValue={Call_Status.call_status}
                   onChange={handlechange}
-                  placeholder="State"
+                  placeholder="Call Status"
                   className="w-full border border-gray-300 rounded-[10px] px-3 py-2 focus:ring-2 focus:ring-blue-500"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Country Name
-                </label>
-
-                <div className="relative">
-                  <select
-                    type="text"
-                    name="country"
-                    defaultValue={State.country}
-                    onChange={handlechange}
-                    onClick={() => {
-                      if (All_Country.length === 0) {
-                        getall_country();
-                      }
-                    }}
-                    // ✔ Using onClick
-                    className="w-full border border-gray-300 rounded-[10px] px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                  >
-                    {/* Show loading message inside the dropdown */}
-                    {loadingstate ? (
-                      <option>Loading...</option>
-                    ) : (
-                      <>
-                        <option>---select country---</option>
-
-                        {All_Country.map((item) => (
-                          <option key={item.lookup_value}>
-                            {item.lookup_value}
-                          </option>
-                        ))}
-                      </>
-                    )}
-                  </select>
-
-                  {/* Spinner Icon on right */}
-                  {loadingstate && (
-                    <div className="absolute top-3 right-3">
-                      <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                  )}
-                </div>
               </div>
             </div>
 
             {/* Submit Button */}
             <button
               className="mt-6 w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
-              onClick={add_state}
+              onClick={add_call_status}
             >
               Submit
             </button>
@@ -362,7 +283,7 @@ function State() {
                 </thead>
 
                 <tbody>
-                  {All_State?.map((item, index) => (
+                  {All_Call_Status?.map((item, index) => (
                     <tr
                       key={index}
                       className="odd:bg-gray-50 hover:bg-blue-50 transition"
@@ -372,15 +293,8 @@ function State() {
                         {index + 1}
                       </td>
 
-                      {/* Parent Value*/}
-                      <td className="px-4 py-3 border text-sm w-50 text-center">
-                        <span className="text-blue-700 font-semibold">
-                          {item.parent_lookup_value}
-                        </span>
-                        <br />
-                      </td>
                       {/* Value*/}
-                      <td className="px-4 py-3 border text-sm w-50 text-center">
+                      <td className="px-4 py-3 border text-sm w-100 text-center">
                         <span className="text-blue-700 font-semibold">
                           {item.lookup_value}
                         </span>
@@ -435,28 +349,27 @@ function State() {
               </button>
 
               {/* Page Numbers */}
-              {Array.from({ length: endPage - startPage }, (_, i) => {
-                const pageIndex = startPage + i;
-
-                return (
+              {Array.from(
+                { length: Math.ceil(rowCount / paginationModel.pageSize) },
+                (_, i) => (
                   <button
-                    key={pageIndex}
+                    key={i}
                     onClick={() =>
                       setPaginationModel({
                         ...paginationModel,
-                        page: pageIndex,
+                        page: i,
                       })
                     }
                     className={`px-3 py-1 rounded-full text-sm font-medium transition ${
-                      paginationModel.page === pageIndex
+                      paginationModel.page === i
                         ? "bg-blue-600 text-white shadow"
                         : "text-gray-700 hover:bg-gray-100"
                     }`}
                   >
-                    {pageIndex + 1}
+                    {i + 1}
                   </button>
-                );
-              })}
+                )
+              )}
 
               {/* Next */}
               <button
@@ -484,7 +397,7 @@ function State() {
         </div>
       </div>
 
-            {loading && (
+      {loading && (
         <div className="loader">
           <UniqueLoader />
         </div>
@@ -493,4 +406,4 @@ function State() {
   );
 }
 
-export default State;
+export default CallStatus;

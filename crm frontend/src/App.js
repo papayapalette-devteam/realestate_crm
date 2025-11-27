@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
-
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -63,7 +62,8 @@ const City = lazy(() => import("./components/Settings/Configuration/city.js"));
 const PropertyType = lazy(() => import("./components/Settings/Configuration/property_type.js"));
 const PropertySubType = lazy(() => import("./components/Settings/Configuration/property_sub_type.js"));
 const PropertyUnitType = lazy(() => import("./components/Settings/Configuration/property_unit_type.js"));
-
+const OwnerResponse = lazy(() => import("./components/Settings/Configuration/owner_response.js"));
+const CallStatus = lazy(() => import("./components/Settings/Configuration/call_status.js"));
 
 
 
@@ -135,6 +135,8 @@ function App() {
             <Route path="/configuration-property-type" element={<PropertyType/>} />
             <Route path="/configuration-property-sub-type" element={<PropertySubType/>} />
             <Route path="/configuration-property-unit-type" element={<PropertyUnitType/>} />
+            <Route path="/configuration-owner-response" element={<OwnerResponse/>} />
+            <Route path="/configuration-call-status" element={<CallStatus/>} />
             </Route>
           </Routes>
         </div>
