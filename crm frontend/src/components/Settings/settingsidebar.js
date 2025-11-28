@@ -18,7 +18,7 @@ import Header1 from "../header1";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "./main_layout";
 import {  FaUsers, FaBell, FaBullseye, FaGlobe, FaFlag, FaUserTie, FaMapMarkerAlt, 
-  FaListUl,FaHome,FaThLarge,FaRegCommentDots,FaPhoneAlt   } from "react-icons/fa";
+  FaListUl,FaHome,FaThLarge,FaRegCommentDots,FaPhoneAlt,FaListAlt    } from "react-icons/fa";
 import { MdCategory } from "react-icons/md";
 
 
@@ -238,12 +238,19 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
                   <FaRegCommentDots  size={14} />
                   Owner Response
                 </li>
-                                                  <li
+                                        <li
                   onClick={() => navigate("/configuration-call-status")}
                   className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
                 >
                   <FaPhoneAlt   size={14} />
                   Call Status
+                </li>
+                                        <li
+                  onClick={() => navigate("/configuration-reason")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <FaListAlt    size={14} />
+                  Reason List
                 </li>
               </ul>
             )}

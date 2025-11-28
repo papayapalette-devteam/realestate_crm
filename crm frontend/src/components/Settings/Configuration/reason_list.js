@@ -1,0 +1,515 @@
+import React, { useState, useEffect } from "react";
+import api from "../../../api";
+import Swal from "sweetalert2";
+import UniqueLoader from "../../loader";
+import MainLayout from "../main_layout";
+
+function ReasonList() {
+  const [loading, setloading] = useState(false);
+  const [Reason, setReason] = useState({
+    reason: "",
+    owner_response: "",
+  });
+
+  const [rowCount, setRowCount] = useState(0);
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0, // DataGrid pages start from 0
+    pageSize: 10,
+  });
+
+  const [All_Reason, setAll_Reason] =
+    useState([]);
+  const getall_reason = async (
+    pageNumber = paginationModel.page,
+    limitNumber = paginationModel.pageSize
+  ) => {
+    try {
+      setloading(true);
+      const params = new URLSearchParams();
+
+      // Pagination
+      params.append("page", pageNumber + 1); // backend is 1-indexed
+      params.append("limit", limitNumber);
+
+      // Always include lookup_type
+      params.append("lookup_type", "reason");
+
+      // Optionally, if you want to filter by parent_lookup_id
+      // params.append("parent_lookup_id", "SOME_PARENT_ID");
+
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      setAll_Reason(resp.data.data);
+      setRowCount(resp.data.total);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setloading(false);
+    }
+  };
+
+  useEffect(() => {
+    getall_reason();
+  }, [paginationModel]);
+
+  const [lookup_id, setlookup_id] = useState(null);
+  const onEdit = (row) => {
+    setlookup_id(row._id);
+    setReason({
+      reason: row.lookup_value,
+      owner_response: row.parent_lookup_value,
+    });
+  };
+
+  const onDelete = async (row) => {
+    try {
+      const confirmResult = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you really want to delete this Reason?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, Delete it!",
+        cancelButtonText: "Cancel",
+        reverseButtons: true,
+        customClass: {
+          popup: "small-swal-popup",
+          confirmButton: "my-swal-button",
+          cancelButton: "my-swal-cancel-button",
+        },
+      });
+
+      // 🔹 If user cancels, stop execution
+      if (!confirmResult.isConfirmed) return;
+
+      const resp = await api.delete(`api/RemoveLookup?id=${row._id}`);
+
+      if (resp.status === 200) {
+        setTimeout(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Reason Deleted",
+            text: "Reason Deleted Successfully...",
+            showConfirmButton: true,
+            customClass: {
+              popup: "small-swal-popup",
+              confirmButton: "my-swal-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }, 0);
+      } else {
+        console.warn("⚠️ Error:", resp.data.response.data.message);
+        setTimeout(() => {
+          Swal.fire({
+            icon: "error",
+            title: "Error Occured",
+            text: resp.data.response.data.message,
+            showConfirmButton: true,
+            customClass: {
+              confirmButton: "my-swal-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }, 0);
+      }
+    } catch (error) {
+      console.log(error);
+      setTimeout(() => {
+        Swal.fire({
+          icon: "error",
+          title: "Error Occurred",
+          text: error.response?.data?.message || "Something went wrong",
+          showConfirmButton: true,
+          customClass: { confirmButton: "my-swal-button" },
+        }).then(() => {
+          window.location.reload(); // optional, you can remove this if not needed
+        });
+      }, 0);
+    }
+  };
+
+  const allcolumns = [
+    { id: "sno", name: "#" },
+    { id: "parent_lookup_value", name: "Owner Response" },
+    { id: "lookup_value", name: "Reason" },
+    { id: "action", name: "Action" },
+  ];
+
+  //================================ get owner response start==========================================
+  const [loadingCategory, setLoadingCategory] = useState(false);
+
+  const [All_Owner_Response, setAll_Owner_Response] = useState([]);
+  const getall_owner_response = async () => {
+    try {
+      setLoadingCategory(true);
+      const params = new URLSearchParams();
+
+      // Always include lookup_type
+      params.append("lookup_type", "owner_response");
+
+      // Optionally, if you want to filter by parent_lookup_id
+      // params.append("parent_lookup_id", "SOME_PARENT_ID");
+
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      setAll_Owner_Response(resp.data.data);
+      setRowCount(resp.data.total);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingCategory(false);
+    }
+  };
+
+  //================================== get owner response end=====================================
+
+  const handlechange = (e) => {
+    const { name, value, checked, type } = e.target;
+
+    setReason((prev) => {
+      if (Array.isArray(value)) {
+        return { ...prev, [name]: value };
+      }
+
+      if (Array.isArray(prev[name])) {
+        const updated = checked
+          ? [...prev[name], value] // Add
+          : prev[name].filter((item) => item !== value); // Remove
+        return { ...prev, [name]: updated };
+      }
+
+      if (type === "checkbox" && Array.isArray(prev[name])) {
+        const updated = checked
+          ? [...prev[name], value] // Add to array
+          : prev[name].filter((item) => item !== value); // Remove from array
+        return { ...prev, [name]: updated };
+      }
+
+      if (type === "checkbox") {
+        return { ...prev, [name]: checked };
+      }
+
+      // Normal single-value field
+      return { ...prev, [name]: type === "checkbox" ? checked : value };
+    });
+  };
+
+  const add_reason = async () => {
+    try {
+      setloading(true);
+      const resp = await api.post("api/SaveLookup", {
+        lookup_id: lookup_id ? lookup_id : null,
+        lookup_type: "reason",
+        lookup_value: Reason.reason,
+        parent_lookup_value: Reason.owner_response,
+      });
+
+      if (resp.status === 200) {
+        setTimeout(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Reason Added",
+            text: "Reason Added Successfully...",
+            showConfirmButton: true,
+            customClass: {
+              popup: "small-swal-popup",
+              confirmButton: "my-swal-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }, 0);
+      } else {
+        console.warn("⚠️ Error:", resp.data.response.data.message);
+        setTimeout(() => {
+          Swal.fire({
+            icon: "error",
+            title: "Error Occured",
+            text: resp.data.response.data.message,
+            showConfirmButton: true,
+            customClass: {
+              confirmButton: "my-swal-button",
+            },
+          }).then(() => {
+            window.location.reload();
+          });
+        }, 0);
+      }
+    } catch (error) {
+      console.error("❌ API Error:", error.response.data.message);
+      setTimeout(() => {
+        Swal.fire({
+          icon: "error",
+          title: "Error Occurred",
+          text: error.response?.data?.message || "Something went wrong",
+          showConfirmButton: true,
+          customClass: { confirmButton: "my-swal-button" },
+        }).then(() => {
+          window.location.reload(); // optional, you can remove this if not needed
+        });
+      }, 0);
+    } finally {
+      setloading(false);
+    }
+  };
+
+  // pagination
+
+  const totalPages = Math.ceil(rowCount / paginationModel.pageSize);
+  const maxVisiblePages = 5;
+
+  // Calculate start & end indexes
+  const startPage =
+    Math.floor(paginationModel.page / maxVisiblePages) * maxVisiblePages;
+  const endPage = Math.min(startPage + maxVisiblePages, totalPages);
+
+  return (
+    <MainLayout>
+      <div className="min-h-screen bg-gray-100 p-4 rounded-2xl shadow mt-8 ">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className=" p-6 mb-2">
+            <h3 className="text-2xl font-bold text-gray-800">
+              Enter Details for Reason List
+            </h3>
+            <p className="text-gray-500 mt-1">
+              Add or update the required details for reason list to
+              keep records accurate.
+            </p>
+          </div>
+
+          {/* Form Section */}
+          <div className="bg-white rounded-2xl shadow p-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Reason
+                </label>
+                <input
+                  type="text"
+                  name="reason"
+                  defaultValue={Reason.reason}
+                  onChange={handlechange}
+                  placeholder="Reason"
+                  className="w-full border border-gray-300 rounded-[10px] px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Owner Response
+                </label>
+
+                <div className="relative">
+                  <select
+                    type="text"
+                    name="owner_response"
+                    defaultValue={Reason.owner_response}
+                    onChange={handlechange}
+                    onClick={() => {
+                      if (All_Owner_Response.length === 0) {
+                        getall_owner_response();
+                      }
+                    }}
+                    // ✔ Using onClick
+                    className="w-full border border-gray-300 rounded-[10px] px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                  >
+                    {/* Show loading message inside the dropdown */}
+                    {loadingCategory ? (
+                      <option>Loading...</option>
+                    ) : (
+                      <>
+                        <option>
+                          {Reason?.owner_response ||
+                            "---select owner response---"}
+                        </option>
+                        <option
+                          style={{
+                            display: Reason.owner_response
+                              ? "block"
+                              : "none",
+                          }}
+                        >
+                          ---select owner response---
+                        </option>
+
+                        {All_Owner_Response.map((item) => (
+                          <option key={item.lookup_value}>
+                            {item.lookup_value}
+                          </option>
+                        ))}
+                      </>
+                    )}
+                  </select>
+
+                  {/* Spinner Icon on right */}
+                  {loadingCategory && (
+                    <div className="absolute top-3 right-3">
+                      <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              className="mt-6 w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
+              onClick={add_reason}
+            >
+              Submit
+            </button>
+          </div>
+
+          {/* Table Section */}
+          <div className="bg-white rounded-2xl shadow p-6">
+            <div className="overflow-auto max-h-[700px]">
+              <table className="min-w-full text-left border-collapse">
+                <thead className="sticky top-0 bg-[#0086b3] text-white">
+                  <tr>
+                    {allcolumns.map((col) => (
+                      <th
+                        key={col.id}
+                        className="px-4 py-3 text-sm font-semibold border border-gray-600 text-center"
+                      >
+                        {col.name}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {All_Reason?.map((item, index) => (
+                    <tr
+                      key={index}
+                      className="odd:bg-gray-50 hover:bg-blue-50 transition"
+                    >
+                      {/* Index */}
+                      <td className="px-4 py-3 border text-sm w-30 justify-center">
+                        {index + 1}
+                      </td>
+
+                      {/* Parent Value*/}
+                      <td className="px-4 py-3 border text-sm w-50 text-center">
+                        <span className="text-blue-700 font-semibold">
+                          {item.parent_lookup_value}
+                        </span>
+                        <br />
+                      </td>
+                      {/* Value*/}
+                      <td className="px-4 py-3 border text-sm w-50 text-center">
+                        <span className="text-blue-700 font-semibold">
+                          {item.lookup_value}
+                        </span>
+                        <br />
+                      </td>
+
+                      {/* Action*/}
+                      <td className="px-4 py-3 border text-sm ">
+                        <div className="flex items-center gap-8 w-40 justify-center">
+                          {/* Edit Button */}
+                          <button
+                            onClick={() => onEdit(item)}
+                            className="text-blue-600 hover:text-blue-800 transition"
+                          >
+                            <i className="bi bi-pencil-square text-lg"></i>
+                          </button>
+
+                          {/* Delete Button */}
+                          <button
+                            onClick={() => onDelete(item)}
+                            className="text-red-600 hover:text-red-800 transition"
+                          >
+                            <i className="bi bi-trash3-fill text-lg"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {/* Pagination */}
+          <div className="flex justify-end mt-6 select-none">
+            <div className="flex items-center gap-2 bg-white shadow px-4 py-2 rounded-full">
+              {/* Previous */}
+              <button
+                disabled={paginationModel.page === 0}
+                onClick={() =>
+                  setPaginationModel({
+                    ...paginationModel,
+                    page: paginationModel.page - 1,
+                  })
+                }
+                className={`p-2 rounded-full transition ${
+                  paginationModel.page === 0
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <i className="bi bi-chevron-left text-lg"></i>
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from({ length: endPage - startPage }, (_, i) => {
+                const pageIndex = startPage + i;
+
+                return (
+                  <button
+                    key={pageIndex}
+                    onClick={() =>
+                      setPaginationModel({
+                        ...paginationModel,
+                        page: pageIndex,
+                      })
+                    }
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition ${
+                      paginationModel.page === pageIndex
+                        ? "bg-blue-600 text-white shadow"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {pageIndex + 1}
+                  </button>
+                );
+              })}
+
+              {/* Next */}
+              <button
+                disabled={
+                  paginationModel.page + 1 >=
+                  Math.ceil(rowCount / paginationModel.pageSize)
+                }
+                onClick={() =>
+                  setPaginationModel({
+                    ...paginationModel,
+                    page: paginationModel.page + 1,
+                  })
+                }
+                className={`p-2 rounded-full transition ${
+                  paginationModel.page + 1 >=
+                  Math.ceil(rowCount / paginationModel.pageSize)
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <i className="bi bi-chevron-right text-lg"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+           {loading && (
+        <div className="loader">
+          <UniqueLoader />
+        </div>
+      )}
+    </MainLayout>
+  );
+}
+
+export default ReasonList;

@@ -92,6 +92,9 @@ const blockSchema = new mongoose.Schema({
     image: {type: Array},
     follow_up: {type: String},
     last_conduct_date_time: {type: String},
+    reason: {type: String},
+    other_reason: {type: String},
+    logged_user: {type: String},
   },{ timestamps: true })
   
 const priceschema = new mongoose.Schema({

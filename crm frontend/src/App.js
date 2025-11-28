@@ -64,6 +64,7 @@ const PropertySubType = lazy(() => import("./components/Settings/Configuration/p
 const PropertyUnitType = lazy(() => import("./components/Settings/Configuration/property_unit_type.js"));
 const OwnerResponse = lazy(() => import("./components/Settings/Configuration/owner_response.js"));
 const CallStatus = lazy(() => import("./components/Settings/Configuration/call_status.js"));
+const Reason = lazy(() => import("./components/Settings/Configuration/reason_list.js"));
 
 
 
@@ -137,6 +138,7 @@ function App() {
             <Route path="/configuration-property-unit-type" element={<PropertyUnitType/>} />
             <Route path="/configuration-owner-response" element={<OwnerResponse/>} />
             <Route path="/configuration-call-status" element={<CallStatus/>} />
+            <Route path="/configuration-reason" element={<Reason/>} />
             </Route>
           </Routes>
         </div>

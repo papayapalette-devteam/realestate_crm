@@ -1198,6 +1198,9 @@ const update_projectforinventories = async (req, res) => {
       linkded_contact: unit.linkded_contact,
       follow_up: unit.follow_up,
       last_conduct_date_time: unit.last_conduct_date_time,
+      reason: unit.reason,
+      other_reason: unit.other_reason,
+      logged_user: unit.logged_user,
       preview: existingUnit.preview,
       image: existingUnit.image,
    

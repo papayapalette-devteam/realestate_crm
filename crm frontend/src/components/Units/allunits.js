@@ -31,6 +31,8 @@ import { Select, MenuItem, Checkbox, ListItemText  } from '@mui/material';
 function Allunits() {
      const logged_user=JSON.parse(localStorage.getItem('user'))
 
+     
+
  const [flattenedUnits, setFlattenedUnits] = useState([]);
 
  
@@ -3444,34 +3446,57 @@ const handleSubCategoryChange1 = (event) => {
         setselect_loading("");
       }
     };
+
+    const [All_Reason, setAll_Reason] = useState([]);
+    const getall_reason = async () => {
+      try {
+        setselect_loading("reason")
+        const params = new URLSearchParams();
+        params.append("lookup_type", "reason");
+        params.append("parent_lookup_value", feedbackform.owner_response);
+        const resp = await api.get(`api/LookupList?${params.toString()}`);
+  
+        setAll_Reason(resp.data.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setselect_loading("");
+      }
+    };
+
+    useEffect(()=>
+    {
+      getall_reason()
+
+    },[feedbackform.owner_response])
   
 
 
-  const reasonsList = [
-    "Had bad experience with previous agent",
-    "Will sell after completion of construction",
-    "Will sell after registry",
-    "Don’t want to involve brokers / privacy concern",
-    "Already dealing with another broker",
-    "Waiting for better market price",
-    "Price expectations not matching",
-    "Other",
-  ];
+  // const reasonsList = [
+  //   "Had bad experience with previous agent",
+  //   "Will sell after completion of construction",
+  //   "Will sell after registry",
+  //   "Don’t want to involve brokers / privacy concern",
+  //   "Already dealing with another broker",
+  //   "Waiting for better market price",
+  //   "Price expectations not matching",
+  //   "Other",
+  // ];
 
-  const noreasonsList = [
-    "Family not agreed yet / Internal family issue",
-    "Property is under dispute / Legal issue",
-    "Still under use (self-living / family living)",
-    "Currently rented out / tenant issue",
-    "Emotional attachment with property",
-    "Recently bought, not planning to sell yet",
-    "Joint ownership, others not willing",
-    "Will sell only if urgent need arises",
-    "Planning to construct house",
-    "Can’t decide right now / need more time",
-    "Not interested in selling at all",
-    "Other",
-  ];
+  // const noreasonsList = [
+  //   "Family not agreed yet / Internal family issue",
+  //   "Property is under dispute / Legal issue",
+  //   "Still under use (self-living / family living)",
+  //   "Currently rented out / tenant issue",
+  //   "Emotional attachment with property",
+  //   "Recently bought, not planning to sell yet",
+  //   "Joint ownership, others not willing",
+  //   "Will sell only if urgent need arises",
+  //   "Planning to construct house",
+  //   "Can’t decide right now / need more time",
+  //   "Not interested in selling at all",
+  //   "Other",
+  // ];
 
   const addfeedback = async () => {
     try {
@@ -3483,7 +3508,10 @@ const handleSubCategoryChange1 = (event) => {
         stage: feedbackform.stage,
         remarks: feedbackform.owner_response,
         last_conduct_date_time: new Date(),
-        follow_up:feedbackform.next_call_date
+        follow_up:feedbackform.next_call_date,
+        reason:feedbackform?.no_reason?feedbackform.no_reason : feedbackform.discussed_reason,
+        other_reason:feedbackform?.other_no_reason?feedbackform.other_discussed_reason : "",
+        logged_user:logged_user?.name?logged_user.name : logged_user.Name
       };
       const resp = await api.post("addfeedback", feedbackform);
       if (resp.status === 200) {
@@ -3722,7 +3750,7 @@ const handleSubCategoryChange1 = (event) => {
       const resp = await api.get(
         `/searchcontact?search=${encodeURIComponent(inputValue)}`
       );
-      console.log(resp);
+
 
       const data = resp.data.contact;
 
@@ -3742,7 +3770,7 @@ const handleSubCategoryChange1 = (event) => {
     }
   };
 
-  console.log(filteredSuggestions);
+
 
   React.useEffect(() => {
     if (input.trim() !== "") {
@@ -5033,16 +5061,15 @@ const handleSubCategoryChange1 = (event) => {
                               <span
                                 style={{
                                   fontWeight: "bolder",
-                                  fontSize: "14px",
+                                  fontSize: "16px",
                                   color: isMatched ? "green" : "#0086b3",
                                 }}
                               >
                                 {item.unit_no}
                               </span>{" "}
-                              ({item.unit_type}) {item.builtup_type}{" "}
+                              ({item.unit_type}) {item.builtup_type}{" "}<br></br>
                               {item.sub_category.join(",")}
-                              <br />
-                              {item.category} {item.size} <br />
+                              ({item.category}) <br></br>{item.size}
                             </>
                           );
                         })()}
@@ -5110,6 +5137,7 @@ const handleSubCategoryChange1 = (event) => {
                                           display: isMatched ? "block" : "none",
                                         }}
                                         src={deallogo}
+                                        alt=""
                                       ></img>
                                       {item.stage}
                                     </>
@@ -5183,7 +5211,15 @@ const handleSubCategoryChange1 = (event) => {
                                 : "-"}
                             </>
 
-                            ) :  col.id === "last_conduct_date_time" ? (
+                            ) : col.id === "remarks" ? (
+                              <>
+                              {item?.remarks}<br></br>
+                            <span className="text-red-700">
+                              {item?.reason || item?.other_reason}
+                            </span>
+                            </>
+
+                            ) : col.id === "last_conduct_date_time" ? (
                               <>
                               {item?.last_conduct_date_time ? (
                                 <div className="flex flex-col leading-tight">
@@ -5192,6 +5228,9 @@ const handleSubCategoryChange1 = (event) => {
                                   </span>
                                   <span className="font-medium">
                                     {new Date(item.last_conduct_date_time).toLocaleTimeString("en")}
+                                  </span>
+                                     <span className="font-medium text-green">
+                                    {item.logged_user}
                                   </span>
                                 </div>
                               ) : (
@@ -7526,31 +7565,23 @@ const handleSubCategoryChange1 = (event) => {
                 <div className="mb-2">
                   <label className="form-label">Reason</label>
                   <div>
-                    {[
-                      "Had bad experience with previous agent",
-                      "Will sell after completion of construction",
-                      "Will sell after registry",
-                      "Don’t want to involve brokers / privacy concern",
-                      "Already dealing with another broker",
-                      "Waiting for better market price",
-                      "Price expectations not matching",
-                      "Other",
-                    ].map((reason, index) => (
+                    {All_Reason.map((reason, index) => (
                       <div className="form-check" key={index}>
                         <input
                           className="form-check-input"
                           type="radio"
                           name="discussed_reason"
-                          value={reason}
+                          value={reason.lookup_value}
                           id={`reason-${index}`}
                           checked={
-                            feedbackform.discussed_reason === reason ||
-                            (reason === "Other" &&
-                              typeof feedbackform.discussed_reason ===
-                                "string" &&
-                              !reasonsList.includes(
-                                feedbackform.discussed_reason
-                              ))
+                            feedbackform.discussed_reason === reason.lookup_value
+                            //  ||
+                            // (reason.lookup_value === "Other" &&
+                            //   typeof feedbackform.discussed_reason ===
+                            //     "string" &&
+                            //   !reasonsList.includes(
+                            //     feedbackform.discussed_reason
+                            //   ))
                           }
                           onChange={(e) =>
                             setfeedbackform({
@@ -7563,10 +7594,10 @@ const handleSubCategoryChange1 = (event) => {
                           className="form-check-label"
                           htmlFor={`reason-${index}`}
                         >
-                          {reason}
+                          {reason.lookup_value}
                         </label>
 
-                        {reason === "Other" &&
+                        {reason.lookup_value === "Other" &&
                           feedbackform.discussed_reason === "Other" && (
                             <input
                               type="text"
@@ -7645,33 +7676,20 @@ const handleSubCategoryChange1 = (event) => {
               >
                 <label className="form-label">Reason</label>
                 <div>
-                  {[
-                    "Family not agreed yet / Internal family issue",
-                    "Property is under dispute / Legal issue",
-                    "Still under use (self-living / family living)",
-                    "Currently rented out / tenant issue",
-                    "Emotional attachment with property",
-                    "Recently bought, not planning to sell yet",
-                    "Joint ownership, others not willing",
-                    "Will sell only if urgent need arises",
-                    "Planning to construct house",
-                    "Can’t decide right now / need more time",
-                    "Not interested in selling at all",
-                    "Wrong Number",
-                    "Other",
-                  ].map((reason, index) => (
+                  {All_Reason?.map((reason, index) => (
                     <div className="form-check" key={index}>
                       <input
                         className="form-check-input"
                         type="radio"
                         name="no_reason"
-                        value={reason}
+                        value={reason.lookup_value}
                         id={`reason-${index}`}
                         checked={
-                          feedbackform.no_reason === reason ||
-                          (reason === "Other" &&
-                            typeof feedbackform.no_reason === "string" &&
-                            !noreasonsList.includes(feedbackform.no_reason))
+                          feedbackform.no_reason === reason.lookup_value 
+                          // ||
+                          // (reason === "Other" &&
+                          //   typeof feedbackform.no_reason === "string" &&
+                          //   !noreasonsList.includes(feedbackform.no_reason))
                         }
                         onChange={(e) =>
                           setfeedbackform({
@@ -7684,10 +7702,10 @@ const handleSubCategoryChange1 = (event) => {
                         className="form-check-label"
                         htmlFor={`reason-${index}`}
                       >
-                        {reason}
+                        {reason.lookup_value}
                       </label>
 
-                      {reason === "Other" &&
+                      {reason.lookup_value === "Other" &&
                         feedbackform.no_reason === "Other" && (
                           <input
                             type="text"
