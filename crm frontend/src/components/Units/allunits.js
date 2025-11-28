@@ -7657,6 +7657,7 @@ const handleSubCategoryChange1 = (event) => {
                     "Planning to construct house",
                     "Can’t decide right now / need more time",
                     "Not interested in selling at all",
+                    "Wrong Number",
                     "Other",
                   ].map((reason, index) => (
                     <div className="form-check" key={index}>
