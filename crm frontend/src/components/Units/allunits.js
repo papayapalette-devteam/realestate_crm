@@ -7463,63 +7463,6 @@ const handleSubCategoryChange1 = (event) => {
               </div>
             </div>
 
-             <div className="mb-2">
-              <label className="form-label">Direction</label>
-              <select
-                className="form-control form-control-sm"
-                name="direction"
-                onChange={(e) =>
-                  setfeedbackform({
-                    ...feedbackform,
-                    direction: e.target.value,
-                  })
-                }
-              >
-                <option>---select direction---</option>
-                <option>Outgoing</option>
-                <option>Incoming</option>
-              </select>
-            </div>
-
-               <div className="mb-2">
-              <label className="form-label">Status</label>
-              <select
-                className="form-control form-control-sm"
-                name="status"
-                value={feedbackform?.status}
-                onClick={() => {
-                  if (All_Call_Status.length === 0) {
-                    getall_call_status();
-                  }
-                }}
-                onChange={(e) =>
-                  setfeedbackform({
-                    ...feedbackform,
-                    status: e.target.value,
-                  })
-                }
-              >
-                 {select_loading === "call_status" ? (
-                          <option>⏳ Loading...</option>
-                        ) : (
-                          <>
-                            <option>---Select status---</option>
-
-                            {/* Dynamic Fetched List */}
-                            {All_Call_Status.map((val, i) => (
-                              <option key={i} value={val.lookup_value}>
-                                {val.lookup_value}
-                              </option>
-                            ))}
-                          </>
-                        )}
-              </select>
-            </div>
-
-            {/* <div className="mb-2">
-        <label className="form-label">Unit No.</label>
-        <input type="text" name="unit_no"  className="form-control form-control-sm"  value={feedbackform.unit_no || ""}/>
-      </div> */}
             <div className="mb-2">
               <label className="form-label">Owner Response on Sale</label>
               <select
