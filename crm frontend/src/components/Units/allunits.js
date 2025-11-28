@@ -7634,7 +7634,7 @@ const handleSubCategoryChange1 = (event) => {
                 />
               </div>
             )}
-            {feedbackform.owner_response === "No" && (
+            {feedbackform.owner_response === "Not Interested" && (
               <div
                 className="mb-2"
                 style={{
