@@ -33,6 +33,8 @@ import { saveAs } from 'file-saver';
 import Swal from 'sweetalert2'; 
 import UniqueLoader from '../loader'
 import FilterListIcon from "@mui/icons-material/FilterList";
+import { BsThreeDots } from "react-icons/bs";
+
 
 
 
@@ -3678,9 +3680,9 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
     Contact
   </h3>
        
-            <button  class="btn btn-secondary " type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{color:"black",backgroundColor:"transparent",border:"none"}}>
-            <img src="https://static.thenounproject.com/png/61783-200.png" style={{height:"25px"}} alt=""/>
-        </button>
+            <button  class="btn btn-secondary " type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{color:"black",backgroundColor:"transparent",border:"none",padding:"0px",marginTop:"-5px"}}>
+              <img src="https://static.thenounproject.com/png/61783-200.png" style={{height:"25px",width:"35px"}} alt=""/>
+            </button>
             <ul class="dropdown-menu" id="exporttoexcel" style={{textAlign:"left",padding:"0px",boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",fontFamily:"arial",fontSize:"14px",lineHeight:"30px"}}> 
             
          <li
@@ -4434,9 +4436,6 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
             <button  className="form-control form-control-sm form-control form-control-sm-sm" style={{width:"150px",marginLeft:"65%"}}>Filter</button>
             <button onClick={handleAddColumnClick1} className="form-control form-control-sm form-control form-control-sm-sm" style={{width:"150px",marginLeft:"1%"}}>Add Fields</button>
         
-       
-       
-          
       </div> 
 
       <div style={{marginTop:"10px",backgroundColor:"white",height:"60px",paddingLeft:"80px",display:"flex",gap:"20px",paddingTop:"10px"}}>

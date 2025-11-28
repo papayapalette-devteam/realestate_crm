@@ -3519,7 +3519,7 @@ const handleSubCategoryChange1 = (event) => {
 
         // Generate dynamic buttons based on owner_response
         switch (feedbackform.owner_response) {
-          case "Yes":
+          case "Interested For Sale":
             await api.put(
               `updateprojectforinventories/${project}/${unit}/${block}`,
               updatedUnits,
@@ -3532,7 +3532,7 @@ const handleSubCategoryChange1 = (event) => {
           `;
             break;
 
-          case "Rent":
+          case "Interested For Rent":
             await api.put(
               `updateprojectforinventories/${project}/${unit}/${block}`,
               updatedUnits,
@@ -3587,7 +3587,7 @@ const handleSubCategoryChange1 = (event) => {
           `;
             break;
 
-          case "Sold":
+          case "Sold Out":
             await api.put(
               `updateprojectforinventories/${project}/${unit}/${block}`,
               updatedUnits,
@@ -4162,30 +4162,32 @@ const handleSubCategoryChange1 = (event) => {
             height: "70px",
           }}
         >
-          <h3 style={{ marginLeft: "10px", cursor: "pointer" }}>Inventories</h3>
-          <Tooltip title="Export Data.." arrow>
-            <button
-              class="btn btn-secondary "
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              style={{
-                color: "black",
-                backgroundColor: "transparent",
-                border: "none",
-                marginBottom: "10px",
-              }}
-            >
-              <img
-                src="https://static.thenounproject.com/png/61783-200.png"
-                style={{ height: "25px" }}
-                alt=""
-              />
+    <h3
+    className="text-2xl font-semibold cursor-pointer hover:text-blue-600 transition-colors"
+  >
+    Inventories
+  </h3>
+
+                <button  class="btn btn-secondary " type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{color:"black",backgroundColor:"transparent",border:"none",padding:"0px",marginTop:"-10px"}}>
+              <img src="https://static.thenounproject.com/png/61783-200.png" style={{height:"25px",width:"25px"}} alt=""/>
             </button>
-          </Tooltip>
-          <ul class="dropdown-menu" id="exporttoexcel">
-            <li onClick={exportToExcel}>Export Data</li>
-          </ul>
+      
+    <ul class="dropdown-menu" id="exporttoexcel" style={{textAlign:"left",padding:"0px",boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",fontFamily:"arial",fontSize:"14px",lineHeight:"30px"}}> 
+            
+         <li
+        onClick={exportToExcel}
+        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer transition"
+      >
+        <img
+          src="https://static.thenounproject.com/png/1960252-200.png"
+          alt="Export"
+          className="h-5 w-5"
+        />
+        <span>Export Data</span>
+      </li>
+
+    
+            </ul>
         
         </div>
 
