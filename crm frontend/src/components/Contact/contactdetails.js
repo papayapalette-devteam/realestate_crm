@@ -979,6 +979,7 @@ const allColumns = [
       };
       const handleSelectAll = () => {
  
+         const scrollY = window.scrollY;
         setSelectAll(!selectAll);
         if (!selectAll) {
           // Add all current page item IDs to selectedItems
@@ -986,19 +987,24 @@ const allColumns = [
         } else {
           // Deselect all
            setSelectedItems([]);
-   
         }
+          window.requestAnimationFrame(() => {
+          window.scrollTo(0, scrollY);
+            });
       };
     
       const handleRowSelect = (id) => {
-     
+     const scrollY = window.scrollY;
         if (selectedItems.includes(id)) {
           setSelectedItems(selectedItems.filter((itemId) => itemId !== id));
         } else {
           setSelectedItems([...selectedItems, id]);
       
         }
-      };
+      window.requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY);
+      });
+    }
 
    
       
@@ -3898,7 +3904,20 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
        
           
       </div>
-      <div style={{marginTop:"2px",backgroundColor:"white",height:"60px",paddingLeft:"80px",display:"flex",gap:"20px",paddingTop:"10px"}}>
+       <div
+          style={{
+            marginTop: "2px",
+            backgroundColor: "white",
+            height: "60px",
+            paddingLeft: "80px",
+            display: "flex",
+            gap: "20px",
+            paddingTop: "10px",
+            position: "sticky",
+            top: "50px",
+            zIndex: "111",
+          }}
+        >
 
       {/* <input id="search" type="text" className="form-control form-control-sm form-control form-control-sm-sm" placeholder="search by name,email,mobile,company and tags" 
       style={{width:"25%",padding: '8px',
@@ -4129,7 +4148,7 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
       </div>
      
           <div style={{marginLeft:"60px",marginTop:"2px",backgroundColor:"white"}}>
-          <TableContainer component={Paper} style={{ maxHeight: '700px', overflow: 'auto' }}>
+          <TableContainer component={Paper}>
     <Table sx={{ minWidth: 700 }} aria-label="customized table">
       <TableHead style={{ position: "sticky", top: 0, zIndex: 1 }}>
         <TableRow >

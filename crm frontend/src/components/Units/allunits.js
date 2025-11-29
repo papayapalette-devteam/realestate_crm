@@ -463,6 +463,7 @@ function Allunits() {
     }
   };
   const handleSelectAll3 = () => {
+      const scrollY = window.scrollY;
     setSelectAll3(!selectAll3);
     if (!selectAll3) {
       // Add all current page item IDs to selectedItems
@@ -471,14 +472,21 @@ function Allunits() {
       // Deselect all
       setSelectedItems3([]);
     }
+      window.requestAnimationFrame(() => {
+    window.scrollTo(0, scrollY);
+  });
   };
 
   const handleRowSelect3 = (item) => {
+     const scrollY = window.scrollY;
     if (selectedItems3.some((i) => i._id === item._id)) {
       setSelectedItems3(selectedItems3.filter((i) => i._id !== item._id));
     } else {
       setSelectedItems3([...selectedItems3, item]);
     }
+      window.requestAnimationFrame(() => {
+    window.scrollTo(0, scrollY);
+  });
   };
 
   const [currentPage2, setCurrentPage2] = useState(1);
