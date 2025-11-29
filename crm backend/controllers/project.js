@@ -542,33 +542,44 @@ const view_units = async (req, res) => {
     const totalPages = Math.ceil(total / limit);
 
     // Category Count
-const categoryCount = await addproject.aggregate(
-  [
-    { $unwind: "$add_unit" },
-    { $unwind: "$add_unit.category" }, // because category is array
-    {
-      $group: {
-        _id: "$add_unit.category",
-        count: { $sum: 1 }
-      }
+let pipeline = [
+  { $unwind: "$add_unit" },
+  Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
+  { $unwind: "$add_unit.category" },
+  {
+    $group: {
+      _id: "$add_unit.category",
+      count: { $sum: 1 }
     }
-  ]
-);
+  }
+];
+
+// Remove null entries
+pipeline = pipeline.filter(Boolean);
+
+const categoryCount = await addproject.aggregate(pipeline);
+
 
 let categoryResult = {};
 categoryCount.forEach((item) => {
   categoryResult[item._id] = item.count;
 });
 
-const statusCounts = await addproject.aggregate([
+let pipeline1 = [
   { $unwind: "$add_unit" },
+  Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
   {
     $group: {
       _id: "$add_unit.stage",
       count: { $sum: 1 },
     },
   },
-]);
+];
+
+pipeline1 = pipeline1.filter(Boolean);
+
+const statusCounts = await addproject.aggregate(pipeline1);
+
 
 let statusResult = {};
 statusCounts.forEach((item) => {

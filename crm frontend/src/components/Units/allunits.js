@@ -27,6 +27,7 @@ import Swal from "sweetalert2";
 import deallogo from "../../icons/deal.jpg";
 import UniqueLoader from "../loader";
 import { Select, MenuItem, Checkbox, ListItemText  } from '@mui/material';
+import ExportUnitsModal from "./export_units";
 
 function Allunits() {
      const logged_user=JSON.parse(localStorage.getItem('user'))
@@ -627,9 +628,6 @@ const[status_count,setstatus_count]=useState()
     }
 
       const resp1 = await api.get(`viewallunits?${params.toString()}`);
-      console.log(resp1);
-      
-
       settotalinventories(resp1.data.total);
       setFlattenedUnits(resp1.data.units);
       setcategory_count(resp1.data.categoryCount)
@@ -4180,10 +4178,10 @@ const handleSubCategoryChange1 = (event) => {
               <img src="https://static.thenounproject.com/png/61783-200.png" style={{height:"25px",width:"25px"}} alt=""/>
             </button>
       
-    <ul class="dropdown-menu" id="exporttoexcel" style={{textAlign:"left",padding:"0px",boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",fontFamily:"arial",fontSize:"14px",lineHeight:"30px"}}> 
+    <ul class="dropdown-menu" id="exporttoexcel"  style={{textAlign:"left",padding:"0px",boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",fontFamily:"arial",fontSize:"14px",lineHeight:"30px"}}> 
             
          <li
-        onClick={exportToExcel}
+       data-bs-toggle="modal"  data-bs-target="#exportUnitsModal"
         className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer transition"
       >
         <img
@@ -5280,7 +5278,7 @@ const handleSubCategoryChange1 = (event) => {
       <h6 className="text-gray-700 font-medium">
         Total Inventories
         <span className="block text-black text-xl font-bold animate-pulse">
-          {totalinventories}
+          {totalinventories || "0"}
         </span>
       </h6>
     </div>
@@ -5290,7 +5288,7 @@ const handleSubCategoryChange1 = (event) => {
       <h6 className="text-gray-700 font-medium">
         Residential
         <span className="block text-green-600 text-xl font-bold animate-pulse">
-          {category_count?.Residential}
+          {category_count?.Residential || "0"}
         </span>
       </h6>
     </div>
@@ -5300,7 +5298,7 @@ const handleSubCategoryChange1 = (event) => {
       <h6 className="text-gray-700 font-medium">
         Commercial
         <span className="block text-blue-600 text-xl font-bold animate-pulse">
-          {category_count?.Commercial}
+          {category_count?.Commercial || "0"}
         </span>
       </h6>
     </div>
@@ -5310,7 +5308,7 @@ const handleSubCategoryChange1 = (event) => {
       <h6 className="text-gray-700 font-medium">
         Agriculture
         <span className="block text-orange-500 text-xl font-bold animate-pulse">
-          {category_count?.Agricultural}
+          {category_count?.Agricultural || "0"}
         </span>
       </h6>
     </div>
@@ -5320,7 +5318,7 @@ const handleSubCategoryChange1 = (event) => {
       <h6 className="text-gray-700 font-medium">
         Industrial
         <span className="block text-red-600 text-xl font-bold animate-pulse">
-          {category_count?.Industrial}
+          {category_count?.Industrial || "0"}
         </span>
       </h6>
     </div>
@@ -5330,7 +5328,7 @@ const handleSubCategoryChange1 = (event) => {
       <h6 className="text-gray-700 font-medium">
         Institutional
         <span className="block text-gray-700 text-xl font-bold animate-pulse">
-          {category_count?.Institutional}
+          {category_count?.Institutional || "0"}
         </span>
       </h6>
     </div>
@@ -7789,6 +7787,9 @@ const handleSubCategoryChange1 = (event) => {
           </style>
         </div>
       )}
+
+       <ExportUnitsModal projects={cdata} />
+       
     </div>
   );
 }
