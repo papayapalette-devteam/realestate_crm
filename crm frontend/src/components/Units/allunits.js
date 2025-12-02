@@ -1,7 +1,6 @@
 import Header1 from "../header1";
 import Sidebar1 from "../sidebar1";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -12,31 +11,23 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { ToastContainer, toast } from "react-toastify";
 import React from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { utils, writeFile } from "xlsx";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import { SvgIcon } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import Tooltip from "@mui/material/Tooltip";
 import api from "../../api";
 import "../../css/deal.css";
-import { toWords } from "number-to-words";
 import Swal from "sweetalert2";
 import deallogo from "../../icons/deal.jpg";
 import UniqueLoader from "../loader";
-import { Select, MenuItem, Checkbox, ListItemText  } from '@mui/material';
 import ExportUnitsModal from "./export_units";
 
 function Allunits() {
-     const logged_user=JSON.parse(localStorage.getItem('user'))
+  const logged_user = JSON.parse(localStorage.getItem("user"));
 
-     
-
- const [flattenedUnits, setFlattenedUnits] = useState([]);
-
- 
+  const [flattenedUnits, setFlattenedUnits] = useState([]);
 
   const [isLoading4, setIsLoading4] = useState(false);
 
@@ -58,11 +49,6 @@ function Allunits() {
 
   /*-------------------------------------------------------------------update inventory start---------------------------------------------------------------------------- */
 
-
-
-
-
-
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -83,8 +69,6 @@ function Allunits() {
       border: 0,
     },
   }));
-
-
 
   const allColumns = [
     { id: "sno", name: "#" },
@@ -174,14 +158,12 @@ function Allunits() {
 
   const [totalinventories, settotalinventories] = useState(0);
 
-
   React.useEffect(() => {
     fetchcdata();
   }, []);
 
   const [allprojectforsearch, setallprojectforsearch] = useState([]);
   const [cdata, setcdata] = useState([]);
-
 
   const [allunitsforsearch, setallunitsforsearch] = useState([]);
   // const [filteredData, setFilteredData] = useState([]);
@@ -195,7 +177,6 @@ function Allunits() {
         ? resp.data.project
         : [resp.data.project];
       settotalproject(countproject.length);
-
     } catch (error) {
       console.log(error);
     }
@@ -290,7 +271,6 @@ function Allunits() {
   const currentItems2 = cdata.slice(indexOfFirstItem1, indexOfLastItem1);
   const totalPages1 = Math.ceil(cdata.length / itemsPerPage1);
 
-
   //========================================= units code start =======================================================================
 
   const [loading, setLoading] = useState(false);
@@ -315,8 +295,6 @@ function Allunits() {
   );
   const [showColumnList2, setShowColumnList2] = useState(false);
 
-
-
   const handleCheckboxChange2 = (column) => {
     if (visibleColumns3.some((col) => col.id === column.id)) {
       // Remove column from visibleColumns if it's already present
@@ -327,7 +305,7 @@ function Allunits() {
     }
   };
   const handleSelectAll3 = () => {
-      const scrollY = window.scrollY;
+    const scrollY = window.scrollY;
     setSelectAll3(!selectAll3);
     if (!selectAll3) {
       // Add all current page item IDs to selectedItems
@@ -336,21 +314,21 @@ function Allunits() {
       // Deselect all
       setSelectedItems3([]);
     }
-      window.requestAnimationFrame(() => {
-    window.scrollTo(0, scrollY);
-  });
+    window.requestAnimationFrame(() => {
+      window.scrollTo(0, scrollY);
+    });
   };
 
   const handleRowSelect3 = (item) => {
-     const scrollY = window.scrollY;
+    const scrollY = window.scrollY;
     if (selectedItems3.some((i) => i._id === item._id)) {
       setSelectedItems3(selectedItems3.filter((i) => i._id !== item._id));
     } else {
       setSelectedItems3([...selectedItems3, item]);
     }
-      window.requestAnimationFrame(() => {
-    window.scrollTo(0, scrollY);
-  });
+    window.requestAnimationFrame(() => {
+      window.scrollTo(0, scrollY);
+    });
   };
 
   const [currentPage2, setCurrentPage2] = useState(1);
@@ -459,9 +437,8 @@ function Allunits() {
     );
   };
 
-   
-const[category_count,setcategory_count]=useState()
-const[status_count,setstatus_count]=useState()
+  const [category_count, setcategory_count] = useState();
+  const [status_count, setstatus_count] = useState();
 
   const fetchunitsdata = async (
     page,
@@ -486,15 +463,15 @@ const[status_count,setstatus_count]=useState()
       }
 
       // ✅ Pass logged-in user name in query
-    if (login_user) {
-      params.append("login_user", login_user);
-    }
+      if (login_user) {
+        params.append("login_user", login_user);
+      }
 
       const resp1 = await api.get(`viewallunits?${params.toString()}`);
       settotalinventories(resp1.data.total);
       setFlattenedUnits(resp1.data.units);
-      setcategory_count(resp1.data.categoryCount)
-      setstatus_count(resp1.data.statusCounts)
+      setcategory_count(resp1.data.categoryCount);
+      setstatus_count(resp1.data.statusCounts);
     } catch (error) {
       console.log(error);
     } finally {
@@ -1032,8 +1009,6 @@ const[status_count,setstatus_count]=useState()
     return `${formattedDay} ${month} ${year}`;
   };
 
- 
-
   const formatTimesite = (timeString) => {
     let [hours, minutes] = timeString.split(":").map(Number);
     const isPM = hours >= 12;
@@ -1046,16 +1021,9 @@ const[status_count,setstatus_count]=useState()
     return `${hours}:${minutes < 10 ? "0" + minutes : minutes} ${period}`;
   };
 
-
-
-
   // ===============================================add to task for sitevisit end=========================================================
 
   //================================ add to task for meeting start======================================================================
-
-
-
-
 
   const [meetingtask, setmeetingtask] = useState({
     activity_type: "Meeting",
@@ -1084,12 +1052,6 @@ const[status_count,setstatus_count]=useState()
     date: "",
     feedback: "",
   });
-
-
-
- 
-
- 
 
   const formatTimemeeting = (timeString) => {
     let [hours, minutes] = timeString.split(":").map(Number);
@@ -1138,13 +1100,6 @@ const[status_count,setstatus_count]=useState()
     intrested_inventory: "",
     feedback: "",
   });
-
-
-
-
-
-
-
 
   const formatdate = (dateString) => {
     const date = new Date(dateString);
@@ -1404,7 +1359,7 @@ const[status_count,setstatus_count]=useState()
     unit_no: "",
     unit_type: "",
     category: [],
-    sub_category:[],
+    sub_category: [],
     block: "",
     size: "",
     land_type: "",
@@ -1468,38 +1423,14 @@ const[status_count,setstatus_count]=useState()
     action12: [],
   });
 
-
-  
-
-  const [show9, setshow9] = useState(false);
-
-  const handleClose9 = () => setshow9(false);
-  // const[fetchunit,setfetchunit]=useState([])
-  const handleShow9 = async () => {
-    setshow9(true);
-    const project = selectedItems3[0].project_name;
-    const block = selectedItems3[0].block;
-    const unit = selectedItems3[0].unit_no;
-
-    const resp = await api.get(
-      `viewprojectforinventories/${project}/${unit}/${block}`
-    );
-    console.log(resp);
-
-    setunits(resp.data.project.add_unit[0]);
-    fetchdatabyprojectname(project);
-  };
-  // console.log(units.owner_details);
-
   const config = {
     headers: {
       "Content-Type": "multipart/form-data", // Set the Content-Type here
     },
   };
 
-
-
   const updateinventories = async () => {
+    
     const project = selectedItems3[0].project_name;
     // const project = selectedItems3[0].project_name.trim().replace(/\s+/g, " ");
     const block = selectedItems3[0].block;
@@ -1519,6 +1450,7 @@ const[status_count,setstatus_count]=useState()
       if (!result.isConfirmed) {
         return; // Stop execution if user cancels
       }
+      setIsLoading4(true);
 
       // ✅ Run both updates in parallel
       const [resp, resp1] = await Promise.all([
@@ -1545,1271 +1477,11 @@ const[status_count,setstatus_count]=useState()
         confirmButtonText: "ok",
       });
       console.log(error);
+    } finally {
+      setIsLoading4(false);
     }
   };
 
-  function addFnunit1() {
-    setunits({
-      ...units,
-      s_no1: [...(units.s_no1 || []), ""], // Ensure s_no1 is an array
-      url: [...(units.url || []), ""], // Ensure url is an array
-      action11: [...(units.action11 || []), ""], // Ensure action1 is an array
-    });
-  }
-
-  const deleteallunit1 = (index) => {
-    // handleDeletesno(index)
-    // handleDeletepreview(index)
-    const newsno1 = units.s_no1.filter((_, i) => i !== index);
-    const newurl = units.url.filter((_, i) => i !== index);
-    const newaction1 = units.action11.filter((_, i) => i !== index);
-    setunits({
-      ...units,
-      s_no1: newsno1,
-      url: newurl,
-      action11: newaction1,
-    });
-  };
-
-  const handlesno1change = (index, event) => {
-    const newsno1 = [...units.s_no1];
-    newsno1[index] = event.target.value;
-    setunits({
-      ...units,
-      s_no1: newsno1,
-    });
-  };
-  const handleurlChange = (index, event) => {
-    const newurl = [...units.url];
-    newurl[index] = event.target.value;
-    setunits({
-      ...units,
-      url: newurl,
-    });
-  };
-
-  function addFnunit() {
-    setunits({
-      ...units,
-      s_no: [...(units.s_no || []), ""], // Ensure s_no is an array
-      preview: [...(units.preview || []), ""], // Ensure preview is an array
-      descriptions: [...(units.descriptions || []), ""], // Ensure descriptions is an array
-      category: [...(units.category || []), ""], // Ensure category is an array
-      action10: [...(units.action10 || []), ""], // Ensure action is an array
-    });
-  }
-
-  const deleteallunit = (index) => {
-    // handleDeletesno(index)
-    // handleDeletepreview(index)
-    const newsno = units.s_no.filter((_, i) => i !== index);
-    const newpreview = units.preview.filter((_, i) => i !== index);
-    const newdescription = units.descriptions.filter((_, i) => i !== index);
-    const newcategory = units.category.filter((_, i) => i !== index);
-    const newaction = units.action10.filter((_, i) => i !== index);
-    setunits({
-      ...units,
-      s_no: newsno,
-      preview: newpreview,
-      descriptions: newdescription,
-      category: newcategory,
-      action10: newaction,
-    });
-  };
-
-  const handlesnochange = (index, event) => {
-    const newsno = [...units.s_no];
-    newsno[index] = event.target.value;
-    setunits({
-      ...units,
-      s_no: newsno,
-    });
-  };
-  const handlepreviewchange = (index, event) => {
-    const newpreview = [...units.preview];
-    const files = Array.from(event.target.files);
-
-    newpreview[index] = { files: files };
-    setunits({
-      ...units,
-      preview: newpreview,
-    });
-  };
-
-  const handledescriptionchange = (index, event) => {
-    const newdescription = [...units.descriptions];
-    newdescription[index] = event.target.value;
-    setunits({
-      ...units,
-      descriptions: newdescription,
-    });
-  };
-  const handlecategorychange = (index, event) => {
-    const newcategory = [...units.category];
-    newcategory[index] = event.target.value;
-    setunits({
-      ...units,
-      category: newcategory,
-    });
-  };
-
-  const addunit = () => {
-    if (units.unit_no) {
-      const updateunit = [...unit, ...project.add_unit, units];
-      setunit(updateunit);
-      setproject((prevState) => ({
-        ...prevState,
-        add_unit: updateunit,
-      }));
-
-      handleClose9();
-
-      document.getElementById("choosedestination").value = "Select";
-    } else {
-      toast.error("Please fill out all fields.");
-    }
-  };
-  const deleteunit = (index) => {
-    // Filter out the destination at the given index
-    const newunit = project.add_unit.filter((_, i) => i !== index);
-
-    // Set the updated destination details
-    setproject((prevState) => ({
-      ...prevState,
-      add_unit: newunit,
-    }));
-    setunit(newunit);
-  };
-
-  const [activeUnit, setActiveUnit] = useState(1); // Track active unit tab
-  const [modalSize, setModalSize] = useState("lg");
-
-  const unitdetail1 = () => {
-    setModalSize("lg");
-    setActiveUnit(1);
-    document.getElementById("unitdetails1").style.display = "flex";
-    document.getElementById("unitlocation").style.display = "none";
-    document.getElementById("ownerdetails").style.display = "none";
-    document.getElementById("uploadmedia").style.display = "none";
-    document.getElementById("documentform").style.display = "none";
-
-    // document.getElementById("unitdetail").style.color="green"
-    // document.getElementById("unitlocationdetails").style.color="black"
-    // document.getElementById("ownerdetails").style.color="black"
-  };
-  const unitdetail2 = () => {
-    setModalSize("lg");
-    setActiveUnit(2);
-    document.getElementById("unitdetails1").style.display = "none";
-    document.getElementById("unitlocation").style.display = "flex";
-    document.getElementById("ownerdetails").style.display = "none";
-    document.getElementById("uploadmedia").style.display = "none";
-    document.getElementById("documentform").style.display = "none";
-
-    // document.getElementById("unitdetail").style.color="black"
-    // document.getElementById("unitlocationdetails").style.color="green"
-    // document.getElementById("ownerdetails").style.color="black"
-  };
-  const unitdetail3 = () => {
-    setModalSize("lg");
-    setActiveUnit(3);
-    document.getElementById("unitdetails1").style.display = "none";
-    document.getElementById("unitlocation").style.display = "none";
-    document.getElementById("ownerdetails").style.display = "flex";
-    document.getElementById("uploadmedia").style.display = "none";
-    document.getElementById("documentform").style.display = "none";
-  };
-
-  const unitdetail4 = () => {
-    setModalSize("xl");
-    setActiveUnit(4);
-    document.getElementById("unitdetails1").style.display = "none";
-    document.getElementById("unitlocation").style.display = "none";
-    document.getElementById("ownerdetails").style.display = "none";
-    document.getElementById("documentform").style.display = "inline-block";
-    document.getElementById("uploadmedia").style.display = "none";
-  };
-
-  const unitdetail5 = () => {
-    setModalSize("lg");
-    setActiveUnit(5);
-    document.getElementById("unitdetails1").style.display = "none";
-    document.getElementById("unitlocation").style.display = "none";
-    document.getElementById("ownerdetails").style.display = "none";
-    document.getElementById("documentform").style.display = "none";
-    document.getElementById("uploadmedia").style.display = "inline-block";
-  };
-
-  const [selectedType, setSelectedType] = useState(null);
-
-  const handleTypeClick1 = (type) => {
-    setSelectedType(type);
-    setunits((prevunits) => ({
-      ...prevunits,
-      category: type,
-    }));
-  };
-
-const handleSubCategoryChange1 = (event) => {
-              const {
-                target: { value },
-              } = event;
-              // Ensure the value is an array if multiple options are selected
-              setunits({ ...units, sub_category: typeof value === "string" ? value.split(",") : value });
-          
-            };
-
-  function addFn12() {
-    setunits({
-      ...units,
-      document_no: [...units.document_no, ""],
-      document_name: [...units.document_name, ""],
-      document_Date: [...units.document_Date, ""],
-      image: [...units.image, ""],
-      action12: [...(units.action12 || []), ""],
-    });
-  }
-
-  const deleteall12 = (index) => {
-    const newdocument_no = (units.document_no || []).filter(
-      (_, i) => i !== index
-    );
-    const newdocumentname = (units.document_name || []).filter(
-      (_, i) => i !== index
-    );
-    const newdocumentdate = (units.document_Date || []).filter(
-      (_, i) => i !== index
-    );
-    const newpic = (units.image || []).filter((_, i) => i !== index);
-    const newaction12 = (units.action12 || []).filter((_, i) => i !== index);
-
-    setunits({
-      ...units,
-      document_no: newdocument_no,
-      document_name: newdocumentname,
-      document_Date: newdocumentdate,
-      image: newpic,
-      action12: newaction12,
-    });
-  };
-
-  const handledocumentnochange = (index, event) => {
-    const newdocumentno = [...units.document_no];
-    newdocumentno[index] = event.target.value;
-    setunits({
-      ...units,
-      document_no: newdocumentno,
-    });
-  };
-  const handledocumentnamechange = (index, event) => {
-    const newdocumentname = [...units.document_name];
-    newdocumentname[index] = event.target.value;
-    setunits({
-      ...units,
-      document_name: newdocumentname,
-    });
-  };
-  const handledocumentdatechange = (index, event) => {
-    const newdocumentdate = [...units.document_Date];
-    newdocumentdate[index] = event.target.value;
-    setunits({
-      ...units,
-      document_Date: newdocumentdate,
-    });
-  };
-
-  const handlepicchange1 = (index, event) => {
-    const newpic1 = [...units.image];
-    const files = Array.from(event.target.files);
-    newpic1[index] = { files: files };
-    setunits({
-      ...units,
-      image: newpic1,
-    });
-  };
-
-  function addFn3() {
-    setunits((prevunits) => ({
-      ...prevunits,
-      floor: [...units.floor, ""],
-      cluter_details: [...units.cluter_details, ""],
-      length: [...units.length, ""],
-      bredth: [...units.bredth, ""],
-      total_area: [...units.total_area, ""],
-      measurment2: [...units.measurment2, ""],
-      action3: [...(units.action3 || []), ""],
-    }));
-  }
-  const deleteall3 = (index) => {
-    const newfloor = units.floor.filter((_, i) => i !== index);
-    const newcluter = units.cluter_details.filter((_, i) => i !== index);
-    const newlength = units.length.filter((_, i) => i !== index);
-    const newbreadth = units.bredth.filter((_, i) => i !== index);
-    const newtotalarea = units.total_area.filter((_, i) => i !== index);
-    const newmeasurement = units.measurment2.filter((_, i) => i !== index);
-    const newaction3 = units.action3.filter((_, i) => i !== index);
-
-    setunits({
-      ...units,
-      floor: newfloor,
-      cluter_details: newcluter,
-      length: newlength,
-      bredth: newbreadth,
-      total_area: newtotalarea,
-      measurment2: newmeasurement,
-      action3: newaction3,
-    });
-  };
-  const handlefloorchange = (index, event) => {
-    const newfloor = [...units.floor];
-    newfloor[index] = event.target.value;
-    setunits({
-      ...units,
-      floor: newfloor,
-    });
-  };
-  const handlecluterdetails = (index, event) => {
-    const newcluterdetails = [...units.cluter_details];
-    newcluterdetails[index] = event.target.value;
-    setunits({
-      ...units,
-      cluter_details: newcluterdetails,
-    });
-  };
-  const handlelengthchange = (index, event) => {
-    const newLength = [...units.length];
-    newLength[index] = event.target.value;
-
-    const newTotalArea = [...units.total_area];
-    newTotalArea[index] =
-      newLength[index] && units.bredth[index]
-        ? newLength[index] * units.bredth[index]
-        : "";
-
-    setunits((prev) => ({
-      ...prev,
-      length: newLength,
-      total_area: newTotalArea,
-    }));
-  };
-
-  const handlebredthchange = (index, event) => {
-    const newBreadth = [...units.bredth];
-    newBreadth[index] = event.target.value;
-
-    const newTotalArea = [...units.total_area];
-    newTotalArea[index] =
-      units.length[index] && newBreadth[index]
-        ? units.length[index] * newBreadth[index]
-        : "";
-
-    setunits((prev) => ({
-      ...prev,
-      bredth: newBreadth,
-      total_area: newTotalArea,
-    }));
-  };
-
-  function addFn6() {
-    setunits({
-      ...units,
-      water_source: [...units.water_source, ""],
-      water_level: [...units.water_level, ""],
-      water_pump_type: [...units.water_pump_type, ""],
-      action6: [...units.action6, ""],
-    });
-  }
-  const deleteall6 = (index) => {
-    const newwatersource = units.water_source.filter((_, i) => i !== index);
-    const newwaterlevel = units.water_level.filter((_, i) => i !== index);
-    const newpumptype = units.water_pump_type.filter((_, i) => i !== index);
-    const newaction6 = units.action6.filter((_, i) => i !== index);
-
-    setunits({
-      ...units,
-      water_source: newwatersource,
-      water_level: newwaterlevel,
-      water_pump_type: newpumptype,
-      action6: newaction6,
-    });
-  };
-  const handlewatersourcechange = (index, event) => {
-    const newwatersource = [...units.water_source];
-    newwatersource[index] = event.target.value;
-    setunits({
-      ...units,
-      water_source: newwatersource,
-    });
-  };
-  const handlewaterlevelchange = (index, event) => {
-    const newwaterlevel = [...units.water_level];
-    newwaterlevel[index] = event.target.value;
-    setunits({
-      ...units,
-      water_level: newwaterlevel,
-    });
-  };
-  const handlewaterpumpchange = (index, event) => {
-    const newwaterpump = [...units.water_pump_type];
-    newwaterpump[index] = event.target.value;
-    setunits({
-      ...units,
-      water_pump_type: newwaterpump,
-    });
-  };
-
-  function addFn5() {
-    setunits({
-      ...units,
-      khewat_no: [...units.khewat_no, ""],
-      killa_no: [...units.killa_no, ""],
-      share: [...units.share, ""],
-      action5: [...units.action5, ""],
-    });
-  }
-  const deleteall5 = (index) => {
-    const newkhewatno = units.khewat_no.filter((_, i) => i !== index);
-    const newkillano = units.killa_no.filter((_, i) => i !== index);
-    const newshare = units.share.filter((_, i) => i !== index);
-    const newaction5 = units.action5.filter((_, i) => i !== index);
-
-    setunits({
-      ...units,
-      khewat_no: newkhewatno,
-      killa_no: newkillano,
-      share: newshare,
-      action5: newaction5,
-    });
-  };
-  const handlekhewatnochange = (index, event) => {
-    const newkhewatno = [...units.khewat_no];
-    newkhewatno[index] = event.target.value;
-    setunits({
-      ...units,
-      khewat_no: newkhewatno,
-    });
-  };
-  const handlekillanochange = (index, event) => {
-    const newkillano = [...units.killa_no];
-    newkillano[index] = event.target.value;
-    setunits({
-      ...units,
-      killa_no: newkillano,
-    });
-  };
-  const handlesharenochange = (index, event) => {
-    const newshare = [...units.share];
-    newshare[index] = event.target.value;
-    setunits({
-      ...units,
-      share: newshare,
-    });
-  };
-
-  const statesAndCities = {
-    AndhraPradesh: [
-      "Anantapur",
-      "Chittoor",
-      "East Godavari",
-      "Guntur",
-      "Krishna",
-      "Kurnool",
-      "Prakasam",
-      "Srikakulam",
-      "Visakhapatnam",
-      "Vizianagaram",
-      "West Godavari",
-      "YSR Kadapa",
-    ],
-    ArunachalPradesh: [
-      "Tawang",
-      "West Kameng",
-      "East Kameng",
-      "Papum Pare",
-      "Kurung Kumey",
-      "Kra Daadi",
-      "Lower Subansiri",
-      "Upper Subansiri",
-      "West Siang",
-      "East Siang",
-      "Upper Siang",
-      "Lower Siang",
-      "Lower Dibang Valley",
-      "Dibang Valley",
-      "Anjaw",
-      "Lohit",
-      "Namsai",
-      "Changlang",
-      "Tirap",
-      "Longding",
-    ],
-    Assam: [
-      "Baksa",
-      "Barpeta",
-      "Biswanath",
-      "Bongaigaon",
-      "Cachar",
-      "Charaideo",
-      "Chirang",
-      "Darrang",
-      "Dhemaji",
-      "Dhubri",
-      "Dibrugarh",
-      "Goalpara",
-      "Golaghat",
-      "Hailakandi",
-      "Hojai",
-      "Jorhat",
-      "Kamrup",
-      "Kamrup Metropolitan",
-      "Karbi Anglong",
-      "Karimganj",
-      "Kokrajhar",
-      "Lakhimpur",
-      "Majuli",
-      "Morigaon",
-      "Nagaon",
-      "Nalbari",
-      "Dima Hasao",
-      "Sivasagar",
-      "Sonitpur",
-      "South Salmara-Mankachar",
-      "Tinsukia",
-      "Udalguri",
-      "West Karbi Anglong",
-    ],
-    Bihar: [
-      "Araria",
-      "Arwal",
-      "Aurangabad",
-      "Banka",
-      "Begusarai",
-      "Bhagalpur",
-      "Bhojpur",
-      "Buxar",
-      "Darbhanga",
-      "East Champaran",
-      "Gaya",
-      "Gopalganj",
-      "Jamui",
-      "Jehanabad",
-      "Kaimur",
-      "Katihar",
-      "Khagaria",
-      "Kishanganj",
-      "Lakhisarai",
-      "Madhepura",
-      "Madhubani",
-      "Munger",
-      "Muzaffarpur",
-      "Nalanda",
-      "Nawada",
-      "Patna",
-      "Purnia",
-      "Rohtas",
-      "Saharsa",
-      "Samastipur",
-      "Saran",
-      "Sheikhpura",
-      "Sheohar",
-      "Sitamarhi",
-      "Siwan",
-      "Supaul",
-      "Vaishali",
-      "West Champaran",
-    ],
-    Delhi: [
-      "Central Delhi",
-      "East Delhi",
-      "New Delhi",
-      "North Delhi",
-      "North East Delhi",
-      "North West Delhi",
-      "Shahdara",
-      "South Delhi",
-      "South East Delhi",
-      "South West Delhi",
-      "West Delhi",
-    ],
-    Goa: ["North Goa", "South Goa"],
-    Gujarat: [
-      "Ahmedabad",
-      "Amreli",
-      "Anand",
-      "Banaskantha",
-      "Bharuch",
-      "Bhavnagar",
-      "Botad",
-      "Chhota Udepur",
-      "Dahod",
-      "Dang",
-      "Gir Somnath",
-      "Jamnagar",
-      "Junagadh",
-      "Kachchh",
-      "Kheda",
-      "Mahisagar",
-      "Mehsana",
-      "Morbi",
-      "Narmada",
-      "Navsari",
-      "Panchmahal",
-      "Patan",
-      "Porbandar",
-      "Rajkot",
-      "Sabarkantha",
-      "Surat",
-      "Surendranagar",
-      "Tapi",
-      "Vadodara",
-      "Valsad",
-    ],
-    Haryana: [
-      "Ambala",
-      "Bhiwani",
-      "Charkhi Dadri",
-      "Faridabad",
-      "Fatehabad",
-      "Gurugram",
-      "Hisar",
-      "Jhajjar",
-      "Jind",
-      "Kaithal",
-      "Karnal",
-      "Kurukshetra",
-      "Mahendragarh",
-      "Narnaul",
-      "Palwal",
-      "Panchkula",
-      "Panipat",
-      "Rewari",
-      "Rohtak",
-      "Sirsa",
-      "Sonipat",
-      "Yamunanagar",
-    ],
-    HimachalPradesh: [
-      "Bilaspur",
-      "Chamba",
-      "Hamirpur",
-      "Kangra",
-      "Kullu",
-      "Kullu",
-      "Mandi",
-      "Shimla",
-      "Sirmaur",
-      "Solan",
-      "Una",
-    ],
-    Jharkhand: [
-      "Bokaro",
-      "Chatra",
-      "Deoghar",
-      "Dhanbad",
-      "Dumka",
-      "East Singhbhum",
-      "Garhwa",
-      "Giridih",
-      "Godda",
-      "Gumla",
-      "Hazaribagh",
-      "Jamtara",
-      "Khunti",
-      "Koderma",
-      "Latehar",
-      "Lohardaga",
-      "Pakur",
-      "Palamu",
-      "Ramgarh",
-      "Ranchi",
-      "Sahebganj",
-      "Seraikela Kharsawan",
-      "Simdega",
-      "West Singhbhum",
-    ],
-    Karnataka: [
-      "Bagalkot",
-      "Ballari",
-      "Belagavi",
-      "Bengaluru Rural",
-      "Bengaluru Urban",
-      "Bidar",
-      "Chamarajanagar",
-      "Chikballapur",
-      "Chikkamagaluru",
-      "Chitradurga",
-      "Dakshina Kannada",
-      "Davanagere",
-      "Dharwad",
-      "Gadag",
-      "Hassan",
-      "Haveri",
-      "Kalaburagi",
-      "Kodagu",
-      "Kolar",
-      "Koppal",
-      "Mandya",
-      "Mysuru",
-      "Raichur",
-      "Ramanagara",
-      "Shivamogga",
-      "Tumakuru",
-      "Udupi",
-      "Uttara Kannada",
-      "Vijayapura",
-      "Yadgir",
-    ],
-    Kerala: [
-      "Alappuzha",
-      "Ernakulam",
-      "Idukki",
-      "Kannur",
-      "Kasaragod",
-      "Kottayam",
-      "Kollam",
-      "Kozhikode",
-      "Malappuram",
-      "Palakkad",
-      "Pathanamthitta",
-      "Thiruvananthapuram",
-      "Thrissur",
-      "Wayanad",
-    ],
-    MadhyaPradesh: [
-      "Alirajpur",
-      "Anuppur",
-      "Ashoknagar",
-      "Balaghat",
-      "Barwani",
-      "Betul",
-      "Bhind",
-      "Bhopal",
-      "Burhanpur",
-      "Chhindwara",
-      "Datia",
-      "Dewas",
-      "Dhar",
-      "Dindori",
-      "Guna",
-      "Gwalior",
-      "Harda",
-      "Hoshangabad",
-      "Indore",
-      "Jabalpur",
-      "Jhabua",
-      "Katni",
-      "Khandwa",
-      "Khargone",
-      "Mandla",
-      "Mandsaur",
-      "Morena",
-      "Narsinghpur",
-      "Neemuch",
-      "Panna",
-      "Rewa",
-      "Rajgarh",
-      "Sagar",
-      "Satna",
-      "Sehore",
-      "Seoni",
-      "Shahdol",
-      "Shajapur",
-      "Sheopur",
-      "Shivpuri",
-      "Sidhi",
-      "Singrauli",
-      "Tikamgarh",
-      "Ujjain",
-      "Umaria",
-      "Vidisha",
-    ],
-    Maharashtra: [
-      "Ahmednagar",
-      "Akola",
-      "Amravati",
-      "Aurangabad",
-      "Beed",
-      "Bhandara",
-      "Buldhana",
-      "Chandrapur",
-      "Dhule",
-      "Gadchiroli",
-      "Gondia",
-      "Hingoli",
-      "Jalgaon",
-      "Jalna",
-      "Kolhapur",
-      "Latur",
-      "Mumbai City",
-      "Mumbai Suburban",
-      "Nagpur",
-      "Nanded",
-      "Nandurbar",
-      "Nashik",
-      "Osmanabad",
-      "Palghar",
-      "Parbhani",
-      "Pune",
-      "Raigad",
-      "Ratnagiri",
-      "Sangli",
-      "Satara",
-      "Sindhudurg",
-      "Solapur",
-      "Thane",
-      "Wardha",
-      "Washim",
-      "Yavatmal",
-    ],
-    Manipur: [
-      "Bishnupur",
-      "Chandel",
-      "Churachandpur",
-      "Imphal East",
-      "Imphal West",
-      "Jiribam",
-      "Kakching",
-      "Kamjong",
-      "Kangpokpi",
-      "Noney",
-      "Senapati",
-      "Tamenglong",
-      "Tengnoupal",
-      "Thoubal",
-      "Ukhrul",
-    ],
-    Meghalaya: [
-      "East Garo Hills",
-      "East Khasi Hills",
-      "Jaintia Hills",
-      "Ri Bhoi",
-      "West Garo Hills",
-      "West Khasi Hills",
-    ],
-    Mizoram: [
-      "Aizawl",
-      "Champhai",
-      "Kolasib",
-      "Lawngtlai",
-      "Lunglei",
-      "Mamit",
-      "Saiha",
-      "Serchhip",
-    ],
-    Nagaland: [
-      "Dimapur",
-      "Kohima",
-      "Mokokchung",
-      "Mon",
-      "Peren",
-      "Phek",
-      "Tuensang",
-      "Wokha",
-      "Zunheboto",
-    ],
-    Odisha: [
-      "Angul",
-      "Balangir",
-      "Balasore",
-      "Bargarh",
-      "Bhadrak",
-      "Boudh",
-      "Cuttack",
-      "Deogarh",
-      "Dhenkanal",
-      "Ganjam",
-      "Gajapati",
-      "Jagatsinghpur",
-      "Jajpur",
-      "Jharsuguda",
-      "Kalahandi",
-      "Kandhamal",
-      "Kendrapara",
-      "Kendujhar",
-      "Khordha",
-      "Koraput",
-      "Malkangiri",
-      "Mayurbhanj",
-      "Nabarangpur",
-      "Nayagarh",
-      "Nuapada",
-      "Puri",
-      "Rayagada",
-      "Sambalpur",
-      "Subarnapur",
-      "Sundargarh",
-    ],
-    Punjab: [
-      "Amritsar",
-      "Barnala",
-      "Bathinda",
-      "Faridkot",
-      "Fatehgarh Sahib",
-      "Firozpur",
-      "Gurdaspur",
-      "Hoshiarpur",
-      "Jalandhar",
-      "Kapurthala",
-      "Ludhiana",
-      "Mansa",
-      "Moga",
-      "Muktsar",
-      "Nawan Shehar",
-      "Patiala",
-      "Rupnagar",
-      "Sangrur",
-      "SAS Nagar",
-      "Sri Muktsar Sahib",
-    ],
-    Rajasthan: [
-      "Ajmer",
-      "Alwar",
-      "Banswara",
-      "Baran",
-      "Barmer",
-      "Bhilwara",
-      "Bikaner",
-      "Bundi",
-      "Churu",
-      "Dausa",
-      "Dholpur",
-      "Dungarpur",
-      "Hanumangarh",
-      "Jaipur",
-      "Jaisalmer",
-      "Jhalawar",
-      "Jhunjhunu",
-      "Jodhpur",
-      "Karauli",
-      "Kota",
-      "Nagaur",
-      "Pali",
-      "Pratapgarh",
-      "Rajsamand",
-      "Sawai Madhopur",
-      "Sikar",
-      "Sirohi",
-      "Tonk",
-      "Udaipur",
-    ],
-    Sikkim: ["East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim"],
-    TamilNadu: [
-      "Chennai",
-      "Coimbatore",
-      "Cuddalore",
-      "Dharmapuri",
-      "Dindigul",
-      "Erode",
-      "Kancheepuram",
-      "Kanyakumari",
-      "Karur",
-      "Krishnagiri",
-      "Madurai",
-      "Nagapattinam",
-      "Namakkal",
-      "Nilgiris",
-      "Perambalur",
-      "Pudukkottai",
-      "Ramanathapuram",
-      "Salem",
-      "Sivagangai",
-      "Tenkasi",
-      "Thanjavur",
-      "The Nilgiris",
-      "Thoothukudi",
-      "Tiruvallur",
-      "Tirunelveli",
-      "Tirupur",
-      "Vellore",
-      "Viluppuram",
-      "Virudhunagar",
-    ],
-    Telangana: [
-      "Adilabad",
-      "Hyderabad",
-      "Jagtial",
-      "Jangaon",
-      "Jayashankar",
-      "Jogulamba",
-      "Kamareddy",
-      "Karimnagar",
-      "Khammam",
-      "Mahabubabad",
-      "Mahabubnagar",
-      "Mancherial",
-      "Medak",
-      "Medchal",
-      "Nalgonda",
-      "Nagarkurnool",
-      "Nirmal",
-      "Nizamabad",
-      "Peddapalli",
-      "Sangareddy",
-      "Siddipet",
-      "Suryapet",
-      "Vikarabad",
-      "Warangal",
-      "Khammam",
-      "Kothagudem",
-    ],
-    Tripura: [
-      "Dhalai",
-      "Gomati",
-      "Khowai",
-      "North Tripura",
-      "Sepahijala",
-      "South Tripura",
-      "Unakoti",
-      "West Tripura",
-    ],
-    UttarPradesh: [
-      "Agra",
-      "Aligarh",
-      "Ambedkar Nagar",
-      "Amethi",
-      "Amroha",
-      "Auraiya",
-      "Azamgarh",
-      "Baghpat",
-      "Bahraich",
-      "Ballia",
-      "Balrampur",
-      "Banda",
-      "Barabanki",
-      "Bareilly",
-      "Basti",
-      "Bijnor",
-      "Budaun",
-      "Bulandshahr",
-      "Chandauli",
-      "Chitrakoot",
-      "Deoria",
-      "Etah",
-      "Etawah",
-      "Faizabad",
-      "Farrukhabad",
-      "Fatehpur",
-      "Firozabad",
-      "Gautam Buddh Nagar",
-      "Ghaziabad",
-      "Gonda",
-      "Gorakhpur",
-      "Hamirpur",
-      "Hapur",
-      "Hardoi",
-      "Hathras",
-      "Jalaun",
-      "Jaunpur",
-      "Jhansi",
-      "Kannauj",
-      "Kanpur",
-      "Kasganj",
-      "Kaushambi",
-      "Kushinagar",
-      "Lakhimpur Kheri",
-      "Lucknow",
-      "Mathura",
-      "Meerut",
-      "Mirzapur",
-      "Moradabad",
-      "Muzaffarnagar",
-      "Pratapgarh",
-      "Raebareli",
-      "Rampur",
-      "Saharanpur",
-      "Sambhal",
-      "Sant Kabir Nagar",
-      "Shahjahanpur",
-      "Shrawasti",
-      "Siddharth Nagar",
-      "Sitapur",
-      "Sonbhadra",
-      "Sultanpur",
-      "Unnao",
-      "Varanasi",
-    ],
-    WestBengal: [
-      "Alipurduar",
-      "Bankura",
-      "Birbhum",
-      "Burdwan",
-      "Cooch Behar",
-      "Darjeeling",
-      "Hooghly",
-      "Howrah",
-      "Jalpaiguri",
-      "Kolkata",
-      "Malda",
-      "Murshidabad",
-      "Nadia",
-      "North 24 Parganas",
-      "North Dinajpur",
-      "Paschim Medinipur",
-      "Purba Medinipur",
-      "Purulia",
-      "South 24 Parganas",
-      "South Dinajpur",
-      "Uttar Dinajpur",
-    ],
-  };
-
-  // const states = Object.keys(statesAndCities);
-  // const cities = statesAndCities[project.state] || [];
-
-  const ustates = Object.keys(statesAndCities);
-  const ucities = statesAndCities[units.ustate] || [];
-
-  const [coordinates1, setCoordinates1] = useState("");
-  const [mapLoaded1, setMapLoaded1] = useState(false);
-
-  const handleSubmit1 = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.get(
-        "https://maps.googleapis.com/maps/api/geocode/json",
-        {
-          params: {
-            address: units.location,
-            key: "AIzaSyACfBzaJSVH8eur7U9JxdjI1bAeTLXsUJc",
-          },
-        }
-      );
-
-      if (response.data.results.length > 0) {
-        const { lat, lng } = response.data.results[0].geometry.location;
-        setCoordinates1({ lat, lng });
-        setunits((prevUnits) => ({
-          ...prevUnits,
-          lattitude: lat,
-          langitude: lng,
-        }));
-        const addressComponents = response.data.results[0].address_components;
-        let uaddress = "";
-        let ustreet = "";
-        let ulocality = "";
-        let ucity = "";
-        let uzip = "";
-        let ustate = "";
-        let ucountry = "";
-
-        // Extract address components
-        addressComponents.forEach((component) => {
-          const types = component.types;
-          if (types.includes("administrative_area_level_3"))
-            uaddress += component.long_name + " ";
-          if (types.includes("sublocality_level_1"))
-            ustreet += component.long_name + " ";
-          if (types.includes("administrative_area_level_2"))
-            ulocality = component.long_name;
-          if (types.includes("administrative_area_level_1"))
-            ustate = component.long_name;
-          if (types.includes("locality")) ucity = component.long_name;
-          if (types.includes("postal_code")) uzip = component.long_name;
-          if (types.includes("country")) ucountry = component.long_name;
-        });
-
-        // Update units state with the extracted information
-        setunits((prevUnits) => ({
-          ...prevUnits,
-          uaddress,
-          ustreet: ustreet.trim(),
-          ulocality,
-          ucity,
-          uzip,
-          ustate,
-          ucountry,
-          location: response.data.results[0].formatted_address,
-        }));
-        setMapLoaded1(true);
-      } else {
-        setCoordinates1({ lat: null, lng: null });
-        console.log("No results found");
-      }
-    } catch (error) {
-      console.error("Error fetching coordinates:", error);
-    }
-  };
-
-  const handleMarkerDragEnd1 = async (e) => {
-    const newLat = e.latLng.lat();
-    const newLng = e.latLng.lng();
-    setCoordinates1({ lat: newLat, lng: newLng });
-
-    try {
-      const response = await axios.get(
-        "https://maps.googleapis.com/maps/api/geocode/json",
-        {
-          params: {
-            latlng: `${newLat},${newLng}`,
-            key: "AIzaSyACfBzaJSVH8eur7U9JxdjI1bAeTLXsUJc",
-          },
-        }
-      );
-
-      if (response.data.results.length > 0) {
-        const addressComponents = response.data.results[0].address_components;
-        let uaddress = "";
-        let ustreet = "";
-        let ulocality = "";
-        let ucity = "";
-        let uzip = "";
-        let ustate = "";
-        let ucountry = "";
-
-        addressComponents.forEach((component) => {
-          const types = component.types;
-          if (types.includes("administrative_area_level_3"))
-            uaddress += component.long_name + " ";
-          if (types.includes("sublocality_level_1"))
-            ustreet += component.long_name + " ";
-          if (types.includes("administrative_area_level_2"))
-            ulocality = component.long_name;
-          if (types.includes("administrative_area_level_1"))
-            ustate = component.long_name;
-          if (types.includes("locality")) ucity = component.long_name;
-          if (types.includes("postal_code")) uzip = component.long_name;
-          if (types.includes("country")) ucountry = component.long_name;
-        });
-
-        setunits((prevUnits) => ({
-          ...prevUnits,
-          uaddress,
-          ustreet: ustreet.trim(),
-          ulocality,
-          ucity,
-          uzip,
-          ustate,
-          ucountry,
-          location: response.data.results[0].formatted_address,
-        }));
-      } else {
-        console.log("No location name found");
-      }
-    } catch (error) {
-      console.error("Error fetching location name:", error);
-    }
-  };
-
-  const mapStyles1 = {
-    height: "500px",
-    width: "100%",
-  };
-
-  const defaultCenter1 = {
-    lat: coordinates1.lat || 37.7749,
-    lng: coordinates1.lng || -122.4194,
-  };
-
-  const [showabuiltup, setSowbuiltup] = useState(false); // Track the checkbox state
-
-  // Handle the checkbox change to show/hide plot size section
-  const handleCheckboxChange4 = (event) => {
-    setSowbuiltup(event.target.checked);
-  };
-
-console.log(flattenedUnits);
-
-  
   // ========================================edit unit end===========================================================================
 
   // ========================================delete unit start=========================================================================
@@ -2869,213 +1541,6 @@ console.log(flattenedUnits);
 
   // ==============================================delete unit end==================================================================
 
-  // ===================================================edit deal start===================================================================
-
-  const [show10, setshow10] = useState(false);
-
-  const handleClose10 = () => setshow10(false);
-  const handleShow10 = async () => {
-    setshow10(true);
-    try {
-      const resp = await api.get(`viewdealbyid/${selectedItems}`);
-      setdeal(resp.data.deal);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const [progress, setProgress] = useState(deal.white_portion || 10); // Initialize with deal.whiteportion
-
-  const handleMouseMove = (e) => {
-    const progressBar = e.target.getBoundingClientRect();
-    const newProgress =
-      ((e.clientX - progressBar.left) / progressBar.width) * 100;
-    const clampedProgress = Math.max(0, Math.min(newProgress, 100)); // Clamp between 0 and 100
-    setProgress(clampedProgress);
-    setdeal((prevDeal) => ({ ...prevDeal, white_portion: clampedProgress })); // Update deal.whiteportion
-  };
-
-  const handleMouseDown = (e) => {
-    handleMouseMove(e); // Set initial progress
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
-  };
-
-  const handleMouseUp = () => {
-    window.removeEventListener("mousemove", handleMouseMove);
-    window.removeEventListener("mouseup", handleMouseUp);
-  };
-
-
-
- 
-
- 
-
-  const [data1, setdata1] = useState([]);
-  const fetchdata1 = async () => {
-    try {
-      const resp = await api.get("viewproject");
-      setdata1(resp.data.project);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  React.useEffect(() => {
-    fetchdata1();
-  }, []);
-
-  const allproject = [];
-  data1.map((item) => allproject.push(item.name));
-
-  const [units1, setunits1] = useState([]);
-  const [allUnits, setallUnits] = useState([]);
-  const [allblocks, setallblocks] = useState([]);
-
-  const [numericValue, setNumericValue] = React.useState(null);
-  const [measurementUnit, setMeasurementUnit] = React.useState("");
-
-  const fetchdatabyprojectname = async (projectNames) => {
-    try {
-      const resp = await api.get(`viewprojectbyname/${projectNames}`);
-      setunits1(resp.data.project);
-      setproject(resp.data.project[0]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  React.useEffect(() => {
-    if (deal.project) {
-      fetchdatabyprojectname(deal.project);
-    }
-  }, [deal.project]);
-
-  React.useEffect(() => {
-    if (units1.length >= 0) {
-      const collectedUnits = units1.flatMap(
-        (item) =>
-          item.add_unit.filter(
-            (unit) => unit.stage === "Active" && unit.block === deal.block
-          ) // Filter units where stage is 'active'
-      );
-
-      const collectedblocks = units1.flatMap((item) => item.add_block);
-      console.log(collectedblocks);
-
-      const collectcategory = units1.flatMap((item) => item.category);
-      const collectsubcategory = units1.flatMap((item) => item.sub_category); // Collect all add_unit arrays
-      const fulllocation = units1
-        .flatMap(
-          (item) =>
-            `${item.add_location}, ${item.address} ${item.street} ${item.locality} ${item.city}`
-        )
-        .join(" ");
-      setallUnits(collectedUnits);
-      setallblocks(collectedblocks);
-      setdeal({
-        ...deal,
-        project_category: collectcategory,
-        project_subcategory: collectsubcategory,
-        location: fulllocation,
-      }); // Set allUnits with the collected units
-
-      const collectedsize = collectedUnits.filter(
-        (item) => item.block === deal.block && item.unit_no === deal.unit_number // Use strict equality === here
-      );
-
-      if (collectedsize.length > 0) {
-        // Assuming 'size' is the field you're interested in
-        const sizeValue = collectedsize[0].size; // Or collectedsize[0].sizeName based on your actual field name
-        console.log(sizeValue);
-
-        const regex = /\((\d+(\.\d+)?)\s*(\w+\s\w+)\)/;
-        const match = sizeValue.match(regex);
-
-        if (match) {
-          setNumericValue(parseFloat(match[1]));
-          setMeasurementUnit(match[3]);
-        }
-      }
-    }
-  }, [units1, deal.block, deal.unit_number]);
-
-  
-
-
-
-  
-
-  
-
-  const [result0, setResult0] = useState("");
-  const [resultText, setResultText] = useState("");
-
-  
-
-  React.useEffect(() => {
-    // Convert result to text format
-    if (result0) {
-      const words = toWords(result0, { format: "en-IN" });
-      setResultText(`(${words} only)`);
-    } else {
-      setResultText("");
-    }
-  }, [result0]);
-
-  const [result1, setResult1] = useState("");
-  const [resultText1, setResultText1] = useState("");
-
-
-
-  React.useEffect(() => {
-    // Convert result to text format
-    if (result1) {
-      const words = toWords(result1, { format: "en-IN" });
-      setResultText1(`(${words} only)`);
-    } else {
-      setResultText1("");
-    }
-  }, [result1]);
-
-  const [result2, setResult2] = useState("");
-  const [resultText2, setResultText2] = useState("");
-
- 
-
-  React.useEffect(() => {
-    // Convert result to text format
-    if (result2) {
-      const words = toWords(result2, { format: "en-IN" });
-      setResultText2(`(${words} only)`);
-    } else {
-      setResultText2("");
-    }
-  }, [result2]);
-
-  const [result3, setResult3] = useState("");
-  const [resultText3, setResultText3] = useState("");
-
-
-
-  React.useEffect(() => {
-    // Convert result to text format
-    if (result3) {
-      const words = toWords(result3, { format: "en-IN" });
-      setResultText3(`(${words} only)`);
-    } else {
-      setResultText3("");
-    }
-  }, [result3]);
-
-
-  // ===================================================edit deal end====================================================================
-
-  // ===================================update deal each time while adding or delete lead start================================================
-
-  // ===================================update deal each time while adding or delete lead  end===========================================
-
   //========================================= units suggestion box code start=============================================================
 
   const [searchTermunits, setSearchTermunits] = useState("");
@@ -3123,36 +1588,36 @@ console.log(flattenedUnits);
   //   setFlattenedUnits(filtered)
   // };
 
-  const handleSuggestionClickunit = (item) => {
-    const ownerStr = Array.isArray(item.owner_details)
-      ? item.owner_details
-          .map(
-            (owner) =>
-              `${owner.title || ""} ${owner.first_name || ""} ${
-                owner.last_name || ""
-              }`
-          )
-          .join(", ")
-      : "";
-    const associateStr = Array.isArray(item.associated_contact)
-      ? item.associated_contact
-          .map(
-            (contact) =>
-              `${contact.title || ""} ${contact.first_name || ""} ${
-                contact.last_name || ""
-              }`
-          )
-          .join(", ")
-      : "";
+  // const handleSuggestionClickunit = (item) => {
+  //   const ownerStr = Array.isArray(item.owner_details)
+  //     ? item.owner_details
+  //         .map(
+  //           (owner) =>
+  //             `${owner.title || ""} ${owner.first_name || ""} ${
+  //               owner.last_name || ""
+  //             }`
+  //         )
+  //         .join(", ")
+  //     : "";
+  //   const associateStr = Array.isArray(item.associated_contact)
+  //     ? item.associated_contact
+  //         .map(
+  //           (contact) =>
+  //             `${contact.title || ""} ${contact.first_name || ""} ${
+  //               contact.last_name || ""
+  //             }`
+  //         )
+  //         .join(", ")
+  //     : "";
 
-    setSearchTermunits(
-      `${item.project_name} -${item.block} -${item.unit_no} - ${ownerStr} - ${associateStr}`
-    );
-    setSuggestionsunit([]);
-    setFlattenedUnits([item]);
+  //   setSearchTermunits(
+  //     `${item.project_name} -${item.block} -${item.unit_no} - ${ownerStr} - ${associateStr}`
+  //   );
+  //   setSuggestionsunit([]);
+  //   setFlattenedUnits([item]);
 
-    // You can also do something with the selected item (e.g. set selectedDeal)
-  };
+  //   // You can also do something with the selected item (e.g. set selectedDeal)
+  // };
 
   const handleSearchChangeunit = (e) => {
     const value = e.target.value;
@@ -3199,8 +1664,8 @@ console.log(flattenedUnits);
 
   const [feedbackform, setfeedbackform] = useState({
     owner: "",
-    direction:"",
-    status:"",
+    direction: "",
+    status: "",
     unit_no: "",
     owner_response: "",
     discussed_reason: "",
@@ -3272,63 +1737,54 @@ console.log(flattenedUnits);
         ...prev,
         stage: "Inactive",
       }));
-    }
-    else
-    {
-       setfeedbackform((prev) => ({
+    } else {
+      setfeedbackform((prev) => ({
         ...prev,
         stage: "Active",
       }));
     }
-    
   }, [feedbackform.owner_response]);
 
   // get owner response
 
-    const[select_loading,setselect_loading]=useState("")
+  const [select_loading, setselect_loading] = useState("");
 
-    const [All_Owner_Response, setAll_Owner_Response] = useState([]);
-    const getall_owner_response = async () => {
-      try {
-        setselect_loading("owner_response")
-        const params = new URLSearchParams();
-        params.append("lookup_type", "owner_response");
-        const resp = await api.get(`api/LookupList?${params.toString()}`);
-  
-        setAll_Owner_Response(resp.data.data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setselect_loading("");
-      }
-    };
+  const [All_Owner_Response, setAll_Owner_Response] = useState([]);
+  const getall_owner_response = async () => {
+    try {
+      setselect_loading("owner_response");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "owner_response");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
 
- 
+      setAll_Owner_Response(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
 
-    const [All_Reason, setAll_Reason] = useState([]);
-    const getall_reason = async () => {
-      try {
-        setselect_loading("reason")
-        const params = new URLSearchParams();
-        params.append("lookup_type", "reason");
-        params.append("parent_lookup_value", feedbackform.owner_response);
-        const resp = await api.get(`api/LookupList?${params.toString()}`);
-  
-        setAll_Reason(resp.data.data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setselect_loading("");
-      }
-    };
+  const [All_Reason, setAll_Reason] = useState([]);
+  const getall_reason = async () => {
+    try {
+      setselect_loading("reason");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "reason");
+      params.append("parent_lookup_value", feedbackform.owner_response);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
 
-    useEffect(()=>
-    {
-      getall_reason()
+      setAll_Reason(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
 
-    },[feedbackform.owner_response])
-  
-
+  useEffect(() => {
+    getall_reason();
+  }, [feedbackform.owner_response]);
 
   // const reasonsList = [
   //   "Had bad experience with previous agent",
@@ -3366,10 +1822,14 @@ console.log(flattenedUnits);
         stage: feedbackform.stage,
         remarks: feedbackform.owner_response,
         last_conduct_date_time: new Date(),
-        follow_up:feedbackform.next_call_date,
-        reason:feedbackform?.no_reason?feedbackform.no_reason : feedbackform.discussed_reason,
-        other_reason:feedbackform?.other_no_reason?feedbackform.other_discussed_reason : "",
-        logged_user:logged_user?.name?logged_user.name : logged_user.Name
+        follow_up: feedbackform.next_call_date,
+        reason: feedbackform?.no_reason
+          ? feedbackform.no_reason
+          : feedbackform.discussed_reason,
+        other_reason: feedbackform?.other_no_reason
+          ? feedbackform.other_discussed_reason
+          : "",
+        logged_user: logged_user?.name ? logged_user.name : logged_user.Name,
       };
       const resp = await api.post("addfeedback", feedbackform);
       if (resp.status === 200) {
@@ -3471,13 +1931,13 @@ console.log(flattenedUnits);
           `;
             break;
 
-            case "Thinking may/be in future":
+          case "Thinking may/be in future":
             await api.put(
               `updateprojectforinventories/${project}/${unit}/${block}`,
               updatedUnits,
               config
             );
-           
+
             break;
 
           default:
@@ -3609,7 +2069,6 @@ console.log(flattenedUnits);
         `/searchcontact?search=${encodeURIComponent(inputValue)}`
       );
 
-
       const data = resp.data.contact;
 
       // Map to combine first_name + last_name + mobile_no
@@ -3627,8 +2086,6 @@ console.log(flattenedUnits);
       setShowSuggestions(false);
     }
   };
-
-
 
   React.useEffect(() => {
     if (input.trim() !== "") {
@@ -3949,7 +2406,6 @@ console.log(flattenedUnits);
     );
   }
 
-  
   //=============================================== deal action buttons toggle start=============================================================
 
   useEffect(() => {
@@ -4002,8 +2458,6 @@ console.log(flattenedUnits);
     return jsDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
   };
 
-
-
   return (
     <div>
       <Header1 />
@@ -4020,33 +2474,55 @@ console.log(flattenedUnits);
             height: "70px",
           }}
         >
-    <h3
-    className="text-2xl font-semibold cursor-pointer hover:text-blue-600 transition-colors"
-  >
-    Inventories
-  </h3>
+          <h3 className="text-2xl font-semibold cursor-pointer hover:text-blue-600 transition-colors">
+            Inventories
+          </h3>
 
-                <button  class="btn btn-secondary " type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{color:"black",backgroundColor:"transparent",border:"none",padding:"0px",marginTop:"-10px"}}>
-              <img src="https://static.thenounproject.com/png/61783-200.png" style={{height:"25px",width:"25px"}} alt=""/>
-            </button>
-      
-    <ul class="dropdown-menu" id="exporttoexcel"  style={{textAlign:"left",padding:"0px",boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",fontFamily:"arial",fontSize:"14px",lineHeight:"30px"}}> 
-            
-         <li
-       data-bs-toggle="modal"  data-bs-target="#exportUnitsModal"
-        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer transition"
-      >
-        <img
-          src="https://static.thenounproject.com/png/1960252-200.png"
-          alt="Export"
-          className="h-5 w-5"
-        />
-        <span>Export Data</span>
-      </li>
+          <button
+            class="btn btn-secondary "
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style={{
+              color: "black",
+              backgroundColor: "transparent",
+              border: "none",
+              padding: "0px",
+              marginTop: "-10px",
+            }}
+          >
+            <img
+              src="https://static.thenounproject.com/png/61783-200.png"
+              style={{ height: "25px", width: "25px" }}
+              alt=""
+            />
+          </button>
 
-    
-            </ul>
-        
+          <ul
+            class="dropdown-menu"
+            id="exporttoexcel"
+            style={{
+              textAlign: "left",
+              padding: "0px",
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+              fontFamily: "arial",
+              fontSize: "14px",
+              lineHeight: "30px",
+            }}
+          >
+            <li
+              data-bs-toggle="modal"
+              data-bs-target="#exportUnitsModal"
+              className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer transition"
+            >
+              <img
+                src="https://static.thenounproject.com/png/1960252-200.png"
+                alt="Export"
+                className="h-5 w-5"
+              />
+              <span>Export Data</span>
+            </li>
+          </ul>
         </div>
 
         <div
@@ -4271,12 +2747,11 @@ console.log(flattenedUnits);
           )}
         </div>
 
-<div className="mt-1 bg-white py-1 px-6 sm:px-20 lg:px-30 flex flex-col sm:flex-row gap-2 sm:gap-2">
-
-  {/* 🔵 Active Card */}
-  <div
-    onClick={() => setFlattenedUnits(activeunits)}
-    className="
+        <div className="mt-1 bg-white py-1 px-6 sm:px-20 lg:px-30 flex flex-col sm:flex-row gap-2 sm:gap-2">
+          {/* 🔵 Active Card */}
+          <div
+            onClick={() => setFlattenedUnits(activeunits)}
+            className="
       w-full sm:w-52
       border border-green-300
       rounded-xl
@@ -4289,17 +2764,19 @@ console.log(flattenedUnits);
       hover:bg-green-100
       transition-all duration-300
     "
-  >
-    <h6 className="text-lg font-semibold text-green-700 text-center">🔵Active</h6>
-    <p className="text-xl font-bold text-green-900 text-center">
-      {status_count?.Active}
-    </p>
-  </div>
+          >
+            <h6 className="text-lg font-semibold text-green-700 text-center">
+              🔵Active
+            </h6>
+            <p className="text-xl font-bold text-green-900 text-center">
+              {status_count?.Active}
+            </p>
+          </div>
 
-  {/* 🔴 Inactive Card */}
-  <div
-    onClick={() => setFlattenedUnits(inactiveunits)}
-    className="
+          {/* 🔴 Inactive Card */}
+          <div
+            onClick={() => setFlattenedUnits(inactiveunits)}
+            className="
       w-full sm:w-52
       border border-red-300
       rounded-xl
@@ -4312,16 +2789,15 @@ console.log(flattenedUnits);
       hover:bg-red-100
       transition-all duration-300
     "
-  >
-    <h6 className="text-lg font-semibold text-red-700 text-center">🔴Inactive</h6>
-    <p className="text-xl font-bold text-red-900 text-center">
-      {status_count?.InActive}
-    </p>
-  </div>
-  
-</div>
-
-
+          >
+            <h6 className="text-lg font-semibold text-red-700 text-center">
+              🔴Inactive
+            </h6>
+            <p className="text-xl font-bold text-red-900 text-center">
+              {status_count?.InActive}
+            </p>
+          </div>
+        </div>
 
         <div
           style={{
@@ -4478,7 +2954,9 @@ console.log(flattenedUnits);
                     : "https://static.thenounproject.com/png/1416596-200.png" // default image
                 }
                 // onClick={handleShow9}
-                onClick={()=>navigate('/edit-unit',{state:selectedItems3[0]})}
+                onClick={() =>
+                  navigate("/edit-unit", { state: selectedItems3[0] })
+                }
                 onMouseEnter={() => setIsHoveringEdit(true)}
                 onMouseLeave={() => setIsHoveringEdit(false)}
                 alt="edit"
@@ -4928,9 +3406,10 @@ console.log(flattenedUnits);
                               >
                                 {item.unit_no}
                               </span>{" "}
-                              ({item.unit_type}) {item.builtup_type}{" "}<br></br>
-                              {item.sub_category.join(",")}
-                              ({item.category}) <br></br>{item.size}
+                              ({item.unit_type}) {item.builtup_type} <br></br>
+                              {item.sub_category.join(",")}({item.category}){" "}
+                              <br></br>
+                              {item.size}
                             </>
                           );
                         })()}
@@ -5054,52 +3533,50 @@ console.log(flattenedUnits);
                                   </div>
                                 ))}
                               </>
-                            ) : 
-                            col.id === "location" ? (
+                            ) : col.id === "location" ? (
                               <>
-                              {item?.block
-                                ? item.block
-                                : "-"}<br></br>
-                                 {item?.project_name
-                                ? item.project_name
-                                : "-"}
-                            </>
-
-                            ): col.id === "follow_up" ? (
+                                {item?.block ? item.block : "-"}
+                                <br></br>
+                                {item?.project_name ? item.project_name : "-"}
+                              </>
+                            ) : col.id === "follow_up" ? (
                               <>
-                              {item?.follow_up
-                                ? new Date(item.follow_up).toLocaleString("en")
-                                : "-"}
-                            </>
-
+                                {item?.follow_up
+                                  ? new Date(item.follow_up).toLocaleString(
+                                      "en"
+                                    )
+                                  : "-"}
+                              </>
                             ) : col.id === "remarks" ? (
                               <>
-                              {item?.remarks}<br></br>
-                            <span className="text-red-700">
-                              {item?.reason || item?.other_reason}
-                            </span>
-                            </>
-
+                                {item?.remarks}
+                                <br></br>
+                                <span className="text-red-700">
+                                  {item?.reason || item?.other_reason}
+                                </span>
+                              </>
                             ) : col.id === "last_conduct_date_time" ? (
                               <>
-                              {item?.last_conduct_date_time ? (
-                                <div className="flex flex-col leading-tight">
-                                  <span className="font-medium">
-                                    {new Date(item.last_conduct_date_time).toLocaleDateString("en")}
-                                  </span>
-                                  <span className="font-medium">
-                                    {new Date(item.last_conduct_date_time).toLocaleTimeString("en")}
-                                  </span>
-                                     <span className="font-medium text-green">
-                                    {item.logged_user}
-                                  </span>
-                                </div>
-                              ) : (
-                                "-"
-                              )}
-                            </>
-
-
+                                {item?.last_conduct_date_time ? (
+                                  <div className="flex flex-col leading-tight">
+                                    <span className="font-medium">
+                                      {new Date(
+                                        item.last_conduct_date_time
+                                      ).toLocaleDateString("en")}
+                                    </span>
+                                    <span className="font-medium">
+                                      {new Date(
+                                        item.last_conduct_date_time
+                                      ).toLocaleTimeString("en")}
+                                    </span>
+                                    <span className="font-medium text-green">
+                                      {item.logged_user}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  "-"
+                                )}
+                              </>
                             ) : col.id === "locationbrief" ? (
                               <>
                                 {item.direction}(Direction)<br></br>
@@ -5116,1822 +3593,80 @@ console.log(flattenedUnits);
               </tbody>
             </Table>
           </TableContainer>
-  <footer className="sticky bottom-0 w-full bg-gray-100 border-t shadow-md">
-  <div className="max-w-full mx-auto px-1 py-1 grid 
+          <footer className="sticky bottom-0 w-full bg-gray-100 border-t shadow-md">
+            <div
+              className="max-w-full mx-auto px-1 py-1 grid 
                   grid-cols-2 sm:grid-cols-3 md:grid-cols-7 
-                  gap-2 text-center">
+                  gap-2 text-center"
+            >
+              {/* Summary */}
+              <div className="flex flex-col items-center">
+                <h6 className="text-gray-600 font-medium">Summary</h6>
+              </div>
 
-    {/* Summary */}
-    <div className="flex flex-col items-center">
-      <h6 className="text-gray-600 font-medium">Summary</h6>
-    </div>
+              {/* Total Inventories */}
+              <div className="flex flex-col items-center">
+                <h6 className="text-gray-700 font-medium">
+                  Total Inventories
+                  <span className="block text-black text-xl font-bold animate-pulse">
+                    {totalinventories || "0"}
+                  </span>
+                </h6>
+              </div>
 
-    {/* Total Inventories */}
-    <div className="flex flex-col items-center">
-      <h6 className="text-gray-700 font-medium">
-        Total Inventories
-        <span className="block text-black text-xl font-bold animate-pulse">
-          {totalinventories || "0"}
-        </span>
-      </h6>
-    </div>
+              {/* Residential */}
+              <div className="flex flex-col items-center">
+                <h6 className="text-gray-700 font-medium">
+                  Residential
+                  <span className="block text-green-600 text-xl font-bold animate-pulse">
+                    {category_count?.Residential || "0"}
+                  </span>
+                </h6>
+              </div>
 
-    {/* Residential */}
-    <div className="flex flex-col items-center">
-      <h6 className="text-gray-700 font-medium">
-        Residential
-        <span className="block text-green-600 text-xl font-bold animate-pulse">
-          {category_count?.Residential || "0"}
-        </span>
-      </h6>
-    </div>
+              {/* Commercial */}
+              <div className="flex flex-col items-center">
+                <h6 className="text-gray-700 font-medium">
+                  Commercial
+                  <span className="block text-blue-600 text-xl font-bold animate-pulse">
+                    {category_count?.Commercial || "0"}
+                  </span>
+                </h6>
+              </div>
 
-    {/* Commercial */}
-    <div className="flex flex-col items-center">
-      <h6 className="text-gray-700 font-medium">
-        Commercial
-        <span className="block text-blue-600 text-xl font-bold animate-pulse">
-          {category_count?.Commercial || "0"}
-        </span>
-      </h6>
-    </div>
+              {/* Agriculture */}
+              <div className="flex flex-col items-center">
+                <h6 className="text-gray-700 font-medium">
+                  Agriculture
+                  <span className="block text-orange-500 text-xl font-bold animate-pulse">
+                    {category_count?.Agricultural || "0"}
+                  </span>
+                </h6>
+              </div>
 
-    {/* Agriculture */}
-    <div className="flex flex-col items-center">
-      <h6 className="text-gray-700 font-medium">
-        Agriculture
-        <span className="block text-orange-500 text-xl font-bold animate-pulse">
-          {category_count?.Agricultural || "0"}
-        </span>
-      </h6>
-    </div>
+              {/* Industrial */}
+              <div className="flex flex-col items-center">
+                <h6 className="text-gray-700 font-medium">
+                  Industrial
+                  <span className="block text-red-600 text-xl font-bold animate-pulse">
+                    {category_count?.Industrial || "0"}
+                  </span>
+                </h6>
+              </div>
 
-    {/* Industrial */}
-    <div className="flex flex-col items-center">
-      <h6 className="text-gray-700 font-medium">
-        Industrial
-        <span className="block text-red-600 text-xl font-bold animate-pulse">
-          {category_count?.Industrial || "0"}
-        </span>
-      </h6>
-    </div>
-
-    {/* Institutional */}
-    <div className="flex flex-col items-center md:col-span-6 lg:col-span-1">
-      <h6 className="text-gray-700 font-medium">
-        Institutional
-        <span className="block text-gray-700 text-xl font-bold animate-pulse">
-          {category_count?.Institutional || "0"}
-        </span>
-      </h6>
-    </div>
-
-  </div>
-</footer>
-
+              {/* Institutional */}
+              <div className="flex flex-col items-center md:col-span-6 lg:col-span-1">
+                <h6 className="text-gray-700 font-medium">
+                  Institutional
+                  <span className="block text-gray-700 text-xl font-bold animate-pulse">
+                    {category_count?.Institutional || "0"}
+                  </span>
+                </h6>
+              </div>
+            </div>
+          </footer>
         </div>
       </div>
-
-      {/*========================================= edit unit modal start================================================================== */}
-
-      <Modal show={show9} onHide={handleClose9} size="lg">
-        <Modal.Header>
-          <Modal.Title>Update Unit</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div style={{ display: "flex", gap: "50px" }}>
-            <div
-              id="unitdetail"
-              style={{
-                cursor: "pointer",
-                fontWeight: "bold",
-                backgroundColor: activeUnit === 1 ? "#f0f0f0" : "transparent", // Optional: to highlight active tab
-              }}
-              onClick={unitdetail1}
-            >
-              <span>Unit</span>
-            </div>
-            <div
-              id="unitlocationdetails"
-              style={{
-                cursor: "pointer",
-                fontWeight: "bold",
-                backgroundColor: activeUnit === 2 ? "#f0f0f0" : "transparent", // Optional: to highlight active tab
-              }}
-              onClick={unitdetail2}
-            >
-              <span>Location</span>
-            </div>
-            <div
-              id="ownerdetails1"
-              style={{
-                cursor: "pointer",
-                fontWeight: "bold",
-                backgroundColor: activeUnit === 3 ? "#f0f0f0" : "transparent", // Optional: to highlight active tab
-              }}
-              onClick={unitdetail3}
-            >
-              <span>Add Owner</span>
-            </div>
-            <div
-              id="adddocuments"
-              style={{
-                cursor: "pointer",
-                fontWeight: "bold",
-                backgroundColor: activeUnit === 4 ? "#f0f0f0" : "transparent", // Optional: to highlight active tab
-              }}
-              onClick={unitdetail4}
-            >
-              <span>Add Documents</span>
-            </div>
-            <div
-              id="upload"
-              style={{
-                cursor: "pointer",
-                fontWeight: "bold",
-                backgroundColor: activeUnit === 5 ? "#f0f0f0" : "transparent", // Optional: to highlight active tab
-              }}
-              onClick={unitdetail5}
-            >
-              <span>Upload</span>
-            </div>
-          </div>
-
-          <hr></hr>
-          <div style={{ width: "100%" }}>
-            <div className="row" id="unitdetails1">
-              <div className="col-md-8">
-                <label className="labels">Unit Number</label>
-                <input
-                  type="text"
-                  required="true"
-                  className="form-control form-control-sm"
-                  value={units.unit_no}
-                  placeholder="unit number"
-                  onChange={(e) =>
-                    setunits({ ...units, unit_no: e.target.value })
-                  }
-                />
-              </div>
-              <div className="col-md-4">
-                <label className="labels">Unit Type</label>
-                <select
-                  className="form-control form-control-sm"
-                  onChange={(e) =>
-                    setunits({ ...units, unit_type: e.target.value })
-                  }
-                >
-                  <option>{units.unit_type}</option>
-                  <option>---Select---</option>
-                  <option>Corner</option>
-                  <option> Two Side Open</option>
-                  <option>Three Side Open</option>
-                  <option>Ordinary </option>
-                </select>
-              </div>
-              <div className="col-md-12" style={{ display: "flex" }}>
-                <label className="labels">Category</label>
-              </div>
-              <div className="col-md-12" style={{ display: "flex" }}>
-                <div
-                  className="col-md-12"
-                  style={{ display: "flex", flexWrap: "wrap" }}
-                >
-                  {project?.category?.map((type) => (
-                    <div className="col-md-3" key={type}>
-                      <button
-                        className="form-control form-control-sm"
-                        onClick={() => handleTypeClick1(type)}
-                        style={{
-                          backgroundColor: selectedType === type ? "green" : "",
-                        }}
-                      >
-                        {type}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-                 <div className="col-md-6"><label className="labels">Sub Category</label>
-                    
-                    <Select
-                    className='form-control form-control-sm'
-                    style={{border:"none"}}
-          labelId="subcategory-label"
-          id="subcategory"
-          multiple
-          value={units.sub_category || []}
-          onChange={handleSubCategoryChange1}
-          renderValue={(selected) => selected.join(", ")} 
-        >
-          <MenuItem value="">
-            <em>Select</em>
-          </MenuItem>
-          {project.sub_category.map((subCategory) => (
-            <MenuItem key={subCategory} value={subCategory}>
-              <Checkbox
-                checked={units.sub_category.indexOf(subCategory) > -1}
-                // onChange={() => handleToggle1(subCategory)}
-              />
-              <ListItemText primary={subCategory} />
-            </MenuItem>
-          ))}
-        </Select>
-                    </div>
-
-              <div className="col-md-6">
-                <label className="labels">Block</label>
-                <select
-                  className="form-control form-control-sm"
-                  onChange={(e) =>
-                    setunits({ ...units, block: e.target.value })
-                  }
-                >
-                  <option>{units.block}</option>
-                  <option>---choose---</option>
-                  {project?.add_block?.map((item) => (
-                    <option>{item.block_name}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-md-6">
-                <label className="labels">Size</label>
-                <select
-                  className="form-control form-control-sm"
-                  onChange={(e) => setunits({ ...units, size: e.target.value })}
-                >
-                  <option>{units.size}</option>
-                  <option>---choose---</option>
-                  {project?.add_size?.map((item) => (
-                    <option>{item.size_name}</option>
-                  ))}
-                </select>
-              </div>
-
-              {project?.category?.includes("Agricultural") && (
-                <>
-                  <div className="col-md-6">
-                    <label className="labels">Land Type</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, land_type: e.target.value })
-                      }
-                    >
-                      <option>{units.land_type}</option>
-                      <option>---Select---</option>
-                      <option>Crop Land</option>
-                      <option>Wood Land</option>
-                      <option>Pasture</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6"></div>
-                  <div
-                    className="col-md-12"
-                    style={{
-                      color: "green",
-                      fontWeight: "bolder",
-                      marginTop: "10px",
-                    }}
-                  >
-                    Land Details<hr></hr>
-                  </div>
-
-                  <div className="col-md-3">
-                    <label className="labels">Khewat No</label>
-                    {Array.isArray(units.khewat_no)
-                      ? units.khewat_no.map((item, index) => (
-                          <input
-                            className="form-control form-control-sm"
-                            style={{ marginTop: "10px" }}
-                            value={units.khewat_no}
-                            onChange={(event) =>
-                              handlekhewatnochange(index, event)
-                            }
-                          />
-                        ))
-                      : []}
-                  </div>
-
-                  <div className="col-md-3">
-                    <label className="labels">Killa No</label>
-                    {Array.isArray(units.killa_no)
-                      ? units.killa_no.map((item, index) => (
-                          <input
-                            className="form-control form-control-sm"
-                            style={{ marginTop: "10px" }}
-                            value={units.killa_no}
-                            onChange={(event) =>
-                              handlekillanochange(index, event)
-                            }
-                          />
-                        ))
-                      : []}
-                  </div>
-
-                  <div className="col-md-3">
-                    <label className="labels">Share</label>
-                    {Array.isArray(units.share)
-                      ? units.share.map((item, index) => (
-                          <input
-                            className="form-control form-control-sm"
-                            style={{ marginTop: "10px" }}
-                            value={units.share}
-                            onChange={(event) =>
-                              handlesharenochange(index, event)
-                            }
-                          />
-                        ))
-                      : []}
-                  </div>
-
-                  <div className="col-md-1" style={{ marginTop: "90px" }}>
-                    {Array.isArray(units.action5)
-                      ? units.action5.map((item, index) => (
-                          <div style={{ marginTop: "10px" }}>
-                            <img
-                              src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                              alt="delete button"
-                              onClick={() => deleteall5(index)}
-                              style={{ height: "40px", cursor: "pointer" }}
-                            />
-                          </div>
-                        ))
-                      : []}
-                  </div>
-
-                  <div className="col-md-1">
-                    <label className="labels">add</label>
-                    <button
-                      className="form-control form-control-sm"
-                      onClick={addFn5}
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div className="col-md-12">
-                    Total Land Area:-{units.total_land_area}
-                  </div>
-                  <div
-                    className="col-md-12"
-                    style={{
-                      color: "green",
-                      fontWeight: "bolder",
-                      marginTop: "10px",
-                    }}
-                  >
-                    Water Details<hr></hr>
-                  </div>
-
-                  <div className="col-md-3">
-                    <label className="labels">Water Source</label>
-                    {Array.isArray(units.water_source)
-                      ? units.water_source.map((item, index) => (
-                          <select
-                            className="form-control form-control-sm"
-                            style={{ marginTop: "10px" }}
-                            onChange={(event) =>
-                              handlewatersourcechange(index, event)
-                            }
-                          >
-                            <option>{units.water_source}</option>
-                            <option>---select---</option>
-                            <option>Ground Water</option>
-                            <option>Canal Water</option>
-                            <option>Pond Water</option>
-                            <option>Rain Water</option>
-                          </select>
-                        ))
-                      : []}
-                  </div>
-                  <div className="col-md-3">
-                    <label className="labels">Water Level</label>
-                    {Array.isArray(units.water_level)
-                      ? units.water_level.map((item, index) => (
-                          <select
-                            className="form-control form-control-sm"
-                            style={{ marginTop: "10px" }}
-                            onChange={(event) =>
-                              handlewaterlevelchange(index, event)
-                            }
-                          >
-                            <option>{units.water_level}</option>
-                            <option>---select---</option>
-                            <option>100ft.</option>
-                            <option>200Ft.</option>
-                          </select>
-                        ))
-                      : []}
-                  </div>
-
-                  <div className="col-md-3">
-                    <label className="labels">Water Pump Type</label>
-                    {Array.isArray(units.water_pump_type)
-                      ? units.water_pump_type.map((item, index) => (
-                          <select
-                            className="form-control form-control-sm"
-                            style={{ marginTop: "10px" }}
-                            onChange={(event) =>
-                              handlewaterpumpchange(index, event)
-                            }
-                          >
-                            <option>{units.water_pump_type}</option>{" "}
-                            <option>---select---</option>
-                            <option>Submersible Motor(15 HP)</option>
-                            <option>Sumersible Motor(20 HP)</option>
-                            <option>Monoblock Motor(10HP)</option>
-                            <option>Diesel Engine Pump</option>
-                          </select>
-                        ))
-                      : []}
-                  </div>
-                  <div className="col-md-1" style={{ marginTop: "90px" }}>
-                    {Array.isArray(units.action6)
-                      ? units.action6.map((item, index) => (
-                          <div style={{ marginTop: "10px" }}>
-                            <img
-                              src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                              alt="delete button"
-                              onClick={() => deleteall6(index)}
-                              style={{ height: "40px", cursor: "pointer" }}
-                            />
-                          </div>
-                        ))
-                      : []}
-                  </div>
-                  <div className="col-md-1">
-                    <label className="labels">add</label>
-                    <button
-                      className="form-control form-control-sm"
-                      onClick={addFn6}
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <div
-                    className="col-md-12"
-                    style={{ color: "green", fontWeight: "bolder" }}
-                  >
-                    Basic Details<hr></hr>
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="labels">Facing</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, facing: e.target.value })
-                      }
-                    >
-                      <option>{units.facing}</option>
-                      <option>---Select---</option>
-                      <option>Village Link Road</option>
-                      <option>Highway</option>
-                      <option>Expressway</option>
-                      <option>Unconstructed Road</option>
-                    </select>
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="labels">Side Open</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, side_open: e.target.value })
-                      }
-                    >
-                      <option>{units.side_open}</option>
-                      <option>---Select---</option>
-                      <option>1 Side Open</option>
-                      <option>2 Side Open</option>
-                      <option>3 Side Open</option>
-                    </select>
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="labels">Road</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, road: e.target.value })
-                      }
-                    >
-                      <option>{units.road}</option>
-                      <option>---Select---</option>
-                      <option>11 Ft wide</option>
-                      <option>22 Ft Wide</option>
-                      <option>33 Ft Wide</option>
-                      <option>60 Ft Wide</option>
-                      <option>100 Ft Wide</option>
-                      <option>200 Ft Wide</option>
-                    </select>
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="labels">Front On Road</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, fornt_on_road: e.target.value })
-                      }
-                    >
-                      <option>{units.fornt_on_road}</option>
-                      <option>---Select---</option>
-                      <option>10 ft</option>
-                      <option>20 ft</option>
-                      <option>30 ft</option>
-                      <option>50 ft</option>
-                      <option>70 ft</option>
-                      <option>100 ft</option>
-                      <option>200 ft</option>
-                      <option>500 ft</option>
-                      <option>1000 ft</option>
-                    </select>
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="labels">Ownership</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, ownership: e.target.value })
-                      }
-                    >
-                      <option>{units.ownership}</option>
-                      <option>---Select---</option>
-                      <option>Mustraka</option>
-                      <option>Individual</option>
-                    </select>
-                  </div>
-                  <div className="col-md-4">
-                    <label className="labels">No. Of Owner</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, total_owner: e.target.value })
-                      }
-                    >
-                      <option>{units.total_owner}</option>
-                      <option>---Select---</option>
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                    </select>
-                  </div>
-                </>
-              )}
-
-              {!project?.category?.includes("Agricultural") && (
-                <>
-                  <div className="col-md-4">
-                    <label className="labels">Direction</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, direction: e.target.value })
-                      }
-                    >
-                      <option>{units.direction}</option>
-                      <option>---Select---</option>
-                      <option>East</option>
-                      <option>West</option>
-                      <option>North</option>
-                      <option>South</option>
-                      <option>North East</option>
-                      <option>South East</option>
-                      <option>South West</option>
-                      <option>North West</option>
-                    </select>
-                  </div>
-                  <div className="col-md-4">
-                    <label className="labels">Facing</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, facing: e.target.value })
-                      }
-                    >
-                      <option>{units.facing}</option>
-                      <option>---Select---</option>
-                      <option>Park</option>
-                      <option>Green Belt</option>
-                      <option>Highway</option>
-                      <option>Commercial</option>
-                      <option>School</option>
-                      <option>Hospital</option>
-                      <option>Mandir</option>
-                      <option>Gurudwara</option>
-                      <option>Crech</option>
-                      <option>Clinic</option>
-                      <option>Community Centre</option>
-                      <option>1 Kanal</option>
-                      <option>14m Marla</option>
-                      <option>10 Marla</option>
-                      <option>8 Marla</option>
-                      <option>6 Marla</option>
-                      <option>4 Marla</option>
-                      <option>2 Marla</option>
-                      <option> 3 Marla</option>
-                      <option> 2 Kanal</option>
-                    </select>
-                  </div>
-                  <div className="col-md-4">
-                    <label className="labels">Road</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, road: e.target.value })
-                      }
-                    >
-                      <option>{units.road}</option>
-                      <option>---Select---</option>
-                      <option>9 Mtr Wide</option>
-                      <option>12 Mtr Wide</option>
-                      <option> 18 Mtr Wide</option>
-                      <option>24 Mtr Wide</option>
-                      <option> 60 Mtr Wide</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label className="labels">Ownership</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, ownership: e.target.value })
-                      }
-                    >
-                      <option>{units.ownership}</option>
-                      <option>---Select---</option>
-                      <option>Freehold</option>
-                      <option>Leasehold</option>
-                      <option>Co-OPerative Society</option>
-                      <option>Sale Agreement(Lal Dora)</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6">
-                    <label className="labels">Stage</label>
-                    <select
-                      className="form-control form-control-sm"
-                      onChange={(e) =>
-                        setunits({ ...units, stage: e.target.value })
-                      }
-                    >
-                      <option>{units.stage}</option>
-                      <option>---Select---</option>
-                      <option>Active</option>
-                      <option>Inactive</option>
-                    </select>
-                  </div>
-                </>
-              )}
-
-              <div className="col-md-6" style={{ marginTop: "10px" }}>
-                <input
-                  type="checkbox"
-                  checked={showabuiltup}
-                  onChange={handleCheckboxChange4}
-                />
-                <label>Show Builtup Details</label>
-              </div>
-              <div className="col-md-6"></div>
-              {showabuiltup && (
-                <>
-                  <div className="col-md-12">
-                    <label className="labels">Builtup Details</label>
-                    <hr></hr>
-                  </div>
-
-                  <div className="col-md-6">
-                    <label className="labels">Type</label>{" "}
-                    <select
-                      className="form-control form-control-sm"
-                      style={{ marginTop: "10px" }}
-                      onChange={(e) =>
-                        setunits({ ...units, builtup_type: e.target.value })
-                      }
-                    >
-                      <option>{units.builtup_type}</option>
-                      <option>---Select---</option>
-                      <option>Duplex</option>
-                      <option>Triplex</option>
-                      <option>Independent House</option>
-                      <option>Penthouse</option>
-                      <option>Apartments</option>
-                      <option>Studio Apartments</option>
-                      <option>Bunglow</option>
-                      <option>Farmhouse</option>
-                      <option>Courtyard House</option>
-                    </select>
-                  </div>
-                  <div className="col-md-6"></div>
-
-                  <div
-                    className="row mt-2"
-                    style={{
-                      border: "1px dashed black",
-                      margin: "10px",
-                      marginTop: "0",
-                      padding: "10px",
-                      width: "100%",
-                    }}
-                  >
-                    <div className="col-md-2">
-                      <label className="labels">Floor</label>
-                      {Array.isArray(units.floor)
-                        ? units.floor.map((item, index) => (
-                            <select
-                              className="form-control form-control-sm"
-                              style={{ marginTop: "10px" }}
-                              onChange={(event) =>
-                                handlefloorchange(index, event)
-                              }
-                            >
-                              <option>{units.floor[index]}</option>
-                              <option>---Select---</option>
-                              <option>Ground Floor</option>
-                              <option>First Floor</option>
-                              <option>Second Floor</option>
-                              <option>Lower Ground</option>
-                              <option>Upper Ground</option>
-                              <option>Third Floor</option>
-                              <option> Fourth Floor</option>
-                              <option>Lower Ground</option>
-                              <option>Lower Ground</option>
-                            </select>
-                          ))
-                        : []}
-                    </div>
-                    <div className="col-md-2">
-                      <label className="labels" style={{ width: "500px" }}>
-                        Cluter Details
-                      </label>
-                      {Array.isArray(units.cluter_details)
-                        ? units.cluter_details.map((item, index) => (
-                            <select
-                              className="form-control form-control-sm"
-                              style={{ marginTop: "10px" }}
-                              onChange={(event) =>
-                                handlecluterdetails(index, event)
-                              }
-                            >
-                              <option>{units.cluter_details[index]}</option>
-                              <option>---Select---</option>
-                              <option>Living Room</option>
-                              <option>Lobby</option>
-                              <option>Bedroom</option>
-                              <option>Master Bedroom</option>
-                              <option>Kitchen</option>
-                              <option>Bathroom</option>
-                              <option>Pooja room,</option>
-                              <option>Study Room</option>
-                              <option>Frontward</option>
-                              <option>Backyard</option>
-                              <option>Balcony</option>
-                              <option>Store</option>
-                              <option>Guest Room</option>
-                              <option>Servent Room</option>
-                              <option>Dressing</option>
-                            </select>
-                          ))
-                        : []}
-                    </div>
-                    <div className="col-md-2">
-                      <label className="labels">Length</label>
-                      {Array.isArray(units.length)
-                        ? units.length.map((item, index) => (
-                            <input
-                              className="form-control form-control-sm"
-                              style={{ marginTop: "10px" }}
-                              value={units.length[index]}
-                              onChange={(event) =>
-                                handlelengthchange(index, event)
-                              }
-                            />
-                          ))
-                        : []}
-                    </div>
-                    <div className="col-md-2">
-                      <label className="labels">Breadth</label>
-                      {Array.isArray(units.bredth)
-                        ? units.bredth.map((item, index) => (
-                            <input
-                              className="form-control form-control-sm"
-                              style={{ marginTop: "10px" }}
-                              value={units.bredth[index]}
-                              onChange={(event) =>
-                                handlebredthchange(index, event)
-                              }
-                            />
-                          ))
-                        : []}
-                    </div>
-                    <div className="col-md-2">
-                      <label className="labels">Total Area</label>
-                      {Array.isArray(units.total_area)
-                        ? units.total_area.map((item, index) => (
-                            <input
-                              className="form-control form-control-sm"
-                              value={
-                                units.length[index] && units.bredth[index]
-                                  ? units.length[index] * units.bredth[index]
-                                  : ""
-                              }
-                              style={{ marginTop: "10px" }}
-                              readOnly
-                            />
-                          ))
-                        : []}
-                    </div>
-
-                    <div className="col-md-1" style={{ marginTop: "90px" }}>
-                      {Array.isArray(units.action3)
-                        ? units.action3.map((item, index) => (
-                            <div style={{ marginTop: "10px" }}>
-                              <img
-                                src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                alt="delete button"
-                                onClick={() => deleteall3(index)}
-                                style={{ height: "40px", cursor: "pointer" }}
-                              />
-                            </div>
-                          ))
-                        : []}
-                    </div>
-                    <div className="col-md-1">
-                      <label className="labels">add</label>
-                      <button
-                        className="form-control form-control-sm"
-                        onClick={addFn3}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              <div className="col-md-6">
-                <label>Occupation Date</label>
-                <input
-                  type="date"
-                  className="form-control form-control-sm"
-                  value={
-                    !isNaN(units.ocupation_date)
-                      ? excelSerialToDateString(Number(units.ocupation_date))
-                      : units.ocupation_date
-                  }
-                  onChange={(e) =>
-                    setunits({ ...units, ocupation_date: e.target.value })
-                  }
-                />
-              </div>
-              <div className="col-md-6">
-                <label>Age of Construction</label>
-                <input
-                  type="text"
-                  className="form-control form-control-sm"
-                  value={units.age_of_construction}
-                  onChange={(e) =>
-                    setunits({ ...units, age_of_construction: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="labels">Furnishing Details</label>
-                <select
-                  id="subcategory"
-                  className="form-control form-control-sm"
-                  onChange={(e) =>
-                    setunits({ ...units, furnishing_details: e.target.value })
-                  }
-                >
-                  <option>{units.furnishing_details}</option>
-                  <option>---Select---</option>
-                  <option>Furnished</option>
-                  <option>Unfurnished</option>
-                  <option>Semi Furnished</option>
-                </select>
-              </div>
-              {(units.furnishing_details === "Furnished" ||
-                units.furnishing_details === "Semi Furnished") && (
-                <div className="col-md-12">
-                  <label>Enter Furnishing Details</label>
-                  <input
-                    type="text"
-                    className="form-control form-control-sm"
-                    onChange={(e) =>
-                      setunits({
-                        ...units,
-                        age_of_construction: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-              )}
-              <div className="col-md-6"></div>
-
-              <div className="col-md-8">
-                <label>Furnished Items</label>
-                <input
-                  type="text"
-                  className="form-control form-control-sm"
-                  onChange={(e) =>
-                    setunits({ ...units, furnished_item: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div
-              className="col-md-12"
-              id="unitlocation"
-              style={{ display: "none", lineHeight: "30px" }}
-            >
-              <div className="p-3 py-5">
-                <div
-                  className="col-md-12"
-                  style={{
-                    border: "1px solid black",
-                    marginTop: "30px",
-                    padding: "10px",
-                  }}
-                >
-                  <div style={{ border: "1px solid black", marginTop: "10px" }}>
-                    <LoadScript googleMapsApiKey="AIzaSyACfBzaJSVH8eur7U9JxdjI1bAeTLXsUJc">
-                      <GoogleMap
-                        mapContainerStyle={mapStyles1}
-                        zoom={13}
-                        center={defaultCenter1}
-                      >
-                        <Marker
-                          position={{
-                            lat: defaultCenter1.lat,
-                            lng: defaultCenter1.lng,
-                          }}
-                          draggable={true}
-                          onDragEnd={handleMarkerDragEnd1}
-                        />
-                      </GoogleMap>
-                    </LoadScript>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-6">
-                      <label className="labels">Location</label>
-                      <input
-                        type="text"
-                        className="form-control form-control-sm"
-                        required="true"
-                        value={units.location}
-                        onChange={(e) =>
-                          setunits({ ...units, location: e.target.value })
-                        }
-                      />
-                    </div>
-                    {/* <div className='col-md-5'></div> */}
-                    <div className="col-md-2">
-                      <label
-                        className="labels"
-                        style={{ visibility: "hidden" }}
-                      >
-                        .
-                      </label>
-                      <button
-                        className="form-control form-control-sm"
-                        required="true"
-                        onClick={handleSubmit1}
-                      >
-                        Get
-                      </button>
-                    </div>
-                    <div className="col-md-4"></div>
-                    <div className="col-md-5">
-                      <label className="labels">Lattitude</label>
-                      <input
-                        type="number"
-                        className="form-control form-control-sm"
-                        required="true"
-                        value={units.lattitude}
-                        readOnly
-                      />
-                    </div>
-                    <div className="col-md-5">
-                      <label className="labels">Langitude</label>
-                      <input
-                        type="number"
-                        className="form-control form-control-sm"
-                        required="true"
-                        value={units.langitude}
-                        readOnly
-                      />
-                    </div>
-                    <div className="col-md-12">
-                      <label
-                        className="labels"
-                        style={{ fontSize: "16px", marginTop: "10px" }}
-                      >
-                        Address
-                      </label>
-                    </div>
-
-                    <div className="col-md-8">
-                      <label className="labels">ADDRESS</label>
-                      <input
-                        type="text"
-                        value={units.uaddress}
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setunits({ ...units, uaddress: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="col-md-4"></div>
-                    <div className="col-md-8">
-                      <label className="labels">STREET</label>
-                      <input
-                        type="text"
-                        value={units.ustreet}
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setunits({ ...units, ustreet: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="col-md-4"></div>
-                    <div className="col-md-4">
-                      <label className="labels">LOCALITY</label>
-                      <input
-                        type="text"
-                        value={units.ulocality}
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setunits({ ...units, ulocality: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="col-md-4">
-                      <label className="labels">CITY</label>
-                      <select
-                        type="text"
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setunits({ ...units, ucity: e.target.value })
-                        }
-                      >
-                        <option>{units.ucity}</option>
-                        {ucities.map((city) => (
-                          <option key={city} value={city}>
-                            {city}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="col-md-4">
-                      <label className="labels">ZIP</label>
-                      <input
-                        type="text"
-                        value={units.uzip}
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setunits({ ...units, uzip: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="labels">State</label>
-                      <select
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setunits({ ...units, ustate: e.target.value })
-                        }
-                      >
-                        <option>{units.ustate}</option>
-                        {ustates.map((state) => (
-                          <option key={state} value={state}>
-                            {state}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="col-md-6">
-                      <label className="labels">Country</label>
-                      <select
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setunits({ ...units, ucountry: e.target.value })
-                        }
-                      >
-                        <option>{units.ucountry}</option>
-                        <option>My Team</option>
-                        <option>My Self</option>
-                        <option>All Users</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div id="ownerdetails" style={{ padding: "5px", display: "none" }}>
-            <div className="row" style={{ width: "100%" }}>
-              <div
-                className="col-md-9"
-                id="suggestion-box"
-                style={{ position: "relative" }}
-              >
-                <label className="labels" style={{ visibility: "hidden" }}>
-                  Search
-                </label>
-                <input
-                  type="search"
-                  className="form-control form-control-sm"
-                  value={input}
-                  placeholder="Type here For Search in Contact"
-                  required="true"
-                  onChange={handleInputChange}
-                />
-              </div>
-              {showSuggestions && input && filteredSuggestions?.length > 0 && (
-                <ul className="suggestion-list" style={{ width: "100%" }}>
-                  {filteredSuggestions.map((suggestion, index) => (
-                    <li
-                      key={index}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                    >
-                      {suggestion.first_name} {suggestion.last_name}(
-                      {suggestion.mobile_no})
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <div className="col-md-3">
-                <label className="labels">Add Contact</label>
-                <button
-                  className="form-control form-control-sm"
-                  style={{ width: "50px" }}
-                  onClick={() => navigate("/sortaddcontact")}
-                >
-                  +
-                </button>
-              </div>
-
-              <div className="col-md-12" style={{ marginTop: "20px" }}>
-                <label className="labels">Owner Contact</label>
-                <div className="col-md-12">
-                  <hr></hr>
-                </div>
-                {units.owner_details.length >= 0 && (
-                  <div className="contact-details">
-                    <table style={{ width: "100%" }}>
-                      <tbody>
-                        {/* Combine selectedcontact1 with units.owner_details while removing duplicates */}
-                        {[...selectedcontact1, ...units.owner_details]
-                          .filter((contact) => contact && contact._id) // Ensure contact is valid (not empty)
-                          .filter(
-                            (contact, index, self) =>
-                              // Ensure that we only keep unique contacts based on _id
-                              index ===
-                              self.findIndex((c) => c._id === contact._id)
-                          )
-                          .map((contact) => (
-                            <StyledTableRow>
-                              <img
-                                style={{ height: "50px", width: "60px" }}
-                                src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png"
-                                alt=""
-                              ></img>
-                              <StyledTableCell
-                                style={{ cursor: "pointer", fontSize: "10px" }}
-                              >
-                                {contact.title} {contact.first_name}{" "}
-                                {contact.last_name}
-                                <br></br>
-                                <SvgIcon
-                                  component={EmailIcon}
-                                  style={{ fontSize: "10px" }}
-                                />
-                                <span>{contact.email}</span>
-                              </StyledTableCell>
-
-                              <StyledTableCell
-                                style={{ cursor: "pointer", fontSize: "10px" }}
-                              >
-                                {Array.isArray(contact.mobile_no)
-                                  ? contact.mobile_no.map((number, index) => (
-                                      <span key={index}>
-                                        <SvgIcon
-                                          component={PhoneIphoneIcon}
-                                          style={{ fontSize: "10px" }}
-                                        />
-                                        {number}
-                                        <br></br>
-                                      </span>
-                                    ))
-                                  : []}
-                              </StyledTableCell>
-
-                              <StyledTableCell
-                                style={{ cursor: "pointer", fontSize: "10px" }}
-                              >
-                                S/W/O <br></br>
-                                {contact.father_husband_name}
-                              </StyledTableCell>
-
-                              <StyledTableCell
-                                style={{ cursor: "pointer", fontSize: "10px" }}
-                              >
-                                permanent address: <br></br>
-                                {contact.h_no}
-                                <br></br>
-                                {contact.area1}
-                                {contact.location1} {contact.city1}{" "}
-                                {contact.state1} {contact.country1}{" "}
-                                {contact.pincode1}
-                              </StyledTableCell>
-
-                              <StyledTableCell
-                                style={{ cursor: "pointer", fontSize: "10px" }}
-                              >
-                                <span
-                                  style={{
-                                    color: "orange",
-                                    fontWeight: "bolder",
-                                  }}
-                                >
-                                  Owner
-                                </span>
-                              </StyledTableCell>
-
-                              <StyledTableCell>
-                                <img
-                                  style={{ height: "20px", cursor: "pointer" }}
-                                  src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png"
-                                  alt=""
-                                  onClick={() => removeContact(contact._id)}
-                                ></img>
-                              </StyledTableCell>
-                            </StyledTableRow>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-
-              <div className="col-md-12" style={{ marginTop: "20px" }}>
-                <label className="labels">Associate Contact</label>
-                <div className="col-md-12">
-                  <hr></hr>
-                </div>
-                {units.associated_contact.length >= 0 && (
-                  <div className="contact-details">
-                    <table style={{ width: "100%" }}>
-                      <tbody>
-                        {[...selectedcontact2, ...units.associated_contact]
-                          .filter((contact) => contact && contact._id) // Ensure contact is valid (not empty)
-                          .filter(
-                            (contact, index, self) =>
-                              // Ensure that we only keep unique contacts based on _id
-                              index ===
-                              self.findIndex((c) => c._id === contact._id)
-                          )
-                          .map((contact) => (
-                            <StyledTableRow>
-                              <img
-                                style={{ height: "50px", width: "60px" }}
-                                src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png"
-                                alt="Contact"
-                              />
-                              <StyledTableCell
-                                style={{ cursor: "pointer", fontSize: "10px" }}
-                              >
-                                {contact.title} {contact.first_name}{" "}
-                                {contact.last_name}
-                                <br />
-                                <SvgIcon
-                                  component={EmailIcon}
-                                  style={{ fontSize: "10px" }}
-                                />
-                                <span>{contact.email}</span>
-                              </StyledTableCell>
-
-                              <StyledTableCell
-                                style={{ cursor: "pointer", fontSize: "10px" }}
-                              >
-                                {Array.isArray(contact.mobile_no)
-                                  ? contact.mobile_no.map((number, index) => (
-                                      <span key={index}>
-                                        <SvgIcon component={PhoneIphoneIcon} />
-                                        {number}
-                                        <br />
-                                      </span>
-                                    ))
-                                  : []}
-                              </StyledTableCell>
-
-                              <StyledTableCell
-                                style={{ cursor: "pointer", fontSize: "10px" }}
-                              >
-                                S/W/O <br />
-                                {contact.father_husband_name}
-                              </StyledTableCell>
-
-                              <StyledTableCell
-                                style={{ cursor: "pointer", fontSize: "10px" }}
-                              >
-                                permanent address: <br />
-                                {contact.h_no}
-                                <br />
-                                {contact.area1} {contact.location1}{" "}
-                                {contact.city1} {contact.state1}{" "}
-                                {contact.country1} {contact.pincode1}
-                              </StyledTableCell>
-
-                              <StyledTableCell
-                                style={{ cursor: "pointer", fontSize: "10px" }}
-                              >
-                                <span
-                                  style={{
-                                    color: "orange",
-                                    fontWeight: "bolder",
-                                  }}
-                                >
-                                  {relation1}
-                                </span>
-                              </StyledTableCell>
-
-                              <StyledTableCell>
-                                <img
-                                  style={{ height: "20px", cursor: "pointer" }}
-                                  src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png"
-                                  onClick={() => removeContact(contact._id)}
-                                  alt="Remove"
-                                />
-                              </StyledTableCell>
-                            </StyledTableRow>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div id="uploadmedia" style={{ padding: "5px", display: "none" }}>
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h6 className="text-right">Upload Images</h6>
-            </div>
-            <hr></hr>
-            <div className="row mt-2">
-              <table style={{ marginLeft: "25px" }}>
-                <thead>
-                  <tr>
-                    <th style={{ width: "100px" }}>#</th>
-                    <th style={{ width: "400px", textAlign: "center" }}>
-                      Preview
-                    </th>
-                    <th style={{ width: "300px", textAlign: "center" }}>
-                      Description
-                    </th>
-                    {/* <th style={{width:"300px",textAlign:"center"}}>Category</th> */}
-                    <th style={{ width: "150px", textAlign: "center" }}>
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      {Array.isArray(units.s_no)
-                        ? units.s_no.map((name, index) => (
-                            <div
-                              key={index}
-                              className="col-md-12"
-                              style={{ marginTop: "10px" }}
-                            >
-                              <input
-                                type="text"
-                                className="form-control form-control-sm"
-                                onChange={(event) =>
-                                  handlesnochange(index, event)
-                                }
-                              />
-                            </div>
-                          ))
-                        : []}
-                    </td>
-                    <td>
-                      {Array.isArray(units.preview)
-                        ? units.preview.map((name, index) => (
-                            <div
-                              key={index}
-                              className="col-md-12"
-                              style={{ marginTop: "10px" }}
-                            >
-                              {name && (
-                                <img
-                                  // src={typeof item === 'string' ? item : URL.createObjectURL(item)}
-                                  src={`${name}`}
-                                  alt="preview"
-                                  style={{
-                                    width: "50px",
-                                    height: "50px",
-                                    objectFit: "cover",
-                                    marginBottom: "10px",
-                                  }}
-                                />
-                              )}
-                              <input
-                                name="preview"
-                                type="file"
-                                className="form-control form-control-sm"
-                                multiple
-                                onChange={(event) =>
-                                  handlepreviewchange(index, event)
-                                }
-                              />
-                              {}
-                              {name.previewUrls &&
-                                name.previewUrls.map((url, idx) => (
-                                  <img
-                                    key={idx}
-                                    src={url}
-                                    alt={`preview ${index}-${idx}`}
-                                    style={{
-                                      width: "100px",
-                                      height: "100px",
-                                      objectFit: "cover",
-                                    }}
-                                  />
-                                ))}
-                            </div>
-                          ))
-                        : []}
-                    </td>
-                    <td>
-                      {Array.isArray(units.descriptions)
-                        ? units.descriptions.map((name, index) => (
-                            <div
-                              key={index}
-                              className="col-md-12"
-                              style={{ marginTop: "10px" }}
-                            >
-                              <input
-                                type="text"
-                                className="form-control form-control-sm"
-                                onChange={(event) =>
-                                  handledescriptionchange(index, event)
-                                }
-                              />
-                            </div>
-                          ))
-                        : []}
-                    </td>
-                    {/* <td>
-                       {Array.isArray(units.category)?
-                       units.category.map((name, index) => (
-                                 <div key={index}className="col-md-12" style={{marginTop:"10px"}}>
-                                   <select className="form-control form-control-sm" required="true" onChange={(event) => handlecategorychange(index, event)}>
-                                       <option>select</option>
-                                       <option>Bedroom</option>
-                                       <option>Hall</option>
-                                       <option>Kitchen</option>
-                                       <option>Balcony</option>
-                                       <option>Washroom</option>
-                                       <option>Pooja Room</option>
-                                       <option>Dining Room</option>
-                                       <option>Drawing Room</option>
-                                       </select>
-                                 </div>
-                               )):[]}
-                       </td> */}
-                    <td>
-                      {Array.isArray(units.action10)
-                        ? units.action10.map((name, index) => (
-                            <div
-                              key={index}
-                              className="col-md-12"
-                              style={{ marginTop: "10px" }}
-                            >
-                              <div>
-                                <img
-                                  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                  alt="delete button"
-                                  onClick={() => deleteallunit(index)}
-                                  style={{ height: "40px", cursor: "pointer" }}
-                                />
-                              </div>
-                            </div>
-                          ))
-                        : []}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="row mt-4">
-              <div
-                className="col-md-3"
-                style={{ marginLeft: "70%" }}
-                onClick={addFnunit}
-              >
-                <button className="form-control form-control-sm">
-                  Add Image
-                </button>
-              </div>
-            </div>
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h6 className="text-right">Upload Videos</h6>
-            </div>
-            <hr></hr>
-            <div className="row mt-2">
-              <table style={{ marginLeft: "25px" }}>
-                <thead>
-                  <tr>
-                    <th style={{ width: "100px", textAlign: "center" }}>
-                      SR.NO.
-                    </th>
-                    <th style={{ width: "950px", textAlign: "center" }}>URL</th>
-                    <th style={{ width: "150px", textAlign: "center" }}>
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      {Array.isArray(units.s_no1)
-                        ? units.s_no1.map((name, index) => (
-                            <div
-                              key={index}
-                              className="col-md-12"
-                              style={{ marginTop: "10px" }}
-                            >
-                              <input
-                                type="text"
-                                className="form-control form-control-sm"
-                                value={name}
-                                onChange={(event) =>
-                                  handlesno1change(index, event)
-                                }
-                              />
-                            </div>
-                          ))
-                        : []}
-                    </td>
-                    <td>
-                      {Array.isArray(units.url)
-                        ? units.url.map((name, index) => (
-                            <div
-                              key={index}
-                              className="col-md-12"
-                              style={{ marginTop: "10px" }}
-                            >
-                              <input
-                                type="text"
-                                className="form-control form-control-sm"
-                                value={name}
-                                onChange={(event) =>
-                                  handleurlChange(index, event)
-                                }
-                              />
-                            </div>
-                          ))
-                        : []}
-                    </td>
-                    <td>
-                      {Array.isArray(units.action11)
-                        ? units.action11.map((name, index) => (
-                            <div
-                              key={index}
-                              className="col-md-12"
-                              style={{ marginTop: "10px" }}
-                            >
-                              <div>
-                                <img
-                                  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                  alt="delete button"
-                                  onClick={() => deleteallunit1(index)}
-                                  style={{ height: "40px", cursor: "pointer" }}
-                                />
-                              </div>
-                            </div>
-                          ))
-                        : []}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="row mt-4">
-              <div
-                className="col-md-3"
-                style={{ marginLeft: "70%" }}
-                onClick={addFnunit1}
-              >
-                <button className="form-control form-control-sm">
-                  Add Video Link
-                </button>
-              </div>
-
-              <div className="col-md-12">
-                <hr></hr>
-              </div>
-
-              <div className="col-md-2"></div>
-            </div>
-          </div>
-
-          <div id="documentform" style={{ padding: "5px", display: "none" }}>
-            <div className="d-flex justify-content-between align-items-center mb-3"></div>
-            <hr></hr>
-
-            <div className="row mt-2">
-              <div className="col-md-3">
-                <label className="labels">Document Name</label>
-                {Array.isArray(units.document_name)
-                  ? units.document_name.map((item, index) => (
-                      <select
-                        className="form-control form-control-sm"
-                        onChange={(event) =>
-                          handledocumentnamechange(index, event)
-                        }
-                        style={{ marginTop: "5px" }}
-                      >
-                        <option>{units.document_name[index]}</option>
-                        <option>Aadhar Card</option>
-                        <option>Pan Card</option>
-                        <option>Voter Id</option>
-                        <option>Passport</option>
-                        <option>Driving Licence</option>
-                        <option>Other</option>
-                      </select>
-                    ))
-                  : []}
-              </div>
-
-              <div className="col-md-2">
-                <label className="labels">Doc. No.</label>
-                {Array.isArray(units.document_no)
-                  ? units.document_no.map((item, index) => (
-                      <input
-                        type="text"
-                        value={units.document_no[index]}
-                        className="form-control form-control-sm"
-                        onChange={(event) =>
-                          handledocumentnochange(index, event)
-                        }
-                        style={{ marginTop: "5px" }}
-                      />
-                    ))
-                  : []}
-              </div>
-
-              <div className="col-md-2">
-                <label className="labels">Date</label>
-                {Array.isArray(units.document_Date)
-                  ? units.document_Date.map((item, index) => (
-                      <input
-                        type="date"
-                        value={units.document_Date[index]}
-                        className="form-control form-control-sm"
-                        onChange={(event) =>
-                          handledocumentdatechange(index, event)
-                        }
-                        style={{ marginTop: "5px" }}
-                      />
-                    ))
-                  : []}
-              </div>
-
-              <div className="col-md-2" style={{ position: "relative" }}>
-                <label className="labels">Pic</label>
-                {Array.isArray(units.image)
-                  ? units.image.map((name, index) => (
-                      <div
-                        key={index}
-                        className="col-md-12"
-                        style={{ marginTop: "10px" }}
-                      >
-                        {name && (
-                          <img
-                            // src={typeof item === 'string' ? item : URL.createObjectURL(item)}
-                            src={`${name}`}
-                            alt="preview"
-                            style={{
-                              width: "50px",
-                              height: "50px",
-                              objectFit: "cover",
-                              marginBottom: "10px",
-                            }}
-                          />
-                        )}
-                        <input
-                          name="image"
-                          type="file"
-                          className="form-control form-control-sm"
-                          multiple
-                          onChange={(event) => handlepicchange1(index, event)}
-                          style={{
-                            width: "90px",
-                            fontSize: "10px",
-                            paddingTop: "7px",
-                          }}
-                        />
-
-                        {name.previewUrls &&
-                          name.previewUrls.map((url, idx) => (
-                            <img
-                              key={idx}
-                              src={url}
-                              alt={`preview ${index}-${idx}`}
-                              style={{
-                                width: "100px",
-                                height: "100px",
-                                objectFit: "cover",
-                              }}
-                            />
-                          ))}
-                      </div>
-                    ))
-                  : []}
-              </div>
-
-              {/* <div className="col-md-1" style={{ marginTop: "70px" }}> 
-    {
-      Array.isArray(units.document_name) ?
-        units.document_name.map((item, index) => (
-          <div key={index} style={{ marginTop: "10px" }}>
-            {units.document_name[index] && ( 
-              <img
-                src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                alt="delete button"
-                onClick={() => deleteall12(index)} 
-                style={{ height: "40px", cursor: "pointer" }}
-              />
-            )}
-          </div>
-        )) :    Array.isArray(units.action12)?
-                       units.action12.map((name, index) => (
-                                 <div key={index}className="col-md-12" style={{marginTop:"10px"}}>
-                                 
-                                   <div><img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button"   onClick={() => deleteall12(index)} style={{height:"40px",cursor:"pointer"}}/></div>
-                                 </div>
-                               )):[]
-    }
-                       </div>   */}
-
-              <div className="col-md-1" style={{ marginTop: "70px" }}>
-                {Array.isArray(units.action12)
-                  ? units.action12.map((item, index) => (
-                      <div style={{ marginTop: "10px" }}>
-                        {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall12(index)} style={{height:"40px",cursor:"pointer"}}/> */}
-                        <span
-                          class="material-icons"
-                          style={{
-                            color: "red",
-                            fontSize: "24px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => deleteall12(index)}
-                        >
-                          delete
-                        </span>
-                      </div>
-                    ))
-                  : []}
-              </div>
-
-              <div className="col-md-1">
-                <label className="labels" style={{ visibility: "hidden" }}>
-                  Add
-                </label>
-                <button
-                  className="form-control form-control-sm"
-                  onClick={addFn12}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={updateinventories}>
-            Update Unit
-          </Button>
-          <Button variant="secondary" onClick={handleClose9}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* ===============================================edit unit modal end ==============================================================*/}
 
       {/*================================================ add remarks modal start================================================== */}
 
@@ -7011,15 +3746,15 @@ console.log(flattenedUnits);
 
       {/*========================================= modal for add new owner in feedback form start =========================================*/}
 
-      <Modal show={show7} onHide={handleClose7} size="xl">
+      <Modal show={show7} onHide={handleClose7} size="lg">
         <Modal.Header>
           <Modal.Title>Add New Owner</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div style={{ padding: "5px" }}>
+          <div  style={{ padding: "5px" }}>
             <div className="row" style={{ width: "100%" }}>
               <div
-                className="col-md-9"
+                className="col-md-9 custom-input"
                 id="suggestion-box"
                 style={{ position: "relative" }}
               >
@@ -7048,7 +3783,7 @@ console.log(flattenedUnits);
                   ))}
                 </ul>
               )}
-              <div className="col-md-3">
+              <div className="col-md-3 custom-input">
                 <label className="labels">Add Contact</label>
                 <button
                   className="form-control form-control-sm"
@@ -7058,9 +3793,9 @@ console.log(flattenedUnits);
                 </button>
               </div>
 
-              <div className="col-md-12" style={{ marginTop: "20px" }}>
+              <div className="col-md-12 custom-input" style={{ marginTop: "20px" }}>
                 <label className="labels">Owner Contact</label>
-                <div className="col-md-12">
+                <div className="col-md-12 custom-input">
                   <hr></hr>
                 </div>
                 {selectedcontact1.length >= 0 && (
@@ -7284,9 +4019,12 @@ console.log(flattenedUnits);
       >
         <div className="toast show">
           <div className="toast-header">
-            <strong className="me-auto" style={{ fontWeight: "bold", color:"var(--main-color)"}}>
+            <strong
+              className="me-auto"
+              style={{ fontWeight: "bold", color: "var(--main-color)" }}
+            >
               Customer Feedback of unit{" "}
-              <span style={{ fontWeight: "bold", color:"var(--main-color)"}}>
+              <span style={{ fontWeight: "bold", color: "var(--main-color)" }}>
                 {feedbackform.unit_no}
               </span>
             </strong>
@@ -7331,11 +4069,11 @@ console.log(flattenedUnits);
                   setfeedbackform({
                     ...feedbackform,
                     owner_response: e.target.value,
-                    no_reason:"",
-                    other_no_reason:"",
-                    discussed_reason:"",
-                    other_discussed_reason:"",
-                    next_call_date:""
+                    no_reason: "",
+                    other_no_reason: "",
+                    discussed_reason: "",
+                    other_discussed_reason: "",
+                    next_call_date: "",
                   })
                 }
                 value={feedbackform?.owner_response}
@@ -7345,20 +4083,20 @@ console.log(flattenedUnits);
                   }
                 }}
               >
-                 {select_loading === "owner_response" ? (
-                          <option>⏳ Loading...</option>
-                        ) : (
-                          <>
-                            <option>---Select owner response---</option>
+                {select_loading === "owner_response" ? (
+                  <option>⏳ Loading...</option>
+                ) : (
+                  <>
+                    <option>---Select owner response---</option>
 
-                            {/* Dynamic Fetched List */}
-                            {All_Owner_Response.map((val, i) => (
-                              <option key={i} value={val.lookup_value}>
-                                {val.lookup_value}
-                              </option>
-                            ))}
-                          </>
-                        )}
+                    {/* Dynamic Fetched List */}
+                    {All_Owner_Response.map((val, i) => (
+                      <option key={i} value={val.lookup_value}>
+                        {val.lookup_value}
+                      </option>
+                    ))}
+                  </>
+                )}
               </select>
             </div>
 
@@ -7383,7 +4121,8 @@ console.log(flattenedUnits);
                           value={reason.lookup_value}
                           id={`reason-${index}`}
                           checked={
-                            feedbackform.discussed_reason === reason.lookup_value
+                            feedbackform.discussed_reason ===
+                            reason.lookup_value
                             //  ||
                             // (reason.lookup_value === "Other" &&
                             //   typeof feedbackform.discussed_reason ===
@@ -7494,7 +4233,7 @@ console.log(flattenedUnits);
                         value={reason.lookup_value}
                         id={`reason-${index}`}
                         checked={
-                          feedbackform.no_reason === reason.lookup_value 
+                          feedbackform.no_reason === reason.lookup_value
                           // ||
                           // (reason === "Other" &&
                           //   typeof feedbackform.no_reason === "string" &&
@@ -7555,22 +4294,21 @@ console.log(flattenedUnits);
               ></textarea>
             </div>
 
-<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full mt-4">
-  <button
-    onClick={handleCancel}
-    className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded w-full sm:w-1/3"
-  >
-    Cancel
-  </button>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full mt-4">
+              <button
+                onClick={handleCancel}
+                className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded w-full sm:w-1/3"
+              >
+                Cancel
+              </button>
 
-  <button
-    onClick={addfeedback}
-    className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded w-full sm:w-2/3"
-  >
-    Submit Feedback
-  </button>
-</div>
-
+              <button
+                onClick={addfeedback}
+                className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded w-full sm:w-2/3"
+              >
+                Submit Feedback
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -7646,8 +4384,26 @@ console.log(flattenedUnits);
         </div>
       )}
 
-       <ExportUnitsModal projects={cdata} />
-       
+      <ExportUnitsModal projects={cdata} />
+      <>
+        {isLoading4 && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 9999,
+            }}
+          >
+            <UniqueLoader />
+          </div>
+        )}
+      </>
     </div>
   );
 }

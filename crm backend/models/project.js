@@ -82,7 +82,7 @@ const blockSchema = new mongoose.Schema({
     s_no: {type: Array},
     preview: {type: Array},
     descriptions: {type: Array},
-    category: {type: Array},
+    // category: {type: Array},
     s_no1: {type: Array},
     url: {type: Array},
     document_name: {type: Array},

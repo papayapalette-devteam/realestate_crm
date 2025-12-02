@@ -132,7 +132,7 @@ const createProject = async (req, res) => {
         relation: unit.relation,
         s_no: unit.s_no,
         descriptions: unit.descriptions,
-        category: unit.category,
+        // category: unit.category,
         s_no1: unit.s_no1,
         url: unit.url,
         document_name: unit.document_name,
