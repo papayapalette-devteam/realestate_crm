@@ -3303,21 +3303,7 @@ console.log(flattenedUnits);
       }
     };
 
-      const [All_Call_Status, setAll_Call_Status] = useState([]);
-    const getall_call_status = async () => {
-      try {
-        setselect_loading("call_status")
-        const params = new URLSearchParams();
-        params.append("lookup_type", "call_status");
-        const resp = await api.get(`api/LookupList?${params.toString()}`);
-  
-        setAll_Call_Status(resp.data.data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setselect_loading("");
-      }
-    };
+ 
 
     const [All_Reason, setAll_Reason] = useState([]);
     const getall_reason = async () => {
@@ -7345,6 +7331,11 @@ console.log(flattenedUnits);
                   setfeedbackform({
                     ...feedbackform,
                     owner_response: e.target.value,
+                    no_reason:"",
+                    other_no_reason:"",
+                    discussed_reason:"",
+                    other_discussed_reason:"",
+                    next_call_date:""
                   })
                 }
                 value={feedbackform?.owner_response}
