@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
+
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -65,6 +66,7 @@ const PropertyUnitType = lazy(() => import("./components/Settings/Configuration/
 const OwnerResponse = lazy(() => import("./components/Settings/Configuration/owner_response.js"));
 const CallStatus = lazy(() => import("./components/Settings/Configuration/call_status.js"));
 const Reason = lazy(() => import("./components/Settings/Configuration/reason_list.js"));
+const EditUnit = lazy(() => import("./components/Units/edit_unit.js"));
 
 
 
@@ -123,6 +125,7 @@ function App() {
             <Route path="/alldeals" element={<Alldeals />} />
             <Route path="/allprojects" element={<Allprojects />} />
             <Route path="/allunits" element={<Allunits />} />
+            <Route path="/edit-unit" element={<EditUnit />} />
             <Route path="/add-sub-admin" element={<AddSubAdmin />} />
 
             <Route path="/configuration-form-title" element={<FormTitle/>} />

@@ -1,4 +1,5 @@
 const addcontact = require('../models/add_contact');
+const addproject = require("../models/project");
 
 const runMigrationOnce = async () => {
   try {
@@ -73,3 +74,31 @@ const removeDuplicateMobiles = async () => {
     console.error("Error removing duplicates:", error);
   }
 };
+
+
+
+
+
+
+async function removeUnitsWithoutProjectName() {
+  try {
+    const projects = await addproject.find().lean();
+
+    for (const proj of projects) {
+      const cleanedUnits = (proj.add_unit || []).filter(unit => unit.project_name);
+
+      if (cleanedUnits.length !== (proj.add_unit || []).length) {
+        await addproject.updateOne(
+          { _id: proj._id },
+          { $set: { add_unit: cleanedUnits } }
+        );
+      }
+    }
+
+    console.log("Units without project_name removed successfully");
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
+
+removeUnitsWithoutProjectName()

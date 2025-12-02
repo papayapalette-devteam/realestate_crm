@@ -58,40 +58,7 @@ function Allunits() {
 
   /*-------------------------------------------------------------------update inventory start---------------------------------------------------------------------------- */
 
-  const exportToExcel = () => {
-    const filteredData = data.map(
-      ({
-        developer,
-        block_tower,
-        project,
-        unit_number,
-        location,
-        linkded_contact,
-        ownership,
-        facing,
-      }) => ({
-        developer,
-        block_tower,
-        project,
-        unit_number,
-        location,
-        linkded_contact,
-        ownership,
-        facing,
-      })
-    );
-    // Create a new workbook
-    const workbook = utils.book_new();
 
-    // Convert data to a worksheet
-    const worksheet = utils.json_to_sheet(filteredData);
-
-    // Append the worksheet to the workbook
-    utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-    // Export the workbook to an Excel file
-    writeFile(workbook, "inventory_data.xlsx");
-  };
 
 
 
@@ -185,9 +152,6 @@ function Allunits() {
     { id: "relation", name: "Relation" },
   ];
   const [selectedItems, setSelectedItems] = useState([]); // To track selected rows
-  const [selectAll, setSelectAll] = useState(false); // To track the state of the "Select All" checkbox
-  const [visibleColumns, setVisibleColumns] = useState(allColumns.slice(1, 11));
-  const [showColumnList, setShowColumnList] = useState(false);
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const handleSort = (key) => {
@@ -209,11 +173,7 @@ function Allunits() {
   // ==========================================project code start======================================================================
 
   const [totalinventories, settotalinventories] = useState(0);
-  const [totalResidential, setTotalResidential] = useState(0);
-  const [totalcommercial, settotalcommercial] = useState(0);
-  const [totalagriculture, settotalagriculture] = useState(0);
-  const [totalindustrial, settotalindustrial] = useState(0);
-  const [totalinstitutional, settotalinstitutional] = useState(0);
+
 
   React.useEffect(() => {
     fetchcdata();
@@ -322,103 +282,6 @@ function Allunits() {
     const inactive = flattenedUnits.filter((item) => item.stage === "InActive");
     setinactiveunits(inactive);
   }, [flattenedUnits]);
-
-  useEffect(() => {
-    const tinventories = flattenedUnits.length;
-    // settotalinventories(tinventories)
-
-    const residentialCount = flattenedUnits.filter(
-      (unit) => unit.category === "Residential"
-    ).length;
-    setTotalResidential(residentialCount);
-
-    const commercialcount = flattenedUnits.filter(
-      (unit) => unit.category === "Commercial"
-    ).length;
-    settotalcommercial(commercialcount);
-
-    const agriculturecount = flattenedUnits.filter(
-      (unit) => unit.category === "Agriculture"
-    ).length;
-    settotalagriculture(agriculturecount);
-
-    const insdustrialcount = flattenedUnits.filter(
-      (unit) => unit.category === "Industrial"
-    ).length;
-    settotalindustrial(insdustrialcount);
-
-    const institutionalcount = flattenedUnits.filter(
-      (unit) => unit.category === "Institutional"
-    ).length;
-    settotalinstitutional(institutionalcount);
-  }, [flattenedUnits]);
-
-  const [isFlipped, setIsFlipped] = useState(false);
-
-  const pagereload = () => {
-    // Flip effect for contactlistview to companylistview
-    setIsFlipped(true);
-    setTimeout(() => {
-      document.getElementById("contactlistview").style.display = "none";
-      document.getElementById("projectlistview").style.display = "block";
-    }, 500); // Wait for flip animation to complete before hiding/showing the divs
-  };
-
-  const pagereload2 = () => {
-    // Flip effect for companylistview to contactlistview
-    setIsFlipped(false);
-    setTimeout(() => {
-      document.getElementById("unitlistview").style.display = "block";
-      document.getElementById("projectlistview").style.display = "none";
-    }, 500); // Wait for flip animation to complete before hiding/showing the divs
-  };
-
-
-
-  const [searchdata, setsearchdata] = useState();
-  const fetchdatabyemail_mobile_tags_company = async (e) => {
-    // e.preventDefault()
-    try {
-      const resp = await api.get(`viewcontactbyemail/${searchdata}`);
-      const incoming = Array.isArray(resp.data.contact)
-        ? resp.data.contact
-        : [resp.data.contact];
-      // setdata(incoming)
-
-      const resp1 = await api.get(`viewcontactbymobile/${searchdata}`);
-      const incoming1 = Array.isArray(resp1.data.contact)
-        ? resp1.data.contact
-        : [resp1.data.contact];
-      setdata([...incoming, ...incoming1]);
-
-      const resp2 = await api.get(`viewcontactbytags/${searchdata}`);
-      const incoming2 = Array.isArray(resp2.data.contact)
-        ? resp2.data.contact
-        : [resp2.data.contact];
-      setdata([...incoming, ...incoming1, ...incoming2]);
-
-      const resp3 = await api.get(`viewcontactbycompany/${searchdata}`);
-      const incoming3 = Array.isArray(resp3.data.contact)
-        ? resp3.data.contact
-        : [resp3.data.contact];
-      setdata([...incoming, ...incoming1, ...incoming2, ...incoming3]);
-
-      const resp4 = await api.get(`viewcontactbyname/${searchdata}`);
-      const incoming4 = Array.isArray(resp4.data.contact)
-        ? resp4.data.contact
-        : [resp4.data.contact];
-      setdata([
-        ...incoming,
-        ...incoming1,
-        ...incoming2,
-        ...incoming3,
-        ...incoming4,
-      ]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
 
   const [currentPage1, setCurrentPage1] = useState(1);
   const [itemsPerPage1, setItemsPerPage1] = useState(10); // User-defined items per page
@@ -2944,6 +2807,9 @@ const handleSubCategoryChange1 = (event) => {
     setSowbuiltup(event.target.checked);
   };
 
+console.log(flattenedUnits);
+
+  
   // ========================================edit unit end===========================================================================
 
   // ========================================delete unit start=========================================================================
@@ -4625,7 +4491,8 @@ const handleSubCategoryChange1 = (event) => {
                     ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpF7BrBLmrMYynVUzMxsgv8AtIEkFjStD6cFRNYv1to6LupNkPMgkEaEzD5-HIGrjcPj4&usqp=CAU" // hover image
                     : "https://static.thenounproject.com/png/1416596-200.png" // default image
                 }
-                onClick={handleShow9}
+                // onClick={handleShow9}
+                onClick={()=>navigate('/edit-unit',{state:selectedItems3[0]})}
                 onMouseEnter={() => setIsHoveringEdit(true)}
                 onMouseLeave={() => setIsHoveringEdit(false)}
                 alt="edit"
@@ -5479,7 +5346,7 @@ const handleSubCategoryChange1 = (event) => {
             <MenuItem key={subCategory} value={subCategory}>
               <Checkbox
                 checked={units.sub_category.indexOf(subCategory) > -1}
-                onChange={() => handleToggle1(subCategory)}
+                // onChange={() => handleToggle1(subCategory)}
               />
               <ListItemText primary={subCategory} />
             </MenuItem>

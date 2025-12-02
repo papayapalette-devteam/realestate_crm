@@ -492,12 +492,12 @@ const view_units = async (req, res) => {
             as: "add_unit.owner_details",
           },
         },
-        {
-          $unwind: {
-            path: "$add_unit.owner_details",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
+        // {
+        //   $unwind: {
+        //     path: "$add_unit.owner_details",
+        //     preserveNullAndEmptyArrays: true,
+        //   },
+        // },
         {
           $lookup: {
             from: "add_contacts",
@@ -506,12 +506,12 @@ const view_units = async (req, res) => {
             as: "add_unit.associated_contact",
           },
         },
-        {
-          $unwind: {
-            path: "$add_unit.associated_contact",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
+        // {
+        //   $unwind: {
+        //     path: "$add_unit.associated_contact",
+        //     preserveNullAndEmptyArrays: true,
+        //   },
+        // },
         {
           $lookup: {
             from: "add_contacts",
@@ -520,12 +520,12 @@ const view_units = async (req, res) => {
             as: "add_unit.previousowner_details",
           },
         },
-        {
-          $unwind: {
-            path: "$add_unit.previousowner_details",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
+        // {
+        //   $unwind: {
+        //     path: "$add_unit.previousowner_details",
+        //     preserveNullAndEmptyArrays: true,
+        //   },
+        // },
       ].filter(Boolean)
     );
 
@@ -1103,47 +1103,226 @@ const view_projectforinventories = async (req, res) => {
   }
 };
 
+// const update_projectforinventories = async (req, res) => {
+//   try {
+//     function normalizeIdArray(arr) {
+//       if (!Array.isArray(arr)) return [];
+//       return arr
+//         .map((item) => {
+//           if (!item) return null;
+
+//           if (typeof item === "string") return item;
+
+//           if (typeof item === "object" && item._id) return item._id.toString();
+
+//           return null;
+//         })
+//         .filter(Boolean);
+//     }
+
+//     // ------------------ PARAMS ------------------
+//     const { project_name,  unit_no,block } = req.params;
+
+//     const exitproject = await addproject.findOne({ name: project_name });
+//     if (!exitproject) {
+//       return res.status(404).send("project not found");
+//     }
+
+//     // ------------------ FIND EXACT UNIT ------------------
+//     const project = await addproject.findOne({
+//       "add_unit.project_name": project_name,
+//       "add_unit.block": block,
+//       "add_unit.unit_no": unit_no,
+//     });
+
+//     if (!project) {
+//       return res.status(404).send({
+//         message: "No project found matching the criteria",
+//       });
+//     }
+
+//     // Find exact index (PREVENTS DUPLICATE UNITS)
+//     const unitIndex = project.add_unit.findIndex(
+//       (unit) =>
+//         unit.project_name === project_name &&
+//         unit.block === block &&
+//         unit.unit_no === unit_no
+//     );
+
+//     if (unitIndex === -1) {
+//       return res.status(404).send({ message: "Unit not found" });
+//     }
+
+//     const existingUnit = project.add_unit[unitIndex];
+//     const unit = req.body;
+
+//     // ------------------ UPDATE DEAL OWNER ------------------
+//     await adddeal.updateMany(
+//       { project: project_name, block: block, unit_number: unit_no },
+//       {
+//         $set: {
+//           owner_details:
+//             unit.owner_details !== undefined ? unit.owner_details : [],
+//           associated_contact:
+//             unit.associated_contact !== undefined
+//               ? unit.associated_contact
+//               : [],
+//         },
+//       }
+//     );
+
+//     // ------------------ OWNER DETAILS CLEANUP ------------------
+//     let previousOwnerDetails = normalizeIdArray(existingUnit.owner_details);
+//     let ownerDetails = [...new Set(normalizeIdArray(unit.owner_details))];
+//     let associatedContact = [
+//       ...new Set(normalizeIdArray(unit.associated_contact)),
+//     ];
+
+//     // ------------------ BUILD UPDATED OBJECT ------------------
+//     let unitDetails = {
+//       project_name: unit.project_name,
+//       unit_no: unit.unit_no,
+//       previousowner_details: previousOwnerDetails,
+//       owner_details: ownerDetails,
+//       associated_contact: associatedContact,
+//       unit_type: unit.unit_type,
+//       category: unit.category,
+//       sub_category: unit.sub_category,
+//       block: unit.block,
+//       size: unit.size,
+//       direction: unit.direction,
+//       facing: unit.facing,
+//       road: unit.road,
+//       ownership: unit.ownership,
+//       stage: unit.stage,
+//       builtup_type: unit.builtup_type,
+//       floor: unit.floor,
+//       cluter_details: unit.cluter_details,
+//       length: unit.length,
+//       bredth: unit.bredth,
+//       total_area: unit.total_area,
+//       measurment2: unit.measurment2,
+//       ocupation_date: unit.ocupation_date,
+//       age_of_construction: unit.age_of_construction,
+//       furnishing_details: unit.furnishing_details,
+//       furnished_item: unit.furnished_item,
+//       remarks: unit.remarks,
+//       location: unit.location,
+//       lattitude: unit.lattitude,
+//       langitude: unit.langitude,
+//       uaddress: unit.uaddress,
+//       ustreet: unit.ustreet,
+//       ulocality: unit.ulocality,
+//       ucity: unit.ucity,
+//       uzip: unit.uzip,
+//       ustate: unit.ustate,
+//       ucountry: unit.ucountry,
+//       relation: unit.relation,
+//       s_no: unit.s_no,
+//       descriptions: unit.descriptions,
+//       s_no1: unit.s_no1,
+//       url: unit.url,
+//       document_name: unit.document_name,
+//       document_no: unit.document_no,
+//       document_Date: unit.document_Date,
+//       linkded_contact: unit.linkded_contact,
+//       follow_up: unit.follow_up,
+//       last_conduct_date_time: unit.last_conduct_date_time,
+//       reason: unit.reason,
+//       other_reason: unit.other_reason,
+//       logged_user: unit.logged_user,
+
+//       // Keep previous images unless new uploaded
+//       preview: existingUnit.preview,
+//       image: existingUnit.image,
+//     };
+
+//     // ------------------ FILE UPLOAD ------------------
+//     const imagefiles = [];
+//     const imagefiles1 = [];
+
+//     if (req.files) {
+//       const previewFiles = req.files.filter((f) =>
+//         f.fieldname.includes("preview")
+//       );
+//       const imageFiles = req.files.filter((f) =>
+//         f.fieldname.includes("image")
+//       );
+
+//       for (let file of previewFiles) {
+//         const result = await cloudinary.uploader.upload(file.path);
+//         imagefiles.push(result.secure_url);
+//         fs.unlinkSync(file.path);
+//       }
+
+//       for (let file of imageFiles) {
+//         const result = await cloudinary.uploader.upload(file.path);
+//         imagefiles1.push(result.secure_url);
+//         fs.unlinkSync(file.path);
+//       }
+//     }
+
+//     if (imagefiles.length > 0) unitDetails.preview = imagefiles;
+//     if (imagefiles1.length > 0) unitDetails.image = imagefiles1;
+
+//     // ------------------ UPDATE UNIT (NO DUPLICATE) ------------------
+//     project.add_unit[unitIndex].set(unitDetails);
+
+//     await project.save();
+
+//     res.status(200).send({
+//       message: "add_unit updated successfully",
+//       project,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send({
+//       message: "Error updating project details",
+//       error: error.message,
+//     });
+//   }
+// };
+
 const update_projectforinventories = async (req, res) => {
   try {
-    // Retrieve project_name, block, and unit_no from the URL parameters (params)
-    const { project_name, block, unit_no } = req.params;
-
-    
-
-    let dealproject = req.params.project_name;
-    let dealblock = req.params.block;
-    let dealunit = req.params.unit_no;
-
-    const exitproject = await addproject.findOne({ name: project_name });
-    if (!exitproject) {
-      res.status(404).send("project not found");
-      return;
+    // ------------------ HELPER: NORMALIZE ID ARRAY ------------------
+    function normalizeIdArray(arr) {
+      if (!Array.isArray(arr)) return [];
+      return arr
+        .map((item) => {
+          if (!item) return null;
+          if (typeof item === "string") return item;
+          if (typeof item === "object" && item._id) return item._id.toString();
+          return null;
+        })
+        .filter(Boolean);
     }
 
-    const project = await addproject.findOne({
-      add_unit: { $elemMatch: { project_name, block, unit_no } },
-    });
+    // ------------------ PARAMS ------------------
+    const { project_name, unit_no, block } = req.params;
+
+    // ------------------ CHECK PROJECT EXISTS ------------------
+    const project = await addproject.findOne({ name: project_name });
 
     if (!project) {
-      return res
-        .status(404)
-        .send({ message: "No project found matching the criteria" });
+      return res.status(404).send("project not found");
     }
 
-    // Step 2: Find the index of the unit to update
+    // ------------------ FIND UNIT INSIDE THIS PROJECT ------------------
     const unitIndex = project.add_unit.findIndex(
-      (unit) => unit.unit_no === unit_no
+      (u) => u.block === block && u.unit_no === unit_no
     );
+
     if (unitIndex === -1) {
-      return res.status(404).send({ message: "Unit not found" });
+      return res.status(404).send({ message: "Unit not found in this project" });
     }
 
     const existingUnit = project.add_unit[unitIndex];
     const unit = req.body;
 
-    // ============================this is for deal owner update start============================================
-    const result = await adddeal.updateMany(
-      { project: dealproject, block: dealblock, unit_number: dealunit },
+    // ------------------ UPDATE DEAL OWNER ------------------
+    await adddeal.updateMany(
+      { project: project_name, block: block, unit_number: unit_no },
       {
         $set: {
           owner_details:
@@ -1155,16 +1334,21 @@ const update_projectforinventories = async (req, res) => {
         },
       }
     );
-    //====================================== deal owner update end=================================================
 
-    let previousOwnerDetails = existingUnit.owner_details || [];
+    // ------------------ OWNER DETAILS CLEANUP ------------------
+    let previousOwnerDetails = normalizeIdArray(existingUnit.owner_details);
+    let ownerDetails = [...new Set(normalizeIdArray(unit.owner_details))];
+    let associatedContact = [
+      ...new Set(normalizeIdArray(unit.associated_contact)),
+    ];
 
-    unitDetails = {
+    // ------------------ BUILD UPDATED UNIT OBJECT ------------------
+    let unitDetails = {
       project_name: unit.project_name,
       unit_no: unit.unit_no,
       previousowner_details: previousOwnerDetails,
-      owner_details: unit.owner_details,
-      associated_contact: unit.associated_contact,
+      owner_details: ownerDetails,
+      associated_contact: associatedContact,
       unit_type: unit.unit_type,
       category: unit.category,
       sub_category: unit.sub_category,
@@ -1200,7 +1384,6 @@ const update_projectforinventories = async (req, res) => {
       relation: unit.relation,
       s_no: unit.s_no,
       descriptions: unit.descriptions,
-      category: unit.category,
       s_no1: unit.s_no1,
       url: unit.url,
       document_name: unit.document_name,
@@ -1212,84 +1395,60 @@ const update_projectforinventories = async (req, res) => {
       reason: unit.reason,
       other_reason: unit.other_reason,
       logged_user: unit.logged_user,
+
+      // Keep previous unless uploaded new files
       preview: existingUnit.preview,
       image: existingUnit.image,
-   
     };
 
-    // Prepare for file upload
+    // ------------------ FILE UPLOAD ------------------
     const imagefiles = [];
     const imagefiles1 = [];
 
     if (req.files) {
-      const imagefield = req.files.filter((file) =>
-        file.fieldname.includes(`preview`)
+      const previewFiles = req.files.filter((f) =>
+        f.fieldname.includes("preview")
       );
-      const imagefield1 = req.files.filter((file) =>
-        file.fieldname.includes(`image`)
+      const imageFiles = req.files.filter((f) =>
+        f.fieldname.includes("image")
       );
 
-      for (let file of imagefield) {
-        try {
-          const result = await cloudinary.uploader.upload(file.path);
-          imagefiles.push(result.secure_url);
-
-          // Delete file after upload
-          fs.unlink(file.path, (err) => {
-            if (err) {
-              console.error(`Failed to delete file: ${file.path}`, err);
-            } else {
-              console.log(`Successfully deleted file: ${file.path}`);
-            }
-          });
-        } catch (error) {
-          console.error("Error uploading file:", error);
-        }
+      // Upload preview files
+      for (let file of previewFiles) {
+        const result = await cloudinary.uploader.upload(file.path);
+        imagefiles.push(result.secure_url);
+        fs.unlinkSync(file.path);
       }
 
-      for (let file of imagefield1) {
-        try {
-          const result = await cloudinary.uploader.upload(file.path);
-          imagefiles1.push(result.secure_url);
-
-          // Delete file after upload
-          fs.unlink(file.path, (err) => {
-            if (err) {
-              console.error(`Failed to delete file: ${file.path}`, err);
-            } else {
-              console.log(`Successfully deleted file: ${file.path}`);
-            }
-          });
-        } catch (error) {
-          console.error("Error uploading file:", error);
-        }
+      // Upload normal images
+      for (let file of imageFiles) {
+        const result = await cloudinary.uploader.upload(file.path);
+        imagefiles1.push(result.secure_url);
+        fs.unlinkSync(file.path);
       }
     }
-    if (imagefiles.length > 0) {
-      unitDetails.preview = imagefiles; // Attach preview images
-    }
-    if (imagefiles1.length > 0) {
-      unitDetails.image = imagefiles1; // Attach main images
-    }
 
-    project.add_unit[unitIndex] = unitDetails;
+    if (imagefiles.length > 0) unitDetails.preview = imagefiles;
+    if (imagefiles1.length > 0) unitDetails.image = imagefiles1;
+
+    // ------------------ UPDATE UNIT SAFELY ------------------
+    project.add_unit[unitIndex] = { ...existingUnit.toObject(), ...unitDetails };
 
     await project.save();
 
     res.status(200).send({
       message: "add_unit updated successfully",
-      project: project,
+      project,
     });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .send({
-        message: "An error occurred while updating the project details",
-        error: error.message,
-      });
+    res.status(500).send({
+      message: "Error updating project details",
+      error: error.message,
+    });
   }
 };
+
 
 
 
@@ -1947,6 +2106,36 @@ const getGroupedUnitData = async (req, res) => {
   }
 };
 
+async function removeDuplicateUnits() {
+  try {
+    const projects = await addproject.find().lean(); // important: lean()
+
+    for (const proj of projects) {
+      const seen = new Set();
+
+      const cleanedUnits = proj.add_unit.filter(unit => {
+        const key = `${String(unit.project_name)}-${String(unit.block)}-${String(unit.unit_no)}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+      await addproject.updateOne(
+        { _id: proj._id },
+        { $set: { add_unit: cleanedUnits } }
+      );
+    }
+
+    console.log("Duplicate units removed successfully");
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
+
+
+
+
+
 module.exports = {
   createProject,
   view_project,
@@ -1968,3 +2157,5 @@ module.exports = {
   checkDuplicatesController,
   addUnitsToProject
 };
+
+
