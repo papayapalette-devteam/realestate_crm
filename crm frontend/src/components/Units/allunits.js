@@ -206,6 +206,12 @@ function Allunits() {
     setallfacing([...new Set(result)]);
   }, [flattenedUnits]);
 
+  const [allRemarks, setallRemarks] = useState([]);
+  useEffect(() => {
+    const result = flattenedUnits.map((item) => item.facing);
+    setallfacing([...new Set(result)]);
+  }, [flattenedUnits]);
+
   const [allroad, setallroad] = useState([]);
   useEffect(() => {
     const result = flattenedUnits.map((item) => item.road);
@@ -2305,6 +2311,8 @@ function Allunits() {
   useEffect(() => {
     get_group_data();
   }, []);
+console.log(groupdata);
+
 
   const unitfields = [
     { label: "City", field: "ucity", values: groupdata.allcitis },
@@ -2314,15 +2322,16 @@ function Allunits() {
       field: "project_name",
       values: groupdata.all_project,
     },
-    { label: "Block/Tower", field: "block", values: allblock },
-    { label: "Category", field: "category", values: allcategories },
-    { label: "Sub Category", field: "sub_category", values: allsubcategories },
-    { label: "Unit Type", field: "unit_type", values: allunittype },
-    { label: "Size", field: "size", values: allsize },
-    { label: "Stages/Status", field: "stage", values: allstage },
-    { label: "Direction", field: "direction", values: alldirection },
-    { label: "Road", field: "road", values: allroad },
-    { label: "Facing", field: "facing", values: allfacing },
+    { label: "Block/Tower", field: "block", values: groupdata.allblock },
+    { label: "Category", field: "category", values: groupdata.allcategories },
+    { label: "Sub Category", field: "sub_category", values: groupdata.allsubcategories },
+    { label: "Unit Type", field: "unit_type", values: groupdata.allunittype },
+    { label: "Size", field: "size", values: groupdata.allsize },
+    { label: "Stages/Status", field: "stage", values: groupdata.allstage },
+    { label: "Direction", field: "direction", values: groupdata.alldirection },
+    { label: "Road", field: "road", values: groupdata.allroad },
+    { label: "Facing", field: "facing", values: groupdata.allfacing },
+    { label: "Remarks", field: "remarks", values: groupdata.allremarks },
   ];
 
   const defaultFields = [
@@ -2428,35 +2437,27 @@ function Allunits() {
 
   const [isHoveringDelete, setIsHoveringDelete] = useState(false);
   const [isHoveringEdit, setIsHoveringEdit] = useState(false);
-  const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
   const [isHoveringuploadpicture, setIsHoveringuploadpicture] = useState(false);
-  const [isHoveringupdate, setIsHoveringupdate] = useState(false);
-  const [isHoveringpublishon, setIsHoveringpublishon] = useState(false);
   const [isHoveringcall, setIsHoveringcall] = useState(false);
   const [isHoveringaddtag, setIsHoveringaddtag] = useState(false);
   const [isHoveringaddremarks, setIsHoveringaddremarks] = useState(false);
   const [isHoveringadddocuments, setIsHoveringadddocuments] = useState(false);
   const [isHoveringpreview, setIsHoveringpreview] = useState(false);
   const [isHoveringsendmail, setIsHoveringsendmail] = useState(false);
-  const [isHoveringcreatebooking, setIsHoveringcreatebooking] = useState(false);
-  const [isHoveringprojectmatchedlead, setIsHoveringprojectmatchedlead] =
-    useState(false);
-  const [isHoveringprojectupdate, setIsHoveringprojectupdate] = useState(false);
+  const [isHoveringprojectmatchedlead, setIsHoveringprojectmatchedlead] =useState(false);
   const [isHoveringunitadduser, setIsHoveringunitadduser] = useState(false);
-  const [isHoveringunitcreatedeal, setIsHoveringunitcreatedeal] =
-    useState(false);
+  const [isHoveringunitcreatedeal, setIsHoveringunitcreatedeal] = useState(false);
   const [isHoveringunitupdate, setIsHoveringunitupdate] = useState(false);
-  const [isHoveringunitcustomerfeedback, setIsHoveringunitcustomerfeedback] =
-    useState(false);
+  const [isHoveringunitcustomerfeedback, setIsHoveringunitcustomerfeedback] =useState(false);
 
   // =============================================================deal action button toggle end==================================================
 
   //=============================== convert date format start==============================================================================
-  const excelSerialToDateString = (serial) => {
-    const excelEpoch = new Date(1900, 0, 1); // Jan 1, 1900
-    const jsDate = new Date(excelEpoch.getTime() + (serial - 1) * 86400000);
-    return jsDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
-  };
+  // const excelSerialToDateString = (serial) => {
+  //   const excelEpoch = new Date(1900, 0, 1); // Jan 1, 1900
+  //   const jsDate = new Date(excelEpoch.getTime() + (serial - 1) * 86400000);
+  //   return jsDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
+  // };
 
   return (
     <div>

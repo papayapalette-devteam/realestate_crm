@@ -2078,6 +2078,10 @@ const getGroupedUnitData = async (req, res) => {
           alldirection: { $addToSet: "$add_unit.direction" },
           allroad: { $addToSet: "$add_unit.road" },
           allfacing: { $addToSet: "$add_unit.facing" },
+          allremarks: {
+            $addToSet: {$concatArrays: [["$add_unit.reason"],["$add_unit.other_reason"]]}
+          }
+
         },
       },
       {
@@ -2095,6 +2099,7 @@ const getGroupedUnitData = async (req, res) => {
           alldirection: 1,
           allroad: 1,
           allfacing: 1,
+          allremarks:1
         },
       },
     ]);
