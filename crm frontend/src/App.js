@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
-
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -67,7 +66,9 @@ const OwnerResponse = lazy(() => import("./components/Settings/Configuration/own
 const CallStatus = lazy(() => import("./components/Settings/Configuration/call_status.js"));
 const Reason = lazy(() => import("./components/Settings/Configuration/reason_list.js"));
 const EditUnit = lazy(() => import("./components/Units/edit_unit.js"));
-
+const ParkingType = lazy(() => import("./components/Settings/Configuration/parking_type.js"));
+const ApprovalBank = lazy(() => import("./components/Settings/Configuration/approval_bank.js"));
+const ProjectStatus = lazy(() => import("./components/Settings/Configuration/project_status.js"));
 
 
 function App() {
@@ -142,6 +143,9 @@ function App() {
             <Route path="/configuration-owner-response" element={<OwnerResponse/>} />
             <Route path="/configuration-call-status" element={<CallStatus/>} />
             <Route path="/configuration-reason" element={<Reason/>} />
+            <Route path="/configuration-parking-type" element={<ParkingType/>} />
+            <Route path="/configuration-bank" element={<ApprovalBank/>} />
+            <Route path="/configuration-project-status" element={<ProjectStatus/>} />
             </Route>
           </Routes>
         </div>

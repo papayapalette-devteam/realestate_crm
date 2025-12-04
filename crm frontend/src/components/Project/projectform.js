@@ -20,7 +20,7 @@ import Modal from 'react-bootstrap/Modal';
 import {React, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { Select, MenuItem, Checkbox, ListItemText  } from '@mui/material';
+import { Select, MenuItem, Checkbox, ListItemText, CircularProgress  } from '@mui/material';
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import { SvgIcon } from "@mui/material";
 import EmailIcon from '@mui/icons-material/Email';
@@ -29,8 +29,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import Tooltip from '@mui/material/Tooltip';
 import Swal from 'sweetalert2';
-import { icon } from '@fortawesome/fontawesome-svg-core';
-import { Factory, Hotel, School, Warehouse } from '@mui/icons-material';
+
 
 
 
@@ -378,7 +377,130 @@ function Projectform() {
                       }
 // ===================================-----------all form tab toggle code end------------------------------=================================
                    
-  //--------------------------==========================  add delete and onchange event of array start -------------==================================     
+      
+// get all category
+
+    const [All_Category, setAll_Category] = useState([]);
+    const getall_category = async () => {
+      try {
+        const params = new URLSearchParams();
+        params.append("lookup_type", "property_type");
+        const resp = await api.get(`api/LookupList?${params.toString()}`);
+  
+        setAll_Category(resp.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    useEffect(() => {
+      getall_category();
+    }, []);
+  
+    // get property sub type
+  
+    const [All_Sub_Category, setAll_Sub_Category] = useState([]);
+  
+    const getall_sub_category = async () => {
+      try {
+        const selectedTypes = project.category; // Array
+  
+        if (!selectedTypes.length) {
+          setAll_Sub_Category([]);
+          return;
+        }
+  
+        // Fetch all subtypes in parallel
+        const responses = await Promise.all(
+          selectedTypes.map((type) => {
+            const params = new URLSearchParams();
+            params.append("lookup_type", "property_sub_type");
+            params.append("parent_lookup_value", type);
+  
+            return api.get(`api/LookupList?${params.toString()}`);
+          })
+        );
+  
+        // Combine results
+        const merged = responses.flatMap((resp) => resp.data.data);
+  
+        // Remove duplicate values by _id
+        const unique = merged.filter(
+          (item, index, self) =>
+            index === self.findIndex((x) => x._id === item._id)
+        );
+  
+        setAll_Sub_Category(unique);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+      useEffect(() => {
+        getall_sub_category();
+      }, [project.category]);
+  
+
+      // get all parking type
+
+    const[select_loading,setselect_loading]=useState("")
+
+    const [All_Parking_Type, setAll_Parking_Type] = useState([]);
+    const getall_parking_type = async () => {
+      try {
+        setselect_loading("parking-type")
+        const params = new URLSearchParams();
+        params.append("lookup_type", "parking_type");
+        const resp = await api.get(`api/LookupList?${params.toString()}`);
+  
+        setAll_Parking_Type(resp.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+      finally
+      {
+        setselect_loading(false)
+      }
+    };
+
+    const [All_Bank, setAll_Bank] = useState([]);
+    const getall_bank = async () => {
+      try {
+        setselect_loading("bank")
+        const params = new URLSearchParams();
+        params.append("lookup_type", "bank");
+        const resp = await api.get(`api/LookupList?${params.toString()}`);
+  
+        setAll_Bank(resp.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+      finally
+      {
+        setselect_loading(false)
+      }
+    };
+
+    const [All_Project_Status, setAll_Project_Status] = useState([]);
+    const getall_project_status = async () => {
+      try {
+        setselect_loading("bank")
+        const params = new URLSearchParams();
+        params.append("lookup_type", "project_status");
+        const resp = await api.get(`api/LookupList?${params.toString()}`);
+  
+        setAll_Project_Status(resp.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+      finally
+      {
+        setselect_loading(false)
+      }
+    };
+
+
+
 
           function addFn1() {
         
@@ -524,11 +646,6 @@ function Projectform() {
               
           
             
-               
-
-
-
-
                 function addFn4() {
      
                   setpayments({
@@ -3322,28 +3439,98 @@ const generateExcelFileunit = () => {
             <div onMouseOver={mousehover} onMouseOut={mouseout}><Sidebar1/></div>
            
            <div style={{padding:"50px"}}>
-            <div className="container rounded bg-white mt-5 mb-5" style={{width:"80%",marginLeft:"150px"}}>
+            <div className="container  bg-white mt-5 mb-5 ml-150px w-[80%] shadow-2xl rounded-xl">
     <div className="row" id='r' style={{transition:"0.5s"}}>
            <div className="col-md-12 border-right">
             <div className="p-3 py-5">
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h4 className="text-right" style={{cursor:"pointer"}} onClick={()=>window.location.reload()}>Add Project</h4>
-                    {/* <input type='checkbox'  style={{marginLeft:"60%",height:"20px",width:"20px"}} /><label style={{paddingTop:"5px"}}>only show required field</label> */}
+                  <h1
+                    className="text-right text-xl font-bold"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => window.location.reload()}
+                  >
+                    Add New Project
+                  </h1>
+                    
                 </div><hr></hr>
                
          
-                <div style={{display:"flex"}}>
-               <div style={{display:"flex",gap:"30px"}}>
-               <div  id='basic' onClick={basicdetails} style={{cursor:'pointer',fontWeight:"bold"}}>Basic |</div>
-                <div  id='professional' onClick={professionaldetails} style={{cursor:'pointer',fontWeight:"bold"}}>Location |</div>
-                <div  id='other' onClick={otherdetails} style={{cursor:'pointer',fontWeight:"bold"}}>Block |</div> 
-                <div  id='size1' onClick={sizedetails} style={{cursor:'pointer',fontWeight:"bold"}}>Size |</div>
-                <div  id='unit' onClick={unitdetails} style={{cursor:'pointer',fontWeight:"bold"}}>Unit |</div>
-                <div  id='aminities1' onClick={aminitiesdetails} style={{cursor:'pointer',fontWeight:"bold"}}>Aminities |</div> 
-                <div  id='prices' onClick={pricedetails} style={{cursor:'pointer',fontWeight:"bold"}}>Price |</div> 
-               </div>
-						    <div style={{marginLeft:"20%"}}><input type="text" class="form-control form-control-sm" placeholder={time} value={time} style={{border:"none"}}/></div>
-					</div>
+         <div className="w-full flex flex-col md:flex-row items-center justify-between bg-white py-4 px-3 shadow-sm">
+
+  {/* Tabs */}
+  <div className="flex flex-wrap gap-5 font-semibold text-gray-600">
+
+    <div
+      id="basic"
+      onClick={basicdetails}
+      className="cursor-pointer hover:text-blue-600 transition"
+    >
+      Basic |
+    </div>
+
+    <div
+      id="professional"
+      onClick={professionaldetails}
+      className="cursor-pointer hover:text-blue-600 transition"
+    >
+      Location |
+    </div>
+
+    <div
+      id="other"
+      onClick={otherdetails}
+      className="cursor-pointer hover:text-blue-600 transition"
+    >
+      Block |
+    </div>
+
+    <div
+      id="size1"
+      onClick={sizedetails}
+      className="cursor-pointer hover:text-blue-600 transition"
+    >
+      Size |
+    </div>
+
+    <div
+      id="unit"
+      onClick={unitdetails}
+      className="cursor-pointer hover:text-blue-600 transition"
+    >
+      Unit |
+    </div>
+
+    <div
+      id="aminities1"
+      onClick={aminitiesdetails}
+      className="cursor-pointer hover:text-blue-600 transition"
+    >
+      Amenities |
+    </div>
+
+    <div
+      id="prices"
+      onClick={pricedetails}
+      className="cursor-pointer hover:text-blue-600 transition"
+    >
+      Price |
+    </div>
+  </div>
+
+
+  {/* Time Field */}
+  <div className="mt-4 md:mt-0">
+    <input
+      type="text"
+      className="text-sm border rounded-md px-3 py-1 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder={time}
+      value={time}
+      readOnly
+    />
+  </div>
+  
+</div>
+
                     <hr></hr>
                 
                 
@@ -3366,19 +3553,8 @@ const generateExcelFileunit = () => {
                         </div>
                         <div className='col-md-1 mb-1 custom-input'><label style={{visibility:"hidden"}}>add</label>
                         <button
-                          className="form-control form-control-sm"
+                          className="btn-add form-control form-control-sm"
                           onClick={add_developer}
-                          style={{
-                            backgroundColor: "#007bff",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "4px",
-                            fontWeight: "500",
-                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                            transition: "all 0.2s ease-in-out"
-                          }}
-                          onMouseOver={e => e.currentTarget.style.backgroundColor = "#0056b3"}
-                          onMouseOut={e => e.currentTarget.style.backgroundColor = "#007bff"}
                         >
                           +
                         </button>
@@ -3405,20 +3581,20 @@ const generateExcelFileunit = () => {
                     </div>
                     <div className="col-md-2 mb-2 custom-input"></div>
                   
-                    <div className="col-md-12 mb-12 custom-input" style={{ display: "flex",marginTop:"70px" }}><label className="form-label">Category</label>
-            {['Residential', 'Commercial', 'Agricultural', 'Institutional', 'Industrial'].map((type) => (
-                <div className="col-md-2 mb-2 custom-input" key={type} style={{marginTop:"20px"}}>
+                    <div className="col-md-12 mb-12 custom-input" style={{ display: "flex", }}><label className="form-label">Category</label>
+            {All_Category.map((type) => (
+                <div className="col-md-2 mb-2 custom-input" key={type} style={{marginTop:"30px"}}>
                     <button
                       className="form-control form-control-sm category-button"
-                      onClick={() => handleTypeClick(type)}
+                      onClick={() => handleTypeClick(type.lookup_value)}
                       style={{
-                        backgroundColor: isSelected(type) ? "#28a745" : "#f8f9fa", // green or light gray
-                        color: isSelected(type) ? "white" : "#333",
+                        backgroundColor: isSelected(type.lookup_value) ? "#28a745" : "#f8f9fa", // green or light gray
+                        color: isSelected(type.lookup_value) ? "white" : "#333",
                         border: "1px solid #ccc",
                         borderRadius: "6px",
                         fontWeight: "bold",
                         transition: "all 0.3s ease",
-                        boxShadow: isSelected(type)
+                        boxShadow: isSelected(type.lookup_value)
                           ? "0 4px 10px rgba(40, 167, 69, 0.4)"
                           : "0 2px 6px rgba(0, 0, 0, 0.1)",
                       }}
@@ -3429,7 +3605,7 @@ const generateExcelFileunit = () => {
                         e.target.style.transform = "scale(1)";
                       }}
                     >
-                      {type}
+                      {type.lookup_value}
                     </button>
                         
                 </div>
@@ -3450,13 +3626,13 @@ const generateExcelFileunit = () => {
           <MenuItem value="">
             <em>Select</em>
           </MenuItem>
-          {getSubcategories().map((subCategory) => (
-            <MenuItem key={subCategory} value={subCategory}>
+          {All_Sub_Category.map((subCategory) => (
+            <MenuItem key={subCategory} value={subCategory.lookup_value}>
               <Checkbox
-                checked={project.sub_category.indexOf(subCategory) > -1}
+                checked={project.sub_category.indexOf(subCategory.lookup_value) > -1}
                 onChange={() => handleToggle(subCategory)}
               />
-              <ListItemText primary={subCategory} />
+              <ListItemText primary={subCategory.lookup_value} />
             </MenuItem>
           ))}
         </Select>
@@ -3498,12 +3674,23 @@ const generateExcelFileunit = () => {
                        </div>
                      <div className='row' id='withoutagriculture' style={{padding:"20px,0"}}>
                         <div className="col-md-8 mb-8 custom-input"><label className="form-label">Status</label>
-                        <select className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,status:e.target.value})}>
-                              <option>Upcoming</option>
-                              <option>Pre Launch</option>
-                              <option>Launched</option>
-                              <option>Under Construction</option>
-                              <option>Ready to Move</option>
+                        <select className="form-control form-control-sm"
+                         required="true" 
+                         value={project.status}
+                         onClick={() => {
+                            if (All_Project_Status.length === 0) {
+                              getall_project_status();
+                            }
+                          }}
+                         onChange={(e)=>setproject({...project,status:e.target.value})}>
+                          <option>---select project status---</option>
+                            {
+                    select_loading==="project-status" ? (
+                      <CircularProgress/>
+                    ) : (
+                    All_Project_Status.map((name) => (
+                     <option value={name.lookup_value}>{name.lookup_value}</option>
+                    )))}
                         </select>
                        </div>
                        <div className="col-md-4 mb-4 custom-input"></div>
@@ -3515,39 +3702,51 @@ const generateExcelFileunit = () => {
                        <div className="col-md-6 mb-6 custom-input"><label className="form-label">Parking Type</label>
                        <Select className="form-control form-control-sm" style={{border:"none"}}
                     multiple
-                    value={parkings}
+                    value={project.parking_type || []}
                     onChange={handleparkingChange}
                     renderValue={(selected) => selected.join(', ')}
-                >
+                   onOpen={() => {
+                      if (All_Parking_Type.length === 0) {
+                        getall_parking_type();
+                      }
+                    }}
+                  >
                 
-                 <MenuItem value="select-all">
-                    <Checkbox checked={parkings.length === parking.length} />
-                    <ListItemText
-                      primary={ '---select all---'} //
-                    />
-                  </MenuItem>
-                    {parking.map((name) => (
-                        <MenuItem key={name} value={name}>
-                            <Checkbox checked={parkings.indexOf(name) > -1} />
-                            <ListItemText primary={name} />
+                    {
+                    select_loading==="parking-type" ? (
+                      <CircularProgress/>
+                    ) : (
+                    All_Parking_Type.map((name) => (
+                        <MenuItem key={name} value={name.lookup_value}>
+                            <Checkbox checked={project.parking_type.indexOf(name.lookup_value) > -1} />
+                            <ListItemText primary={name.lookup_value} />
                         </MenuItem>
-                    ))}
+                    )))}
                 </Select>
                        </div>
                        <div className="col-md-6 mb-6 custom-input"><label className="form-label">Approved Bank</label>
                        <Select className="form-control form-control-sm" style={{border:"none"}}
                 labelId="bank-select-label"
                 multiple
-                value={selectedBanks}
+                value={project.approved_bank || []}
                 onChange={handleChange}
                 renderValue={(selected) => selected.join(', ')}
+                onOpen={() => {
+                      if (All_Bank.length === 0) {
+                        getall_bank();
+                      }
+                    }}
             >
-                {bankOptions.map((option) => (
-                    <MenuItem key={option} value={option}>
-                        <Checkbox checked={selectedBanks.indexOf(option) > -1} />
-                        <ListItemText primary={option} />
-                    </MenuItem>
-                ))}
+               {
+                    select_loading==="bank" ? (
+                      <CircularProgress/>
+                    ) : (
+                    All_Bank.map((name) => (
+                        <MenuItem key={name} value={name.lookup_value}>
+                            <Checkbox checked={project.approved_bank.indexOf(name.lookup_value) > -1} />
+                            <ListItemText primary={name.lookup_value} />
+                        </MenuItem>
+                    )))}
             </Select>
                        </div>
                 <div className="col-md-2 mb-2 custom-input" > <label className="form-label">Approvals</label>
@@ -3736,60 +3935,15 @@ const generateExcelFileunit = () => {
             <div className="p-3 py-5">
                 <div className="row " >
                 <div className="col-md-12 mb-12 custom-input" style={{border:"1px solid gray",padding:"10px",borderRadius:"8px"}}>
-                {/* <div style={{border:"1px solid black",marginTop:"10px"}}>
-                {mapLoaded && (
-                          <LoadScript
-                            googleMapsApiKey="AIzaSyACfBzaJSVH8eur7U9JxdjI1bAeTLXsUJc"
-                                                                >
-                                    <GoogleMap
-                              mapContainerStyle={mapStyles}
-                                zoom={13}
-                                center={defaultCenter}
-                                >
-                            <Marker
-                              position={{ lat: defaultCenter.lat, lng: defaultCenter.lng }}
-                              draggable={true}
-                              onDragEnd={handleMarkerDragEnd}
-                            />
-                            </GoogleMap>
-                            </LoadScript>
-                )}
-                          </div> */}
+               
                           <div className="row">
                           <div className="col-md-6 mb-6 custom-input" ><label className="form-label">Location</label><input  type="text" className="form-control form-control-sm" required="true" placeholder="Enter location" value={project.location} onChange={(e)=>setproject({...project,location:e.target.value})}/></div>
-                          {/* <div className='col-md-5 mb-5 custom-input'></div> */}
+                
                           <div className="col-md-1 mb-1 custom-input"><label className="form-label" style={{visibility:"hidden"}}>.</label>
                             <button
+                            className='btn-add'
                               onClick={handleSubmit}
-                              style={{
-                                width: '100%',
-                                padding: '6px 12px',
-                                borderRadius: '20px',
-                                fontWeight: '600',
-                                fontSize: '14px',
-                                letterSpacing: '0.6px',
-                                backgroundColor: '#2c3e50', // dark navy blue, classy and modern
-                                color: '#ecf0f1',           // light grey text
-                                border: '1.5px solid #2c3e50',
-                                transition: 'all 0.3s ease',
-                                cursor: 'pointer',
-                                outline: 'none',
-                                userSelect: 'none',
-                              }}
-                              onMouseEnter={e => {
-                                e.currentTarget.style.backgroundColor = '#ecf0f1';  // light background on hover
-                                e.currentTarget.style.color = '#2c3e50';            // dark text on hover
-                                e.currentTarget.style.borderColor = '#2c3e50';
-                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(44, 62, 80, 0.2)';
-                                e.currentTarget.style.transform = 'scale(1.05)';
-                              }}
-                              onMouseLeave={e => {
-                                e.currentTarget.style.backgroundColor = '#2c3e50';
-                                e.currentTarget.style.color = '#ecf0f1';
-                                e.currentTarget.style.borderColor = '#2c3e50';
-                                e.currentTarget.style.boxShadow = 'none';
-                                e.currentTarget.style.transform = 'scale(1)';
-                              }}
+                             
                             >
                               Get
                             </button>
@@ -3843,138 +3997,103 @@ const generateExcelFileunit = () => {
  {/*-------------------------------------------------- block details start--------------------------------------------------------- */
  
  }
-        <div className="col-md-12 mb-12 custom-input" id='block' style={{display:"none",marginTop:"-80px"}}>
-            <div className="p-3 py-5">
-     
-                <div className="row " >
+       <div
+  id="block"
+  className="hidden w-full mt-0"
+>
+  <div className="w-full bg-white rounded-lg shadow-sm p-4">
+    
+    {/* Actions Row */}
+ <div className="w-full flex flex-wrap items-center justify-end gap-3">
 
-                
-                    <div className="col-md-7 mb-7 custom-input"></div>
-                    <div className="col-md-2 mb-2 custom-input">
-                       <button
-                        onClick={handleShow1}
-                        style={{
-                          width: '100%',
-                          height:"45px",
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          fontWeight: '600',
-                          fontSize: '14px',
-                          letterSpacing: '0.6px',
-                          backgroundColor: '#2c3e50', // dark navy blue, classy and modern
-                          color: '#ecf0f1',           // light grey text
-                          border: '1.5px solid #2c3e50',
-                          transition: 'all 0.3s ease',
-                          cursor: 'pointer',
-                          outline: 'none',
-                          userSelect: 'none',
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.backgroundColor = '#ecf0f1';  // light background on hover
-                          e.currentTarget.style.color = '#2c3e50';            // dark text on hover
-                          e.currentTarget.style.borderColor = '#2c3e50';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(44, 62, 80, 0.2)';
-                          e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.backgroundColor = '#2c3e50';
-                          e.currentTarget.style.color = '#ecf0f1';
-                          e.currentTarget.style.borderColor = '#2c3e50';
-                          e.currentTarget.style.boxShadow = 'none';
-                          e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                      >
-                        Add Block
-                      </button>
-                    </div>
-                    <div className="col-md-2 mb-2 custom-input">
-                          <button
-                        onClick={handleShow8}
-                        style={{
-                          width: '100%',
-                          height:"45px",
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          fontWeight: '600',
-                          fontSize: '14px',
-                          letterSpacing: '0.6px',
-                          backgroundColor: '#2c3e50', // dark navy blue, classy and modern
-                          color: '#ecf0f1',           // light grey text
-                          border: '1.5px solid #2c3e50',
-                          transition: 'all 0.3s ease',
-                          cursor: 'pointer',
-                          outline: 'none',
-                          userSelect: 'none',
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.backgroundColor = '#ecf0f1';  // light background on hover
-                          e.currentTarget.style.color = '#2c3e50';            // dark text on hover
-                          e.currentTarget.style.borderColor = '#2c3e50';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(44, 62, 80, 0.2)';
-                          e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.backgroundColor = '#2c3e50';
-                          e.currentTarget.style.color = '#ecf0f1';
-                          e.currentTarget.style.borderColor = '#2c3e50';
-                          e.currentTarget.style.boxShadow = 'none';
-                          e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                      >
-                        Import Block
-                      </button>
-                      </div>
-                    <Tooltip title="Download Data.." arrow>
-                    <div className="col-md-1 mb-1 custom-input"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFileblock} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
-                    </Tooltip>
-                    <TableContainer component={Paper} style={{height:"400px",width:"1000px",overflowY:"scroll",marginTop:"40px",marginLeft:"50px"}}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
-     
-    <TableHead>
-        <TableRow>
-          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Block Name</StyledTableCell>
-          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Category</StyledTableCell>
-          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Sub-Category</StyledTableCell>
-          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Status</StyledTableCell>
-          <StyledTableCell style={{fontSize:"12px",backgroundColor:"gray"}}>Action</StyledTableCell>
-        </TableRow>
-      </TableHead>
-      <tbody>
-        {
-         
-        project.add_block.map ((item, index) => (
-          <StyledTableRow key={index}>
-            <StyledTableCell style={{fontSize:"12px"}}>
-            {item.block_name}
-             </StyledTableCell>
-             <StyledTableCell style={{fontSize:"12px"}}>
-              {Array.isArray(item.category) ? (
-                item.category.map((categoryItem, index) => (
-                  <span key={index}>{categoryItem}<br></br></span> // Render each item with a key
-                ))
-              ) : (
-                <span>{item.category}</span> // Render a single category if it's not an array
-              )}
-            </StyledTableCell>
+  <button
+    onClick={handleShow1}
+    className="btn-primary-custom w-auto px-4"
+  >
+    Add Block
+  </button>
 
-             <StyledTableCell style={{fontSize:"12px"}}>
-            {item.sub_category}
-             </StyledTableCell>
-             <StyledTableCell style={{fontSize:"12px"}}>
-            {item.status}
-             </StyledTableCell>
-             <StyledTableCell style={{fontSize:"12px"}}>
-             <div style={{marginTop:"10px"}}>
-              {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteblock(index)}  style={{height:"40px",cursor:"pointer"}}/> */}
-               <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}} onClick={()=>deleteblock(index)} >delete</span>
-              </div>
-             </StyledTableCell>
-              
-          </StyledTableRow>
-        ))}
-      </tbody>
-    </Table>
-    </TableContainer>
+  <button
+    onClick={handleShow8}
+    className="btn-primary-custom w-auto px-4"
+  >
+    Import Block
+  </button>
+
+  <img
+    src="https://cdn-icons-png.flaticon.com/512/4007/4007698.png"
+    onClick={generateExcelFileblock}
+    className="h-10 cursor-pointer hover:scale-110 transition"
+    alt="download"
+  />
+
+</div>
+
+
+    {/* Table */}
+    <div className="mt-6 w-full overflow-x-auto">
+      <TableContainer
+        component={Paper}
+        className="max-h-[400px] overflow-y-scroll"
+      >
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell className="!text-[12px] !bg-gray-500 !text-white">
+                Block Name
+              </StyledTableCell>
+              <StyledTableCell className="!text-[12px] !bg-gray-500 !text-white">
+                Category
+              </StyledTableCell>
+              <StyledTableCell className="!text-[12px] !bg-gray-500 !text-white">
+                Sub-Category
+              </StyledTableCell>
+              <StyledTableCell className="!text-[12px] !bg-gray-500 !text-white">
+                Status
+              </StyledTableCell>
+              <StyledTableCell className="!text-[12px] !bg-gray-500 !text-white text-center">
+                Action
+              </StyledTableCell>
+            </TableRow>
+          </TableHead>
+
+          <tbody>
+            {project.add_block.map((item, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell className="!text-[12px]">
+                  {item.block_name}
+                </StyledTableCell>
+
+                <StyledTableCell className="!text-[12px]">
+                  {Array.isArray(item.category)
+                    ? item.category.map((c, i) => (
+                        <span key={i}>{c}<br /></span>
+                      ))
+                    : item.category}
+                </StyledTableCell>
+
+                <StyledTableCell className="!text-[12px]">
+                  {item.sub_category}
+                </StyledTableCell>
+
+                <StyledTableCell className="!text-[12px]">
+                  {item.status}
+                </StyledTableCell>
+
+                <StyledTableCell className="!text-[12px] text-center">
+                  <span
+                    className="material-icons text-red-600 text-[22px] cursor-pointer hover:scale-110 transition"
+                    onClick={() => deleteblock(index)}
+                  >
+                    delete
+                  </span>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </tbody>
+        </Table>
+      </TableContainer>
+
 
     <Modal show={show1} onHide={handleClose1} size='lg'>
             <Modal.Header>
@@ -3987,25 +4106,38 @@ const generateExcelFileunit = () => {
                     <div className="col-md-6 mb-6 custom-input"><label className="form-label">Block/Tower Name</label><input type="text" required="true" name='block_name' className="form-control form-control-sm" placeholder="first name" onChange={(e)=>setblock({...block,block_name:e.target.value})}/></div>
                     <div className='col-md-6 mb-6 custom-input'></div>
 
-                    <div className="col-md-12 mb-12 custom-input"><label className="form-label">Category</label></div>
-                    <div className="col-md-12 mb-12 custom-input" style={{display:"flex",flexWrap:"wrap"}} >
-                       {
-                        project.category.map((type) => (
-                          <div className="col-md-3 mb-3 custom-input" key={type}>
-                            <button 
-                            name='category'
-                              className="form-control form-control-sm"
-                              onClick={() => handleTypeClick3(type)} 
-                              style={{ backgroundColor: selectedType2(type) ? 'green' : '' }}
-                            >
-                              {type}
-                            </button>
-                          </div>
-                        ))
-                       }
+                    <div className="col-md-12 custom-input"><label className="form-label">Category</label></div>
+                    <div className="col-md-12 custom-input" style={{display:"flex",flexWrap:"wrap"}} >
+                      {project?.category.map((type) => (
+                <div className="col-md-2 custom-input" key={type}>
+                    <button
+                      className="form-control form-control-sm category-button"
+                      onClick={() => handleTypeClick3(type)}
+                      style={{
+                        backgroundColor: selectedType2(type) ? "#28a745" : "#f8f9fa", // green or light gray
+                        color: selectedType2(type) ? "white" : "#333",
+                        border: "1px solid #ccc",
+                        borderRadius: "6px",
+                        fontWeight: "bold",
+                        transition: "all 0.3s ease",
+                        boxShadow: selectedType2(type)
+                          ? "0 4px 10px rgba(40, 167, 69, 0.4)"
+                          : "0 2px 6px rgba(0, 0, 0, 0.1)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = "scale(1.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = "scale(1)";
+                      }}
+                    >
+                      {type}
+                    </button>
+                        
+                </div>
+            ))}
                     </div>
 
-                   
                     <div className="col-md-12 mb-12 custom-input"><label className="form-label">Sub Category</label>
                     <Select
                     className="form-control form-control-sm"
