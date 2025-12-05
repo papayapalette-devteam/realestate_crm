@@ -499,6 +499,22 @@ function Projectform() {
       }
     };
 
+    const [All_Approvals, setAll_Approvals] = useState([]);
+    const getall_approvals = async () => {
+      try {
+        setselect_loading("approvals")
+        const params = new URLSearchParams();
+        params.append("lookup_type", "approvals");
+        const resp = await api.get(`api/LookupList?${params.toString()}`);
+        setAll_Approvals(resp.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+      finally
+      {
+        setselect_loading(false)
+      }
+    };
 
 
 
@@ -3439,11 +3455,11 @@ const generateExcelFileunit = () => {
             <div onMouseOver={mousehover} onMouseOut={mouseout}><Sidebar1/></div>
            
            <div style={{padding:"50px"}}>
-            <div className="container  bg-white mt-5 mb-5 ml-150px w-[80%] shadow-2xl rounded-xl">
+            <div className="container  bg-white mt-5  ml-150px w-[80%] shadow-2xl rounded-xl">
     <div className="row" id='r' style={{transition:"0.5s"}}>
            <div className="col-md-12 border-right">
             <div className="p-3 py-5">
-                <div className="d-flex justify-content-between align-items-center mb-3">
+                <div className="d-flex justify-content-between align-items-center">
                   <h1
                     className="text-right text-xl font-bold"
                     style={{ cursor: "pointer" }}
@@ -3539,9 +3555,9 @@ const generateExcelFileunit = () => {
  {/*------------------------------------------ basic details start------------------------------------------------------------------------ */}
                
                 <div className="row" id='basicdetails1' style={{marginTop:"40px"}}>
-                <div className="col-md-6 mb-6 custom-input"><label className="form-label">Name</label><input type="text" required="true" name='name' className="form-control form-control-sm"  onChange={(e)=>setproject({...project,name:e.target.value})}/></div>
-                <div className='col-md-6 mb-6 custom-input'></div>
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Developer Name</label><select className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,developer_name:e.target.value})}>
+                <div className="col-md-6 custom-input"><label className="form-label">Name</label><input type="text" required="true" name='name' className="form-control form-control-sm"  onChange={(e)=>setproject({...project,name:e.target.value})}/></div>
+                <div className='col-md-6 custom-input'></div>
+                    <div className="col-md-6 custom-input"><label className="form-label">Developer Name</label><select className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,developer_name:e.target.value})}>
                               <option>---Select---</option>
                               {
                                 data1.map((item)=>
@@ -3551,7 +3567,7 @@ const generateExcelFileunit = () => {
                               }
                         </select>
                         </div>
-                        <div className='col-md-1 mb-1 custom-input'><label style={{visibility:"hidden"}}>add</label>
+                        <div className='col-md-1  custom-input'><label style={{visibility:"hidden"}}>add</label>
                         <button
                           className="btn-add form-control form-control-sm"
                           onClick={add_developer}
@@ -3559,9 +3575,9 @@ const generateExcelFileunit = () => {
                           +
                         </button>
                         </div>
-                        <div className='col-md-5 mb-5 custom-input'></div>
-                        <div className="col-md-6 mb-6 custom-input"><input  type='checkbox' onChange={handleischeckedchange} checked={ischecked} /><label style={{margin:"10px"}}>Is this a Joint Venture?</label></div>
-                        <div className="col-md-6 mb-6 custom-input"><label className="form-label">Secondary Developer</label><select id='secondarydeveloper'  className="form-control form-control-sm" required="true"  onChange={(e)=>setproject({...project,secondary_developer:e.target.value})}>
+                        <div className='col-md-5  custom-input'></div>
+                        <div className="col-md-6 custom-input"><input  type='checkbox' onChange={handleischeckedchange} checked={ischecked} /><label style={{margin:"10px"}}>Is this a Joint Venture?</label></div>
+                        <div className="col-md-6  custom-input"><label className="form-label">Secondary Developer</label><select id='secondarydeveloper'  className="form-control form-control-sm" required="true"  onChange={(e)=>setproject({...project,secondary_developer:e.target.value})}>
                         <option>---Select---</option>
                               {
                                 data1.map((item)=>
@@ -3572,18 +3588,18 @@ const generateExcelFileunit = () => {
                         </select>
                         </div>
 
-                    <div className="col-md-5 mb-5 custom-input"><label className="form-label">Rera Number</label><input type="text" required="true" className="form-control form-control-sm"  onChange={(e)=>setproject({...project,rera_number:e.target.value})}/></div>
-                    <div className='col-md-7 mb-7 custom-input'></div>
+                    <div className="col-md-5  custom-input"><label className="form-label">Rera Number</label><input type="text" required="true" className="form-control form-control-sm"  onChange={(e)=>setproject({...project,rera_number:e.target.value})}/></div>
+                    <div className='col-md-7  custom-input'></div>
 
-                    <div className="col-md-10 mb-10 custom-input" ><label className="form-label">Descriptions</label>
+                    <div className="col-md-10  custom-input" ><label className="form-label">Descriptions</label>
                     <div style={{ border: '1px solid lightblue', borderRadius: '8px', overflow: 'hidden' }}>
                     <ReactQuill value={project.descriptions} formats={formats} modules={modules} style={{height:"200px"}}   onChange={(value) => setproject({ ...project, descriptions: value })}/></div>
                     </div>
-                    <div className="col-md-2 mb-2 custom-input"></div>
+                    <div className="col-md-2  custom-input"></div>
                   
-                    <div className="col-md-12 mb-12 custom-input" style={{ display: "flex", }}><label className="form-label">Category</label>
+                    <div className="col-md-12  custom-input" style={{ display: "flex", }}><label className="form-label">Category</label>
             {All_Category.map((type) => (
-                <div className="col-md-2 mb-2 custom-input" key={type} style={{marginTop:"30px"}}>
+                <div className="col-md-2  custom-input" key={type} style={{marginTop:"30px"}}>
                     <button
                       className="form-control form-control-sm category-button"
                       onClick={() => handleTypeClick(type.lookup_value)}
@@ -3611,7 +3627,7 @@ const generateExcelFileunit = () => {
                 </div>
             ))}
         </div>
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Sub Category</label>
+                    <div className="col-md-6  custom-input"><label className="form-label">Sub Category</label>
                     
                     <Select
                     className='form-control form-control-sm'
@@ -3637,27 +3653,20 @@ const generateExcelFileunit = () => {
           ))}
         </Select>
                     </div>
-                    <div className="col-md-6 mb-6 custom-input"></div>
+                    <div className="col-md-6  custom-input"></div>
 
-                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">Land Area</label><input type="text" className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,land_area:e.target.value})}/></div>
-                        <div className="col-md-2 mb-2 custom-input"><label className="form-label" style={{visibility:"hidden"}}>.</label>
+                        <div className="col-md-2  custom-input"><label className="form-label">Land Area</label><input type="text" className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,land_area:e.target.value})}/></div>
+                        <div className="col-md-2  custom-input"><label className="form-label" style={{visibility:"hidden"}}>.</label>
                         <select className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,measurment1:e.target.value})}>
                               <option>Acres.</option>
-                              <option>Mrs.</option>
-                              <option>Sh.</option>
-                              <option>Smt.</option>
-                              <option>Dr.</option>
-                              <option>Er.</option>
-                              <option>Col.</option>
-                              <option>Maj.</option>
                         </select>
                        </div>
-                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">Total Blocks</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,total_block:e.target.value})}/></div>
-                        <div className="col-md-2 mb-2 custom-input" id='totalfloors'><label className="form-label">TOTAL Floor</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true"  onChange={(e)=>setproject({...project,total_floor:e.target.value})}/></div>
-                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,total_units:e.target.value})}/></div>
-                        <div className="col-md-2 mb-2 custom-input"></div>
+                        <div className="col-md-2  custom-input"><label className="form-label">Total Blocks</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,total_block:e.target.value})}/></div>
+                        <div className="col-md-2  custom-input" id='totalfloors'><label className="form-label">TOTAL Floor</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true"  onChange={(e)=>setproject({...project,total_floor:e.target.value})}/></div>
+                        <div className="col-md-2  custom-input"><label className="form-label">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,total_units:e.target.value})}/></div>
+                        <div className="col-md-2  custom-input"></div>
 
-                        <div className="col-md-10 mb-10 custom-input" id='zonelist' style={{display:"none"}}><label className="form-label">Zone</label>
+                        <div className="col-md-10  custom-input" id='zonelist' style={{display:"none"}}><label className="form-label">Zone</label>
                         <Select className="form-control form-control-sm" style={{border:"none"}}
                             multiple
                             value={zone}
@@ -3673,7 +3682,7 @@ const generateExcelFileunit = () => {
                         </Select>
                        </div>
                      <div className='row' id='withoutagriculture' style={{padding:"20px,0"}}>
-                        <div className="col-md-8 mb-8 custom-input"><label className="form-label">Status</label>
+                        <div className="col-md-8  custom-input"><label className="form-label">Status</label>
                         <select className="form-control form-control-sm"
                          required="true" 
                          value={project.status}
@@ -3693,13 +3702,13 @@ const generateExcelFileunit = () => {
                     )))}
                         </select>
                        </div>
-                       <div className="col-md-4 mb-4 custom-input"></div>
+                       <div className="col-md-4  custom-input"></div>
 
-                       <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Launched On</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,launched_on:e.target.value})}/></div>
-                       <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Expected Competion</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,expected_competion:e.target.value})}/></div>
-                       <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Possession</label><input type="date"   className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,possession:e.target.value})}/></div>
+                       <div className="col-md-4  custom-input" ><label className="form-label">Launched On</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,launched_on:e.target.value})}/></div>
+                       <div className="col-md-4  custom-input" ><label className="form-label">Expected Competion</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,expected_competion:e.target.value})}/></div>
+                       <div className="col-md-4  custom-input" ><label className="form-label">Possession</label><input type="date"   className="form-control form-control-sm" required="true" onChange={(e)=>setproject({...project,possession:e.target.value})}/></div>
 
-                       <div className="col-md-6 mb-6 custom-input"><label className="form-label">Parking Type</label>
+                       <div className="col-md-6 custom-input"><label className="form-label">Parking Type</label>
                        <Select className="form-control form-control-sm" style={{border:"none"}}
                     multiple
                     value={project.parking_type || []}
@@ -3724,7 +3733,7 @@ const generateExcelFileunit = () => {
                     )))}
                 </Select>
                        </div>
-                       <div className="col-md-6 mb-6 custom-input"><label className="form-label">Approved Bank</label>
+                       <div className="col-md-6  custom-input"><label className="form-label">Approved Bank</label>
                        <Select className="form-control form-control-sm" style={{border:"none"}}
                 labelId="bank-select-label"
                 multiple
@@ -3749,41 +3758,36 @@ const generateExcelFileunit = () => {
                     )))}
             </Select>
                        </div>
-                <div className="col-md-2 mb-2 custom-input" > <label className="form-label">Approvals</label>
+                <div className="col-md-3 custom-input" > 
+                  <label className="form-label">Approvals</label>
                     {
                       project.approvals.map((item,index)=>
                       (
-                        <select style={{marginTop:"10px"}} required="true" className="form-control form-control-sm" onChange={(event)=>handleapprovalschange(index,event)}>
-                        <option>choose</option>
-                        <option>Upcoming</option>
-                              <option>Rera Certificate</option>
-                              <option>Layout Plan Approval</option>
-                              <option>Storm & Drain Water NOC</option>
-                              <option>Fire NOC</option>
-                              <option>Change of Land Use Approval</option>
-                              <option>Environmental Clearance</option>
-                              <option>Occupation Certificate</option>
-                              <option>Commencement Certificate</option>
-                              <option>Ownership Document</option>
-                              <option>Non-Encumbrance Certificate</option>
-                              <option> Airport Clearance</option>
-                              <option> Development/Construction Certificate</option>
-                              <option>NOC Tree Cutting</option>
-                              <option>Electrical Scheme Approval</option>
-                              <option>Traffic & Coordination NOC</option>
-                              <option>Ancient Monument Approval</option>
-                              <option> Pollution Control Board Approval</option>
-                              <option>Borewell Registration Certificate</option>
-                              <option>Excavation/Mining Approval</option>
-                              <option>Road Access Plan Approval</option>
-                              <option>Labour Deptt. Approval</option>
-                              <option>Permanent Power Connection</option>
-                              <option>Permanent Sewerage Connection</option>
+                        <select  required="true"
+                        value={project.approvals[index]}
+                        style={{marginTop:"10px"}}
+                         className="form-control form-control-sm" 
+                          onClick={() => {
+                      if (All_Approvals.length === 0) {
+                        getall_approvals();
+                      }
+                    }}
+                         onChange={(event)=>handleapprovalschange(index,event)}>
+                        <option>---choose---</option>
+                              {
+                    select_loading==="approvals" ? (
+                      <CircularProgress/>
+                    ) : (
+                    All_Approvals.map((name) => (
+                     
+                          <option  value={name.lookup_value}>{name.lookup_value}</option>
+                      
+                    )))}
                         </select> 
                       ))
                     }
                     </div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label">Registration No.</label>
+                    <div className="col-md-2 custom-input"><label className="form-label">Registration No.</label>
                     {
                        project.registration_no.map((item,index)=>
                         (
@@ -3795,7 +3799,7 @@ const generateExcelFileunit = () => {
                         ))
                     }
                     </div>
-                    <div className="col-md-2 mb-2 custom-input"><label className="form-label">Date</label>
+                    <div className="col-md-2 custom-input"><label className="form-label">Date</label>
                     {
                        project.date.map((item,index)=>
                         (
@@ -3807,7 +3811,7 @@ const generateExcelFileunit = () => {
                         ))
                     }
                     </div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Pic</label>
+                    <div className="col-md-2 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Pic</label>
                     {
                       project.pic.map((item,index)=>
                       (
@@ -3820,7 +3824,7 @@ const generateExcelFileunit = () => {
                         onChange={(event)=>handlepicchange(index,event)}
                         />
                                 <label htmlFor={`doc-upload-${index}`} className="upload-label">
-                                  <i className="bi bi-image-fill me-2" style={{fontSize: "1.4rem",cursor:"pointer"}}></i> Upload Image
+                                  <i className="bi bi-image-fill me-2" style={{fontSize: "1.4rem",cursor:"pointer"}}></i> Upload
                                 </label>
                                   <div className="d-flex flex-wrap gap-2 mt-2">
                                   {(item || []).map((obj, i) => (
@@ -3843,11 +3847,11 @@ const generateExcelFileunit = () => {
                       ))
                     }
                     </div>
-                    <div className="col-md-1 mb-1 custom-input" style={{marginTop:"70px"}}>
+                    <div className="col-md-1 custom-input" style={{marginTop:"100px"}}>
                     {
                        project.action1.map((item,index)=>
                         (
-                          <div style={{marginTop:"90px"}}>
+                          <div>
                             {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
                               <span class="material-icons" style={{color: "red", fontSize: "24px",cursor:"pointer"}}  onClick={()=>deleteall1(index)}>delete</span> 
                             </div>
@@ -3856,7 +3860,7 @@ const generateExcelFileunit = () => {
                         ))
                     }
                     </div>
-                  <div className="col-md-1 mb-1 custom-input"><label className="form-label" >add</label>
+                  <div className="col-md-1  custom-input"><label className="form-label" >add</label>
                   <button
                     className="form-control form-control-sm"
                     onClick={addFn1}
@@ -3881,9 +3885,9 @@ const generateExcelFileunit = () => {
                  
                   
 
-                    <div className="col-md-12 mb-12 custom-input"><label className="form-label" style={{fontSize:"16px",marginTop:"10px"}}>System Details</label><hr style={{marginTop:"-5px"}}></hr></div>
+                    <div className="col-md-12  custom-input"><label className="form-label" style={{fontSize:"16px",marginTop:"10px"}}>System Details</label><hr style={{marginTop:"-5px"}}></hr></div>
                     
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Owner</label>
+                    <div className="col-md-6  custom-input"><label className="form-label">Owner</label>
                     <Select className="form-control form-control-sm" style={{border:"none"}}
                     multiple
                     value={owners}
@@ -3899,7 +3903,7 @@ const generateExcelFileunit = () => {
                 </Select>
                     </div>
                   
-                        <div className="col-md-6 mb-6 custom-input"><label className="form-label">Team</label>
+                        <div className="col-md-6  custom-input"><label className="form-label">Team</label>
                         <Select className="form-control form-control-sm" style={{border:"none"}}
                     multiple
                     value={teams}
@@ -3916,7 +3920,7 @@ const generateExcelFileunit = () => {
 
                     </div>
                   
-                        <div className="col-md-6 mb-6 custom-input"><label className="form-label">Visible to</label><select className="form-control form-control-sm" onChange={(e)=>setproject({...project,visible_to:e.target.value})}>
+                        <div className="col-md-6  custom-input"><label className="form-label">Visible to</label><select className="form-control form-control-sm" onChange={(e)=>setproject({...project,visible_to:e.target.value})}>
                                 <option>Select</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
@@ -3931,15 +3935,15 @@ const generateExcelFileunit = () => {
                   
   {/* -----------------------------------------location Details start------------------------------------------------------------------- */}
 
-        <div className="col-md-12 mb-12 custom-input" id='location' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
+        <div className="col-md-12  custom-input" id='location' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
             <div className="p-3 py-5">
                 <div className="row " >
-                <div className="col-md-12 mb-12 custom-input" style={{border:"1px solid gray",padding:"10px",borderRadius:"8px"}}>
+                <div className="col-md-12  custom-input" style={{border:"1px solid gray",padding:"10px",borderRadius:"8px"}}>
                
                           <div className="row">
-                          <div className="col-md-6 mb-6 custom-input" ><label className="form-label">Location</label><input  type="text" className="form-control form-control-sm" required="true" placeholder="Enter location" value={project.location} onChange={(e)=>setproject({...project,location:e.target.value})}/></div>
+                          <div className="col-md-6  custom-input" ><label className="form-label">Location</label><input  type="text" className="form-control form-control-sm" required="true" placeholder="Enter location" value={project.location} onChange={(e)=>setproject({...project,location:e.target.value})}/></div>
                 
-                          <div className="col-md-1 mb-1 custom-input"><label className="form-label" style={{visibility:"hidden"}}>.</label>
+                          <div className="col-md-1  custom-input"><label className="form-label" style={{visibility:"hidden"}}>.</label>
                             <button
                             className='btn-add'
                               onClick={handleSubmit}
@@ -3948,20 +3952,20 @@ const generateExcelFileunit = () => {
                               Get
                             </button>
                           </div>
-                          <div className='col-md-5 mb-5 custom-input'></div>
-                          <div className="col-md-5 mb-5 custom-input"><label className="form-label">Lattitude</label><input type="number"className="form-control form-control-sm" required="true" value={coordinates.lat} readOnly/></div>
-                          <div className="col-md-5 mb-5 custom-input"><label className="form-label">Langitude</label><input type="number"className="form-control form-control-sm" required="true" value={coordinates.lng} readOnly/></div>
+                          <div className='col-md-5  custom-input'></div>
+                          <div className="col-md-5  custom-input"><label className="form-label">Lattitude</label><input type="number"className="form-control form-control-sm" required="true" value={coordinates.lat} readOnly/></div>
+                          <div className="col-md-5  custom-input"><label className="form-label">Langitude</label><input type="number"className="form-control form-control-sm" required="true" value={coordinates.lng} readOnly/></div>
                           </div>
                           </div>
                           
-                          <div className="col-md-12 mb-12 custom-input"><label className="form-label" style={{fontSize:"16px",marginTop:"10px"}}>Address</label></div>
+                          <div className="col-md-12  custom-input"><label className="form-label" style={{fontSize:"16px",marginTop:"10px"}}>Address</label></div>
                     <div className="row" style={{border:"1px solid gray",margin:"5px",padding:"10px",borderRadius:"8px"}}>
-                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">ADDRESS</label><input type="text" value={project.address} className="form-control form-control-sm" onChange={(e)=>setproject({...project,address:e.target.value})}/></div>
-                    <div className="col-md-4 mb-4 custom-input"></div>
-                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">STREET</label><input type="text" value={project.street} className="form-control form-control-sm" onChange={(e)=>setproject({...project,street:e.target.value})}/></div>
-                    <div className="col-md-4 mb-4 custom-input"></div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">LOCALITY</label><input type="text" value={project.locality} className="form-control form-control-sm" onChange={(e)=>setproject({...project,locality:e.target.value})}/></div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">CITY</label>
+                    <div className="col-md-8  custom-input"><label className="form-label">ADDRESS</label><input type="text" value={project.address} className="form-control form-control-sm" onChange={(e)=>setproject({...project,address:e.target.value})}/></div>
+                    <div className="col-md-4  custom-input"></div>
+                    <div className="col-md-8  custom-input"><label className="form-label">STREET</label><input type="text" value={project.street} className="form-control form-control-sm" onChange={(e)=>setproject({...project,street:e.target.value})}/></div>
+                    <div className="col-md-4  custom-input"></div>
+                    <div className="col-md-4  custom-input"><label className="form-label">LOCALITY</label><input type="text" value={project.locality} className="form-control form-control-sm" onChange={(e)=>setproject({...project,locality:e.target.value})}/></div>
+                    <div className="col-md-4  custom-input"><label className="form-label">CITY</label>
                     <select type="text" className="form-control form-control-sm" onChange={(e)=>setproject({...project,city:e.target.value})}>
                    <option>{project.city} </option>
                     {cities.map((city) => (
@@ -3971,8 +3975,8 @@ const generateExcelFileunit = () => {
                     ))}
                     </select>
                     </div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">ZIP</label><input type="text" value={project.zip} className="form-control form-control-sm" onChange={(e)=>setproject({...project,zip:e.target.value})}/></div>
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">State</label><select  className="form-control form-control-sm" onChange={(e)=>setproject({...project,state:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">ZIP</label><input type="text" value={project.zip} className="form-control form-control-sm" onChange={(e)=>setproject({...project,zip:e.target.value})}/></div>
+                    <div className="col-md-6  custom-input"><label className="form-label">State</label><select  className="form-control form-control-sm" onChange={(e)=>setproject({...project,state:e.target.value})}>
                                 <option>{project.state}</option>
                                 {states.map((state) => (
                                 <option key={state} value={state}>
@@ -3981,7 +3985,7 @@ const generateExcelFileunit = () => {
                                  ))}
                                 </select>
                     </div>
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Country</label><select  className="form-control form-control-sm"  onChange={(e)=>setproject({...project,country:e.target.value})}>
+                    <div className="col-md-6  custom-input"><label className="form-label">Country</label><select  className="form-control form-control-sm"  onChange={(e)=>setproject({...project,country:e.target.value})}>
                                 <option>{project.country}</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
@@ -4103,8 +4107,8 @@ const generateExcelFileunit = () => {
             <div style={{width:"100%"}}>
             <div className="row" id='basicdetails1'>
              
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Block/Tower Name</label><input type="text" required="true" name='block_name' className="form-control form-control-sm" placeholder="first name" onChange={(e)=>setblock({...block,block_name:e.target.value})}/></div>
-                    <div className='col-md-6 mb-6 custom-input'></div>
+                    <div className="col-md-6  custom-input"><label className="form-label">Block/Tower Name</label><input type="text" required="true" name='block_name' className="form-control form-control-sm" placeholder="first name" onChange={(e)=>setblock({...block,block_name:e.target.value})}/></div>
+                    <div className='col-md-6  custom-input'></div>
 
                     <div className="col-md-12 custom-input"><label className="form-label">Category</label></div>
                     <div className="col-md-12 custom-input" style={{display:"flex",flexWrap:"wrap"}} >
@@ -4138,7 +4142,7 @@ const generateExcelFileunit = () => {
             ))}
                     </div>
 
-                    <div className="col-md-12 mb-12 custom-input"><label className="form-label">Sub Category</label>
+                    <div className="col-md-12  custom-input"><label className="form-label">Sub Category</label>
                     <Select
                     className="form-control form-control-sm"
                     name='sub_category'
@@ -4165,8 +4169,8 @@ const generateExcelFileunit = () => {
                     {
                     project.category.includes('Agricultural') && (
                         <>
-                         <div className="col-md-3 mb-3 custom-input"><label className="form-label">Land Area</label><input type="text" className="form-control form-control-sm" required="true" name='land_area' onChange={(e)=>setblock({...block,land_area:e.target.value})}/></div>
-                        <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>measurment</label>
+                         <div className="col-md-3  custom-input"><label className="form-label">Land Area</label><input type="text" className="form-control form-control-sm" required="true" name='land_area' onChange={(e)=>setblock({...block,land_area:e.target.value})}/></div>
+                        <div className="col-md-3  custom-input"><label className="form-label" style={{visibility:"hidden"}}>measurment</label>
                         <select className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,measurment:e.target.value})}>
                               <option>Acres.</option>
                               <option>Kanal</option>
@@ -4175,9 +4179,9 @@ const generateExcelFileunit = () => {
                               <option>Hectare</option>
                         </select>
                        </div>
-                       <div className="col-md-3 mb-3 custom-input"><label className="form-label">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_units:e.target.value})}/></div>
-                       <div className='col-md-3 mb-3 custom-input'></div>
-                       <div className="col-md-10 mb-10 custom-input" id='zonelist' ><label className="form-label">Zone</label>
+                       <div className="col-md-3  custom-input"><label className="form-label">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_units:e.target.value})}/></div>
+                       <div className='col-md-3  custom-input'></div>
+                       <div className="col-md-10  custom-input" id='zonelist' ><label className="form-label">Zone</label>
                         <Select className="form-control form-control-sm" style={{border:"none"}}
                             multiple
                             value={zone}
@@ -4192,15 +4196,15 @@ const generateExcelFileunit = () => {
                             ))}
                         </Select>
                        </div>
-                       <div className="col-md-7 mb-7 custom-input" ><label className="form-label">Rera Number</label><input type="text"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,rera_no:e.target.value})}/></div>
+                       <div className="col-md-7  custom-input" ><label className="form-label">Rera Number</label><input type="text"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,rera_no:e.target.value})}/></div>
                         </>
                       )
                     }
                       {
                      !project.category.includes('Agricultural') && (
                         <>
-                    <div className="col-md-2 mb-2 custom-input"><label className="form-label">Land Area</label><input type="text" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,land_area:e.target.value})}/></div>
-                        <div className="col-md-2 mb-2 custom-input"><label className="form-label" style={{visibility:"hidden"}}>measurment</label>
+                    <div className="col-md-2  custom-input"><label className="form-label">Land Area</label><input type="text" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,land_area:e.target.value})}/></div>
+                        <div className="col-md-2  custom-input"><label className="form-label" style={{visibility:"hidden"}}>measurment</label>
                         <select className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,measurment:e.target.value})}>
                               <option>Acres.</option>
                               <option>Kanal</option>
@@ -4209,24 +4213,33 @@ const generateExcelFileunit = () => {
                               <option>Hectare</option>
                         </select>
                        </div>
-                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">Total Blocks</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_blocks:e.target.value})}/></div>
-                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">TOTAL Floor</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_floors:e.target.value})} /></div>
-                        <div className="col-md-2 mb-2 custom-input"><label className="form-label">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_units:e.target.value})}/></div>
-                        <div className="col-md-2 mb-2 custom-input"></div>
-                        <div className="col-md-12 mb-12 custom-input"><label className="form-label">Status</label><select  className="form-control form-control-sm"  onChange={(e)=>setblock({...block,status:e.target.value})}>
-                                <option>---Select---</option>
-                                <option>Upcoming</option>
-                                <option>Pre Launch</option>
-                                <option>Launched</option>
-                                <option>Under Construction</option>
-                                <option>Ready to Move</option>
+                        <div className="col-md-2  custom-input"><label className="form-label">Total Blocks</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_blocks:e.target.value})}/></div>
+                        <div className="col-md-2  custom-input"><label className="form-label">TOTAL Floor</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_floors:e.target.value})} /></div>
+                        <div className="col-md-2  custom-input"><label className="form-label">TOTAL Units</label><input type="number" defaultValue={'0'} className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,total_units:e.target.value})}/></div>
+                        <div className="col-md-2  custom-input"></div>
+                        <div className="col-md-12  custom-input"><label className="form-label">Status</label>
+                        <select  className="form-control form-control-sm"
+                          onChange={(e)=>setblock({...block,status:e.target.value})}
+                            onClick={() => {
+                            if (All_Project_Status.length === 0) {
+                              getall_project_status();
+                            }
+                          }}>
+                           <option>---select project status---</option>
+                            {
+                    select_loading==="project-status" ? (
+                      <CircularProgress/>
+                    ) : (
+                    All_Project_Status.map((name) => (
+                     <option value={name.lookup_value}>{name.lookup_value}</option>
+                    )))}
                                 </select>
                     </div>
-                    <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Launched On</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,launched_on:e.target.value})}/></div>
-                       <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Expected Competion</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,expected_competion:e.target.value})}/></div>
-                       <div className="col-md-4 mb-4 custom-input" ><label className="form-label">Possession</label><input type="date"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,possession:e.target.value})}/></div>
+                    <div className="col-md-4 custom-input" ><label className="form-label">Launched On</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,launched_on:e.target.value})}/></div>
+                       <div className="col-md-4 custom-input" ><label className="form-label">Expected Competion</label><input type="date" className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,expected_competion:e.target.value})}/></div>
+                       <div className="col-md-4 custom-input" ><label className="form-label">Possession</label><input type="date"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,possession:e.target.value})}/></div>
 
-                       <div className="col-md-10 mb-10 custom-input"><label className="form-label">Parking Type</label>
+                       <div className="col-md-10 custom-input"><label className="form-label">Parking Type</label>
                        <Select className="form-control form-control-sm" style={{border:"none"}}
                     multiple
                     value={parkings}
@@ -4248,8 +4261,8 @@ const generateExcelFileunit = () => {
                     ))}
                 </Select>
                        </div>
-                       <div className='col-md-6 mb-6 custom-input'></div>
-                       <div className="col-md-7 mb-7 custom-input" ><label className="form-label">Rera Number</label><input type="text"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,rera_no:e.target.value})}/></div>
+                       <div className='col-md-6  custom-input'></div>
+                       <div className="col-md-7  custom-input" ><label className="form-label">Rera Number</label><input type="text"   className="form-control form-control-sm" required="true" onChange={(e)=>setblock({...block,rera_no:e.target.value})}/></div>
               </>
                       )}
                 </div>
@@ -4271,88 +4284,46 @@ const generateExcelFileunit = () => {
 {/*--------------------================================= block details end------------------------------============================== */}
 
 {/*------------------------------======================== size details start================----------------------------------- */}
-<div className="col-md-12 mb-12 custom-input" id='sizedetails' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
-            <div className="p-3 py-5">
-                <div className="row " >
-                <div className="col-md-7 mb-7 custom-input"></div>
-                    <div className="col-md-2 mb-2 custom-input">
+
+
+      <div
+  id="sizedetails"
+  className="hidden w-full mt-0"
+>
+  <div className="w-full bg-white rounded-lg shadow-sm p-4">
+                  
+                
+                      {/* Actions Row */}
+ <div className="w-full flex flex-wrap items-center justify-end gap-3">
                           <button
                         onClick={handleShow2}
-                        style={{
-                          width: '100%',
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          fontWeight: '600',
-                          fontSize: '14px',
-                          letterSpacing: '0.6px',
-                          backgroundColor: '#2c3e50', // dark navy blue, classy and modern
-                          color: '#ecf0f1',           // light grey text
-                          border: '1.5px solid #2c3e50',
-                          transition: 'all 0.3s ease',
-                          cursor: 'pointer',
-                          outline: 'none',
-                          userSelect: 'none',
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.backgroundColor = '#ecf0f1';  // light background on hover
-                          e.currentTarget.style.color = '#2c3e50';            // dark text on hover
-                          e.currentTarget.style.borderColor = '#2c3e50';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(44, 62, 80, 0.2)';
-                          e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.backgroundColor = '#2c3e50';
-                          e.currentTarget.style.color = '#ecf0f1';
-                          e.currentTarget.style.borderColor = '#2c3e50';
-                          e.currentTarget.style.boxShadow = 'none';
-                          e.currentTarget.style.transform = 'scale(1)';
-                        }}
+                       className="btn-primary-custom w-auto px-4"
                       >
                         Add Size
                       </button>
-                      </div>
-                    <div className="col-md-2 mb-2 custom-input">
+                   
+                      
+               
                         <button
                         onClick={handleShow9}
-                        style={{
-                          width: '100%',
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          fontWeight: '600',
-                          fontSize: '14px',
-                          letterSpacing: '0.6px',
-                          backgroundColor: '#2c3e50', // dark navy blue, classy and modern
-                          color: '#ecf0f1',           // light grey text
-                          border: '1.5px solid #2c3e50',
-                          transition: 'all 0.3s ease',
-                          cursor: 'pointer',
-                          outline: 'none',
-                          userSelect: 'none',
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.backgroundColor = '#ecf0f1';  // light background on hover
-                          e.currentTarget.style.color = '#2c3e50';            // dark text on hover
-                          e.currentTarget.style.borderColor = '#2c3e50';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(44, 62, 80, 0.2)';
-                          e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.backgroundColor = '#2c3e50';
-                          e.currentTarget.style.color = '#ecf0f1';
-                          e.currentTarget.style.borderColor = '#2c3e50';
-                          e.currentTarget.style.boxShadow = 'none';
-                          e.currentTarget.style.transform = 'scale(1)';
-                        }}
+                        className="btn-primary-custom w-auto px-4"
                       >
                         Import Size
                       </button>
-                      </div>
+                  
                     <Tooltip title="Download Data.." arrow>
-                    <div className="col-md-1 mb-1 custom-input"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFilesize} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
+                    <div className="col-md-1  custom-input"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFilesize} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
                     </Tooltip>
+                    </div>
                  
-                    <TableContainer component={Paper} style={{height:"400px",width:"1000px",overflowY:"scroll",marginTop:"40px",marginLeft:"50px"}}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+  {/* Table */}
+    <div className="mt-6 w-full overflow-x-auto">
+      <TableContainer
+        component={Paper}
+        className="max-h-[400px] overflow-y-scroll"
+      >
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+
      
     <TableHead>
         <TableRow>
@@ -4392,6 +4363,7 @@ const generateExcelFileunit = () => {
       </tbody>
     </Table>
     </TableContainer>
+    </div>
 
     <Modal show={show2} onHide={handleClose2} size='lg'>
             <Modal.Header>
@@ -4401,10 +4373,10 @@ const generateExcelFileunit = () => {
             <div style={{width:"100%"}}>
             <div className="row" id='basicdetails1'>
              
-                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">Size Name</label><input type="text" readOnly value={sizes.size_name} required="true" className="form-control form-control-sm" placeholder="first name"/></div>
-                    <div className='col-md-4 mb-4 custom-input'></div>
+                    <div className="col-md-8  custom-input"><label className="form-label">Size Name</label><input type="text" readOnly value={sizes.size_name} required="true" className="form-control form-control-sm" placeholder="first name"/></div>
+                    <div className='col-md-4  custom-input'></div>
 
-                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">Block</label><select  className="form-control form-control-sm"  onChange={(e)=>setsizes({...sizes,block1:e.target.value})}>
+                    <div className="col-md-8  custom-input"><label className="form-label">Block</label><select  className="form-control form-control-sm"  onChange={(e)=>setsizes({...sizes,block1:e.target.value})}>
                                 <option>choose</option>
                                {
                                 project.add_block.map((item)=>
@@ -4414,14 +4386,14 @@ const generateExcelFileunit = () => {
                                }
                                 </select>
                     </div>
-                    <div className='col-md-4 mb-4 custom-input'></div>
+                    <div className='col-md-4  custom-input'></div>
 
-                    <div className="col-md-12 mb-12 custom-input"><label className="form-label">Category</label></div>
-                    <div className="col-md-12 mb-12 custom-input" style={{display:"flex"}} >
-                    <div className="col-md-12 mb-12 custom-input" style={{ display: "flex", flexWrap: "wrap" }}>
+                    <div className="col-md-12  custom-input"><label className="form-label">Category</label></div>
+                    <div className="col-md-12  custom-input" style={{display:"flex"}} >
+                    <div className="col-md-12  custom-input" style={{ display: "flex", flexWrap: "wrap" }}>
                       {
                         project.category.map((type) => (
-                          <div className="col-md-3 mb-3 custom-input" key={type}>
+                          <div className="col-md-3  custom-input" key={type}>
                             <button 
                               className="form-control form-control-sm"
                               onClick={() => handleTypeClick2(type)} 
@@ -4436,7 +4408,7 @@ const generateExcelFileunit = () => {
 
                     </div>
 
-                    <div className="col-md-12 mb-12 custom-input"><label className="form-label">Sub Category</label>
+                    <div className="col-md-12  custom-input"><label className="form-label">Sub Category</label>
                     <select
                     className='form-control form-control-sm'
                       labelId="subcategory-label"
@@ -4456,7 +4428,7 @@ const generateExcelFileunit = () => {
                               
                               !project.category.includes('Agricultural') && (
                                   <>
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Unit Type</label>
+                    <div className="col-md-6  custom-input"><label className="form-label">Unit Type</label>
                     <select
                     className='form-control form-control-sm'
                       onChange={(e)=>setsizes({...sizes,unit_type:e.target.value})}>
@@ -4469,7 +4441,7 @@ const generateExcelFileunit = () => {
                       }
                 </select>
                     </div>  
-                    <div className='col-md-6 mb-6 custom-input'></div>
+                    <div className='col-md-6  custom-input'></div>
                     </>
                               )}
 
@@ -4478,7 +4450,7 @@ const generateExcelFileunit = () => {
                               project.category.includes('Agricultural') && (
                                   <>
                
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label" >Type</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,type:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label" >Type</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,type:e.target.value})}>
                                 <option>---select---</option>
                                 <option>Acre</option>
                                 <option>Kanal</option>
@@ -4486,7 +4458,7 @@ const generateExcelFileunit = () => {
                                 
                                 </select>
                              </div>
-                             <div className='col-md-8 mb-8 custom-input'></div>
+                             <div className='col-md-8  custom-input'></div>
 
                                       {/* <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Total Seleble Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,length:e.target.value})}/></div>
                     <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
@@ -4517,7 +4489,7 @@ const generateExcelFileunit = () => {
                               )
                           } 
 
-                    <div className='col-md-6 mb-6 custom-input' style={{marginTop:"10px"}}>
+                    <div className='col-md-6 custom-input' style={{marginTop:"10px"}}>
                             <input
                               type="checkbox"
                               checked={showapartmentSize}
@@ -4528,36 +4500,36 @@ const generateExcelFileunit = () => {
      
                    {showapartmentSize && (
                     <div className='row' id='apartmentsize' style={{margin:"20px",padding:"20px",border:"1px dashed black"}}>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label">Total Seleble Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,total_sealable_area:e.target.value})} /></div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,sq_feet1:e.target.value})}>
+                    <div className="col-md-3  custom-input"><label className="form-label">Total Seleble Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,total_sealable_area:e.target.value})} /></div>
+                    <div className="col-md-3  custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,sq_feet1:e.target.value})}>
                                 <option>Feet</option>
                                 <option>Yard</option>
                                 <option>Meter</option>
                                 <option>Inch</option>
                                 </select>
                              </div>
-                             <div className='col-md-6 mb-6 custom-input'></div>
-                             <div className="col-md-3 mb-3 custom-input"><label className="form-label"> Covered Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,covered_area:e.target.value})}/></div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
+                             <div className='col-md-6  custom-input'></div>
+                             <div className="col-md-3  custom-input"><label className="form-label"> Covered Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,covered_area:e.target.value})}/></div>
+                    <div className="col-md-3  custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
                                 <option>{sizes.sq_feet1}</option>
                                 </select>
                              </div>
-                             <div className='col-md-6 mb-6 custom-input'></div>
-                             <div className="col-md-3 mb-3 custom-input"><label className="form-label"> Carpet Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,carpet_area:e.target.value})} onBlur={totalpercentage}/></div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
+                             <div className='col-md-6  custom-input'></div>
+                             <div className="col-md-3  custom-input"><label className="form-label"> Carpet Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,carpet_area:e.target.value})} onBlur={totalpercentage}/></div>
+                    <div className="col-md-3  custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
                                <option>{sizes.sq_feet1}</option>
                                 </select>
                              </div>
-                             <div className="col-md-3 mb-3 custom-input"><label className="form-label"> Loading</label><input type='text' className='form-control form-control-sm' value={sizes.loading}/></div>
-                    <div className="col-md-2 mb-2 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
+                             <div className="col-md-3  custom-input"><label className="form-label"> Loading</label><input type='text' className='form-control form-control-sm' value={sizes.loading}/></div>
+                    <div className="col-md-2  custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
                                 <option>%</option>
                                 </select>
                              </div>
-                             <div className='col-md-1 mb-1 custom-input'></div>
+                             <div className='col-md-1  custom-input'></div>
                             </div>
                      )}
 
-                            <div  className='col-md-6 mb-6 custom-input' style={{marginTop:"10px"}}>
+                            <div  className='col-md-6  custom-input' style={{marginTop:"10px"}}>
                         <input
                           type="checkbox"
                           checked={showPlotSize}
@@ -4567,8 +4539,8 @@ const generateExcelFileunit = () => {
                       </div>
                 {showPlotSize && (
                             <div className='row' id='plotsize' style={{margin:"20px",padding:"20px",border:"1px dashed black"}}>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" >Total Length</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,length:e.target.value})}/></div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,yard1:e.target.value})}>
+                    <div className="col-md-3  custom-input"><label className="form-label" >Total Length</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,length:e.target.value})}/></div>
+                    <div className="col-md-3  custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,yard1:e.target.value})}>
                               <option>---select---</option>
                                <option>Yard</option>
                                 <option>Meter</option>
@@ -4577,16 +4549,16 @@ const generateExcelFileunit = () => {
                                 
                                 </select>
                              </div>
-                             <div className='col-md-6 mb-6 custom-input'></div>
+                             <div className='col-md-6  custom-input'></div>
                 
-                             <div className="col-md-3 mb-3 custom-input"><label className="form-label" > Total Breadth</label><input type='text'   className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,bredth:e.target.value})}/></div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" value={sizes.yard1}>
+                             <div className="col-md-3  custom-input"><label className="form-label" > Total Breadth</label><input type='text'   className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,bredth:e.target.value})}/></div>
+                    <div className="col-md-3  custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" value={sizes.yard1}>
                                 <option>---select---</option>
                                 <option>{sizes.yard1}</option>     
                                 </select>
                              </div>
-                             <div className="col-md-3 mb-3 custom-input"><label className="form-label" > Total Area</label><input type='text' value={sizes.total_area} readOnly  className='form-control form-control-sm' /></div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,yard3:e.target.value})}
+                             <div className="col-md-3  custom-input"><label className="form-label" > Total Area</label><input type='text' value={sizes.total_area} readOnly  className='form-control form-control-sm' /></div>
+                    <div className="col-md-3  custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm" onChange={(e)=>setsizes({...sizes,yard3:e.target.value})}
                       onBlur={calculateTotalArea}>
                                <option>---select---</option>
                                 <option>Sq Yard</option>
@@ -4620,94 +4592,48 @@ const generateExcelFileunit = () => {
                          
                     </div>
                     </div>
-                    </div>
+                   
              
   {/*-------------------========================== size details end ==================================--------------------------------------*/}
 
 {/*---------------------------------=========================== unit details start-------------------===================================== */}
 
-<div className="col-md-12 mb-12 custom-input" id='unitdetails' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
-            <div className="p-3 py-5">
-                <div className="row " >
-                <div className="col-md-7 mb-7 custom-input"></div>
-                    <div className="col-md-2 mb-2 custom-input">
+
+      <div
+  id="unitdetails"
+  className="hidden w-full mt-0"
+>
+  <div className="w-full bg-white rounded-lg shadow-sm p-4">
+                   
+                                         {/* Actions Row */}
+ <div className="w-full flex flex-wrap items-center justify-end gap-3">
                        <button
                       onClick={handleShow3}
-                      style={{
-                        width: '100%',
-                        padding: '6px 12px',
-                        borderRadius: '20px',
-                        fontWeight: '600',
-                        fontSize: '14px',
-                        letterSpacing: '0.6px',
-                        backgroundColor: '#2c3e50', // dark navy blue, classy and modern
-                        color: '#ecf0f1',           // light grey text
-                        border: '1.5px solid #2c3e50',
-                        transition: 'all 0.3s ease',
-                        cursor: 'pointer',
-                        outline: 'none',
-                        userSelect: 'none',
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.backgroundColor = '#ecf0f1';  // light background on hover
-                        e.currentTarget.style.color = '#2c3e50';            // dark text on hover
-                        e.currentTarget.style.borderColor = '#2c3e50';
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(44, 62, 80, 0.2)';
-                        e.currentTarget.style.transform = 'scale(1.05)';
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.backgroundColor = '#2c3e50';
-                        e.currentTarget.style.color = '#ecf0f1';
-                        e.currentTarget.style.borderColor = '#2c3e50';
-                        e.currentTarget.style.boxShadow = 'none';
-                        e.currentTarget.style.transform = 'scale(1)';
-                      }}
+                     className="btn-primary-custom w-auto px-4"
                     >
                       Add Unit
                     </button>
-                      </div>
-                    <div className="col-md-2 mb-2 custom-input">
+                   
+                  
                          <button
                         onClick={handleShow7}
-                        style={{
-                          width: '100%',
-                          padding: '6px 12px',
-                          borderRadius: '20px',
-                          fontWeight: '600',
-                          fontSize: '14px',
-                          letterSpacing: '0.6px',
-                          backgroundColor: '#2c3e50', // dark navy blue, classy and modern
-                          color: '#ecf0f1',           // light grey text
-                          border: '1.5px solid #2c3e50',
-                          transition: 'all 0.3s ease',
-                          cursor: 'pointer',
-                          outline: 'none',
-                          userSelect: 'none',
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.backgroundColor = '#ecf0f1';  // light background on hover
-                          e.currentTarget.style.color = '#2c3e50';            // dark text on hover
-                          e.currentTarget.style.borderColor = '#2c3e50';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(44, 62, 80, 0.2)';
-                          e.currentTarget.style.transform = 'scale(1.05)';
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.backgroundColor = '#2c3e50';
-                          e.currentTarget.style.color = '#ecf0f1';
-                          e.currentTarget.style.borderColor = '#2c3e50';
-                          e.currentTarget.style.boxShadow = 'none';
-                          e.currentTarget.style.transform = 'scale(1)';
-                        }}
+                       className="btn-primary-custom w-auto px-4"
                       >
                         Import Unit
                       </button>
-                      </div>
+                     
                     <Tooltip title="Download Data.." arrow>
-                    <div className="col-md-1 mb-1 custom-input"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFileunit} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
+                    <div className="col-md-1  custom-input"><img src='https://cdn-icons-png.flaticon.com/512/4007/4007698.png' onClick={generateExcelFileunit} style={{height:"40px",cursor:"pointer"}} alt=''></img></div>
                     </Tooltip>
+                    </div>
 
-                    <TableContainer component={Paper} style={{height:"400px",width:"1100px",overflowY:"scroll",marginTop:"40px",marginLeft:"10px"}}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+   {/* Table */}
+    <div className="mt-6 w-full overflow-x-auto">
+      <TableContainer
+        component={Paper}
+        className="max-h-[400px] overflow-y-scroll"
+      >
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
     <TableHead>
         <TableRow>
@@ -4780,6 +4706,7 @@ const generateExcelFileunit = () => {
       </tbody>
     </Table>
     </TableContainer>
+    </div>
 
     <Modal show={show3} onHide={handleClose3} size={modalSize}>
             <Modal.Header>
@@ -4792,103 +4719,80 @@ const generateExcelFileunit = () => {
                 <div  id='unitlocationdetails' style={{cursor:'pointer',fontWeight:"bold"}}  onClick={unitdetail2}><span>Location</span></div>
                 <div  id='ownerdetails' style={{cursor:'pointer',fontWeight:"bold"}}  onClick={unitdetail3}><span>Add Owner</span></div>
                </div> */}
-               <div style={{ display: "flex", gap: "50px" }}>
- <div
-  id="unitdetail"
-  style={{
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    padding: '10px 16px',
-    borderRadius: '8px',
-    backgroundColor: activeUnit === 1 ? '#e6f0ff' : 'transparent',
-    color: activeUnit === 1 ? '#0056b3' : '#333',
-    boxShadow: activeUnit === 1 ? '0 4px 8px rgba(0, 86, 179, 0.2)' : 'none',
-    border: activeUnit === 1 ? '2px solid #0056b3' : '2px solid transparent',
-    transition: 'all 0.3s ease-in-out',
-  }}
-  onClick={unitdetail1}
->
-  <span>🏠 Unit</span>
-</div>
-<div
-  id="unitlocationdetails"
-  style={{
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    padding: '10px 16px',
-    borderRadius: '8px',
-    backgroundColor: activeUnit === 2 ? '#e6ffe6' : 'transparent',
-    color: activeUnit === 2 ? '#218838' : '#333',
-    boxShadow: activeUnit === 2 ? '0 4px 8px rgba(33, 136, 56, 0.2)' : 'none',
-    border: activeUnit === 2 ? '2px solid #218838' : '2px solid transparent',
-    transition: 'all 0.3s ease-in-out',
-  }}
-  onClick={unitdetail2}
->
-  <span>📍 Location</span>
-</div>
+   <div className="flex flex-wrap items-center gap-3 sm:gap-6 bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                    {/* TAB 1 */}
+                    <div
+                      onClick={unitdetail1}
+                      className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+      ${
+        activeUnit === 1
+          ? "bg-blue-600 text-white shadow-md scale-105"
+          : "text-gray-600 hover:bg-gray-100 hover:text-black"
+      }`}
+                    >
+                      Unit
+                    </div>
 
-<div
-  id="ownerdetails1"
-  style={{
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    padding: '10px 16px',
-    borderRadius: '8px',
-    backgroundColor: activeUnit === 3 ? '#f3e6ff' : 'transparent',
-    color: activeUnit === 3 ? '#6f42c1' : '#333',
-    boxShadow: activeUnit === 3 ? '0 4px 8px rgba(111, 66, 193, 0.2)' : 'none',
-    border: activeUnit === 3 ? '2px solid #6f42c1' : '2px solid transparent',
-    transition: 'all 0.3s ease-in-out',
-  }}
-  onClick={unitdetail3}
->
-  <span>👤 Add Owner</span>
-</div>
-<div
-  id="adddocuments"
-  style={{
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    padding: '10px 16px',
-    borderRadius: '8px',
-    backgroundColor: activeUnit === 4 ? '#e0f7f7' : 'transparent',
-    color: activeUnit === 4 ? '#007777' : '#333',
-    boxShadow: activeUnit === 4 ? '0 4px 8px rgba(0, 119, 119, 0.2)' : 'none',
-    border: activeUnit === 4 ? '2px solid #007777' : '2px solid transparent',
-    transition: 'all 0.3s ease-in-out',
-  }}
-  onClick={unitdetail4}
->
-  <span>📄 Add Documents</span>
-</div>
-<div
-  id="upload"
-  style={{
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    padding: '10px 16px',
-    borderRadius: '8px',
-    backgroundColor: activeUnit === 5 ? '#fff8e1' : 'transparent',
-    color: activeUnit === 5 ? '#f9a825' : '#333',
-    boxShadow: activeUnit === 5 ? '0 4px 8px rgba(249, 168, 37, 0.2)' : 'none',
-    border: activeUnit === 5 ? '2px solid #f9a825' : '2px solid transparent',
-    transition: 'all 0.3s ease-in-out',
-  }}
-  onClick={unitdetail5}
->
-  <span>⤴️ Upload</span>
-</div>
+                    {/* TAB 2 */}
+                    <div
+                      onClick={unitdetail2}
+                      className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+      ${
+        activeUnit === 2
+          ? "bg-blue-600 text-white shadow-md scale-105"
+          : "text-gray-600 hover:bg-gray-100 hover:text-black"
+      }`}
+                    >
+                      Location
+                    </div>
 
-</div>
+                    {/* TAB 3 */}
+                    <div
+                      onClick={unitdetail3}
+                      className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+      ${
+        activeUnit === 3
+          ? "bg-blue-600 text-white shadow-md scale-105"
+          : "text-gray-600 hover:bg-gray-100 hover:text-black"
+      }`}
+                    >
+                      Add Owner
+                    </div>
+
+                    {/* TAB 4 */}
+                    <div
+                      onClick={unitdetail4}
+                      className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+      ${
+        activeUnit === 4
+          ? "bg-blue-600 text-white shadow-md scale-105"
+          : "text-gray-600 hover:bg-gray-100 hover:text-black"
+      }`}
+                    >
+                      Add Documents
+                    </div>
+
+                    {/* TAB 5 */}
+                    <div
+                      onClick={unitdetail5}
+                      className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+      ${
+        activeUnit === 5
+          ? "bg-blue-600 text-white shadow-md scale-105"
+          : "text-gray-600 hover:bg-gray-100 hover:text-black"
+      }`}
+                    >
+                      Upload
+                    </div>
+                  </div>
 
               
               <hr></hr>
             <div style={{width:"100%"}}>
             <div className="row" id='unitdetails1'>
              
-                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">Unit Number</label><input type="text" required="true"  className="form-control form-control-sm"  placeholder="unit number" onChange={(e)=>setunits({...units,unit_no:e.target.value})}/></div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Unit Type</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,unit_type:e.target.value})}>
+                    <div className="col-md-8  custom-input"><label className="form-label">Unit Number</label><input type="text" required="true"  className="form-control form-control-sm"  placeholder="unit number" onChange={(e)=>setunits({...units,unit_no:e.target.value})}/></div>
+                    <div className="col-md-4  custom-input"><label className="form-label">Unit Type</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,unit_type:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Corner</option>
                                 <option> Two Side Open</option>
@@ -4896,12 +4800,12 @@ const generateExcelFileunit = () => {
                                 <option>Ordinary </option>
                                 </select>
                     </div>
-                    <div className="col-md-12 mb-12 custom-input" style={{display:"flex"}} ><label className="form-label">Category</label></div>
-                    <div className="col-md-12 mb-12 custom-input" style={{display:"flex"}} >
-                    <div className="col-md-12 mb-12 custom-input" style={{ display: "flex", flexWrap: "wrap" }}>
+                    <div className="col-md-12  custom-input" style={{display:"flex"}} ><label className="form-label">Category</label></div>
+                    <div className="col-md-12  custom-input" style={{display:"flex"}} >
+                    <div className="col-md-12  custom-input" style={{ display: "flex", flexWrap: "wrap" }}>
                       {
                         project.category.map((type) => (
-                          <div className="col-md-3 mb-3 custom-input" key={type}>
+                          <div className="col-md-3  custom-input" key={type}>
                             <button 
                               className="form-control form-control-sm"
                               onClick={() => handleTypeClick1(type)} 
@@ -4916,7 +4820,7 @@ const generateExcelFileunit = () => {
                     </div>
 
                    
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Sub Category</label>
+                    <div className="col-md-6  custom-input"><label className="form-label">Sub Category</label>
                     
                     <Select
                     className='form-control form-control-sm'
@@ -4943,8 +4847,8 @@ const generateExcelFileunit = () => {
         </Select>
                    
                     </div>
-                    <div className='col-md-6 mb-6 custom-input'></div>
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Block</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,block:e.target.value})}>
+                    <div className='col-md-6  custom-input'></div>
+                    <div className="col-md-6  custom-input"><label className="form-label">Block</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,block:e.target.value})}>
                     <option>choose</option>
                     {
                                 project.add_block.map((item)=>
@@ -4954,7 +4858,7 @@ const generateExcelFileunit = () => {
                                }
                                 </select>
                     </div>
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Size</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,size:e.target.value})}>
+                    <div className="col-md-6 custom-input"><label className="form-label">Size</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,size:e.target.value})}>
                     <option>choose</option>
                     {
                                 project.add_size.map((item)=>
@@ -4972,17 +4876,17 @@ const generateExcelFileunit = () => {
                           <>
 
 
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Land Type</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,land_type:e.target.value})}>
+                    <div className="col-md-6  custom-input"><label className="form-label">Land Type</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,land_type:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Crop Land</option>
                                 <option>Wood Land</option>
                                 <option>Pasture</option>
                                 </select>
                     </div>
-                    <div className='col-md-6 mb-6 custom-input'></div>
-                    <div className='col-md-12 mb-12 custom-input' style={{color:"green",fontWeight:"bolder",marginTop:"10px"}}>Land Details<hr></hr></div>
+                    <div className='col-md-6  custom-input'></div>
+                    <div className='col-md-12  custom-input' style={{color:"green",fontWeight:"bolder",marginTop:"10px"}}>Land Details<hr></hr></div>
 
-                    <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Khewat No</label>
+                    <div className='col-md-3  custom-input' ><label className='form-label'>Khewat No</label>
                     {
                       Array.isArray(units.khewat_no) ?
                       units.khewat_no.map((item,index)=>
@@ -4993,7 +4897,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Killa No</label>
+                    <div className='col-md-3  custom-input' ><label className='form-label'>Killa No</label>
                     {
                       Array.isArray(units.killa_no) ?
                       units.killa_no.map((item,index)=>
@@ -5004,7 +4908,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Share</label>
+                    <div className='col-md-3  custom-input' ><label className='form-label'>Share</label>
                     {
                       Array.isArray(units.share) ?
                       units.share.map((item,index)=>
@@ -5014,7 +4918,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                  <div className='col-md-1 mb-1 custom-input' style={{marginTop:"90px"}}>
+                  <div className='col-md-1  custom-input' style={{marginTop:"90px"}}>
                   {
                     Array.isArray(units.action5) ?
                     units.action5.map((item,index)=>
@@ -5026,11 +4930,11 @@ const generateExcelFileunit = () => {
                   }
                   </div>
 
-                       <div className="col-md-1 mb-1 custom-input" ><label className="form-label">add</label><button className="form-control form-control-sm" onClick={addFn5}>+</button></div>
-                    <div className='col-md-12 mb-12 custom-input'>Total Land Area:-{units.total_land_area}</div>
-                       <div className='col-md-12 mb-12 custom-input' style={{color:"green",fontWeight:"bolder",marginTop:"10px"}}>Water Details<hr></hr></div>
+                       <div className="col-md-1  custom-input" ><label className="form-label">add</label><button className="form-control form-control-sm" onClick={addFn5}>+</button></div>
+                    <div className='col-md-12  custom-input'>Total Land Area:-{units.total_land_area}</div>
+                       <div className='col-md-12  custom-input' style={{color:"green",fontWeight:"bolder",marginTop:"10px"}}>Water Details<hr></hr></div>
 
-                       <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Water Source</label>
+                       <div className='col-md-3  custom-input' ><label className='form-label'>Water Source</label>
                     {
                           Array.isArray(units.water_source) ?
                       units.water_source.map((item,index)=>
@@ -5041,7 +4945,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Water Level</label>
+                    <div className='col-md-3  custom-input' ><label className='form-label'>Water Level</label>
                     {
                           Array.isArray(units.water_level) ?
                       units.water_level.map((item,index)=>
@@ -5053,7 +4957,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Water Pump Type</label>
+                    <div className='col-md-3  custom-input' ><label className='form-label'>Water Pump Type</label>
                     {
                           Array.isArray(units.water_pump_type) ?
                       units.water_pump_type.map((item,index)=>
@@ -5065,7 +4969,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className='col-md-1 mb-1 custom-input' style={{marginTop:"90px"}}>
+                    <div className='col-md-1  custom-input' style={{marginTop:"90px"}}>
                   {
                     Array.isArray(units.action6) ?
                     units.action6.map((item,index)=>
@@ -5076,11 +4980,11 @@ const generateExcelFileunit = () => {
                     )):[]
                   }
                   </div>
-                  <div className="col-md-1 mb-1 custom-input" ><label className="form-label">add</label><button className="form-control form-control-sm" onClick={addFn6}>+</button></div>
+                  <div className="col-md-1  custom-input" ><label className="form-label">add</label><button className="form-control form-control-sm" onClick={addFn6}>+</button></div>
 
-                  <div className='col-md-12 mb-12 custom-input' style={{color:"green",fontWeight:"bolder"}}>Basic Details<hr></hr></div>
+                  <div className='col-md-12  custom-input' style={{color:"green",fontWeight:"bolder"}}>Basic Details<hr></hr></div>
 
-                  <div className="col-md-4 mb-4 custom-input"><label className="form-label">Facing</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
+                  <div className="col-md-4  custom-input"><label className="form-label">Facing</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Village Link Road</option>
                                 <option>Highway</option>
@@ -5089,7 +4993,7 @@ const generateExcelFileunit = () => {
                                 </select>
                     </div>
 
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Side Open</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,side_open:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Side Open</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,side_open:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>1 Side Open</option>
                                 <option>2 Side Open</option>
@@ -5097,7 +5001,7 @@ const generateExcelFileunit = () => {
                                 </select>
                     </div>
 
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,road:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,road:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>11 Ft wide</option>
                                 <option>22 Ft Wide</option>
@@ -5108,7 +5012,7 @@ const generateExcelFileunit = () => {
                                 </select>
                     </div>
 
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Front On Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,fornt_on_road:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Front On Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,fornt_on_road:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>10 ft</option>
                                 <option>20 ft</option>
@@ -5122,13 +5026,13 @@ const generateExcelFileunit = () => {
                                 </select>
                     </div>
 
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Ownership</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ownership:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Ownership</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ownership:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Mustraka</option>
                                 <option>Individual</option>
                                 </select>
                     </div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">No. Of Owner</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">No. Of Owner</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>1</option>
                                 <option>2</option>
@@ -5146,7 +5050,7 @@ const generateExcelFileunit = () => {
 
                           <>
 
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Direction</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,direction:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Direction</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,direction:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>East</option>
                                 <option>West</option>
@@ -5159,7 +5063,7 @@ const generateExcelFileunit = () => {
                                
                                 </select>
                     </div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Facing</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Facing</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,facing:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Park</option>
                                 <option>Green Belt</option>
@@ -5183,7 +5087,7 @@ const generateExcelFileunit = () => {
                                 <option> 2 Kanal</option>
                                 </select>
                     </div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,road:e.target.value})}>
+                    <div className="col-md-4 custom-input"><label className="form-label">Road</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,road:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>9 Mtr Wide</option>
                                 <option>12 Mtr Wide</option>
@@ -5192,7 +5096,7 @@ const generateExcelFileunit = () => {
                                 <option> 60 Mtr Wide</option>
                                 </select>
                     </div>
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Ownership</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ownership:e.target.value})}>
+                    <div className="col-md-6  custom-input"><label className="form-label">Ownership</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ownership:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Freehold</option>
                                 <option>Leasehold</option>
@@ -5200,7 +5104,7 @@ const generateExcelFileunit = () => {
                                 <option>Sale Agreement(Lal Dora)</option>
                                 </select>
                     </div>
-                    <div className='col-md-6 mb-6 custom-input'><label className="form-label">Stage</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,stage:e.target.value})}>
+                    <div className='col-md-6  custom-input'><label className="form-label">Stage</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,stage:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Active</option>
                                 <option>Inactive</option>
@@ -5212,7 +5116,7 @@ const generateExcelFileunit = () => {
           }
 
 
-                    <div  className='col-md-6 mb-6 custom-input' style={{marginTop:"10px"}}>
+                    <div  className='col-md-6  custom-input' style={{marginTop:"10px"}}>
                         <input
                           type="checkbox"
                           checked={showabuiltup}
@@ -5220,12 +5124,12 @@ const generateExcelFileunit = () => {
                         />
                         <label>Show Builtup Details</label>
                       </div>
-                      <div className='col-md-6 mb-6 custom-input'></div>
+                      <div className='col-md-6  custom-input'></div>
               {showabuiltup && (
                 <>
-                    <div className='col-md-12 mb-12 custom-input'><label className='form-label'>Builtup Details</label><hr></hr></div>
+                    <div className='col-md-12  custom-input'><label className='form-label'>Builtup Details</label><hr></hr></div>
 
-                    <div className='col-md-6 mb-6 custom-input' ><label className='form-label'>Type</label>
+                    <div className='col-md-6  custom-input' ><label className='form-label'>Type</label>
                      <select className="form-control form-control-sm" style={{marginTop:"10px"}} onChange={(e)=>setunits({...units,unit_type:e.target.value})}>
                            <option>---Select---</option>
                          {
@@ -5239,10 +5143,10 @@ const generateExcelFileunit = () => {
                           }
                         </select>
                     </div>
-                    <div className='col-md-6 mb-6 custom-input'></div>
+                    <div className='col-md-6  custom-input'></div>
                   
                     <div className='row mt-2' style={{border:"1px dashed black",margin:"10px",marginTop:"0",padding:"10px",width:"100%"}}>
-                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Floor</label>
+                    <div className='col-md-2  custom-input' ><label className='form-label'>Floor</label>
                     {
                       Array.isArray(units.floor) ?
                       units.floor.map((item,index)=>
@@ -5262,7 +5166,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label' style={{width:"500px"}}>Cluter Details</label>
+                    <div className='col-md-2  custom-input' ><label className='form-label' style={{width:"500px"}}>Cluter Details</label>
                     {
                        Array.isArray(units.cluter_details) ?
                       units.cluter_details.map((item,index)=>
@@ -5288,7 +5192,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Length</label>
+                    <div className='col-md-2  custom-input' ><label className='form-label'>Length</label>
                     {
                           Array.isArray(units.length) ?
                       units.length.map((item,index)=>
@@ -5297,7 +5201,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Breadth</label>
+                    <div className='col-md-2  custom-input' ><label className='form-label'>Breadth</label>
                     {
                       Array.isArray(units.bredth) ?
                       units.bredth.map((item,index)=>
@@ -5307,7 +5211,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                      <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Total Area</label>
+                      <div className='col-md-2  custom-input' ><label className='form-label'>Total Area</label>
                     {
                       Array.isArray(units.total_area) ?
                       units.total_area.map((item,index)=>
@@ -5318,7 +5222,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
                    
-                    <div className='col-md-1 mb-1 custom-input' style={{marginTop:"90px"}}>
+                    <div className='col-md-1  custom-input' style={{marginTop:"90px"}}>
                     {
                       Array.isArray(units.action3) ?
                       units.action3.map((item,index)=>
@@ -5329,17 +5233,17 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className="col-md-1 mb-1 custom-input" ><label className="form-label">add</label><button className="form-control form-control-sm" onClick={addFn3}>+</button></div>
+                    <div className="col-md-1  custom-input" ><label className="form-label">add</label><button className="form-control form-control-sm" onClick={addFn3}>+</button></div>
                    
                     </div>
                     </>
                     )}
 
-                    <div className='col-md-6 mb-6 custom-input'><label>Occupation Date</label><input type='date' className='form-control form-control-sm' onChange={(e)=>setunits({...units,ocupation_date:e.target.value})}/></div>
-                    <div className='col-md-6 mb-6 custom-input'><label>Age of Construction</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,age_of_construction:e.target.value})}/></div>
+                    <div className='col-md-6  custom-input'><label>Occupation Date</label><input type='date' className='form-control form-control-sm' onChange={(e)=>setunits({...units,ocupation_date:e.target.value})}/></div>
+                    <div className='col-md-6  custom-input'><label>Age of Construction</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,age_of_construction:e.target.value})}/></div>
                     
 
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Furnishing Details</label><select id='subcategory'  className="form-control form-control-sm" onChange={(e)=>setunits({...units,furnishing_details:e.target.value})}>
+                    <div className="col-md-6  custom-input"><label className="form-label">Furnishing Details</label><select id='subcategory'  className="form-control form-control-sm" onChange={(e)=>setunits({...units,furnishing_details:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Furnished</option>
                                 <option>Unfurnished</option>
@@ -5349,18 +5253,18 @@ const generateExcelFileunit = () => {
                     {
                       (units.furnishing_details==="Furnished" || units.furnishing_details==="Semi Furnished") && (
                      
-                     <div className='col-md-12 mb-12 custom-input'><label>Enter Furnishing Details</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,age_of_construction:e.target.value})}/></div>
+                     <div className='col-md-12  custom-input'><label>Enter Furnishing Details</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,age_of_construction:e.target.value})}/></div>
                     )}
-                    <div className='col-md-6 mb-6 custom-input'></div>
+                    <div className='col-md-6  custom-input'></div>
 
-                    <div className='col-md-8 mb-8 custom-input'><label>Furnished Items</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,furnished_item:e.target.value})}/></div>
+                    <div className='col-md-8  custom-input'><label>Furnished Items</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setunits({...units,furnished_item:e.target.value})}/></div>
                  
                 </div>
                 </div>
                 <div className="row">
-                <div className="col-md-12 mb-12 custom-input" id='unitlocation' style={{display:"none",lineHeight:"30px"}}>
+                <div className="col-md-12  custom-input" id='unitlocation' style={{display:"none",lineHeight:"30px"}}>
                  <div className="p-3 py-5">
-                <div className="col-md-12 mb-12 custom-input" style={{border:"1px solid black",marginTop:"30px",padding:"10px"}}>
+                <div className="col-md-12  custom-input" style={{border:"1px solid black",marginTop:"30px",padding:"10px"}}>
                 <div style={{border:"1px solid black",marginTop:"10px"}}>
                 
                   
@@ -5382,20 +5286,20 @@ const generateExcelFileunit = () => {
              
                           </div>
                           <div className="row">
-                          <div className="col-md-6 mb-6 custom-input" ><label className="form-label">Location</label><input  type="text" className="form-control form-control-sm" required="true" value={units.location} onChange={(e)=>setunits({...units,location:e.target.value})}/></div>
+                          <div className="col-md-6  custom-input" ><label className="form-label">Location</label><input  type="text" className="form-control form-control-sm" required="true" value={units.location} onChange={(e)=>setunits({...units,location:e.target.value})}/></div>
                           {/* <div className='col-md-5 mb-5 custom-input'></div> */}
-                          <div className="col-md-2 mb-2 custom-input"><label className="form-label" style={{visibility:"hidden"}}>.</label><button className="form-control form-control-sm" required="true" onClick={handleSubmit1}>Get</button></div>
-                          <div className='col-md-4 mb-4 custom-input'></div>
-                          <div className="col-md-5 mb-5 custom-input"><label className="form-label">Lattitude</label><input type="number"className="form-control form-control-sm" required="true" value={units.lattitude}  readOnly/></div>
-                          <div className="col-md-5 mb-5 custom-input"><label className="form-label">Langitude</label><input type="number"className="form-control form-control-sm" required="true" value={units.langitude} readOnly/></div>
-                          <div className="col-md-12 mb-12 custom-input"><label className="form-label" style={{fontSize:"16px",marginTop:"10px"}}>Address</label></div>
+                          <div className="col-md-2  custom-input"><label className="form-label" style={{visibility:"hidden"}}>.</label><button className="form-control form-control-sm" required="true" onClick={handleSubmit1}>Get</button></div>
+                          <div className='col-md-4  custom-input'></div>
+                          <div className="col-md-5  custom-input"><label className="form-label">Lattitude</label><input type="number"className="form-control form-control-sm" required="true" value={units.lattitude}  readOnly/></div>
+                          <div className="col-md-5  custom-input"><label className="form-label">Langitude</label><input type="number"className="form-control form-control-sm" required="true" value={units.langitude} readOnly/></div>
+                          <div className="col-md-12  custom-input"><label className="form-label" style={{fontSize:"16px",marginTop:"10px"}}>Address</label></div>
                    
-                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">ADDRESS</label><input type="text" value={units.uaddress} className="form-control form-control-sm" onChange={(e)=>setunits({...units,uaddress:e.target.value})}/></div>
-                    <div className="col-md-4 mb-4 custom-input"></div>
-                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">STREET</label><input type="text" value={units.ustreet} className="form-control form-control-sm" onChange={(e)=>setunits({...units,ustreet:e.target.value})}/></div>
-                    <div className="col-md-4 mb-4 custom-input"></div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">LOCALITY</label><input type="text" value={units.ulocality} className="form-control form-control-sm" onChange={(e)=>setunits({...units,ulocality:e.target.value})}/></div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">CITY</label>
+                    <div className="col-md-8  custom-input"><label className="form-label">ADDRESS</label><input type="text" value={units.uaddress} className="form-control form-control-sm" onChange={(e)=>setunits({...units,uaddress:e.target.value})}/></div>
+                    <div className="col-md-4  custom-input"></div>
+                    <div className="col-md-8  custom-input"><label className="form-label">STREET</label><input type="text" value={units.ustreet} className="form-control form-control-sm" onChange={(e)=>setunits({...units,ustreet:e.target.value})}/></div>
+                    <div className="col-md-4  custom-input"></div>
+                    <div className="col-md-4  custom-input"><label className="form-label">LOCALITY</label><input type="text" value={units.ulocality} className="form-control form-control-sm" onChange={(e)=>setunits({...units,ulocality:e.target.value})}/></div>
+                    <div className="col-md-4  custom-input"><label className="form-label">CITY</label>
                     <select type="text"  className="form-control form-control-sm" onChange={(e)=>setunits({...units,ucity:e.target.value})}>
                     <option>{units.ucity}</option>
                     {ucities.map((city) => (
@@ -5405,8 +5309,8 @@ const generateExcelFileunit = () => {
                     ))}
                     </select>
                     </div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">ZIP</label><input type="text" value={units.uzip} className="form-control form-control-sm" onChange={(e)=>setunits({...units,uzip:e.target.value})}/></div>
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">State</label><select  className="form-control form-control-sm" onChange={(e)=>setunits({...units,ustate:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">ZIP</label><input type="text" value={units.uzip} className="form-control form-control-sm" onChange={(e)=>setunits({...units,uzip:e.target.value})}/></div>
+                    <div className="col-md-6  custom-input"><label className="form-label">State</label><select  className="form-control form-control-sm" onChange={(e)=>setunits({...units,ustate:e.target.value})}>
                                 <option>{units.ustate}</option>
                                 {ustates.map((state) => (
                                 <option key={state} value={state}>
@@ -5415,7 +5319,7 @@ const generateExcelFileunit = () => {
                                  ))}
                                 </select>
                     </div>
-                    <div className="col-md-6 mb-6 custom-input"><label className="form-label">Country</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ucountry:e.target.value})}>
+                    <div className="col-md-6  custom-input"><label className="form-label">Country</label><select  className="form-control form-control-sm"  onChange={(e)=>setunits({...units,ucountry:e.target.value})}>
                                 <option>{units.ucountry}</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
@@ -5432,7 +5336,7 @@ const generateExcelFileunit = () => {
                 <div id="ownerdetails" style={{padding:"5px",display:"none"}}>
                 <div className="row" style={{width:"100%"}}>
                
-                        <div className="col-md-9 mb-9 custom-input" id="suggestion-box" style={{ position: 'relative' }}><label className="form-label" style={{visibility:"hidden"}}>Search</label><input type="search"className="form-control form-control-sm" value={input} placeholder="Type here For Search in Contact" required="true" onChange={handleInputChange}/></div>
+                        <div className="col-md-9  custom-input" id="suggestion-box" style={{ position: 'relative' }}><label className="form-label" style={{visibility:"hidden"}}>Search</label><input type="search"className="form-control form-control-sm" value={input} placeholder="Type here For Search in Contact" required="true" onChange={handleInputChange}/></div>
                         {showSuggestions && input && filteredSuggestions.length > 0 && (
                             <ul className="suggestion-list">
                               {filteredSuggestions.map((suggestion, index) => (
@@ -5443,7 +5347,7 @@ const generateExcelFileunit = () => {
                               ))}
                             </ul>
                           )}
-                        <div className="col-md-1 mb-1 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Add</label>
+                        <div className="col-md-1  custom-input"><label className="form-label" style={{visibility:"hidden"}}>Add</label>
                         {/* <button className="form-control form-control-sm" style={{width:"50px"}} onClick={()=>navigate('/sortaddcontact')}>+</button> */}
                          <button
                         className="form-control form-control-sm"
@@ -5464,7 +5368,7 @@ const generateExcelFileunit = () => {
                      </button>
                         </div>
                     
-                     <div className="col-md-12 mb-12 custom-input" style={{marginTop:"20px"}}><label className="form-label" >Owner Contact</label><div className="col-md-12 mb-12 custom-input"><hr></hr></div>
+                     <div className="col-md-12  custom-input" style={{marginTop:"20px"}}><label className="form-label" >Owner Contact</label><div className="col-md-12  custom-input"><hr></hr></div>
                      {selectedcontact1.length >= 0 && (
                       <div className="contact-details">
                         <table  style={{width:"100%"}}>
@@ -5517,7 +5421,7 @@ const generateExcelFileunit = () => {
                     )}
                 </div>
                 
-                <div className="col-md-12 mb-12 custom-input" style={{marginTop:"20px"}}><label className="form-label" >Associate Contact</label><div className="col-md-12 mb-12 custom-input"><hr></hr></div>
+                <div className="col-md-12  custom-input" style={{marginTop:"20px"}}><label className="form-label" >Associate Contact</label><div className="col-md-12  custom-input"><hr></hr></div>
                 {selectedcontact2.length >= 0 && (
                 <div className="contact-details">
                     <table style={{width:"100%"}}>
@@ -5576,7 +5480,7 @@ const generateExcelFileunit = () => {
 
             <div id="uploadmedia" style={{padding:"5px",display:"none"}}>
                
-               <div className="d-flex justify-content-between align-items-center mb-3">
+               <div className="d-flex justify-content-between align-items-center ">
                      <h6 className="text-right">Upload Images</h6>
                  </div><hr></hr>
                  <div className="row mt-2">
@@ -5596,7 +5500,7 @@ const generateExcelFileunit = () => {
                        {
                        Array.isArray(units.s_no)?
                        units.s_no.map((name, index) => (
-                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12  custom-input" style={{marginTop:"10px"}}>
                                    <input 
                                      type="text"
                                      className="form-control form-control-sm"
@@ -5611,7 +5515,7 @@ const generateExcelFileunit = () => {
                        {
                        Array.isArray(units.preview)?
                        units.preview.map((name, index) => (
-                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12  custom-input" style={{marginTop:"10px"}}>
                                    <input 
                                    name="preview"
                                      type="file"
@@ -5628,7 +5532,7 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.descriptions)?
                        units.descriptions.map((name, index) => (
-                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12  custom-input" style={{marginTop:"10px"}}>
                                    <input 
                                      type="text"
                                      className="form-control form-control-sm"
@@ -5642,7 +5546,7 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.category)?
                        units.category.map((name, index) => (
-                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12  custom-input" style={{marginTop:"10px"}}>
                                    <select className="form-control form-control-sm" required="true" onChange={(event) => handlecategorychange(index, event)}>
                                        <option>select</option>
                                        <option>Bedroom</option>
@@ -5660,7 +5564,7 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.action10)?
                        units.action10.map((name, index) => (
-                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12  custom-input" style={{marginTop:"10px"}}>
                                  
                                    <div>
                                     {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit(index)} style={{height:"40px",cursor:"pointer"}}/> */}
@@ -5675,9 +5579,9 @@ const generateExcelFileunit = () => {
                </table>
                    </div>
                    <div className="row mt-4">
-                   <div className="col-md-3 mb-3 custom-input" style={{marginLeft:"70%"}} onClick={addFnunit}><button className="form-control form-control-sm custom-btn">Add Image</button></div>
+                   <div className="col-md-3  custom-input" style={{marginLeft:"70%"}} onClick={addFnunit}><button className="form-control form-control-sm custom-btn">Add Image</button></div>
                  </div>
-                 <div className="d-flex justify-content-between align-items-center mb-3">
+                 <div className="d-flex justify-content-between align-items-center ">
                      <h6 className="text-right">Upload Videos</h6>
                  </div><hr></hr>
                  <div className="row mt-2">
@@ -5694,7 +5598,7 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.s_no1)?
                        units.s_no1.map((name, index) => (
-                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12  custom-input" style={{marginTop:"10px"}}>
                                    <input 
                                      type="text"
                                      className="form-control form-control-sm"
@@ -5708,7 +5612,7 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.url)?
                        units.url.map((name, index) => (
-                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12  custom-input" style={{marginTop:"10px"}}>
                                    <input 
                                      type="text"
                                      className="form-control form-control-sm"
@@ -5723,7 +5627,7 @@ const generateExcelFileunit = () => {
                        <td>
                        {Array.isArray(units.action11)?
                        units.action11.map((name, index) => (
-                                 <div key={index}className="col-md-12 mb-12 custom-input" style={{marginTop:"10px"}}>
+                                 <div key={index}className="col-md-12  custom-input" style={{marginTop:"10px"}}>
                                  
                                    <div>
                                     {/* <img src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
@@ -5738,28 +5642,28 @@ const generateExcelFileunit = () => {
 
                </div>
                  <div className="row mt-4">
-                 <div className="col-md-3 mb-3 custom-input" style={{marginLeft:"70%"}} onClick={addFnunit1}><button className="form-control form-control-sm custom-btn">Add Video Link</button></div>
+                 <div className="col-md-3  custom-input" style={{marginLeft:"70%"}} onClick={addFnunit1}><button className="form-control form-control-sm custom-btn">Add Video Link</button></div>
                 
                  
-                 <div className="col-md-12 mb-12 custom-input"><hr></hr></div>
+                 <div className="col-md-12  custom-input"><hr></hr></div>
            
                                
                              
                                 
-                                 <div className="col-md-2 mb-2 custom-input"></div>
+                                 <div className="col-md-2  custom-input"></div>
                  
                                  </div>
                </div>
 
                <div id="documentform" style={{padding:"5px",display:"none"}}>
-              <div className="d-flex justify-content-between align-items-center mb-3">
+              <div className="d-flex justify-content-between align-items-center ">
                 </div><hr></hr>
 
              
 
                 <div className="row mt-2">
 
-                <div className='col-md-3 mb-3 custom-input' ><label className='form-label'>Document Name</label>
+                <div className='col-md-3  custom-input' ><label className='form-label'>Document Name</label>
                     {
                       Array.isArray(units.document_name) ?
                       units.document_name.map((item,index)=>
@@ -5778,7 +5682,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Document No</label>
+                    <div className='col-md-2  custom-input' ><label className='form-label'>Document No</label>
                     {
                       Array.isArray(units.document_no) ?
                       units.document_no.map((item,index)=>
@@ -5789,7 +5693,7 @@ const generateExcelFileunit = () => {
                     }
                     </div>
 
-                    <div className='col-md-2 mb-2 custom-input' ><label className='form-label'>Date</label>
+                    <div className='col-md-2  custom-input' ><label className='form-label'>Date</label>
                     {
                       Array.isArray(units.document_Date) ?
                       units.document_Date.map((item,index)=>
@@ -5824,7 +5728,7 @@ const generateExcelFileunit = () => {
                           )}
 
 
-                      <div className='col-md-3 mb-3 custom-input' id="suggestion-box" style={{ position: 'relative' }}><label className='form-label'>Pic</label>
+                      <div className='col-md-3  custom-input' id="suggestion-box" style={{ position: 'relative' }}><label className='form-label'>Pic</label>
                     {
                       Array.isArray(units.image) ?
                       units.image.map((item,index)=>
@@ -5834,7 +5738,7 @@ const generateExcelFileunit = () => {
                       )):[]
                     }
                     </div>
-                    <div className="col-md-1 mb-1 custom-input" style={{marginTop:"70px"}}>
+                    <div className="col-md-1  custom-input" style={{marginTop:"70px"}}>
                     {
                       Array.isArray(units.action12)?
                        units.action12.map((item,index)=>
@@ -5846,106 +5750,25 @@ const generateExcelFileunit = () => {
                     }
                     </div>
                         
-                        <div className="col-md-1 mb-1 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Add</label><button className="form-control form-control-sm custom-btn" onClick={addFn12}>+</button></div>
-                        {/* <TableContainer component={Paper} style={{height:"400px",width:"1000px",overflowY:"scroll",marginTop:"40px",marginLeft:"50px"}}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
-     
-
-    <TableHead>
-        <TableRow>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Serial</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman"}}>Document Name</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Linked Contact</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Number</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Date</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Action</StyledTableCell>
-        </TableRow>
-      </TableHead>
-      <tbody>
-        {
-         Array.isArray(project.add_unit)?
-         project.add_unit.map ((item, index) => (
-          <StyledTableRow key={index}>
-            <StyledTableCell >
-             {index+1}
-            </StyledTableCell>
-            <StyledTableCell  >
-            {item.document_name}
-            </StyledTableCell>
-            <StyledTableCell  >
-            {item.linkded_contact}
-            </StyledTableCell>
-            <StyledTableCell  >
-            {item.document_no}
-            </StyledTableCell>
-            <StyledTableCell >
-            {item.document_Date}
-            </StyledTableCell>
-            <StyledTableCell style={{ padding: "10px", cursor: "pointer", fontFamily: "times new roman", fontSize: "10px" }}  >
-            <div style={{marginTop:"10px"}}><img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall12(index)}  style={{height:"40px",cursor:"pointer"}}/></div>
-            </StyledTableCell>
-          </StyledTableRow>
-        )):[]}
-      </tbody>
-    </Table>
-    </TableContainer> */}
+                        <div className="col-md-1  custom-input"><label className="form-label" style={{visibility:"hidden"}}>Add</label><button className="form-control form-control-sm custom-btn" onClick={addFn12}>+</button></div>
+                     
                   
                   </div>
               </div>
 
 
-
-                     
-               
-               
-                
           </Modal.Body>
             <Modal.Footer>
 <Button
   onClick={addunit}
-  style={{
-    background: 'linear-gradient(to right, #4facfe, #00f2fe)', // blue gradient
-    color: '#fff',
-    fontWeight: '600',
-    padding: '10px 24px',
-    border: 'none',
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    marginRight: '12px',
-    transition: 'transform 0.2s, box-shadow 0.2s',
-  }}
-  onMouseEnter={e => {
-    e.target.style.transform = 'scale(1.05)';
-    e.target.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.2)';
-  }}
-  onMouseLeave={e => {
-    e.target.style.transform = 'scale(1)';
-    e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-  }}
+  variant="secondary"
 >
   Add Unit
 </Button>
 
 <Button
   onClick={handleClose3}
-  style={{
-    background: 'linear-gradient(to right, #ff758c, #ff7eb3)', // pink gradient
-    color: '#fff',
-    fontWeight: '600',
-    padding: '10px 24px',
-    border: 'none',
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    transition: 'transform 0.2s, box-shadow 0.2s',
-  }}
-  onMouseEnter={e => {
-    e.target.style.transform = 'scale(1.05)';
-    e.target.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.2)';
-  }}
-  onMouseLeave={e => {
-    e.target.style.transform = 'scale(1)';
-    e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-  }}
+  variant="secondary"
 >
   Close
 </Button>
@@ -5961,7 +5784,7 @@ const generateExcelFileunit = () => {
             <Modal.Body>
             <div style={{width:"100%"}}>
             <div className="row">
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Relation</label><select className="form-control form-control-sm" required="true" onChange={handlerelationchange}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Relation</label><select className="form-control form-control-sm" required="true" onChange={handlerelationchange}>
                               <option>Select</option>
                               <option value="Self">Self</option>
                               <option value="Son">Son</option>
@@ -5986,14 +5809,14 @@ const generateExcelFileunit = () => {
                          
                     </div>
                     </div>
-                    </div>
+                   
 {/*=======================----------------------------------------- unit details end====================------------------------------ */}
 
 
 {/* -----------------------=========================aminities details===================----------------------------------------------- */}
 
 
-          <div className="col-md-12 mb-12 custom-input" id='aminities' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
+          <div className="col-md-12  custom-input" id='aminities' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
                       <div className="p-3 py-5">
                           <div className="row " >
                             <div style={{display:"flex"}}>
@@ -6159,9 +5982,9 @@ const generateExcelFileunit = () => {
 </div>
 
                         <div className="row" id='nearbyaminities' style={{ marginTop: "20px",display:"none"}}>
-                        <div className='col-md-12 mb-12 custom-input'></div><br></br>
+                        <div className='col-md-12  custom-input'></div><br></br>
                        
-                        <div className="col-md-3 mb-3 custom-input"><label className='form-label'>Destination</label><select id='choosedestination' className='form-control form-control-sm' onChange={(e)=>setdestinations({...destinations,destination:e.target.value})} >
+                        <div className="col-md-3  custom-input"><label className='form-label'>Destination</label><select id='choosedestination' className='form-control form-control-sm' onChange={(e)=>setdestinations({...destinations,destination:e.target.value})} >
                               <option>Select</option>
                               <option>Bus Stop</option>
                               <option>Railway Station</option>
@@ -6179,13 +6002,13 @@ const generateExcelFileunit = () => {
 
                         </select>
                         </div>
-                        <div className="col-md-3 mb-3 custom-input"><label className='form-label'>Name Of Destination</label><input id='nameofdestination' type='text' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,name_of_destination:e.target.value}))}/> </div>
-                        <div className="col-md-2 mb-2 custom-input"><label className='form-label'>Distance</label><input id='destination' type='text' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,distance:e.target.value}))}/> </div>
-                        <div className="col-md-2 mb-2 custom-input"><label className='form-label' style={{visibility:"hidden"}}>Measurement</label><select id='measurment' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,measurment:e.target.value}))}>
+                        <div className="col-md-3  custom-input"><label className='form-label'>Name Of Destination</label><input id='nameofdestination' type='text' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,name_of_destination:e.target.value}))}/> </div>
+                        <div className="col-md-2  custom-input"><label className='form-label'>Distance</label><input id='destination' type='text' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,distance:e.target.value}))}/> </div>
+                        <div className="col-md-2  custom-input"><label className='form-label' style={{visibility:"hidden"}}>Measurement</label><select id='measurment' className='form-control form-control-sm' onChange={(e)=>setdestinations((prevprofile)=>({...prevprofile,measurment:e.target.value}))}>
                          <option>Select</option><option>K.M</option><option>Miles</option><option>Meter</option>
                           </select>
                            </div>
-                         <div className="col-md-1 mb-1 custom-input"><label className='form-label' style={{visibility:"hidden"}} >Add</label>
+                         <div className="col-md-1  custom-input"><label className='form-label' style={{visibility:"hidden"}} >Add</label>
                          {/* <button className='form-control form-control-sm' onClick={adddestination}>+</button> */}
                             <button
                                 className="form-control form-control-sm"
@@ -6205,10 +6028,16 @@ const generateExcelFileunit = () => {
                                 +
                               </button>
                          </div>
-                    <div className='col-md-4 mb-4 custom-input'></div><br></br>
-                    <div className='col-md-12 mb-12 custom-input'><label className='form-label'>List Of Destinations</label></div>
-                    <TableContainer component={Paper} style={{height:"400px",width:"1100px",overflowY:"scroll",marginTop:"40px",marginLeft:"10px"}}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                    <div className='col-md-4  custom-input'></div><br></br>
+                    <div className='col-md-12  custom-input'><label className='form-label'>List Of Destinations</label></div>
+
+  {/* Table */}
+    <div className="mt-6 w-full overflow-x-auto">
+      <TableContainer
+        component={Paper}
+        className="max-h-[400px] overflow-y-scroll"
+      >
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
     <TableHead>
         <TableRow>
@@ -6224,7 +6053,7 @@ const generateExcelFileunit = () => {
         {
           project.nearby_aminities.map((item, index) => (
           <StyledTableRow key={index} style={{backgroundColor:"white"}}>
-            <StyledTableCell style={{ padding: "10px", cursor: "pointer", fontSize: "10px" }}  >
+            <StyledTableCell style={{ padding: "10px", cursor: "pointer", }}  >
               {index+1}
             </StyledTableCell>
             <StyledTableCell >{item.name_of_destination} </StyledTableCell>
@@ -6241,6 +6070,7 @@ const generateExcelFileunit = () => {
     </Table>
     </TableContainer>
     </div>
+    </div>
                 </div>
               </div>
           </div>
@@ -6248,37 +6078,35 @@ const generateExcelFileunit = () => {
 
 {/* -------------------=====================================price start==================================---------------------------------- */}
 
-<div className="col-md-12 mb-12 custom-input" id='price' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
-                      <div className="p-3 py-5">
-                        
-                        <div className="row" id='nearbyaminities' style={{ marginTop: "20px"}}>
-                        <div className='col-md-12 mb-12 custom-input'></div><br></br>
+<div className="col-md-12  custom-input" id='price' style={{display:"none",marginTop:"-80px",lineHeight:"30px"}}>
+                
+                                 <div
+  id="price"
+  className="w-full mt-0"
+>
+  <div className="w-full bg-white rounded-lg shadow-sm p-4">
+                        <div className='col-md-12  custom-input'></div><br></br>
                        
                       
-                        <div className='col-md-10 mb-10 custom-input'><label className='form-label'>Price List</label></div>
-                         <div className="col-md-1 mb-1 custom-input">
+                        <div className='col-md-10  custom-input'><label className='form-label'>Price List</label></div>
+                         <div className="col-md-1  custom-input">
                           {/* <button className='form-control form-control-sm' onClick={handleShow4}>Add</button> */}
                               <button
-                                className="form-control form-control-sm"
+                                className="form-control form-control-sm btn-add"
                                 onClick={handleShow4}
-                                style={{
-                                  backgroundColor: "#007bff",
-                                  color: "#fff",
-                                  border: "none",
-                                  borderRadius: "4px",
-                                  fontWeight: "500",
-                                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                  transition: "all 0.2s ease-in-out"
-                                }}
-                                onMouseOver={e => e.currentTarget.style.backgroundColor = "#0056b3"}
-                                onMouseOut={e => e.currentTarget.style.backgroundColor = "#007bff"}
+                               
                               >
                                 +
                               </button>
                           </div>
-                    <div className='col-md-12 mb-12 custom-input'><hr></hr></div>
-                    <TableContainer component={Paper} style={{height:"400px",width:"1100px",overflowY:"scroll",marginLeft:"10px"}}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                    <div className='col-md-12  custom-input'><hr></hr></div>
+    {/* Table */}
+    <div className="mt-6 w-full overflow-x-auto">
+      <TableContainer
+        component={Paper}
+        className="max-h-[400px] overflow-y-scroll"
+      >
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
     <TableHead>
         <TableRow>
@@ -6312,6 +6140,7 @@ const generateExcelFileunit = () => {
       </tbody>
     </Table>
     </TableContainer>
+    </div>
 
     <Modal show={show4} onHide={handleClose4} size='lg'>
             <Modal.Header>
@@ -6319,9 +6148,9 @@ const generateExcelFileunit = () => {
             </Modal.Header>
             <Modal.Body>
               <div className='row'>
-              <div className='col-md-12 mb-12 custom-input'  style={{marginTop:"20px",display:"flex",gap:"30px"}}> <u id='baseprice1' onClick={baseprice} style={{cursor:"pointer",fontWeight:"bold"}}>Base Price</u><u id='charges1' onClick={charges} style={{cursor:"pointer",fontWeight:"bold"}}>Charges</u><u id='taxes1' onClick={taxes} style={{cursor:"pointer",fontWeight:"bold"}}>Taxes</u></div>
+              <div className='col-md-12  custom-input'  style={{marginTop:"20px",display:"flex",gap:"30px"}}> <u id='baseprice1' onClick={baseprice} style={{cursor:"pointer",fontWeight:"bold"}}>Base Price</u><u id='charges1' onClick={charges} style={{cursor:"pointer",fontWeight:"bold"}}>Charges</u><u id='taxes1' onClick={taxes} style={{cursor:"pointer",fontWeight:"bold"}}>Taxes</u></div>
               <div className='row' id='baseprice' style={{marginTop:"20px",padding:"30px"}}><hr></hr>
-            <div className="col-md-4 mb-4 custom-input"><label className="form-label">Block</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,block:e.target.value})}>
+            <div className="col-md-4  custom-input"><label className="form-label">Block</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,block:e.target.value})}>
                                 <option>---Select---</option>
                                 {
                                   project.add_block.map((item)=>
@@ -6331,7 +6160,7 @@ const generateExcelFileunit = () => {
                                 }
                                 </select>
                     </div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Category</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,category:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Category</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,category:e.target.value})}>
                             <option>---Select---</option>
                        {
                         project.category.map((type)=>
@@ -6341,7 +6170,7 @@ const generateExcelFileunit = () => {
                        }
                         </select>
                     </div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Sub Category</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,sub_category:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Sub Category</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,sub_category:e.target.value})}>
                     <option>---Select---</option>
                                 {
                                   project.sub_category.map((item)=>
@@ -6351,7 +6180,7 @@ const generateExcelFileunit = () => {
                                 }
                                 </select>
                     </div>
-                    <div className="col-md-8 mb-8 custom-input"><label className="form-label">Size</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,size:e.target.value})}>
+                    <div className="col-md-8  custom-input"><label className="form-label">Size</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,size:e.target.value})}>
                     <option>---Select---</option>
                                 {
                                   project.add_size.map((item)=>
@@ -6361,27 +6190,27 @@ const generateExcelFileunit = () => {
                                 }
                                 </select>
                     </div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Covered Area</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,covered_area:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Covered Area</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,covered_area:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Covered Area</option>
                                 <option> Carpet Area</option>
                                 <option>Total Area</option>
                                 </select>
                     </div>
-                    <div className='col-md-6 mb-6 custom-input'><label className='form-label'>Base Rate</label><input type='text' className='form-control form-control-sm'></input></div><br></br>
-                    <div className='col-md-6 mb-6 custom-input'></div>
+                    <div className='col-md-6  custom-input'><label className='form-label'>Base Rate</label><input type='text' className='form-control form-control-sm'></input></div><br></br>
+                    <div className='col-md-6  custom-input'></div>
                     </div>
 
                     <div className='row' id='charges' style={{marginTop:"20px",padding:"30px",display:"none"}}>
-                  <div className='col-md-12 mb-12 custom-input'><hr></hr></div>
-                  <div className="col-md-4 mb-4 custom-input"><label className="form-label">Name</label><select className="form-control form-control-sm" onChange={handlechargenamechange}>
+                  <div className='col-md-12  custom-input'><hr></hr></div>
+                  <div className="col-md-4  custom-input"><label className="form-label">Name</label><select className="form-control form-control-sm" onChange={handlechargenamechange}>
                                 <option>---Select---</option>
                                 <option>Preferred Location Charges</option>
                                 <option>Amenities Charges</option>
                                 <option>Govt. Charges</option>
                                 </select>
                     </div>
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Type</label>
+                    <div className="col-md-4  custom-input"><label className="form-label">Type</label>
                     {prices.chargename && (
                     <select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,chargetype:e.target.value})}>
                                 <option>Select</option>
@@ -6393,24 +6222,24 @@ const generateExcelFileunit = () => {
                                 </select>
                     )}
                     </div>
-                    <div className='col-md-4 mb-4 custom-input'></div>
+                    <div className='col-md-4  custom-input'></div>
 
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Calculation ype</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,calculation_type:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Calculation ype</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,calculation_type:e.target.value})}>
                                 <option>Select</option>
                                 <option>Calculate</option>
                                 <option>Absolute</option>
                               
                                 </select>
                     </div>
-                    <div className='col-md-2 mb-2 custom-input'><label className='form-label' style={{visibility:"hidden"}}>blank1</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setprices({...prices,blank1:e.target.value})}></input></div><br></br>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>blank2</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,blank2:e.target.value})}>
+                    <div className='col-md-2  custom-input'><label className='form-label' style={{visibility:"hidden"}}>blank1</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setprices({...prices,blank1:e.target.value})}></input></div><br></br>
+                    <div className="col-md-3  custom-input"><label className="form-label" style={{visibility:"hidden"}}>blank2</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,blank2:e.target.value})}>
                                 <option>Select</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
                                 <option>All Users</option>
                                 </select>
                     </div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>blank3</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,blank3:e.target.value})}>
+                    <div className="col-md-3  custom-input"><label className="form-label" style={{visibility:"hidden"}}>blank3</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,blank3:e.target.value})}>
                                 <option>Select</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
@@ -6419,46 +6248,46 @@ const generateExcelFileunit = () => {
                     </div>
                     </div>
                     <div className='row' id='taxes' style={{marginTop:"20px",padding:"30px",display:"none"}}>
-                  <div className='col-md-12 mb-12 custom-input'><hr></hr></div>
-                  <div className="col-md-5 mb-5 custom-input"><label className="form-label">Name</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,name1:e.target.value})}>
+                  <div className='col-md-12  custom-input'><hr></hr></div>
+                  <div className="col-md-5  custom-input"><label className="form-label">Name</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,name1:e.target.value})}>
                                 <option>Select</option>
                                 <option>Goods and Service Tax(GST)</option>
                                 <option>Registration Charges</option>
                                 <option>Stamp Duty</option>
                                 </select>
                     </div>
-                    <div className="col-md-5 mb-5 custom-input"><label className="form-label">Type</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,type1:e.target.value})}>
+                    <div className="col-md-5  custom-input"><label className="form-label">Type</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,type1:e.target.value})}>
                                 <option>Select</option>
                                 <option>My Team</option>
                                 <option>My Self</option>
                                 <option>All Users</option>
                                 </select>
                     </div>
-                    <div className='col-md-2 mb-2 custom-input'></div>
+                    <div className='col-md-2  custom-input'></div>
 
-                    <div className="col-md-4 mb-4 custom-input"><label className="form-label">Calculation ype</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,calculation_type1:e.target.value})}>
+                    <div className="col-md-4  custom-input"><label className="form-label">Calculation ype</label><select className="form-control form-control-sm" onChange={(e)=>setprices({...prices,calculation_type1:e.target.value})}>
                                 <option>---Select---</option>
                                 <option>Calculate</option>
                                 <option>Absolute</option>
                                
                                 </select>
                     </div>
-                    <div className='col-md-4 mb-4 custom-input'><label className='form-label' style={{visibility:"hidden"}}>blank4</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setprices({...prices,blank4:e.target.value})}></input></div><br></br>
+                    <div className='col-md-4  custom-input'><label className='form-label' style={{visibility:"hidden"}}>blank4</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setprices({...prices,blank4:e.target.value})}></input></div><br></br>
                    </div>
                   </div>
     </Modal.Body>
             <Modal.Footer>
-            <Button variant="secondary" onClick={addprice} className='custom-btn'>
+            <Button variant="secondary" onClick={addprice} >
                 Add Price
               </Button>
-              <Button variant="secondary" onClick={handleClose4} className='cancel-btn'>
+              <Button variant="secondary" onClick={handleClose4}>
                 Close
               </Button>
             </Modal.Footer>
           </Modal>
 
-    <div className='col-md-10 mb-10 custom-input' style={{marginTop:"10px"}}><label className='form-label'>Payment Plan</label></div>
-    <div className='col-md-1 mb-1 custom-input' style={{marginTop:"10px"}}>
+    <div className='col-md-10  custom-input' style={{marginTop:"10px"}}><label className='form-label'>Payment Plan</label></div>
+    <div className='col-md-1  custom-input' style={{marginTop:"10px"}}>
       {/* <button className='form-control form-control-sm' onClick={handleShow5}>Add</button> */}
                             <button
                                 className="form-control form-control-sm"
@@ -6478,9 +6307,13 @@ const generateExcelFileunit = () => {
                                 +
                               </button>
       </div>
-                    <div className='col-md-12 mb-12 custom-input'><hr></hr></div>
-                    <TableContainer component={Paper} style={{height:"400px",width:"1100px",overflowY:"scroll",marginLeft:"10px"}}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                    <div className='col-md-12  custom-input'><hr></hr></div>
+    <div className="mt-6 w-full overflow-x-auto">
+      <TableContainer
+        component={Paper}
+        className="max-h-[400px] overflow-y-scroll"
+      >
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
      
     <TableHead>
         <TableRow>
@@ -6508,16 +6341,17 @@ const generateExcelFileunit = () => {
       </tbody>
     </Table>
     </TableContainer>
-    <Modal show={show5} onHide={handleClose5} size='xl'>
+    </div>
+    <Modal show={show5} onHide={handleClose5} size='xl' style={{zIndex:99999}}>
             <Modal.Header>
               <Modal.Title>Add Payment Plan</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <div className='row'>
-              <div className='col-md-6 mb-6 custom-input'><label className='form-label'>Payment Plan Name</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setpayments({...payments,payment_planname:e.target.value})}></input></div>
-              <div className='col-md-6 mb-6 custom-input'></div>
+              <div className='col-md-6  custom-input'><label className='form-label'>Payment Plan Name</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setpayments({...payments,payment_planname:e.target.value})}></input></div>
+              <div className='col-md-6  custom-input'></div>
 
-              <div className='col-md-4 mb-4 custom-input'><label className='form-label'>Step Name</label>
+              <div className='col-md-4  custom-input'><label className='form-label'>Step Name</label>
             {
               payments.step_name.map((item,index)=>
               (
@@ -6525,7 +6359,7 @@ const generateExcelFileunit = () => {
               ))
             }
             </div>
-            <div className='col-md-2 mb-2 custom-input'><label className='form-label' style={{width:"200px"}}>Calculation Type</label>
+            <div className='col-md-2  custom-input'><label className='form-label' style={{width:"200px"}}>Calculation Type</label>
             {
               payments.calculation_type.map((item,index)=>
               (
@@ -6539,7 +6373,7 @@ const generateExcelFileunit = () => {
             }
             </div>
 
-            <div className='col-md-1 mb-1 custom-input'><label className='form-label' style={{visibility:"hidden"}}>Blank1</label>
+            <div className='col-md-1  custom-input'><label className='form-label' style={{visibility:"hidden"}}>Blank1</label>
              {
               payments.blank1.map((item,index)=>
               (
@@ -6549,7 +6383,7 @@ const generateExcelFileunit = () => {
             }
             </div>
 
-            <div className='col-md-1 mb-1 custom-input'><label className='form-label' style={{visibility:"hidden"}}>Blank2</label>
+            <div className='col-md-1  custom-input'><label className='form-label' style={{visibility:"hidden"}}>Blank2</label>
             {
               payments.blank2.map((item,index)=>
               (
@@ -6559,7 +6393,7 @@ const generateExcelFileunit = () => {
             }
              </div>
 
-             <div className='col-md-2 mb-2 custom-input'><label className='form-label' style={{visibility:"hidden"}}>Blank3</label>
+             <div className='col-md-2  custom-input'><label className='form-label' style={{visibility:"hidden"}}>Blank3</label>
               {
               payments.blank3.map((item,index)=>
               (
@@ -6574,7 +6408,7 @@ const generateExcelFileunit = () => {
             }
              </div>
 
-             <div className='col-md-1 mb-1 custom-input' style={{marginTop:"90px"}}>
+             <div className='col-md-1  custom-input' style={{marginTop:"90px"}}>
               {
               payments.action4.map((item,index)=>
               (
@@ -6583,12 +6417,12 @@ const generateExcelFileunit = () => {
               ))
             }
             </div>
-            <div className='col-md-1 mb-1 custom-input'><label className='form-label' style={{visibility:"hidden"}}>add</label><button className='form-control form-control-sm custom-btn' onClick={addFn4}>+</button></div>
+            <div className='col-md-1  custom-input'><label className='form-label' style={{visibility:"hidden"}}>add</label><button className='form-control form-control-sm custom-btn' onClick={addFn4}>+</button></div>
            
-           <div className='col-md-8 mb-8 custom-input'><label className='form-label'>Terms & Condition</label>
+           <div className='col-md-8 custom-input'><label className='form-label'>Terms & Condition</label>
               <textarea className='form-control form-control-sm' style={{height:"100px"}}/>
            </div>
-           <div className='col-md-4 mb-4 custom-input'></div>
+           <div className='col-md-4 custom-input'></div>
                  
                    
                   
@@ -6596,10 +6430,10 @@ const generateExcelFileunit = () => {
               </div>
     </Modal.Body>
             <Modal.Footer>
-            <Button variant="secondary" onClick={addpayment} className='custom-btn'>
+            <Button variant="secondary" onClick={addpayment}>
                 Add Payment
               </Button>
-              <Button variant="secondary" onClick={handleClose5} className='cancel-btn'>
+              <Button variant="secondary" onClick={handleClose5} >
                 Close
               </Button>
             </Modal.Footer>
@@ -6620,7 +6454,7 @@ const generateExcelFileunit = () => {
             <Modal.Body>
 
             <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <h3 className="text-2xl font-bold text-center mb-4 text-gray-800">
+      <h3 className="text-2xl font-bold text-center text-gray-800">
         📂 Upload & Map Your Excel Data
       </h3>
 
@@ -6642,11 +6476,11 @@ const generateExcelFileunit = () => {
       {/* Mapping UI */}
       {excelHeaders.length > 0 && (
          <div className="mt-4">
-         <h5 className="text-lg font-semibold mb-3 text-gray-700">🗺️ Map Your Excel Columns</h5>
+         <h5 className="text-lg font-semibold  text-gray-700">🗺️ Map Your Excel Columns</h5>
      
          <div className="row">
            {excelHeaders.map((header, index) => (
-             <div key={index} className="col-md-4 mb-4 custom-input mb-3 ">
+             <div key={index} className="col-md-4  custom-input  ">
                <div className="p-2 border rounded shadow-sm bg-light zoom-card">
                  <label className="form-label fw-semibold">{header} ➝</label>
                  <select
@@ -6687,9 +6521,9 @@ const generateExcelFileunit = () => {
       {/* Show Processed Data */}
       {allcontacts.length > 0 && (
   <div className="mt-6 bg-gray-100 p-4 rounded-lg">
-    <h3 className="text-lg font-semibold mb-2 text-gray-700">📜 Processed Data</h3>
+    <h3 className="text-lg font-semibold  text-gray-700">📜 Processed Data</h3>
     
-    <div className="mb-4">
+    <div>
       <h4 className="font-semibold text-gray-800" style={{fontFamily:"arial"}}>New Units</h4>
       <pre className="text-sm text-gray-600 overflow-x-auto" >
       {JSON.stringify(
@@ -6826,12 +6660,12 @@ const generateExcelFileunit = () => {
 
 
 
-                 <div className='col-md-12 mb-12 custom-input'><hr></hr></div> 
+                 <div className='col-md-12  custom-input'><hr></hr></div> 
                     <ToastContainer/>
                 </div>
                 <div className='row' style={{marginLeft:"50%",marginBottom:"20px"}}>
                   <div className='col-md-6'></div>
-                    <div className="col-md-3 mb-3 custom-input" style={{marginTop:"20px"}}>
+                    <div className="col-md-3  custom-input" style={{margin:"10px 0px"}}>
                                         <button
                                           className="btn btn-outline-danger btn-sm form-control"
                                           onClick={() => navigate(-1)}
@@ -6850,7 +6684,7 @@ const generateExcelFileunit = () => {
                                           Cancel
                                         </button>
                       </div>
-                    <div className="col-md-3 mb-3 custom-input" style={{marginTop:"20px"}}>
+                    <div className="col-md-3  custom-input" style={{margin:"10px 0px"}}>
                        <button   className="btn btn-primary btn-sm form-control" onClick={addproject}
                         style={{ fontWeight: '600', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', transition: 'all 0.3s ease',backgroundColor:"lightblue" }}
                         onMouseEnter={e => e.currentTarget.style.backgroundColor = '#0056b3'}

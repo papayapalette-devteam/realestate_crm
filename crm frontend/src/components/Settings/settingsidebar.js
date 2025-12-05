@@ -16,10 +16,9 @@ import {
 import { FaWhatsapp } from "react-icons/fa";
 import Header1 from "../header1";
 import { useNavigate } from "react-router-dom";
-import MainLayout from "./main_layout";
 import {  FaUsers, FaBell, FaBullseye, FaGlobe, FaFlag, FaUserTie, FaMapMarkerAlt, 
   FaListUl,FaHome,FaThLarge,FaRegCommentDots,FaPhoneAlt,FaListAlt,FaUniversity ,FaParking,
-FaTasks    } from "react-icons/fa";
+FaTasks,FaCheckDouble    } from "react-icons/fa";
 import { MdCategory } from "react-icons/md";
 
 
@@ -273,6 +272,13 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
                 >
                   <FaTasks     size={14} />
                   Project Status
+                </li>
+                             <li
+                  onClick={() => navigate("/configuration-approvals")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <FaCheckDouble     size={14} />
+                  Approvals
                 </li>
               </ul>
             )}

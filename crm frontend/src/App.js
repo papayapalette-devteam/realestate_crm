@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
+
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -69,7 +70,7 @@ const EditUnit = lazy(() => import("./components/Units/edit_unit.js"));
 const ParkingType = lazy(() => import("./components/Settings/Configuration/parking_type.js"));
 const ApprovalBank = lazy(() => import("./components/Settings/Configuration/approval_bank.js"));
 const ProjectStatus = lazy(() => import("./components/Settings/Configuration/project_status.js"));
-
+const Approval = lazy(() => import("./components/Settings/Configuration/approvals.js"));
 
 function App() {
   return (
@@ -146,6 +147,7 @@ function App() {
             <Route path="/configuration-parking-type" element={<ParkingType/>} />
             <Route path="/configuration-bank" element={<ApprovalBank/>} />
             <Route path="/configuration-project-status" element={<ProjectStatus/>} />
+            <Route path="/configuration-approvals" element={<Approval/>} />
             </Route>
           </Routes>
         </div>
