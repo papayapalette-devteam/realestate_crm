@@ -18,7 +18,7 @@ import Header1 from "../header1";
 import { useNavigate } from "react-router-dom";
 import {  FaUsers, FaBell, FaBullseye, FaGlobe, FaFlag, FaUserTie, FaMapMarkerAlt, 
   FaListUl,FaHome,FaThLarge,FaRegCommentDots,FaPhoneAlt,FaListAlt,FaUniversity ,FaParking,
-FaTasks,FaCheckDouble    } from "react-icons/fa";
+FaTasks,FaCheckDouble,FaCube     } from "react-icons/fa";
 import { MdCategory } from "react-icons/md";
 
 
@@ -279,6 +279,13 @@ function Sidebarsetting({isSidebarOpen, setIsSidebarOpen}) {
                 >
                   <FaCheckDouble     size={14} />
                   Approvals
+                </li>
+                              <li
+                  onClick={() => navigate("/configuration-builtup-type")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <FaCube      size={14} />
+                  Builtup Type
                 </li>
               </ul>
             )}

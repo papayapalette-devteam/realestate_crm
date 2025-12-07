@@ -4,6 +4,7 @@ import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
 
+
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -71,6 +72,8 @@ const ParkingType = lazy(() => import("./components/Settings/Configuration/parki
 const ApprovalBank = lazy(() => import("./components/Settings/Configuration/approval_bank.js"));
 const ProjectStatus = lazy(() => import("./components/Settings/Configuration/project_status.js"));
 const Approval = lazy(() => import("./components/Settings/Configuration/approvals.js"));
+const BuiltupType = lazy(() => import("./components/Settings/Configuration/builtup_type.js"));
+
 
 function App() {
   return (
@@ -148,6 +151,7 @@ function App() {
             <Route path="/configuration-bank" element={<ApprovalBank/>} />
             <Route path="/configuration-project-status" element={<ProjectStatus/>} />
             <Route path="/configuration-approvals" element={<Approval/>} />
+            <Route path="/configuration-builtup-type" element={<BuiltupType/>} />
             </Route>
           </Routes>
         </div>
