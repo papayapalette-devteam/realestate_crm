@@ -182,71 +182,7 @@ function Allunits() {
     }
   };
 
-  const [allcitis, setallcitis] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.map((item) => item.ucity);
-    setallcitis([...new Set(result)]);
-  }, [flattenedUnits]);
 
-  const [allcategories, setallcategories] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.flatMap((item) => item.category);
-    setallcategories([...new Set(result)]);
-  }, [flattenedUnits]);
-
-  const [allsubcategories, setallsubcategories] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.flatMap((item) => item.sub_category);
-    setallsubcategories([...new Set(result)]);
-  }, [flattenedUnits]);
-
-  const [allfacing, setallfacing] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.map((item) => item.facing);
-    setallfacing([...new Set(result)]);
-  }, [flattenedUnits]);
-
-  const [allRemarks, setallRemarks] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.map((item) => item.facing);
-    setallfacing([...new Set(result)]);
-  }, [flattenedUnits]);
-
-  const [allroad, setallroad] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.map((item) => item.road);
-    setallroad([...new Set(result)]);
-  }, [flattenedUnits]);
-
-  const [alldirection, setalldirection] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.map((item) => item.direction);
-    setalldirection([...new Set(result)]);
-  }, [flattenedUnits]);
-
-  const [allstage, setallstage] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.map((item) => item.stage);
-    setallstage([...new Set(result)]);
-  }, [flattenedUnits]);
-
-  const [allsize, setallsize] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.map((item) => item.size);
-    setallsize([...new Set(result)]);
-  }, [flattenedUnits]);
-
-  const [allunittype, setallunittype] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.map((item) => item.unit_type);
-    setallunittype([...new Set(result)]);
-  }, [flattenedUnits]);
-
-  const [allblock, setallblock] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.map((item) => item.block);
-    setallblock([...new Set(result)]);
-  }, [flattenedUnits]);
 
   const [alllocation, setalllocation] = useState([]);
   useEffect(() => {
@@ -254,11 +190,6 @@ function Allunits() {
     setalllocation([...new Set(result)]);
   }, [flattenedUnits]);
 
-  const [all_project, setall_project] = useState([]);
-  useEffect(() => {
-    const result = flattenedUnits.map((item) => item.project_name);
-    setall_project([...new Set(result)]);
-  }, [flattenedUnits]);
 
   const [activeunits, setactiveunits] = useState([]);
   const [inactiveunits, setinactiveunits] = useState([]);
@@ -1416,7 +1347,6 @@ function Allunits() {
     s_no: [],
     preview: [],
     descriptions: [],
-    category: [],
     action10: [],
     s_no1: [],
     url: [],
@@ -4077,7 +4007,7 @@ console.log(groupdata);
                     next_call_date: "",
                   })
                 }
-                value={feedbackform?.owner_response}
+                value={feedbackform.owner_response}
                 onClick={() => {
                   if (All_Owner_Response.length === 0) {
                     getall_owner_response();
@@ -4089,6 +4019,7 @@ console.log(groupdata);
                 ) : (
                   <>
                     <option>---Select owner response---</option>
+               
 
                     {/* Dynamic Fetched List */}
                     {All_Owner_Response.map((val, i) => (

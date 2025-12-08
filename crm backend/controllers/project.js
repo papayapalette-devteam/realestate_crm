@@ -5,6 +5,7 @@ const path = require("path");
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
 const mongoose = require("mongoose");
+const { log } = require("console");
 
 require("dotenv").config();
 cloudinary.config({
@@ -401,6 +402,8 @@ const view_units = async (req, res) => {
       matchStage.owner = { $in: [loginUser] }; // owner is an array
     }
 
+    console.log(activeFilters);
+    
     // 🔹 Search
     if (search) {
       matchStage.$or = [
@@ -2078,9 +2081,10 @@ const getGroupedUnitData = async (req, res) => {
           alldirection: { $addToSet: "$add_unit.direction" },
           allroad: { $addToSet: "$add_unit.road" },
           allfacing: { $addToSet: "$add_unit.facing" },
-          allremarks: {
-            $addToSet: {$concatArrays: [["$add_unit.reason"],["$add_unit.other_reason"]]}
-          }
+          // allremarks: {
+          //   $addToSet: {$concatArrays: [["$add_unit.reason"],["$add_unit.other_reason"]]}
+          // }
+          allremarks: { $addToSet: "$add_unit.remarks" },
 
         },
       },
