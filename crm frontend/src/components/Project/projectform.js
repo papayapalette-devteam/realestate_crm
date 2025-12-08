@@ -1645,8 +1645,7 @@ function Projectform() {
     action12: [],
   });
 
-  console.log(unit);
-  
+
         // get all builtup type
   const [All_Builtup_Type, setAll_Builtup_Type] = useState([]);
   const getall_builtup_type = async () => {
@@ -2651,124 +2650,142 @@ function Projectform() {
 
   // ========================================add onwer end==============================================================================
 
-  const options = {
-    unit_type: {
-      Plot: [
-        "1 Kanal",
-        "12 Marla",
-        "3 Kanal",
-        "4 Kanal",
-        "5 Kanal",
-        "6 Kanal",
-        "7 Kanal",
-        "1 Acre",
-        "2 Acre",
-        "3 Acre",
-        "4 Acre",
-        "5 Acre",
-        "6 Acre",
-        "7 Acre",
-        "8 Acre",
-        "9 Acre",
-        "10 Acre",
-        "5 Marla",
-        "2 Kanal",
-        "16 Marla",
-        "14 Marla",
-        "12 Marla",
-        "10 Marla",
-        "8 Marla",
-        "6 Marla",
-        "4 Marla",
-        "3 Marla",
-        "2 Marla",
-      ],
-      "Independent House": [
-        "1 Kanal",
-        "2 Kanal",
-        "12 Marla",
-        "3 Kanal",
-        "4 Kanal",
-        "5 Kanal",
-        "6 Kanal",
-        "7 Kanal",
-        "1 Acre",
-        "2 Acre",
-        "3 Acre",
-        "4 Acre",
-        "5 Acre",
-        "6 Acre",
-        "7 Acre",
-        "8 Acre",
-        "9 Acre",
-        "10 Acre",
-        "5 Marla",
-        "16 Marla",
-        "14 Marla",
-        "10 Marla",
-        "8 Marla",
-        "6 Marla",
-        "4 Marla",
-        "3 Marla",
-        "2 Marla",
-      ],
-      "Flat/Apartment": [
-        "1 BHK",
-        "2 BHK",
-        "3 BHK",
-        "4 BHK",
-        "5 BHK",
-        ,
-        "STUDIO",
-      ],
-      "Builder Floor": [
-        "1 BHK",
-        "12 Marla",
-        "3 Kanal",
-        "4 Kanal",
-        "5 Kanal",
-        "6 Kanal",
-        "7 Kanal",
-        "1 Acre",
-        "2 Acre",
-        "3 Acre",
-        "4 Acre",
-        "5 Acre",
-        "6 Acre",
-        "7 Acre",
-        "8 Acre",
-        "9 Acre",
-        "10 Acre",
-        "5 Marla",
-        "2 BHK",
-        "3 BHK",
-        "4 BHK",
-        "5 BHK",
-        "STUDIO",
-      ],
-      Shop: ["BOOTH", "KIOSAK"],
-      Showroom: ["SCO", "SCF", "DSS"],
-      "Office Space": ["LOCABLE OFFICE", "VIRTUAL OFFICE"],
-      "Retail Store": ["HYPER MARKET", "DEPARTMETAL STORE"],
-      Soho: ["SOHO"],
-      "Excutive Room": ["ROOM"],
-      Land: ["CROPLAND", "WOODLAND", "PASTURE", "COMMERCIAL"],
-      "Farm House": ["FARM"],
-      Plots: ["1 KANAL", "10 MARLA", "2 KANAL", "1 ACRE", "2 KANAL"],
-      "Ware house": ["WRHSE"],
-      "Cold Storage": ["CLDSTRG"],
-      "Rice Seller": ["RCSLR"],
-      Building: ["BLDG"],
-      Factory: ["FCTRY"],
-      School: ["NURSERY SCHOOL", "CRECH", "HIGH SCHOOL", "PRIMERY SCHOOL"],
-      Hotel: ["HOTEL", "GUEST HOUSE", "HOMESTAYS"],
-      Universities: ["DEEMED", "PRIVATE"],
-      Hospital: ["NURSING HOME", "CLINIC"],
-      College: ["ART COLLEGE", "TECHNICAL COLLEGE", "MEDICAL COLLEGE"],
-    },
-  };
+    const [All_Property_Unit_Type, setAll_Property_Unit_Type] = useState([]);
+  
+     const getall_unit_type = async () => {
+    try {
+      setselect_loading("unit-type");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "property_unit_type");
+      params.append("parent_lookup_value", sizes.sub_category);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
 
-  const [availableunit, setavailableunit] = useState([]);
+      setAll_Property_Unit_Type(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading(false);
+    }
+  };
+  
+
+  // const options = {
+  //   unit_type: {
+  //     Plot: [
+  //       "1 Kanal",
+  //       "12 Marla",
+  //       "3 Kanal",
+  //       "4 Kanal",
+  //       "5 Kanal",
+  //       "6 Kanal",
+  //       "7 Kanal",
+  //       "1 Acre",
+  //       "2 Acre",
+  //       "3 Acre",
+  //       "4 Acre",
+  //       "5 Acre",
+  //       "6 Acre",
+  //       "7 Acre",
+  //       "8 Acre",
+  //       "9 Acre",
+  //       "10 Acre",
+  //       "5 Marla",
+  //       "2 Kanal",
+  //       "16 Marla",
+  //       "14 Marla",
+  //       "12 Marla",
+  //       "10 Marla",
+  //       "8 Marla",
+  //       "6 Marla",
+  //       "4 Marla",
+  //       "3 Marla",
+  //       "2 Marla",
+  //     ],
+  //     "Independent House": [
+  //       "1 Kanal",
+  //       "2 Kanal",
+  //       "12 Marla",
+  //       "3 Kanal",
+  //       "4 Kanal",
+  //       "5 Kanal",
+  //       "6 Kanal",
+  //       "7 Kanal",
+  //       "1 Acre",
+  //       "2 Acre",
+  //       "3 Acre",
+  //       "4 Acre",
+  //       "5 Acre",
+  //       "6 Acre",
+  //       "7 Acre",
+  //       "8 Acre",
+  //       "9 Acre",
+  //       "10 Acre",
+  //       "5 Marla",
+  //       "16 Marla",
+  //       "14 Marla",
+  //       "10 Marla",
+  //       "8 Marla",
+  //       "6 Marla",
+  //       "4 Marla",
+  //       "3 Marla",
+  //       "2 Marla",
+  //     ],
+  //     "Flat/Apartment": [
+  //       "1 BHK",
+  //       "2 BHK",
+  //       "3 BHK",
+  //       "4 BHK",
+  //       "5 BHK",
+  //       ,
+  //       "STUDIO",
+  //     ],
+  //     "Builder Floor": [
+  //       "1 BHK",
+  //       "12 Marla",
+  //       "3 Kanal",
+  //       "4 Kanal",
+  //       "5 Kanal",
+  //       "6 Kanal",
+  //       "7 Kanal",
+  //       "1 Acre",
+  //       "2 Acre",
+  //       "3 Acre",
+  //       "4 Acre",
+  //       "5 Acre",
+  //       "6 Acre",
+  //       "7 Acre",
+  //       "8 Acre",
+  //       "9 Acre",
+  //       "10 Acre",
+  //       "5 Marla",
+  //       "2 BHK",
+  //       "3 BHK",
+  //       "4 BHK",
+  //       "5 BHK",
+  //       "STUDIO",
+  //     ],
+  //     Shop: ["BOOTH", "KIOSAK"],
+  //     Showroom: ["SCO", "SCF", "DSS"],
+  //     "Office Space": ["LOCABLE OFFICE", "VIRTUAL OFFICE"],
+  //     "Retail Store": ["HYPER MARKET", "DEPARTMETAL STORE"],
+  //     Soho: ["SOHO"],
+  //     "Excutive Room": ["ROOM"],
+  //     Land: ["CROPLAND", "WOODLAND", "PASTURE", "COMMERCIAL"],
+  //     "Farm House": ["FARM"],
+  //     Plots: ["1 KANAL", "10 MARLA", "2 KANAL", "1 ACRE", "2 KANAL"],
+  //     "Ware house": ["WRHSE"],
+  //     "Cold Storage": ["CLDSTRG"],
+  //     "Rice Seller": ["RCSLR"],
+  //     Building: ["BLDG"],
+  //     Factory: ["FCTRY"],
+  //     School: ["NURSERY SCHOOL", "CRECH", "HIGH SCHOOL", "PRIMERY SCHOOL"],
+  //     Hotel: ["HOTEL", "GUEST HOUSE", "HOMESTAYS"],
+  //     Universities: ["DEEMED", "PRIVATE"],
+  //     Hospital: ["NURSING HOME", "CLINIC"],
+  //     College: ["ART COLLEGE", "TECHNICAL COLLEGE", "MEDICAL COLLEGE"],
+  //   },
+  // };
+
 
   const handlesizesubcategorychange = (event) => {
     const selectedSubcategory = event.target.value;
@@ -2779,8 +2796,6 @@ function Projectform() {
       unit_type: "", // Reset designation when subcategory changes
     }));
 
-    // Update available designations based on selected profession subcategory
-    setavailableunit(options.unit_type[selectedSubcategory] || []);
   };
 
   const statesAndCities = {
@@ -5969,15 +5984,29 @@ function Projectform() {
                           >
                             {project.category.map((type) => (
                               <div
-                                className="col-md-3  custom-input"
+                                className="col-md-3  custom-input "
                                 key={type}
                               >
                                 <button
-                                  className="form-control form-control-sm"
+                                  className="form-control form-control-sm category-button"
                                   onClick={() => handleTypeClick2(type)}
                                   style={{
                                     backgroundColor:
-                                      selectedType1 === type ? "green" : "",
+                                    selectedType1 === type ? "green" : "",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "6px",
+                                    fontWeight: "bold",
+                                    transition: "all 0.3s ease",
+                                    boxShadow: selectedType1 === type
+                                      ? "0 4px 10px rgba(4, 4, 4, 0.4)"
+                                      : "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.transform = "scale(1.05)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.transform = "scale(1)";
+                                
                                   }}
                                 >
                                   {type}
@@ -5985,6 +6014,10 @@ function Projectform() {
                               </div>
                             ))}
                           </div>
+
+                           
+
+
                         </div>
 
                         <div className="col-md-12  custom-input">
@@ -6014,11 +6047,19 @@ function Projectform() {
                                     unit_type: e.target.value,
                                   })
                                 }
+                                   onClick={() => {getall_unit_type()}}
+                                   value={sizes.unit_type}
                               >
-                                <option>---select---</option>
-                                {availableunit.map((item) => (
-                                  <option>{item}</option>
-                                ))}
+                                <option>---Select---</option>
+                            {select_loading === "unit-type" ? (
+                              <CircularProgress />
+                            ) : (
+                              All_Property_Unit_Type.map((name) => (
+                                <option value={name.lookup_value}>
+                                  {name.lookup_value}
+                                </option>
+                              ))
+                            )}
                               </select>
                             </div>
                             <div className="col-md-6  custom-input"></div>
@@ -6689,10 +6730,26 @@ function Projectform() {
                                 <button
                                   className="form-control form-control-sm"
                                   onClick={() => handleTypeClick1(type)}
-                                  style={{
+                                 
+                                    style={{
                                     backgroundColor:
-                                      selectedType === type ? "green" : "",
+                                    selectedType === type ? "green" : "",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "6px",
+                                    fontWeight: "bold",
+                                    transition: "all 0.3s ease",
+                                    boxShadow: selectedType === type
+                                      ? "0 4px 10px rgba(4, 4, 4, 0.4)"
+                                      : "0 2px 6px rgba(0, 0, 0, 0.1)",
                                   }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.transform = "scale(1.05)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.transform = "scale(1)";
+                                
+                                  }}
+                                
                                 >
                                   {type}
                                 </button>
@@ -6711,19 +6768,9 @@ function Projectform() {
                             value={units.sub_category}
                             onChange={handleSubCategoryChange1}
                           >
-                            <MenuItem value="">
-                              <em>Select</em>
-                            </MenuItem>
+                           <option>---select--- </option>
                             {project.sub_category.map((subCategory) => (
-                              // <MenuItem key={subCategory} value={subCategory}>
-                              //   <Checkbox
-                              //     checked={
-                              //       units.sub_category.indexOf(subCategory) > -1
-                              //     }
-                              //     onChange={() => handleToggle1(subCategory)}
-                              //   />
-                              //   <ListItemText primary={subCategory} />
-                              // </MenuItem>
+      
                               <option>{subCategory}</option>
                             ))}
                           </select>
@@ -7224,27 +7271,14 @@ function Projectform() {
                                     builtup_type: e.target.value,
                                   })
                                 }
-                                    onClick={() => {
-                                    if (All_Builtup_Type.length === 0) {
-                                      getall_builtup_type();
-                                    }
-                                  }}
+                                onClick={() => {getall_builtup_type()}}
+                                value={units.builtup_type}
                               >
                                 <option>---Select---</option>
                              {select_loading === "builtup-type" ? (
                           <CircularProgress />
                         ) : (
                           All_Builtup_Type.map((name) => (
-                            // <MenuItem key={name} value={name.lookup_value}>
-                            //   <Checkbox
-                            //     checked={
-                            //       project.parking_type.indexOf(
-                            //         name.lookup_value
-                            //       ) > -1
-                            //     }
-                            //   />
-                            //   <ListItemText primary={name.lookup_value} />
-                            // </MenuItem>
                             <option>{name.lookup_value}</option>
                           ))
                         )}
@@ -8563,30 +8597,30 @@ function Projectform() {
             >
               <div className="p-3 py-5">
                 <div className="row ">
-                  <div style={{ display: "flex" }}>
-                    <div style={{ textAlign: "center", marginTop: "20px" }}>
+                 <div className="flex justify-between items-center gap-3">
+               
                       <button
                         id="basicaminities1"
-                        className="amenity-tab active"
+                        className="btn-primary-custom active px-4"
                         onClick={basicaminities}
                       >
                         Basic
                       </button>
                       <button
                         id="featuredaminities1"
-                        className="amenity-tab"
+                        className="btn-primary-custom px-4"
                         onClick={featuredaminities}
                       >
                         Featured
                       </button>
                       <button
                         id="nearbyaminities1"
-                        className="amenity-tab"
+                        className="btn-primary-custom px-4"
                         onClick={nearbyaminities}
                       >
                         Nearby
                       </button>
-                    </div>
+                   
                   </div>
                   <div
                     id="basicaminities"
