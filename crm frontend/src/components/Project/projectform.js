@@ -504,6 +504,86 @@ function Projectform() {
   };
 
 
+    // get all direction
+
+  const [All_Direction, setAll_Direction] = useState([]);
+  const getall_direction = async () => {
+    try {
+      setselect_loading("direction");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "direction");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      setAll_Direction(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+    finally
+    {
+      setselect_loading("");
+    }
+  };
+
+      // get all facing
+
+  const [All_Facing, setAll_Facing] = useState([]);
+  const getall_facing = async () => {
+    try {
+      setselect_loading("facing");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "facing");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      setAll_Facing(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+    finally
+    {
+      setselect_loading("");
+    }
+  };
+
+        // get all road
+
+  const [All_Road, setAll_Road] = useState([]);
+  const getall_road = async () => {
+    try {
+      setselect_loading("road");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "road");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      setAll_Road(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+    finally
+    {
+      setselect_loading("");
+    }
+  };
+
+          // get all destination
+
+  const [All_Destination, setAll_Destination] = useState([]);
+  const getall_destination = async () => {
+    try {
+      setselect_loading("destination");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "destination");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      setAll_Destination(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+    finally
+    {
+      setselect_loading("");
+    }
+  };
+
 
 
 
@@ -1198,24 +1278,36 @@ function Projectform() {
   //==========================------------------------------- size toggle end--------------------------=================================
 
   // ======================------------------- both check boxes code start ---------------===============================================
-  const checkboxItems = [
-    "Car Parking",
-    "Intercom",
-    "Multi-Purpose Hall",
-    "24x7 Water Supply",
-    "Municipal Water Supply",
-    "Garbage Management System",
-    "Fire Fighting System",
-    "Visitor Car Parking",
-    "Earthquake Resistance",
-    "Lift",
-    "Maintenance Staff",
-    "Power Supply",
-    "Air Condition",
-    "Security",
-    "Bike Parking",
-    "Others",
-  ];
+  
+
+const [checkboxItems, setcheckboxItems] = useState([]);
+
+const getall_basic_aminities = async () => {
+  try {
+    setselect_loading("basic-aminities");
+    const params = new URLSearchParams();
+    params.append("lookup_type", "basic_aminities");
+    const resp = await api.get(`api/LookupList?${params.toString()}`);
+    
+    const list = resp.data.data;
+
+
+    // 👇 set only lookup_value in checkboxItems state
+    const onlyValues = list.map(item => item.lookup_value);
+    setcheckboxItems(onlyValues);
+
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setselect_loading("");
+  }
+};
+
+useEffect(() => {
+  getall_basic_aminities();
+}, []);
+
+
   const [checkedItems, setCheckedItems] = useState(
     Array(checkboxItems.length).fill(false)
   );
@@ -1259,73 +1351,36 @@ function Projectform() {
     }));
   };
 
-  const checkboxItems1 = [
-    "Seniour Citizen Corner",
-    "Worship Place",
-    "HAVC System",
-    "Cricket Pitch",
-    "Two Tier Security",
-    "Cafeteria",
-    "Car Washing Area",
-    "No Common Wall",
-    "Driver Dormitory",
-    "EPABX System",
-    "CCTV",
-    "Gymaasium",
-    "Garden",
-    "Power Back Up",
-    "Party Lawn",
-    "Gazebo",
-    "Cold Storage",
-    "Solar Water Heater",
-    "Jogging Track",
-    "DTH Connection",
-    "Three Tier Security",
-    "Smoking Area",
-    "Spa & Saloon",
-    "Solar Power",
-    "Video Door Phone",
-    "Utility Shop",
-    "Steam Room",
-    "Amphi Theatre",
-    "Private Car Parking",
-    "Guest Room",
-    "Internet",
-    "Kids Play area",
-    "Barbeque Facility",
-    "Basket Ball Court",
-    "Skating Rink",
-    "Socity Office",
-    "Squash Court",
-    "Waiting Longue",
-    "Yoga And Meditation Center",
-    "Water Softener",
-    "Swipe Card Entry",
-    "Health Facilities",
-    "Library",
-    "Day Care Center",
-    "Reception",
-    "Shiping Stores",
-    "Laundry Room",
-    "Indoor Games",
-    "Piped Lpg Connection",
-    "Confrence Or Meeting Room",
-    "Badminton Court",
-    "Sauna Bath",
-    "Rain Water Harvesting",
-    "Jacuzzi",
-    "Massage Parlor",
-    "Tution Room",
-    "Restaurant",
-    "Tennis Court",
-    "Club House",
-    "Swimming Pool",
-    "Wi-Fi",
-    "Mini Theater",
-    "Modular Kitchen",
-    "Cycliing Track",
-    "Outdoor Games",
-  ];
+  
+
+  const [checkboxItems1, setcheckboxItems1] = useState([]);
+
+const getall_featured_aminities = async () => {
+  try {
+    setselect_loading("basic-aminities");
+    const params = new URLSearchParams();
+    params.append("lookup_type", "featured_aminities");
+    const resp = await api.get(`api/LookupList?${params.toString()}`);
+    
+    const list = resp.data.data;
+
+
+    // 👇 set only lookup_value in checkboxItems state
+    const onlyValues = list.map(item => item.lookup_value);
+    setcheckboxItems1(onlyValues);
+
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setselect_loading("");
+  }
+};
+
+useEffect(() => {
+  getall_featured_aminities();
+}, []);
+
+
   const [checkedItems1, setCheckedItems1] = useState(
     Array(checkboxItems1.length).fill(false)
   );
@@ -7146,16 +7201,22 @@ function Projectform() {
                                     direction: e.target.value,
                                   })
                                 }
+                                  onClick={() => {
+                                    if (All_Direction.length === 0) {
+                                      getall_direction();
+                                    }
+                                  }}
                               >
                                 <option>---Select---</option>
-                                <option>East</option>
-                                <option>West</option>
-                                <option>North</option>
-                                <option>South</option>
-                                <option>North East</option>
-                                <option>South East</option>
-                                <option>South West</option>
-                                <option>North West</option>
+                                {select_loading === "direction" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_Direction.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
                               </select>
                             </div>
                             <div className="col-md-4  custom-input">
@@ -7165,28 +7226,22 @@ function Projectform() {
                                 onChange={(e) =>
                                   setunits({ ...units, facing: e.target.value })
                                 }
+                                 onClick={() => {
+                                    if (All_Facing.length === 0) {
+                                      getall_facing();
+                                    }
+                                  }}
                               >
                                 <option>---Select---</option>
-                                <option>Park</option>
-                                <option>Green Belt</option>
-                                <option>Highway</option>
-                                <option>Commercial</option>
-                                <option>School</option>
-                                <option>Hospital</option>
-                                <option>Mandir</option>
-                                <option>Gurudwara</option>
-                                <option>Crech</option>
-                                <option>Clinic</option>
-                                <option>Community Centre</option>
-                                <option>1 Kanal</option>
-                                <option>14m Marla</option>
-                                <option>10 Marla</option>
-                                <option>8 Marla</option>
-                                <option>6 Marla</option>
-                                <option>4 Marla</option>
-                                <option>2 Marla</option>
-                                <option> 3 Marla</option>
-                                <option> 2 Kanal</option>
+                                 {select_loading === "facing" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_Facing.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
                               </select>
                             </div>
                             <div className="col-md-4 custom-input">
@@ -7196,13 +7251,22 @@ function Projectform() {
                                 onChange={(e) =>
                                   setunits({ ...units, road: e.target.value })
                                 }
+                                 onClick={() => {
+                                    if (All_Road.length === 0) {
+                                      getall_road();
+                                    }
+                                  }}
                               >
                                 <option>---Select---</option>
-                                <option>9 Mtr Wide</option>
-                                <option>12 Mtr Wide</option>
-                                <option> 18 Mtr Wide</option>
-                                <option>24 Mtr Wide</option>
-                                <option> 60 Mtr Wide</option>
+                               {select_loading === "road" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_Road.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
                               </select>
                             </div>
                             <div className="col-md-6  custom-input">
@@ -8805,21 +8869,25 @@ function Projectform() {
                             destination: e.target.value,
                           })
                         }
+                        onClick={()=>
+                        {
+                          if(All_Destination.length===0)
+                          {
+                            getall_destination()
+                          }
+                        }
+                        }
                       >
-                        <option>Select</option>
-                        <option>Bus Stop</option>
-                        <option>Railway Station</option>
-                        <option>Airport</option>
-                        <option>Taxi Stand</option>
-                        <option>Atm</option>
-                        <option>Bank</option>
-                        <option>Church</option>
-                        <option>Mosque</option>
-                        <option>Park</option>
-                        <option>Restaurants</option>
-                        <option>School</option>
-                        <option>Temple</option>
-                        <option>Super Market</option>
+                        <option>---Select---</option>
+                       {select_loading === "destination" ? (
+                            <CircularProgress />
+                          ) : (
+                            All_Destination.map((name) => (
+                              <option value={name.lookup_value}>
+                                {name.lookup_value}
+                              </option>
+                            ))
+                          )}
                       </select>
                     </div>
                     <div className="col-md-3  custom-input">

@@ -4,7 +4,6 @@ import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
 
-
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -73,6 +72,16 @@ const ApprovalBank = lazy(() => import("./components/Settings/Configuration/appr
 const ProjectStatus = lazy(() => import("./components/Settings/Configuration/project_status.js"));
 const Approval = lazy(() => import("./components/Settings/Configuration/approvals.js"));
 const BuiltupType = lazy(() => import("./components/Settings/Configuration/builtup_type.js"));
+const Direction = lazy(() => import("./components/Settings/Configuration/directions.js"));
+const Facing = lazy(() => import("./components/Settings/Configuration/facing.js"));
+const Road = lazy(() => import("./components/Settings/Configuration/road.js"));
+const BasicAminities = lazy(() => import("./components/Settings/Configuration/basic_aminities.js"));
+const FeaturedAminities = lazy(() => import("./components/Settings/Configuration/featured_aminities.js"));
+const Destination = lazy(() => import("./components/Settings/Configuration/destination.js"));
+
+
+
+
 
 
 function App() {
@@ -152,6 +161,12 @@ function App() {
             <Route path="/configuration-project-status" element={<ProjectStatus/>} />
             <Route path="/configuration-approvals" element={<Approval/>} />
             <Route path="/configuration-builtup-type" element={<BuiltupType/>} />
+            <Route path="/configuration-direction" element={<Direction/>} />
+            <Route path="/configuration-facing" element={<Facing/>} />
+            <Route path="/configuration-road" element={<Road/>} />
+            <Route path="/configuration-basic-aminities" element={<BasicAminities/>} />
+            <Route path="/configuration-featured-aminities" element={<FeaturedAminities/>} />
+            <Route path="/configuration-destination" element={<Destination/>} />
             </Route>
           </Routes>
         </div>
