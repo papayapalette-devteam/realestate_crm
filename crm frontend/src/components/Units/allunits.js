@@ -596,10 +596,647 @@ function Allunits() {
     remarks: "",
   });
 
+  // ===================================add to task for sitevisit start============================================================
 
+  const handleformchange = () => {
+    const tasks = document.getElementById("forms").value;
+    if (tasks === "Call") {
+      document.getElementById("call").style.display = "flex";
+      document.getElementById("email").style.display = "none";
+      document.getElementById("sitevisit").style.display = "none";
+      document.getElementById("meeting").style.display = "none";
 
+      document.getElementById("calladdtask").style.display = "flex";
+      document.getElementById("mailaddtask").style.display = "none";
+      document.getElementById("sitevisitaddtask").style.display = "none";
+      document.getElementById("meetingaddtask").style.display = "none";
+    }
+    if (tasks === "Email") {
+      document.getElementById("call").style.display = "none";
+      document.getElementById("email").style.display = "flex";
+      document.getElementById("sitevisit").style.display = "none";
+      document.getElementById("meeting").style.display = "none";
 
-  
+      document.getElementById("mailaddtask").style.display = "flex";
+      document.getElementById("sitevisitaddtask").style.display = "none";
+      document.getElementById("meetingaddtask").style.display = "none";
+      document.getElementById("calladdtask").style.display = "none";
+    }
+    if (tasks === "Site Visit") {
+      document.getElementById("call").style.display = "none";
+      document.getElementById("email").style.display = "none";
+      document.getElementById("sitevisit").style.display = "flex";
+      document.getElementById("meeting").style.display = "none";
+
+      document.getElementById("sitevisitaddtask").style.display = "flex";
+      document.getElementById("meetingaddtask").style.display = "none";
+      document.getElementById("calladdtask").style.display = "none";
+      document.getElementById("mailaddtask").style.display = "none";
+    }
+    if (tasks === "Meeting") {
+      document.getElementById("call").style.display = "none";
+      document.getElementById("email").style.display = "none";
+      document.getElementById("sitevisit").style.display = "none";
+      document.getElementById("meeting").style.display = "flex";
+
+      document.getElementById("calladdtask").style.display = "none";
+      document.getElementById("mailaddtask").style.display = "none";
+      document.getElementById("sitevisitaddtask").style.display = "none";
+      document.getElementById("meetingaddtask").style.display = "flex";
+    }
+  };
+
+  const [show8, setshow8] = useState(false);
+
+  const handleClose8 = () => setshow8(false);
+  const handleShow8 = async () => {
+    setshow8(true);
+  };
+
+  const [sitevisit, setsitevisit] = useState({
+    activity_type: "SiteVisit",
+    title: "",
+    executive: "",
+    project: [],
+    block: [],
+    sitevisit_type: "",
+    inventory: [],
+    lead: "",
+    confirmation: "",
+    remark: "",
+    participants: "",
+    remind_me: "",
+    start_date: "",
+    end_date: "",
+    start_time: "",
+    end_time: "",
+    complete: "",
+    stage: "",
+    title2: "",
+    first_name: "",
+    last_name: "",
+    mobile_no: [],
+    email: [],
+    lead_id: "",
+    stage: "",
+    status: "",
+    intrested_project: [],
+    intrested_block: [],
+    intrested_inventory: [],
+    date: "",
+    feedback: "",
+  });
+
+  const [contactdata, setcontactdata] = useState([]);
+  const fetchcontactdata = async (event) => {
+    try {
+      const resp = await api.get("viewcontact");
+      setcontactdata(resp.data.contact);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchcontactdata();
+  }, []);
+
+  const handleToggle3 = (e) => {
+    const isChecked = e.target.checked; // Get the checked state
+    setsitevisit({ ...sitevisit, complete: isChecked }); // Update the calltask state
+
+    // Open the modal only if the checkbox is checked
+    if (isChecked) {
+      document.getElementById("sitevisitdetails").style.display = "block";
+    } else {
+      document.getElementById("sitevisitdetails").style.display = "none";
+    }
+  };
+
+  const [leadid, setleadid] = useState("");
+  const handleLeadChange = (e) => {
+    const selectedLead = Leaddata.find((item) => item._id === e.target.value);
+    setleadid(selectedLead._id);
+    if (selectedLead) {
+      const fullName = `${selectedLead.title} ${selectedLead.first_name} ${selectedLead.last_name}`;
+      setsitevisit((prevState) => ({
+        ...prevState,
+        lead: fullName,
+        title2: selectedLead.title,
+        first_name: selectedLead.first_name,
+        last_name: selectedLead.last_name,
+        mobile_no: selectedLead.mobile_no,
+        email: selectedLead.email,
+        stage: selectedLead.stage,
+        lead_id: selectedLead._id,
+      }));
+    }
+  };
+  const [updatestage2, setupdatestage2] = useState("");
+  const [updatestage1, setupdatestage1] = useState("");
+  const handleleadstatuschange = (e) => {
+    const newStatus = e.target.value;
+
+    // Update the status first
+    setsitevisit((prevState) => {
+      return {
+        ...prevState,
+        status: newStatus,
+      };
+    });
+
+    // Now check if status is "Conducted" and update the stage
+    if (newStatus === "Conducted") {
+      setupdatestage2("Opportunity");
+      setupdatestage1("Quote");
+    } else if (newStatus === "Did Not Visit" || "Not Intersted>") {
+      setupdatestage2("Prospect");
+      setupdatestage1("Open");
+    }
+  };
+
+  const [Leaddata, setLeaddata] = useState([]);
+  const fetchLeaddata = async () => {
+    try {
+      const resp = await api.get("leadinfo");
+      setLeaddata(resp.data.lead);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLeaddata();
+  }, []);
+
+  const [selecteddeal, setselecteddeal] = useState([]);
+  const getselecteddeal = async () => {
+    try {
+      const resp = await api.get(`viewdealbyid/${selectedItems}`);
+      setselecteddeal(resp.data.deal);
+      setsitevisit((prevState) => ({
+        ...prevState,
+        project: Array.isArray(resp.data.deal.project)
+          ? resp.data.deal.project // If it's already an array, use it
+          : [resp.data.deal.project],
+        // If it's not an array, wrap it in an array
+        block: Array.isArray(resp.data.deal.block)
+          ? resp.data.deal.block // If it's already an array, use it
+          : [resp.data.deal.block],
+        // If it's not an array, wrap it in an array
+        inventory: Array.isArray(resp.data.deal.unit_number)
+          ? resp.data.deal.unit_number // If it's already an array, use it
+          : [resp.data.deal.unit_number],
+        // If it's not an array, wrap it in an array
+      }));
+      setmeetingtask((prevState) => ({
+        ...prevState,
+        project: Array.isArray(resp.data.deal.project)
+          ? resp.data.deal.project // If it's already an array, use it
+          : [resp.data.deal.project],
+        // If it's not an array, wrap it in an array
+        block: Array.isArray(resp.data.deal.block)
+          ? resp.data.deal.block // If it's already an array, use it
+          : [resp.data.deal.block],
+        // If it's not an array, wrap it in an array
+        inventory: Array.isArray(resp.data.deal.unit_number)
+          ? resp.data.deal.unit_number // If it's already an array, use it
+          : [resp.data.deal.unit_number],
+        // If it's not an array, wrap it in an array
+      }));
+
+      setmailtask((prevState) => ({
+        ...prevState,
+        project: Array.isArray(resp.data.deal.project)
+          ? resp.data.deal.project // If it's already an array, use it
+          : [resp.data.deal.project],
+        // If it's not an array, wrap it in an array
+        block: Array.isArray(resp.data.deal.block)
+          ? resp.data.deal.block // If it's already an array, use it
+          : [resp.data.deal.block],
+        // If it's not an array, wrap it in an array
+        inventory: Array.isArray(resp.data.deal.unit_number)
+          ? resp.data.deal.unit_number // If it's already an array, use it
+          : [resp.data.deal.unit_number],
+        // If it's not an array, wrap it in an array
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getselecteddeal();
+  }, [selectedItems]);
+
+  const sitevisitdetails = async () => {
+    const title1 = document.getElementById("sitevisittitle").innerText;
+
+    // Update state
+    const updatedsiteTask = { ...sitevisit, title: title1 };
+    const updatedData = {
+      stage: "Quote", // Directly add 'Quote' to the request data
+    };
+
+    try {
+      // First API request to post sitevisit details
+      const resp = await api.post("sitevisit", updatedsiteTask);
+
+      if (leadid) {
+        const resp1 = await api.put(`updatelead/${leadid}`, updatedData);
+        console.log(resp1);
+      }
+
+      if (resp.status === 200) {
+        toast.success(resp.data.message);
+
+        // Reload the page after a brief delay
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000); // 2000 milliseconds = 2 seconds
+      }
+    } catch (error) {
+      // Catch any errors from the main API requests (sitevisit and lead updates)
+      toast.error(
+        "Please select Project Block and Unit sequencely or Missing Lead..."
+      );
+    }
+  };
+
+  const formatDatesite = (dateString) => {
+    const date = new Date(dateString);
+
+    // Day of the month with suffix
+    const day = date.getDate();
+    const suffix =
+      day === 1 || day === 21 || day === 31
+        ? "st"
+        : day === 2 || day === 22
+        ? "nd"
+        : day === 3 || day === 23
+        ? "rd"
+        : "th";
+
+    const formattedDay = `${day}${suffix}`;
+
+    // Month (abbreviated to 3 letters)
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = months[date.getMonth()];
+
+    // Year (4 digits)
+    const year = date.getFullYear();
+
+    return `${formattedDay} ${month} ${year}`;
+  };
+
+  const handleDateChangesite = (e) => {
+    const selectedDate = e.target.value;
+    const formattedDate = formatDatesite(selectedDate);
+    setsitevisit({ ...sitevisit, start_date: formattedDate });
+  };
+
+  const formatDatesite1 = (dateString) => {
+    const date = new Date(dateString);
+
+    // Day of the month with suffix
+    const day = date.getDate();
+    const suffix =
+      day === 1 || day === 21 || day === 31
+        ? "st"
+        : day === 2 || day === 22
+        ? "nd"
+        : day === 3 || day === 23
+        ? "rd"
+        : "th";
+
+    const formattedDay = `${day}${suffix}`;
+
+    // Month (abbreviated to 3 letters)
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = months[date.getMonth()];
+
+    // Year (4 digits)
+    const year = date.getFullYear();
+
+    return `${formattedDay} ${month} ${year}`;
+  };
+
+  const formatTimesite = (timeString) => {
+    let [hours, minutes] = timeString.split(":").map(Number);
+    const isPM = hours >= 12;
+
+    // Convert to 12-hour format
+    if (hours > 12) hours -= 12;
+    if (hours === 0) hours = 12; // midnight or noon should display as 12, not 0
+    const period = isPM ? "PM" : "AM";
+
+    return `${hours}:${minutes < 10 ? "0" + minutes : minutes} ${period}`;
+  };
+
+  // ===============================================add to task for sitevisit end=========================================================
+
+  //================================ add to task for meeting start======================================================================
+
+  const [meetingtask, setmeetingtask] = useState({
+    activity_type: "Meeting",
+    title: "",
+    executive: "",
+    lead: "",
+    location_type: "",
+    location_address: "",
+    reason: "",
+    project: [],
+    block: [],
+    inventory: [],
+    remark: "",
+    stage: "",
+    due_date: "",
+    due_time: "",
+    title2: "",
+    first_name: "",
+    last_name: "",
+    mobile_no: "",
+    email: "",
+    stage: "",
+    complete: "",
+    status: "",
+    meeting_result: "",
+    date: "",
+    feedback: "",
+  });
+
+  const formatTimemeeting = (timeString) => {
+    let [hours, minutes] = timeString.split(":").map(Number);
+    const isPM = hours >= 12;
+
+    // Convert to 12-hour format
+    if (hours > 12) hours -= 12;
+    if (hours === 0) hours = 12; // midnight or noon should display as 12, not 0
+    const period = isPM ? "PM" : "AM";
+
+    return `${hours}:${minutes < 10 ? "0" + minutes : minutes} ${period}`;
+  };
+
+  const handleTimeChangemeeting = (e) => {
+    const selectedTime = e.target.value;
+    const formattedTime = formatTimemeeting(selectedTime);
+    setmeetingtask({ ...meetingtask, due_time: formattedTime });
+  };
+
+  //========================================= add to task for meeting end==============================================================
+
+  //============================== add to task for call start======================================================================
+
+  const [calltask, setcalltask] = useState({
+    activity_type: "Call",
+    title: "",
+    reason: "",
+    lead: "",
+    executive: "",
+    remarks: "",
+    complete: "",
+    due_date: "",
+    due_time: "",
+    title2: "",
+    first_name: "",
+    last_name: "",
+    mobile_no: [],
+    email: [],
+    stage: "",
+    lead_id: "",
+    direction: "",
+    status: "",
+    date: "",
+    duration: "",
+    result: "",
+    intrested_inventory: "",
+    feedback: "",
+  });
+
+  const formatdate = (dateString) => {
+    const date = new Date(dateString);
+
+    // Day of the month with suffix
+    const day = date.getDate();
+    const suffix =
+      day === 1 || day === 21 || day === 31
+        ? "st"
+        : day === 2 || day === 22
+        ? "nd"
+        : day === 3 || day === 23
+        ? "rd"
+        : "th";
+
+    const formattedDay = `${day}${suffix}`;
+
+    // Month (abbreviated to 3 letters)
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = months[date.getMonth()];
+
+    // Year (4 digits)
+    const year = date.getFullYear();
+
+    return `${formattedDay} ${month} ${year}`;
+  };
+
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    const formattedDate = formatdate(selectedDate);
+    setcalltask({ ...calltask, due_date: formattedDate });
+  };
+
+  const formatTime = (timeString) => {
+    let [hours, minutes] = timeString.split(":").map(Number);
+    const isPM = hours >= 12;
+
+    // Convert to 12-hour format
+    if (hours > 12) hours -= 12;
+    if (hours === 0) hours = 12; // midnight or noon should display as 12, not 0
+    const period = isPM ? "PM" : "AM";
+
+    return `${hours}:${minutes < 10 ? "0" + minutes : minutes} ${period}`;
+  };
+
+  const handleTimeChange = (e) => {
+    const selectedTime = e.target.value;
+    const formattedTime = formatTime(selectedTime);
+    setcalltask({ ...calltask, due_time: formattedTime });
+  };
+
+  // =============================add to task for mail start============================================================================
+
+  const [mailtask, setmailtask] = useState({
+    activity_type: "Mail",
+    title: "",
+    executive: "",
+    lead: "",
+    project: [],
+    block: [],
+    inventory: [],
+    subject: "",
+    remarks: "",
+    complete: "",
+    due_date: "",
+    due_time: "",
+    direction: "",
+    status: "",
+    date: "",
+    feedback: "",
+    title2: "",
+    first_name: "",
+    last_name: "",
+    mobile_no: "",
+    email: "",
+    stage: "",
+  });
+
+  const mailtaskdetails = async () => {
+    const title1 = document.getElementById("mailtitle").innerText;
+
+    // Update state
+    const updatedMailTask = { ...mailtask, title: title1 };
+    try {
+      const resp = await api.post("mailtask", updatedMailTask);
+      if (resp.status === 200) {
+        toast.success(resp.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000); // 2000 milliseconds = 2 seconds
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleToggle1 = (e) => {
+    const isChecked = e.target.checked; // Get the checked state
+    setmailtask({ ...mailtask, complete: isChecked }); // Update the calltask state
+
+    // Open the modal only if the checkbox is checked
+    if (isChecked) {
+      document.getElementById("maildetails").style.display = "block";
+    } else {
+      document.getElementById("maildetails").style.display = "none";
+    }
+  };
+
+  const [leaddatamail, setleaddatamail] = useState([]);
+  const fetchleaddatamail = async (event) => {
+    try {
+      const resp = await api.get("leadinfo");
+      const all = resp.data.lead;
+      setleaddatamail(all);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchleaddatamail();
+  }, []);
+
+  const formatDatemail = (dateString) => {
+    const date = new Date(dateString);
+
+    // Day of the month with suffix
+    const day = date.getDate();
+    const suffix =
+      day === 1 || day === 21 || day === 31
+        ? "st"
+        : day === 2 || day === 22
+        ? "nd"
+        : day === 3 || day === 23
+        ? "rd"
+        : "th";
+
+    const formattedDay = `${day}${suffix}`;
+
+    // Month (abbreviated to 3 letters)
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = months[date.getMonth()];
+
+    // Year (4 digits)
+    const year = date.getFullYear();
+
+    return `${formattedDay} ${month} ${year}`;
+  };
+
+  const handleDateChangemail = (e) => {
+    const selectedDate = e.target.value;
+    const formattedDate = formatDatemail(selectedDate);
+    setmailtask({ ...mailtask, due_date: formattedDate });
+  };
+
+  const formatTimemail = (timeString) => {
+    let [hours, minutes] = timeString.split(":").map(Number);
+    const isPM = hours >= 12;
+
+    // Convert to 12-hour format
+    if (hours > 12) hours -= 12;
+    if (hours === 0) hours = 12; // midnight or noon should display as 12, not 0
+    const period = isPM ? "PM" : "AM";
+
+    return `${hours}:${minutes < 10 ? "0" + minutes : minutes} ${period}`;
+  };
+
+  const handleTimeChangemail = (e) => {
+    const selectedTime = e.target.value;
+    const formattedTime = formatTimemail(selectedTime);
+    setmailtask({ ...mailtask, due_time: formattedTime });
+  };
+
+  // ============================================add to task mail end====================================================================
 
   // ======================================unit edit start========================================================================
 
@@ -1591,21 +2228,26 @@ function Allunits() {
   };
 
   const [groupdata, setgroupdata] = useState([]);
-  const get_group_data = async () => {
-    try {
-      const resp = await api.get("unit-getgroupdata");
-      setgroupdata(resp.data);
-      console.log(resp);
-    } catch (error) {
-      console.log(error);
+ const get_group_data = async (projects = []) => {
+  try {
+    let url = "unit-getgroupdata";
+
+    if (projects.length > 0) {
+      url += `?projects=${encodeURIComponent(projects.join(","))}`;
     }
-  };
+
+    const resp = await api.get(url);
+    setgroupdata(resp.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   useEffect(() => {
     get_group_data();
   }, []);
-console.log(groupdata);
 
+console.log(groupdata);
 
   const unitfields = [
     { label: "City", field: "ucity", values: groupdata.allcitis },
@@ -1626,10 +2268,9 @@ console.log(groupdata);
     { label: "Facing", field: "facing", values: groupdata.allfacing },
     { label: "Remarks", field: "remarks", values: groupdata.allremarks },
   ];
-
+console.log(unitfields);
   const defaultFields = [
-    unitfields.find((f) => f.field === "ucity"),
-    unitfields.find((f) => f.field === "location"),
+    unitfields.find((f) => f.field === "project_name"),
   ];
 
   const [showFieldDropdown, setShowFieldDropdown] = useState(false);
@@ -1696,17 +2337,38 @@ console.log(groupdata);
       filters.map((f, i) => (i === idx ? { ...f, input: value } : f))
     );
   }
-  function handleCheckbox(idx, val) {
-    setActiveFilters((filters) =>
-      filters.map((f, i) => {
-        if (i !== idx) return f;
-        const checked = f.checked.includes(val)
-          ? f.checked.filter((v) => v !== val)
-          : [...f.checked, val];
-        return { ...f, checked };
-      })
-    );
-  }
+ const [selectedProjects, setSelectedProjects] = useState([]);
+
+const handleProjectCheckbox = (projectName, checked) => {
+  const updatedProjects = checked
+    ? [...selectedProjects, projectName]
+    : selectedProjects.filter((p) => p !== projectName);
+
+  setSelectedProjects(updatedProjects);
+
+  // Call your API to fetch filtered unit data based on selected projects
+  get_group_data(updatedProjects);
+};
+
+function handleCheckbox(idx, val) {
+  setActiveFilters((filters) =>
+    filters.map((f, i) => {
+      if (i !== idx) return f;
+
+      const checked = f.checked.includes(val)
+        ? f.checked.filter((v) => v !== val)
+        : [...f.checked, val];
+
+      // If this is the project_name field, handle project selection
+      if (f.field === "project_name") {
+        handleProjectCheckbox(val, !f.checked.includes(val));
+      }
+
+      return { ...f, checked };
+    })
+  );
+}
+
 
   //=============================================== deal action buttons toggle start=============================================================
 
@@ -1958,37 +2620,49 @@ console.log(groupdata);
                       fontSize: "12px",
                     }}
                   />
-                  {item.values && item.values.length > 0 && (
-                    <div
-                      style={{
-                        maxHeight: 130,
-                        overflowY: "auto",
-                        background: "#fcfdff",
-                        padding: "6px 8px",
-                        fontSize: "12px",
-                        borderRadius: 7,
-                      }}
-                    >
-                      {item.values.map((val) => (
-                        <label
-                          key={val}
-                          style={{
-                            display: "block",
-                            margin: "4px 0",
-                            fontSize: 12,
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={item.checked.includes(val)}
-                            onChange={() => handleCheckbox(idx, val)}
-                            style={{ marginRight: 8 }}
-                          />
-                          {val}
-                        </label>
-                      ))}
-                    </div>
-                  )}
+                {item.values && item.values.length > 0 ? (
+  item.values.length > 500 ? ( // adjust threshold as needed
+    <p style={{ fontSize: "12px", color: "red", marginTop: "6px" }}>
+      ⚠️ Too many  options. Please select a project first.
+    </p>
+  ) : (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "6px",
+        marginTop: "6px",
+      }}
+    >
+      {item.values.map((val) => (
+        <label
+          key={val}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "4px 10px",
+            background: item.checked.includes(val)
+              ? "#e7f1ff"
+              : "#f4f5f7",
+            borderRadius: "20px",
+            border: "1px solid #d6d6d6",
+            cursor: "pointer",
+            fontSize: "12px",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={item.checked.includes(val)}
+            onChange={() => handleCheckbox(idx, val)}
+            style={{ marginRight: 6 }}
+          />
+          {val}
+        </label>
+      ))}
+    </div>
+  )
+) : null}
+
                 </div>
               )}
             </div>

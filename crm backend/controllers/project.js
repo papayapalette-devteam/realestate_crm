@@ -402,7 +402,7 @@ const view_units = async (req, res) => {
       matchStage.owner = { $in: [loginUser] }; // owner is an array
     }
 
-    console.log(activeFilters);
+
     
     // 🔹 Search
     if (search) {
@@ -450,6 +450,8 @@ const view_units = async (req, res) => {
       });
     }
 
+    console.log(matchStage);
+    
     const units = await addproject.aggregate(
       [
         { $unwind: "$add_unit" },
@@ -2063,8 +2065,20 @@ const getGroupedDataproject = async (req, res) => {
 
 const getGroupedUnitData = async (req, res) => {
   try {
+    const { projects } = req.query; // expects comma-separated project names, e.g., ?projects=Proj1,Proj2
+
+    // Build match condition
+    const matchCondition = {};
+    if (projects) {
+      const projectArray = projects.split(","); // convert to array
+      matchCondition["add_unit.project_name"] = { $in: projectArray };
+    }
+
     const groupedData = await addproject.aggregate([
-      { $unwind: { path: "$add_unit", preserveNullAndEmptyArrays: true } }, // Flatten each unit
+      { $unwind: { path: "$add_unit", preserveNullAndEmptyArrays: true } }, // Flatten units
+
+      // Apply project filter if provided
+      { $match: matchCondition },
 
       {
         $group: {
@@ -2081,11 +2095,7 @@ const getGroupedUnitData = async (req, res) => {
           alldirection: { $addToSet: "$add_unit.direction" },
           allroad: { $addToSet: "$add_unit.road" },
           allfacing: { $addToSet: "$add_unit.facing" },
-          // allremarks: {
-          //   $addToSet: {$concatArrays: [["$add_unit.reason"],["$add_unit.other_reason"]]}
-          // }
           allremarks: { $addToSet: "$add_unit.remarks" },
-
         },
       },
       {
@@ -2103,7 +2113,7 @@ const getGroupedUnitData = async (req, res) => {
           alldirection: 1,
           allroad: 1,
           allfacing: 1,
-          allremarks:1
+          allremarks: 1,
         },
       },
     ]);
@@ -2114,6 +2124,7 @@ const getGroupedUnitData = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 
 async function removeDuplicateUnits() {
   try {
