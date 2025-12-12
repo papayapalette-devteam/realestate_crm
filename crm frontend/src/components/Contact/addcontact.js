@@ -1237,7 +1237,7 @@ function Addcontact() {
                           style={{ marginTop: "10px" }}
                           required="true"
                           className="form-control form-control-sm"
-                          value={contact?.country_code}
+                          value={contact?.country_code[index]}
                           onClick={() => {
                             if (All_Country_Code.length === 0) {
                               getall_country_code();

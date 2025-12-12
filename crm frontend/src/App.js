@@ -4,6 +4,7 @@ import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
 
+
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -78,6 +79,9 @@ const Road = lazy(() => import("./components/Settings/Configuration/road.js"));
 const BasicAminities = lazy(() => import("./components/Settings/Configuration/basic_aminities.js"));
 const FeaturedAminities = lazy(() => import("./components/Settings/Configuration/featured_aminities.js"));
 const Destination = lazy(() => import("./components/Settings/Configuration/destination.js"));
+const Funding = lazy(() => import("./components/Settings/Configuration/funding.js"));
+const Timeline = lazy(() => import("./components/Settings/Configuration/timeline.js"));
+
 
 
 
@@ -167,6 +171,8 @@ function App() {
             <Route path="/configuration-basic-aminities" element={<BasicAminities/>} />
             <Route path="/configuration-featured-aminities" element={<FeaturedAminities/>} />
             <Route path="/configuration-destination" element={<Destination/>} />
+            <Route path="/configuration-funding" element={<Funding/>} />
+            <Route path="/configuration-timeline" element={<Timeline/>} />
             </Route>
           </Routes>
         </div>

@@ -38,7 +38,8 @@ import {
   FaLocationArrow,
   FaRoad,
 } from "react-icons/fa";
-import { MdCategory, MdOutlineExplore,MdStarRate,MdHomeRepairService,MdPlace  } from "react-icons/md";
+import { MdCategory, MdOutlineExplore,MdStarRate,MdHomeRepairService,MdPlace,MdAttachMoney,
+  MdTimeline } from "react-icons/md";
 
 function Sidebarsetting({ isSidebarOpen, setIsSidebarOpen }) {
   const navigate = useNavigate();
@@ -323,6 +324,20 @@ function Sidebarsetting({ isSidebarOpen, setIsSidebarOpen }) {
                   <FaRoad size={14} />
                   Road
                 </li>
+                              <li
+                  onClick={() => navigate("/configuration-funding")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <MdAttachMoney   size={14} />
+                  Funding
+                </li>
+                              <li
+                  onClick={() => navigate("/configuration-timeline")}
+                  className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
+                >
+                  <MdTimeline   size={14} />
+                  Timeline
+                </li>
                      <li
                   onClick={() => navigate("/configuration-basic-aminities")}
                   className="flex items-center gap-2 text-gray-300 hover:text-blue-400 cursor-pointer text-sm"
@@ -344,6 +359,7 @@ function Sidebarsetting({ isSidebarOpen, setIsSidebarOpen }) {
                   <MdPlace   size={14} />
                   Destination
                 </li>
+                
               </ul>
             )}
 

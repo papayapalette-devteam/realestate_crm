@@ -143,28 +143,27 @@ function Leadinfo() {
     matchingdeal: "",
   });
 
-  const facing = [
-    "Park",
-    "Green Belt",
-    "Highway",
-    "Commercial",
-    "School",
-    "Hospital",
-    "Mandir",
-    "Gurudwara",
-    "Crech",
-    "Clinic",
-    "Community Centre",
-    "1 Kanal",
-    "14m Marla",
-    "10 Marla",
-    "8 Marla",
-    "6 Marla",
-    "4 Marla",
-    "2 Marla",
-    "3 Marla",
-    "2 Kanal",
-  ];
+  const [select_loading, setselect_loading] = useState("");
+  // get facing
+
+  const [facing, setfacing] = useState([]);
+  const getall_facing = async () => {
+    try {
+      const params = new URLSearchParams();
+      params.append("lookup_type", "facing");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      const list = resp.data.data;
+      const onlyValues = list.map((item) => item.lookup_value);
+      setfacing(onlyValues);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getall_facing();
+  }, []);
 
   const [facings, setfacings] = useState([]);
 
@@ -193,13 +192,25 @@ function Leadinfo() {
     }
   };
 
-  const road = [
-    "9 Mtr Wide",
-    "12 Mtr Wide",
-    "18 Mtr Wide",
-    "24 Mtr Wide",
-    "60 Mtr Wide",
-  ];
+  // get road
+  const [road, setroad] = useState([]);
+  const getall_road = async () => {
+    try {
+      const params = new URLSearchParams();
+      params.append("lookup_type", "road");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      const list = resp.data.data;
+      const onlyValues = list.map((item) => item.lookup_value);
+      setroad(onlyValues);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getall_road();
+  }, []);
 
   const [roads, setroads] = useState([]);
 
@@ -256,16 +267,25 @@ function Leadinfo() {
     }
   };
 
-  const direction = [
-    "East",
-    "West",
-    "North",
-    "South",
-    "North East",
-    "South East",
-    "South West",
-    "North West",
-  ];
+  // get road
+  const [direction, setdirection] = useState([]);
+  const getall_direction = async () => {
+    try {
+      const params = new URLSearchParams();
+      params.append("lookup_type", "direction");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      const list = resp.data.data;
+      const onlyValues = list.map((item) => item.lookup_value);
+      setdirection(onlyValues);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getall_direction();
+  }, []);
 
   const [directions, setdirections] = useState([]);
 
@@ -425,122 +445,7 @@ function Leadinfo() {
     getall_property_unit_type();
   }, [leadinfo.sub_type]);
 
-  const options = {
-    unit_type: {
-      PLOT: [
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "14 Marla",
-        "12 Marla",
-        "10 Marla",
-        "8 Marla",
-        "6 Marla",
-        "4 Marla",
-        "3 Marla",
-        "2 Marla",
-      ],
-      "INDEPENDENT HOUSE": [
-        "1 Kanal",
-        "2 Kanal",
-        "12 Marla",
-        "3 Kanal",
-        "4 Kanal",
-        "5 Kanal",
-        "6 Kanal",
-        "7 Kanal",
-        "1 Acre",
-        "2 Acre",
-        "3 Acre",
-        "4 Acre",
-        "5 Acre",
-        "6 Acre",
-        "7 Acre",
-        "8 Acre",
-        "9 Acre",
-        "10 Acre",
-        "5 Marla",
-        "16 Marla",
-        "14 Marla",
-        "10 Marla",
-        "8 Marla",
-        "6 Marla",
-        "4 Marla",
-        "3 Marla",
-        "2 Marla",
-      ],
-      "FLAT/APARTMENT": [
-        "1 BHK",
-        "2 BHK",
-        "3 BHK",
-        "4 BHK",
-        "5 BHK",
-        ,
-        "STUDIO",
-      ],
-      "BUILDER FLOOR": [
-        "1 BHK",
-        "12 Marla",
-        "3 Kanal",
-        "4 Kanal",
-        "5 Kanal",
-        "6 Kanal",
-        "7 Kanal",
-        "1 Acre",
-        "2 Acre",
-        "3 Acre",
-        "4 Acre",
-        "5 Acre",
-        "6 Acre",
-        "7 Acre",
-        "8 Acre",
-        "9 Acre",
-        "10 Acre",
-        "5 Marla",
-        "2 BHK",
-        "3 BHK",
-        "4 BHK",
-        "5 BHK",
-        "STUDIO",
-      ],
-      SHOP: ["BOOTH", "KIOSAK"],
-      SHOWROOM: ["SCO", "SCF", "DSS"],
-      "OFFICE SPACE": ["LOCABLE OFFICE", "VIRTUAL OFFICE"],
-      "RETAIL STORE": ["HYPER MARKET", "DEPARTMETAL STORE"],
-      SOHO: ["SOHO"],
-      "EXCUTIVE ROOM": ["ROOM"],
-      LAND: ["CROPLAND", "WOODLAND", "PASTURE", "COMMERCIAL"],
-      "FARM HOUSE": ["FARM"],
-      PLOTS: ["1 KANAL", "10 MARLA", "2 KANAL", "1 ACRE", "2 KANAL"],
-      WAREHOUSE: ["WRHSE"],
-      "COLD STORAGE": ["CLDSTRG"],
-      "RICE SELLER": ["RCSLR"],
-      BUILDING: ["BLDG"],
-      FACTORY: ["FCTRY"],
-      SCHOOL: ["NURSERY SCHOOL", "CRECH", "HIGH SCHOOL", "PRIMERY SCHOOL"],
-      HOTEL: ["HOTEL", "GUEST HOUSE", "HOMESTAYS"],
-      UNIVERSITIES: ["DEEMED", "PRIVATE"],
-      HOSPITAL: ["NURSING HOME", "CLINIC"],
-      COLLEGE: ["ART COLLEGE", "TECHNICAL COLLEGE", "MEDICAL COLLEGE"],
-    },
-  };
+  
 
   const handleCategoryChange = (event) => {
     const {
@@ -575,970 +480,69 @@ function Leadinfo() {
     }));
   };
 
-  const getAvailableunittype = () => {
-    // Step 1: Get all options based on selected sub_types
-    let availableOptions = leadinfo.sub_type.flatMap(
-      (cat) => options.unit_type[cat] || []
-    );
+  // const getAvailableunittype = () => {
+  //   // Step 1: Get all options based on selected sub_types
+  //   let availableOptions = leadinfo.sub_type.flatMap(
+  //     (cat) => options.unit_type[cat] || []
+  //   );
 
-    // Step 2: Use a Set to remove duplicates and return unique options
-    return Array.from(new Set(availableOptions));
+  //   // Step 2: Use a Set to remove duplicates and return unique options
+  //   return Array.from(new Set(availableOptions));
+  // };
+
+  // =============================get all profession category==========================================
+
+  const [All_Profession_Category, setAll_Profession_Category] = useState([]);
+  const getall_profession_category = async () => {
+    try {
+      setselect_loading("profession_category");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "profession_category");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Profession_Category(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
   };
 
-  const professtiondetails = {
-    profession_category: [
-      "Govt. Employed",
-      "Private Employee",
-      "Self Employed",
-      "Retired",
-      "Business Man",
-      "Student",
-      "House Wife",
-    ],
+  // =============================get all profession sub category==========================================
 
-    profession_subcategory: {
-      "Govt. Employed": [
-        "Teacher",
-        "Scientist",
-        "Doctor",
-        "Nurse",
-        "Clerk",
-        "Engineer",
-        "Accountant",
-        "Architect",
-        "Auditor",
-        "Police",
-        "Mechanic",
-        "Security",
-        "Driver",
-        "Officer",
-        "Peon",
-        "Chef",
-        "Pilot",
-        "IT Person",
-        "Analyst",
-        "Sales Person",
-        "Banker",
-        "Legal",
-      ],
-      "Private Employee": [
-        "Officer",
-        "Accountant",
-        "Human Resources (HR)",
-        "Sales Person",
-        "Manager",
-        "IT Person",
-        "Analyst",
-        "Scientist",
-        "Technicians",
-        "Designer",
-        "Author",
-        "Videographer",
-        "Director",
-        "Telle Caller",
-        "Legel",
-        "Executive Officer",
-        "Operators",
-        "Security",
-        "Journalists",
-        "Doctor",
-        "Nurse",
-        "Teacher",
-        "Facility",
-        "Driver",
-        "Contractor",
-        "Consultant",
-        "Chef",
-        "Artist",
-        "Engineer",
-        "Banker",
-        "Legal",
-        "Clerk",
-        "Architect",
-        "Auditor",
-        "Mechanic",
-        "Peon",
-        "Pilot",
-      ],
-
-      "Self Employed": [
-        "Designer",
-        "Photographer",
-        "Videographer",
-        "Independent Artist",
-        "Illustrator",
-        "Writer",
-        "Digital Content Creator",
-        "Social Media Influencer",
-        "Podcaster",
-        "Music Producer",
-        "Management Consultant",
-        "Financial Advisor",
-        "IT Consultant",
-        "Business Strategist",
-        "Marketing Consultant",
-        "Life Coach",
-        "Career Counselor",
-        "Freelance Software Developer",
-        "Web Developer",
-        "Data Analyst",
-        "App Developer",
-        "UX/UI Designer",
-        "Cybersecurity Consultant",
-        "Private Practitioner (Doctor)",
-        "Physiotherapist",
-        "Dietitian or Nutritionist",
-        "Yoga Instructor",
-        "Personal Trainer",
-        "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)",
-        "Private Tutor",
-        "Test Preparation Coach",
-        "Online Educator",
-        "Language Trainer",
-        "Corporate Trainer",
-        "Independent Lawyer",
-        "Chartered Accountant (CA)",
-        "Tax Consultant",
-        "Auditor",
-        "Financial Planner",
-        "Tailor",
-        "Carpenter",
-        "Blacksmith",
-        "Jewelry Maker",
-        "Ceramic Artist",
-        "Real Estate Agent",
-        "Broker",
-        "Sales Representative",
-        "Freelance Chef",
-        "Event Planner",
-        "Makeup Artist",
-        "Hairstylist",
-        "Wedding Photographer",
-        "Independent Farmer",
-        "Organic Produce Supplier",
-        "Horticulturist",
-      ],
-
-      Retired: [
-        "Teacher",
-        "Scientist",
-        "Doctor",
-        "Nurse",
-        "Clerk",
-        "Engineer",
-        "Accountant",
-        "Architect",
-        "Auditor",
-        "Police",
-        "Mechanic",
-        "Security",
-        "Driver",
-        "Officer",
-        "Peon",
-        "Chef",
-        "Pilot",
-        "IT Person",
-        "Analyst",
-        "Sales Person",
-        "Banker",
-        "Legal",
-        "Manager",
-        "Operators",
-        "Human Resources (HR)",
-        "Freelance Graphic Designer",
-        "Photographer",
-        "Videographer",
-        "Independent Artist",
-        "Illustrator",
-        "Writer (Author, Blogger, or Copywriter)",
-        "Digital Content Creator",
-        "Social Media Influencer",
-        "Podcaster",
-        "Music Producer",
-        "Management Consultant",
-        "Financial Advisor",
-        "IT Consultant",
-        "Business Strategist",
-        "Marketing Consultant",
-        "Life Coach",
-        "Career Counselor",
-        "Freelance Software Developer",
-        "Web Developer",
-        "Data Analyst",
-        "App Developer",
-        "UX/UI Designer",
-        "Cybersecurity Consultant",
-        "Private Practitioner (Doctor)",
-        "Physiotherapist",
-        "Dietitian or Nutritionist",
-        "Yoga Instructor",
-        "Personal Trainer",
-        "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)",
-        "Private Tutor",
-        "Test Preparation Coach",
-        "Online Educator",
-        "Language Trainer",
-        "Corporate Trainer",
-        "Independent Lawyer",
-        "Chartered Accountant (CA)",
-        "Tax Consultant",
-        "Auditor",
-        "Financial Planner",
-        "Tailor",
-        "Carpenter",
-        "Blacksmith",
-        "Jewelry Maker",
-        "Ceramic Artist",
-        "Real Estate Agent",
-        "Property Consultant",
-        "Broker",
-        "Sales Representative",
-        "Freelance Chef",
-        "Event Planner",
-        "Makeup Artist",
-        "Hairstylist",
-        "Wedding Photographer",
-        "Independent Farmer",
-        "Organic Produce Supplier",
-        "Horticulturist",
-      ],
-
-      Student: ["Investor"],
-
-      "House Wife": ["Investor"],
-
-      "Business Man": [
-        "Entrepreneurs",
-        "Start-up Founders",
-        "Retailer",
-        "Wholesaler",
-        "Importer/Exporter",
-        "Distributor",
-        "Trader",
-        "Real Estate Developer",
-        "Real Estate Investor",
-        "Real Estate Agent",
-        "Manufacturer",
-        "Industrialist",
-        "Financer",
-        "Stock Trader",
-        "Hotel Owner",
-        "Resort Owner",
-        "Travel Agency",
-        "Restaurant Owner",
-        "Agriculturist",
-        "Dairy Business Owner",
-        "IT Person",
-        "Coaching Centre Owner",
-        "Training Institute Owner",
-        "Online Tutor",
-        "Private Tutor",
-        "Hospital Owner",
-        "Wellness Centre Owner",
-        "Fitness Centre Owner",
-        "Advertising Agency Owner",
-        "Film Producer",
-        "Media House Owner",
-        "Designer",
-        "Transporter",
-        "Courier Servicer",
-        "Renewable Energy and Environment",
-        "Boutique",
-        "Salon Owner",
-        "Security Service Provider",
-        "Legal Firm Owner",
-        "Digital Business",
-        "Infrastructure Developer",
-        "Poultry Farm Owner",
-        "Handicrafts Business Owner",
-        "Investment Banker",
-        "Loan Consultant",
-        "IT Company Owner",
-        "Cloud Service Provider",
-        "Emigration",
-        "Catering",
-        "Baker",
-        "Car Dealership Owner",
-        "Bike Dealership Owner",
-        "Bike Rental Business Owner",
-        "Workshop Owner",
-        "Environmental Consultant",
-        "Cold Storage Business Owner",
-        "Film Studio Owner",
-        "Sports Organizer",
-        "Event Organizer",
-        "Cloth Merchant",
-      ],
-    },
-    designation: {
-      Teacher: [
-        "Primary Teacher (PRT)",
-        "Trained Graduate Teacher (TGT)",
-        "Post Graduate Teacher (PGT)",
-        "Assistant Professor",
-        "Professor",
-        "Principal",
-        "Education Officer",
-        "Laboratory Technicians",
-        "Corporate Trainers",
-        "E-learning Specialists",
-        "Academic Counselors",
-        "Kindergarten Teacher",
-        "Subject Teacher",
-        "Senior Educator",
-        "Head of Department",
-      ],
-      Scientist: [
-        "Junior Scientist",
-        "Scientist B/C/D",
-        "Senior Scientist",
-        "Chief Scientist",
-        "Director",
-        "Data Scientists",
-        "Research Scientists",
-        "Product Developers",
-        "Research Associate",
-        "Senior Research Scientist",
-        "Lead Scientist",
-      ],
-      Doctor: [
-        "Doctors",
-        "Medical Officer (MO)",
-        "Senior Medical Officer (SMO)",
-        "Specialist Doctor",
-        "Chief Medical Officer (CMO)",
-        "Director of Health Services",
-        "Physical Therapists",
-        "Dietitians",
-        "Resident Doctor",
-        "Consultant",
-        "Senior Specialist",
-        "Medical Director",
-      ],
-      Nurse: [
-        "Nurses",
-        "Auxiliary Nurse Midwife (ANM)",
-        "Staff Nurse",
-        "Nursing Superintendent",
-        "Chief Nursing Officer",
-        "Staff Nurse",
-        "Charge Nurse",
-        "Nursing Director",
-      ],
-      Clerk: [
-        "Lower Division Clerk (LDC)",
-        "Upper Division Clerk (UDC)",
-        "Assistant Section Officer (ASO)",
-        "Section Officer (SO)",
-        "Data Entry Clerk",
-        "Office Assistant",
-        "Administrative Clerk",
-      ],
-      Engineer: [
-        "Junior Engineer (JE)",
-        "Assistant Engineer (AE)",
-        "Executive Engineer (EE)",
-        "Chief Engineer",
-      ],
-      Accountant: [
-        "Junior Accountant",
-        "Senior Accountant",
-        "Accounts Officer",
-        "Senior Accounts Officer",
-        "Controller of Accounts",
-        "Accountants",
-        "Payroll Specialists",
-        "Tax Consultants",
-        "Junior Accountant",
-        "Senior Accountant",
-        "Finance Controller",
-        "Chief Financial Officer (CFO)",
-        "Accountants",
-        "Financial Analysts",
-        "Auditors",
-        "Payroll Specialists",
-        "Tax Consultants",
-      ],
-      Architect: [
-        "Assistant Architect",
-        "Architect",
-        "Senior Architect",
-        "Chief Architect",
-        "Architectural Intern",
-        "Project Architect",
-        "Design Director",
-      ],
-      Auditor: [
-        "Junior Auditor",
-        "Senior Auditor",
-        "Audit Officer",
-        "Senior Audit Officer",
-        "Principal Auditor",
-        "Auditors",
-        "Internal Auditor",
-        "Risk Auditor",
-        "Audit Manager",
-      ],
-      Police: [
-        "Constable",
-        "Head Constable",
-        "Assistant Sub-Inspector (ASI)",
-        "Sub-Inspector (SI)",
-        "Inspector",
-        "Deputy Superintendent of Police (DSP)",
-        "Superintendent of Police (SP)",
-        "Inspector General of Police (IGP)",
-        "Director General of Police (DGP)",
-      ],
-      Mechanic: [
-        "Junior Mechanic",
-        "Senior Mechanic",
-        "Workshop Superintendent",
-        "Service Technician",
-        "Workshop Supervisor",
-      ],
-      Security: [
-        "Security Guard",
-        "Security Supervisor",
-        "Security Officer",
-        "Chief Security Officer",
-        "Safety Officers",
-      ],
-      Driver: [
-        "Driver (Light/Heavy Vehicle)",
-        "Senior Driver",
-        "Motor Vehicle Inspector",
-        "Drivers",
-        "Delivery Agents",
-        "Company Driver",
-        "Heavy Vehicle Driver",
-        "Personal Driver",
-      ],
-      Officer: [
-        "Probationary Officer (PO)",
-        "Administrative Officer",
-        "Gazetted Officer (Class A, B, C)",
-        "Deputy Secretary",
-        "Under Secretary",
-        "Joint Secretary",
-        "Secretary",
-        "Administrative Assistants",
-        "Chief Executive Officer (CEO)",
-        "Chief Financial Officer (CFO)",
-        "Chief Operating Officer (COO)",
-        "Vice Presidents (VPs)",
-        "Directors",
-        "Entrepreneurs",
-        "Administrative Assistants",
-        "Office Managers",
-        "Executive Assistants",
-        "Receptionists",
-        "PData Entry Operators",
-      ],
-      Peon: [
-        "Office Attendant",
-        "Multi-Tasking Staff (MTS)",
-        "Office Helper",
-        "Support Staff",
-      ],
-      Chef: [
-        "Cook",
-        "Head Cook",
-        "Catering Supervisor",
-        "Chefs",
-        "Commis Chef",
-        "Sous Chef",
-        "Executive Chef",
-      ],
-      Pilot: [
-        "Commercial Pilot",
-        "Helicopter Pilot",
-        "Fighter Pilot",
-        "Co-Pilot",
-        "Chief Pilot",
-      ],
-      "IT Person": [
-        "Junior Programmer",
-        "Software Developer",
-        "Software Engineer",
-        "Senior Software Engineer",
-        "IT Officer",
-        "Software Developers",
-        "System Administrators",
-        "IT Support Specialists",
-        "Junior Developer",
-        "Full Stack Developer",
-      ],
-      "Sales Person": [
-        "Sales Assistant",
-        "Sales Supervisor",
-        "Marketing Executive",
-        "Sales Executives",
-        "Sales Associate",
-        "Sales Manager",
-      ],
-      Analyst: [
-        "Data Analyst",
-        "Research Analyst",
-        "Financial Analyst",
-        "System Analyst",
-        "Intelligence Analyst",
-        "Financial Analysts",
-        "Cybersecurity Analysts",
-        "Supply Chain Analysts",
-        "Business Analyst",
-        "Senior Analyst",
-        "Supply Chain Analysts",
-        "Quality Inspector",
-      ],
-      Banker: [
-        "Bank Clerk",
-        "Senior Clerk",
-        "Probationary Officer (PO)",
-        "Assistant Manager",
-        "Branch Manager",
-        "Regional Manager",
-        "Chief Manager",
-        "Assistant General Manager (AGM)",
-        "General Manager (GM)",
-        "Managing Director (MD)",
-        "Relationship Manager",
-        "Loan Officer",
-        "Branch Manager",
-        "Investment Analyst",
-      ],
-      Legal: [
-        "Civil Judge (Junior Division)",
-        "Civil Judge (Senior Division)",
-        "District Judge",
-        "High Court Judge",
-        "Supreme Court Judge",
-        "Chief Justice",
-        "Legal Officer",
-        "Public Prosecutor",
-        "Solicitor General",
-        "Legal Advisors",
-        "Compliance Officers",
-        "Contract Specialists",
-        "Risk Managers",
-        "Legal Associate",
-        "Corporate Lawyer",
-        "Compliance Manager",
-        "Legal Consultant",
-      ],
-
-      Designer: [
-        "Proprietor",
-        "Graphic Designers",
-        "UX/UI Designers",
-        "Instructional Designers",
-        "Freelance Designers/Writers",
-        "Senior Designer",
-        "Creative Director",
-      ],
-      Photographer: ["Proprietor"],
-      Videographer: ["Proprietor", "Video Editors"],
-      "Independent Artist": ["Proprietor"],
-      Illustrator: ["Proprietor"],
-      Writer: ["Proprietor"],
-      "Digital Content Creator": ["Proprietor"],
-      "Social Media Influencer": ["Proprietor"],
-      Podcaster: ["Proprietor"],
-      "Music Producer": ["Proprietor"],
-      "Management Consultant": ["Proprietor"],
-      "Financial Advisor": ["Proprietor"],
-      "IT Consultant": ["Proprietor"],
-      "Business Strategist": ["Proprietor"],
-      "Marketing Consultant": ["Proprietor"],
-      "Life Coach": ["Proprietor"],
-      "Career Counselor": ["Proprietor"],
-      "Freelance Software Developer": ["Proprietor"],
-      "Web Developer": ["Proprietor"],
-      "Data Analyst": ["Proprietor"],
-      "App Developer": ["Proprietor"],
-      "UX/UI Designer": ["Proprietor"],
-      "Cybersecurity Consultant": ["Proprietor"],
-      "Private Practitioner (Doctor)": ["Proprietor"],
-      Physiotherapist: ["Proprietor"],
-      "Dietitian or Nutritionist": ["Proprietor"],
-      "Yoga Instructor": ["Proprietor"],
-      "Personal Trainer": ["Proprietor"],
-      "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)": [
-        "Proprietor",
-      ],
-      "Private Tutor": ["Proprietor"],
-      "Test Preparation Coach": ["Proprietor"],
-      "Online Educator": ["Proprietor"],
-      "Language Trainer": ["Proprietor"],
-      "Corporate Trainer": ["Proprietor"],
-      "Independent Lawyer": ["Proprietor"],
-      "Chartered Accountant (CA)": ["Proprietor"],
-      "Tax Consultant": ["Proprietor"],
-      Auditor: ["Proprietor"],
-      "Financial Planner": ["Proprietor"],
-      Tailor: ["Proprietor"],
-      Carpenter: ["Proprietor"],
-      Blacksmith: ["Proprietor"],
-      "Jewelry Maker": ["Proprietor"],
-      "Ceramic Artist": ["Proprietor"],
-      "Real Estate Agent": ["Proprietor"],
-      Broker: ["Proprietor"],
-      "Sales Representative": ["Proprietor"],
-      "Freelance Chef": ["Proprietor"],
-      "Event Planner": ["Proprietor"],
-      "Makeup Artist": ["Proprietor"],
-      Hairstylist: ["Proprietor"],
-      "Wedding Photographer": ["Proprietor"],
-      "Independent Farmer": ["Proprietor"],
-      "Organic Produce Supplier": ["Proprietor"],
-      Horticulturist: ["Proprietor"],
-
-      "Software Developer": ["Software Developer"],
-      Manager: [],
-      Operators: [
-        "Data Entry Operators",
-        "Operations Managers",
-        "Machine Operators",
-      ],
-      "Human Resources (HR)": [
-        "HR Executives",
-        "Talent Acquisition Specialists",
-        "Employee Relations Managers",
-        "Training and Development Specialists",
-        "HR Business Partners",
-        "HR Executives",
-        "Talent Acquisition Specialists",
-        "Employee Relations Managers",
-        "Training and Development Specialists",
-        "HR Business Partners",
-      ],
-      Manager: [
-        "Marketing Managers",
-        "Brand Managers",
-        "Business Development Managers",
-        "Digital Marketing Specialists",
-        "Logistics Coordinators",
-        "Procurement Specialists",
-        "Inventory Managers",
-        "Client Relationship Managers",
-        "Social Media Managers",
-        "Event Planners",
-        "Facility Managers",
-        "Hotel Managers",
-        "Front Desk Executives",
-        "Event Coordinators",
-        "Start-up Employees",
-        "Team Manager",
-        "Operations Manager",
-        "General Manager",
-        "Operations Managers",
-        "Logistics Coordinators",
-        "Procurement Specialists",
-        "Inventory Managers",
-        "Innovation Managers",
-        "Customer Support Executives",
-        "Sales Manager",
-        "Public Relations Specialists",
-        "Office Managers",
-        "Executive Assistants",
-        "Receptionists",
-        "Innovation Managers",
-        "Customer Support Executives",
-        "Plant Managers",
-        "Quality Inspectors",
-        "Fleet Managers",
-        "Marketing Managers",
-        "Brand Managers",
-        "Business Development Managers",
-        "Digital Marketing Specialists",
-      ],
-      Author: ["Content Writers", "Editors"],
-      Director: ["Art Directors"],
-      "Tele Caller": ["Call Center Agents"],
-      Technicians: [
-        "Technical Support Specialists",
-        "Maintenance Technicians",
-        "Lab Technicians",
-        "Technical Lead",
-        "Laboratory Technicians",
-      ],
-      Jounalists: ["Journalists", "Public Relations Specialists"],
-      Hospitality: ["Housekeeping Staff"],
-      Contractor: ["Independent Contractors"],
-      Consultant: ["Management Consultants"],
-      Artist: ["Creative Artists", "Musicians"],
-      Engineer: [
-        "Junior Engineer",
-        "Project Engineer",
-        "Senior Engineer",
-        "Engineering Manager",
-      ],
-      "Freelance Graphic Designer": ["Proprietor"],
-      Photographer: ["Proprietor"],
-      Videographer: ["Proprietor"],
-      "Independent Artist": ["Proprietor"],
-      Illustrator: ["Proprietor"],
-      "Writer (Author, Blogger, or Copywriter)": ["Proprietor"],
-      "Digital Content Creator": ["Proprietor"],
-      "Social Media Influencer": ["Proprietor"],
-      Podcaster: ["Proprietor"],
-      "Music Producer": ["Proprietor"],
-      "Management Consultant": ["Proprietor"],
-      "Financial Advisor": ["Proprietor"],
-      "IT Consultant": ["Proprietor"],
-      "Business Strategist": ["Proprietor"],
-      "Marketing Consultant": ["Proprietor"],
-      "Life Coach": ["Proprietor"],
-      "Career Counselor": ["Proprietor"],
-      "Freelance Software Developer": ["Proprietor"],
-      "Web Developer": ["Proprietor"],
-      "Data Analyst": ["Proprietor"],
-      "App Developer": ["Proprietor"],
-      "UX/UI Designer": ["Proprietor"],
-      "Cybersecurity Consultant": ["Proprietor"],
-      "Private Practitioner (Doctor)": ["Proprietor"],
-      Physiotherapist: ["Proprietor"],
-      "Dietitian or Nutritionist": ["Proprietor"],
-      "Yoga Instructor": ["Proprietor"],
-      "Personal Trainer": ["Proprietor"],
-      "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)": [
-        "Proprietor",
-      ],
-      "Private Tutor": ["Proprietor"],
-      "Test Preparation Coach": ["Proprietor"],
-      "Online Educator": ["Proprietor"],
-      "Language Trainer": ["Proprietor"],
-      "Corporate Trainer": ["Proprietor"],
-      "Independent Lawyer": ["Proprietor"],
-      "Chartered Accountant (CA)": ["Proprietor"],
-      "Tax Consultant": ["Proprietor"],
-      Auditor: [
-        "Proprietor",
-        "Internal Auditor",
-        "Risk Auditor",
-        "Audit Manager",
-      ],
-      "Financial Planner": ["Proprietor"],
-      Tailor: ["Proprietor"],
-      Carpenter: ["Proprietor"],
-      Blacksmith: ["Proprietor"],
-      "Jewelry Maker": ["Proprietor"],
-      "Ceramic Artist": ["Proprietor"],
-      "Real Estate Agent": ["Proprietor"],
-      "Property Consultant": ["Proprietor"],
-      Broker: ["Proprietor"],
-      "Sales Representative": ["Proprietor"],
-      "Freelance Chef": ["Proprietor"],
-      "Event Planner": ["Proprietor"],
-      "Makeup Artist": ["Proprietor"],
-      Hairstylist: ["Proprietor"],
-      "Wedding Photographer": ["Proprietor"],
-      "Independent Farmer": ["Proprietor"],
-      "Organic Produce Supplier": ["Proprietor"],
-      Horticulturist: ["Proprietor"],
-      Investor: ["Angel Investor", "Venture Capitalist", "Portfolio Manager"],
-      Entrepreneurs: ["Founder", "Co-Founder", "CEO", "Managing Director"],
-      "Start-up Founders": ["Founder", "Co-Founder, CEO", "Visionary Leader"],
-      Retailer: [
-        "Shop Owner",
-        "Retail Manager",
-        "Proprietor",
-        "Franchise Owner",
-      ],
-      Wholesaler: [
-        "Wholesale Business Owner",
-        "Distribution Head",
-        "Supply Chain Owner",
-      ],
-      "Importer/Exporter": [
-        "Import/Export Manager",
-        "Trade Consultant",
-        "Supply Chain Owner",
-      ],
-      Distributor: [
-        "Chief Trading Officer",
-        "Trading Business Owner",
-        "Independent Trader",
-      ],
-      Trader: [
-        "Wholesale Business Owner",
-        "Distribution Head",
-        "Supply Chain Owner",
-      ],
-      "Real Estate Developer": [
-        "Real Estate Developer",
-        "Managing Partner",
-        "Property Consultant",
-      ],
-      "Real Eastate Investor": [
-        "Property Investor",
-        "Real Estate Strategist",
-        "Investment Manager",
-      ],
-      "Real Estate Agent": [
-        "Real Estate Consultant",
-        "Real Estate Advisor",
-        "Realtor",
-      ],
-      Manufacturer: [
-        "Factory Owner",
-        "Production Head",
-        "Chief Manufacturing Officer",
-      ],
-      Industrialist: [
-        "Business Tycoon",
-        "Industry Leader",
-        "Managing Director",
-      ],
-      Financer: [
-        "Chief Financial Officer (CFO)",
-        "Financial Advisor",
-        "Investment Consultant",
-      ],
-      "Stock Trader": ["Equity Investor", "Day Trader", "Portfolio Manager"],
-      "Hotel Owner": [
-        "Hospitality Owner",
-        "General Manager (GM)",
-        "Managing Director",
-      ],
-      "Resort Owner": [
-        "Resort Manager",
-        "Owner and Operator",
-        "Hospitality Director",
-      ],
-      "Travel Agency": [
-        "Travel Consultant",
-        "Tourism Business Owner",
-        "Founder",
-      ],
-      "Restaurant Owner": [
-        "Restaurant Manager",
-        "Food Entrepreneur",
-        "Culinary Director",
-      ],
-      Agriculturist: [
-        "Farm Owner",
-        "Agriculture Consultant",
-        "Rural Entrepreneur",
-      ],
-      "Dairy Business Owner": [
-        "Dairy Farmer",
-        "Milk Processing Entrepreneur",
-        "Managing Partner",
-      ],
-      "IT Person": [
-        "IT Consultant",
-        "Software Solutions Owner",
-        "IT Entrepreneur",
-        "Software Developers",
-        "System Administrators",
-        "IT Support Specialists",
-        "Data Scientists",
-        "Cybersecurity Analysts",
-        "Junior Developer",
-        "Full Stack Developer",
-        "Senior Software Engineer",
-        "Technical Lead",
-      ],
-      "Coaching Centre Owner": [
-        "Education Entrepreneur",
-        "Coaching Director",
-        "Academic Manager",
-      ],
-      "Training Institute Owner": [
-        "Training Consultant",
-        "Institute Director",
-        "Founder",
-      ],
-      "Online Tutor": ["Founder and Educator", "Academic Content Creator"],
-      "Private Tutor": ["Independent Tutor", "Education Consultant"],
-      "Hospital Owner": [
-        "Healthcare Entrepreneur",
-        "Medical Director",
-        "Hospital Administrator",
-      ],
-      "Wellness Centre Owner": [
-        "Wellness Consultant",
-        "Health and Fitness Director",
-        "Gym Owner",
-      ],
-      "Fitness Centre Owner": [
-        "Gym Owner",
-        "Fitness Director",
-        "Health Entrepreneur",
-      ],
-      "Advertising Agency Owner": [
-        "Creative Director",
-        "Marketing Strategist",
-        "Founder",
-      ],
-      "Film Producer": ["Producer", "Film Studio Owner", "Creative Producer"],
-      "Media House Owner": ["Media Entrepreneur", "Chief Editor", "Publisher"],
-      Designer: ["Creative Director", "Fashion Entrepreneur"],
-      Transporter: ["Logistics Manager", "Transport Business Owner"],
-      "Courier Servicer": ["Courier Business Owner", "Operations Manager"],
-      "Renewable Energy and Environment": [
-        "Renewable Energy Consultant",
-        "Sustainable Entrepreneur",
-      ],
-      Boutique: ["Fashion Boutique Owner", "Creative Head"],
-      "Salon Owner": ["Salon Manager", "Beauty Entrepreneur"],
-      "Security Service Provider": ["Security Agency Owner", "Operations Head"],
-      "Legal Firm Owner": ["Advocate and Owner", "Managing Partner"],
-      "Digital Business": ["Founder", "Digital Marketing Consultant"],
-      "Infrastructure Developer": [
-        "Real Estate Developer",
-        "Project Consultant",
-      ],
-      Agriculturist: ["Agribusiness Entrepreneur", "Food Processing Director"],
-      "Poultry Farm Owner": ["Poultry Business Owner", "Farm Manager"],
-      "Handicrafts Business Owner": [
-        "Artisan Entrepreneur",
-        "Creative Entrepreneur",
-      ],
-      "Investment Banker": ["Investment Advisor", "Wealth Manager"],
-      "Loan Cosultant": ["Financial Consultant", "Loan Advisor"],
-      "IT Company Owner": ["IT Entrepreneur", "Chief Technology Officer (CTO)"],
-      "Cloud Service Provider": [
-        "Cloud Solutions Architect",
-        "IT Entrepreneur",
-      ],
-      Emigration: ["Immigration Consultant", "Visa Solutions Provider"],
-      Catering: ["Catering Business Owner", "Culinary Director"],
-      Baker: ["Bakery Owner", "Culinary Entrepreneur"],
-      "Car Dealership Owner": ["Dealership Manager", "Auto Entrepreneur"],
-      "Bike Dealership Owner": ["Franchise Owner"],
-      "Bike Rental Business Owner": [
-        "Rental Business Owner",
-        "Operations Head",
-      ],
-      "Workshop Owner": ["Mechanic Entrepreneur", "Service Manager"],
-      "Environmental Consultant": [
-        "Sustainability Consultant",
-        "Environmental Advisor",
-      ],
-      "Cold Storage Business Owner": [
-        "Logistics Entrepreneur",
-        "Warehouse Manager",
-      ],
-      "Film Studio Owner": ["Film Producer", "Studio Head"],
-      "Sports Organizer": ["Event Manager", "Sports Entrepreneur"],
-      "Event Organizer": ["Founder, Director", "Creative Planner"],
-      "Cloth Merchant": ["Textile Business Owner", "Retail Manager"],
-      ExecutiveOfficer: [
-        "Chief Executive Officer (CEO)",
-        "Entrepreneurs",
-        "Chief Financial Officer (CFO)",
-        "Chief Operating Officer (COO)",
-        "Vice Presidents (VPs)",
-        "Directors",
-      ],
-      Facility: ["Housekeeping Staff"],
-    },
+  const [All_Profession_Sub_Category, setAll_Profession_Sub_Category] =
+    useState([]);
+  const getall_profession_sub_category = async () => {
+    try {
+      setselect_loading("profession_sub_category");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "profession_sub_category");
+      params.append("parent_lookup_value", leadinfo.profession_category);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Profession_Sub_Category(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
   };
 
-  const [availableSubcategories, setAvailableSubcategories] = useState([]);
-  const [availableDesignations, setAvailableDesignations] = useState([]);
+  // =============================get all designation==========================================
+
+  const [All_Designation, setAll_Designation] = useState([]);
+  const getall_designation = async () => {
+    try {
+      setselect_loading("designation");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "designation");
+      params.append("parent_lookup_value", leadinfo.profession_subcategory);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Designation(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
 
   // Handle profession category change
   const handleProfessionCategoryChange = (event) => {
@@ -1550,11 +554,6 @@ function Leadinfo() {
       profession_subcategory: "", // Reset subcategory when category changes
       designation: "", // Reset designation when category changes
     }));
-
-    // Update available subcategories based on selected profession category
-    setAvailableSubcategories(
-      professtiondetails.profession_subcategory[selectedCategory] || []
-    );
   };
 
   // Handle profession subcategory change
@@ -1566,11 +565,6 @@ function Leadinfo() {
       profession_subcategory: selectedSubcategory,
       designation: "", // Reset designation when subcategory changes
     }));
-
-    // Update available designations based on selected profession subcategory
-    setAvailableDesignations(
-      professtiondetails.designation[selectedSubcategory] || []
-    );
   };
 
   // Handle designation change
@@ -1631,1009 +625,114 @@ function Leadinfo() {
     setleadinfo({ ...leadinfo, owner: selectedOwners });
   };
 
-  const countrycode = [
-    "Afghanistan +93",
-    "Aland Islands +358",
-    "Albania +355",
-    "Algeria +213",
-    "American Samoa +1684",
-    "Andorra +376",
-    "Angola +244",
-    "Anguilla +1264",
-    "Antarctica +672",
-    "Antigua and Barbuda +1268",
-    "Argentina +54",
-    "Armenia +374",
-    "Aruba +297",
-    "Australia +61",
-    "Austria +43",
-    "Azerbaijan +994",
-    "Bahamas +1242",
-    "Bahrain +973",
-    "Bangladesh +880",
-    "Barbados +1246",
-    "Belarus +375",
-    "Belgium +32",
-    "Belize +501",
-    "Benin +229",
-    "Bermuda +1441",
-    "Bhutan +975",
-    "Bolivia +591",
-    "Bonaire, Sint Eustatius and Saba +599",
-    "Bosnia and Herzegovina +387",
-    "Botswana +267",
-    "Bouvet Island +55",
-    "Brazil +55",
-    "British Indian Ocean Territory +246",
-    "Brunei Darussalam +673",
-    "Bulgaria +359",
-    "Burkina Faso +226",
-    "Burundi +257",
-    "Cambodia +855",
-    "Cameroon +237",
-    "Canada +1",
-    "Cape Verde +238",
-    "Cayman Islands +1345",
-    "Central African Republic +236",
-    "Chad +235",
-    "Chile +56",
-    "China +86",
-    "Christmas Island +61",
-    "Cocos (Keeling) Islands +672",
-    "Colombia +57",
-    "Comoros +269",
-    "Congo +242",
-    "Congo, Democratic Republic of the Congo +242",
-    "Cook Islands +682",
-    "Costa Rica +506",
-    "Cote D'Ivoire +225",
-    "Croatia +385",
-    "Cuba +53",
-    "Curacao +599",
-    "Cyprus +357",
-    "Czech Republic +420",
-    "Denmark +45",
-    "Djibouti +253",
-    "Dominica +1767",
-    "Dominican Republic +1809",
-    "Ecuador +593",
-    "Egypt +20",
-    "El Salvador +503",
-    "Equatorial Guinea +240",
-    "Eritrea +291",
-    "Estonia +372",
-    "Ethiopia +251",
-    "Falkland Islands (Malvinas) +500",
-    "Faroe Islands +298",
-    "Fiji +679",
-    "Finland +358",
-    "France +33",
-    "French Guiana +594",
-    "French Polynesia +689",
-    "French Southern Territories +262",
-    "Gabon +241",
-    "Gambia +220",
-    "Georgia +995",
-    "Germany +49",
-    "Ghana +233",
-    "Gibraltar +350",
-    "Greece +30",
-    "Greenland +299",
-    "Grenada +1473",
-    "Guadeloupe +590",
-    "Guam +1671",
-    "Guatemala +502",
-    "Guernsey +44",
-    "Guinea +224",
-    "Guinea-Bissau +245",
-    "Guyana +592",
-    "Haiti +509",
-    "Holy See (Vatican City State) +39",
-    "Honduras +504",
-    "Hong Kong +852",
-    "Hungary +36",
-    "Iceland +354",
-    "India +91",
-    "Indonesia +62",
-    "Iran, Islamic Republic of +98",
-    "Iraq +964",
-    "Ireland +353",
-    "Isle of Man +44",
-    "Israel +972",
-    "Italy +39",
-    "Jamaica +1876",
-    "Japan +81",
-    "Jersey +44",
-    "Jordan +962",
-    "Kazakhstan +7",
-    "Kenya +254",
-    "Kiribati +686",
-    "Korea Democratic People's Republic of +850",
-    "Korea Republic of +82",
-    "Kosovo +383",
-    "Kuwait +965",
-    "Kyrgyzstan +996",
-    "Lao People's Democratic Republic +856",
-    "Latvia +371",
-    "Lebanon +961",
-    "Lesotho +266",
-    "Liberia +231",
-    "Libyan Arab Jamahiriya +218",
-    "Liechtenstein +423",
-    "Lithuania +370",
-    "Luxembourg +352",
-    "Macao +853",
-    "Macedonia, the Former Yugoslav Republic of +389",
-    "Madagascar +261",
-    "Malawi +265",
-    "Malaysia +60",
-    "Maldives +960",
-    "Mali +223",
-    "Malta +356",
-    "Marshall Islands +692",
-    "Martinique +596",
-    "Mauritania +222",
-    "Mauritius +230",
-    "Mayotte +262",
-    "Mexico +52",
-    "Micronesia, Federated States of +691",
-    "Moldova, Republic of +373",
-    "Monaco +377",
-    "Mongolia +976",
-    "Montenegro +382",
-    "Montserrat +1664",
-    "Morocco +212",
-    "Mozambique +258",
-    "Myanmar +95",
-    "Namibia +264",
-    "Nauru +674",
-    "Nepal +977",
-    "Netherlands +31",
-    "Netherlands Antilles +599",
-    "New Caledonia +687",
-    "New Zealand +64",
-    "Nicaragua +505",
-    "Niger +227",
-    "Nigeria +234",
-    "Niue +683",
-    "Norfolk Island +672",
-    "Northern Mariana Islands +1670",
-    "Norway +47",
-    "Oman +968",
-    "Pakistan +92",
-    "Palau +680",
-    "Palestinian Territory, Occupied +970",
-    "Panama +507",
-    "Papua New Guinea +675",
-    "Paraguay +595",
-    "Peru +51",
-    "Philippines +63",
-    "Pitcairn +64",
-    "Poland +48",
-    "Portugal +351",
-    "Puerto Rico +1787",
-    "Qatar +974",
-    "Reunion +262",
-    "Romania +40",
-    "Russian Federation +7",
-    "Rwanda +250",
-    "Saint Barthelemy +590",
-    "Saint Helena +290",
-    "Saint Kitts and Nevis +1869",
-    "Saint Lucia +1758",
-    "Saint Martin +590",
-    "Saint Pierre and Miquelon +508",
-    "Saint Vincent and the Grenadines +1784",
-    "Samoa +684",
-    "San Marino +378",
-    "Sao Tome and Principe +239",
-    "Saudi Arabia +966",
-    "Senegal +221",
-    "Serbia +381",
-    "Serbia and Montenegro +381",
-    "Seychelles +248",
-    "Sierra Leone +232",
-    "Singapore +65",
-    "Sint Maarten +721",
-    "Slovakia +421",
-    "Slovenia +386",
-    "Solomon Islands +677",
-    "Somalia +252",
-    "South Africa +27",
-    "South Georgia and the South Sandwich Islands +500",
-    "South Sudan +211",
-    "Spain +34",
-    "Sri Lanka +94",
-    "Sudan +249",
-    "Suriname +597",
-    "Svalbard and Jan Mayen +47",
-    "Swaziland +268",
-    "Sweden +46",
-    "Switzerland +41",
-    "Syrian Arab Republic +963",
-    "Taiwan, Province of China +886",
-    "Tajikistan +992",
-    "Tanzania, United Republic of +255",
-    "Thailand +66",
-    "Timor-Leste +670",
-    "Togo +228",
-    "Tokelau +690",
-    "Tonga +676",
-    "Trinidad and Tobago +1868",
-    "Tunisia +216",
-    "Turkey +90",
-    "Turkmenistan +7370",
-    "Turks and Caicos Islands +1649",
-    "Tuvalu +688",
-    "Uganda +256",
-    "Ukraine +380",
-    "United Arab Emirates +971",
-    "United Kingdom +44",
-    "United States +1",
-    "United States Minor Outlying Islands +1",
-    "Uruguay +598",
-    "Uzbekistan +998",
-    "Vanuatu +678",
-    "Venezuela +58",
-    "Viet Nam +84",
-    "Virgin Islands, British +1284",
-    "Virgin Islands, U.s. +1340",
-    "Wallis and Futuna +681",
-    "Western Sahara +212",
-    "Yemen +967",
-    "Zambia +260",
-    "Zimbabwe +263",
-  ];
+  // =============================get all country code==========================================
 
-  const asianCountries = [
-    "Afghanistan",
-    "Armenia",
-    "Azerbaijan",
-    "Bahrain",
-    "Bangladesh",
-    "Bhutan",
-    "Brunei",
-    "Burma (Myanmar)",
-    "Cambodia",
-    "China",
-    "Cyprus",
-    "Georgia",
-    "India",
-    "Indonesia",
-    "Iran",
-    "Iraq",
-    "Israel",
-    "Japan",
-    "Jordan",
-    "Kazakhstan",
-    "Kuwait",
-    "Kyrgyzstan",
-    "Laos",
-    "Lebanon",
-    "Malaysia",
-    "Maldives",
-    "Mongolia",
-    "Nepal",
-    "North Korea",
-    "Oman",
-    "Pakistan",
-    "Palestine",
-    "Philippines",
-    "Qatar",
-    "Saudi Arabia",
-    "Singapore",
-    "South Korea",
-    "Sri Lanka",
-    "Syria",
-    "Tajikistan",
-    "Thailand",
-    "Timor-Leste",
-    "Turkmenistan",
-    "United Arab Emirates",
-    "Uzbekistan",
-    "Vietnam",
-    "Yemen",
-  ];
-  const statesAndCities = {
-    AndhraPradesh: [
-      "Anantapur",
-      "Chittoor",
-      "East Godavari",
-      "Guntur",
-      "Krishna",
-      "Kurnool",
-      "Prakasam",
-      "Srikakulam",
-      "Visakhapatnam",
-      "Vizianagaram",
-      "West Godavari",
-      "YSR Kadapa",
-    ],
-    ArunachalPradesh: [
-      "Tawang",
-      "West Kameng",
-      "East Kameng",
-      "Papum Pare",
-      "Kurung Kumey",
-      "Kra Daadi",
-      "Lower Subansiri",
-      "Upper Subansiri",
-      "West Siang",
-      "East Siang",
-      "Upper Siang",
-      "Lower Siang",
-      "Lower Dibang Valley",
-      "Dibang Valley",
-      "Anjaw",
-      "Lohit",
-      "Namsai",
-      "Changlang",
-      "Tirap",
-      "Longding",
-    ],
-    Assam: [
-      "Baksa",
-      "Barpeta",
-      "Biswanath",
-      "Bongaigaon",
-      "Cachar",
-      "Charaideo",
-      "Chirang",
-      "Darrang",
-      "Dhemaji",
-      "Dhubri",
-      "Dibrugarh",
-      "Goalpara",
-      "Golaghat",
-      "Hailakandi",
-      "Hojai",
-      "Jorhat",
-      "Kamrup",
-      "Kamrup Metropolitan",
-      "Karbi Anglong",
-      "Karimganj",
-      "Kokrajhar",
-      "Lakhimpur",
-      "Majuli",
-      "Morigaon",
-      "Nagaon",
-      "Nalbari",
-      "Dima Hasao",
-      "Sivasagar",
-      "Sonitpur",
-      "South Salmara-Mankachar",
-      "Tinsukia",
-      "Udalguri",
-      "West Karbi Anglong",
-    ],
-    Bihar: [
-      "Araria",
-      "Arwal",
-      "Aurangabad",
-      "Banka",
-      "Begusarai",
-      "Bhagalpur",
-      "Bhojpur",
-      "Buxar",
-      "Darbhanga",
-      "East Champaran",
-      "Gaya",
-      "Gopalganj",
-      "Jamui",
-      "Jehanabad",
-      "Kaimur",
-      "Katihar",
-      "Khagaria",
-      "Kishanganj",
-      "Lakhisarai",
-      "Madhepura",
-      "Madhubani",
-      "Munger",
-      "Muzaffarpur",
-      "Nalanda",
-      "Nawada",
-      "Patna",
-      "Purnia",
-      "Rohtas",
-      "Saharsa",
-      "Samastipur",
-      "Saran",
-      "Sheikhpura",
-      "Sheohar",
-      "Sitamarhi",
-      "Siwan",
-      "Supaul",
-      "Vaishali",
-      "West Champaran",
-    ],
-    Delhi: [
-      "Central Delhi",
-      "East Delhi",
-      "New Delhi",
-      "North Delhi",
-      "North East Delhi",
-      "North West Delhi",
-      "Shahdara",
-      "South Delhi",
-      "South East Delhi",
-      "South West Delhi",
-      "West Delhi",
-    ],
-    Goa: ["North Goa", "South Goa"],
-    Gujarat: [
-      "Ahmedabad",
-      "Amreli",
-      "Anand",
-      "Banaskantha",
-      "Bharuch",
-      "Bhavnagar",
-      "Botad",
-      "Chhota Udepur",
-      "Dahod",
-      "Dang",
-      "Gir Somnath",
-      "Jamnagar",
-      "Junagadh",
-      "Kachchh",
-      "Kheda",
-      "Mahisagar",
-      "Mehsana",
-      "Morbi",
-      "Narmada",
-      "Navsari",
-      "Panchmahal",
-      "Patan",
-      "Porbandar",
-      "Rajkot",
-      "Sabarkantha",
-      "Surat",
-      "Surendranagar",
-      "Tapi",
-      "Vadodara",
-      "Valsad",
-    ],
-    Haryana: [
-      "Ambala",
-      "Bhiwani",
-      "Charkhi Dadri",
-      "Faridabad",
-      "Fatehabad",
-      "Gurugram",
-      "Hisar",
-      "Jhajjar",
-      "Jind",
-      "Kaithal",
-      "Karnal",
-      "Kurukshetra",
-      "Mahendragarh",
-      "Narnaul",
-      "Palwal",
-      "Panchkula",
-      "Panipat",
-      "Rewari",
-      "Rohtak",
-      "Sirsa",
-      "Sonipat",
-      "Yamunanagar",
-    ],
-    HimachalPradesh: [
-      "Bilaspur",
-      "Chamba",
-      "Hamirpur",
-      "Kangra",
-      "Kullu",
-      "Kullu",
-      "Mandi",
-      "Shimla",
-      "Sirmaur",
-      "Solan",
-      "Una",
-    ],
-    Jharkhand: [
-      "Bokaro",
-      "Chatra",
-      "Deoghar",
-      "Dhanbad",
-      "Dumka",
-      "East Singhbhum",
-      "Garhwa",
-      "Giridih",
-      "Godda",
-      "Gumla",
-      "Hazaribagh",
-      "Jamtara",
-      "Khunti",
-      "Koderma",
-      "Latehar",
-      "Lohardaga",
-      "Pakur",
-      "Palamu",
-      "Ramgarh",
-      "Ranchi",
-      "Sahebganj",
-      "Seraikela Kharsawan",
-      "Simdega",
-      "West Singhbhum",
-    ],
-    Karnataka: [
-      "Bagalkot",
-      "Ballari",
-      "Belagavi",
-      "Bengaluru Rural",
-      "Bengaluru Urban",
-      "Bidar",
-      "Chamarajanagar",
-      "Chikballapur",
-      "Chikkamagaluru",
-      "Chitradurga",
-      "Dakshina Kannada",
-      "Davanagere",
-      "Dharwad",
-      "Gadag",
-      "Hassan",
-      "Haveri",
-      "Kalaburagi",
-      "Kodagu",
-      "Kolar",
-      "Koppal",
-      "Mandya",
-      "Mysuru",
-      "Raichur",
-      "Ramanagara",
-      "Shivamogga",
-      "Tumakuru",
-      "Udupi",
-      "Uttara Kannada",
-      "Vijayapura",
-      "Yadgir",
-    ],
-    Kerala: [
-      "Alappuzha",
-      "Ernakulam",
-      "Idukki",
-      "Kannur",
-      "Kasaragod",
-      "Kottayam",
-      "Kollam",
-      "Kozhikode",
-      "Malappuram",
-      "Palakkad",
-      "Pathanamthitta",
-      "Thiruvananthapuram",
-      "Thrissur",
-      "Wayanad",
-    ],
-    MadhyaPradesh: [
-      "Alirajpur",
-      "Anuppur",
-      "Ashoknagar",
-      "Balaghat",
-      "Barwani",
-      "Betul",
-      "Bhind",
-      "Bhopal",
-      "Burhanpur",
-      "Chhindwara",
-      "Datia",
-      "Dewas",
-      "Dhar",
-      "Dindori",
-      "Guna",
-      "Gwalior",
-      "Harda",
-      "Hoshangabad",
-      "Indore",
-      "Jabalpur",
-      "Jhabua",
-      "Katni",
-      "Khandwa",
-      "Khargone",
-      "Mandla",
-      "Mandsaur",
-      "Morena",
-      "Narsinghpur",
-      "Neemuch",
-      "Panna",
-      "Rewa",
-      "Rajgarh",
-      "Sagar",
-      "Satna",
-      "Sehore",
-      "Seoni",
-      "Shahdol",
-      "Shajapur",
-      "Sheopur",
-      "Shivpuri",
-      "Sidhi",
-      "Singrauli",
-      "Tikamgarh",
-      "Ujjain",
-      "Umaria",
-      "Vidisha",
-    ],
-    Maharashtra: [
-      "Ahmednagar",
-      "Akola",
-      "Amravati",
-      "Aurangabad",
-      "Beed",
-      "Bhandara",
-      "Buldhana",
-      "Chandrapur",
-      "Dhule",
-      "Gadchiroli",
-      "Gondia",
-      "Hingoli",
-      "Jalgaon",
-      "Jalna",
-      "Kolhapur",
-      "Latur",
-      "Mumbai City",
-      "Mumbai Suburban",
-      "Nagpur",
-      "Nanded",
-      "Nandurbar",
-      "Nashik",
-      "Osmanabad",
-      "Palghar",
-      "Parbhani",
-      "Pune",
-      "Raigad",
-      "Ratnagiri",
-      "Sangli",
-      "Satara",
-      "Sindhudurg",
-      "Solapur",
-      "Thane",
-      "Wardha",
-      "Washim",
-      "Yavatmal",
-    ],
-    Manipur: [
-      "Bishnupur",
-      "Chandel",
-      "Churachandpur",
-      "Imphal East",
-      "Imphal West",
-      "Jiribam",
-      "Kakching",
-      "Kamjong",
-      "Kangpokpi",
-      "Noney",
-      "Senapati",
-      "Tamenglong",
-      "Tengnoupal",
-      "Thoubal",
-      "Ukhrul",
-    ],
-    Meghalaya: [
-      "East Garo Hills",
-      "East Khasi Hills",
-      "Jaintia Hills",
-      "Ri Bhoi",
-      "West Garo Hills",
-      "West Khasi Hills",
-    ],
-    Mizoram: [
-      "Aizawl",
-      "Champhai",
-      "Kolasib",
-      "Lawngtlai",
-      "Lunglei",
-      "Mamit",
-      "Saiha",
-      "Serchhip",
-    ],
-    Nagaland: [
-      "Dimapur",
-      "Kohima",
-      "Mokokchung",
-      "Mon",
-      "Peren",
-      "Phek",
-      "Tuensang",
-      "Wokha",
-      "Zunheboto",
-    ],
-    Odisha: [
-      "Angul",
-      "Balangir",
-      "Balasore",
-      "Bargarh",
-      "Bhadrak",
-      "Boudh",
-      "Cuttack",
-      "Deogarh",
-      "Dhenkanal",
-      "Ganjam",
-      "Gajapati",
-      "Jagatsinghpur",
-      "Jajpur",
-      "Jharsuguda",
-      "Kalahandi",
-      "Kandhamal",
-      "Kendrapara",
-      "Kendujhar",
-      "Khordha",
-      "Koraput",
-      "Malkangiri",
-      "Mayurbhanj",
-      "Nabarangpur",
-      "Nayagarh",
-      "Nuapada",
-      "Puri",
-      "Rayagada",
-      "Sambalpur",
-      "Subarnapur",
-      "Sundargarh",
-    ],
-    Punjab: [
-      "Amritsar",
-      "Barnala",
-      "Bathinda",
-      "Faridkot",
-      "Fatehgarh Sahib",
-      "Firozpur",
-      "Gurdaspur",
-      "Hoshiarpur",
-      "Jalandhar",
-      "Kapurthala",
-      "Ludhiana",
-      "Mansa",
-      "Moga",
-      "Muktsar",
-      "Nawan Shehar",
-      "Patiala",
-      "Rupnagar",
-      "Sangrur",
-      "SAS Nagar",
-      "Sri Muktsar Sahib",
-    ],
-    Rajasthan: [
-      "Ajmer",
-      "Alwar",
-      "Banswara",
-      "Baran",
-      "Barmer",
-      "Bhilwara",
-      "Bikaner",
-      "Bundi",
-      "Churu",
-      "Dausa",
-      "Dholpur",
-      "Dungarpur",
-      "Hanumangarh",
-      "Jaipur",
-      "Jaisalmer",
-      "Jhalawar",
-      "Jhunjhunu",
-      "Jodhpur",
-      "Karauli",
-      "Kota",
-      "Nagaur",
-      "Pali",
-      "Pratapgarh",
-      "Rajsamand",
-      "Sawai Madhopur",
-      "Sikar",
-      "Sirohi",
-      "Tonk",
-      "Udaipur",
-    ],
-    Sikkim: ["East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim"],
-    TamilNadu: [
-      "Chennai",
-      "Coimbatore",
-      "Cuddalore",
-      "Dharmapuri",
-      "Dindigul",
-      "Erode",
-      "Kancheepuram",
-      "Kanyakumari",
-      "Karur",
-      "Krishnagiri",
-      "Madurai",
-      "Nagapattinam",
-      "Namakkal",
-      "Nilgiris",
-      "Perambalur",
-      "Pudukkottai",
-      "Ramanathapuram",
-      "Salem",
-      "Sivagangai",
-      "Tenkasi",
-      "Thanjavur",
-      "The Nilgiris",
-      "Thoothukudi",
-      "Tiruvallur",
-      "Tirunelveli",
-      "Tirupur",
-      "Vellore",
-      "Viluppuram",
-      "Virudhunagar",
-    ],
-    Telangana: [
-      "Adilabad",
-      "Hyderabad",
-      "Jagtial",
-      "Jangaon",
-      "Jayashankar",
-      "Jogulamba",
-      "Kamareddy",
-      "Karimnagar",
-      "Khammam",
-      "Mahabubabad",
-      "Mahabubnagar",
-      "Mancherial",
-      "Medak",
-      "Medchal",
-      "Nalgonda",
-      "Nagarkurnool",
-      "Nirmal",
-      "Nizamabad",
-      "Peddapalli",
-      "Sangareddy",
-      "Siddipet",
-      "Suryapet",
-      "Vikarabad",
-      "Warangal",
-      "Khammam",
-      "Kothagudem",
-    ],
-    Tripura: [
-      "Dhalai",
-      "Gomati",
-      "Khowai",
-      "North Tripura",
-      "Sepahijala",
-      "South Tripura",
-      "Unakoti",
-      "West Tripura",
-    ],
-    UttarPradesh: [
-      "Agra",
-      "Aligarh",
-      "Ambedkar Nagar",
-      "Amethi",
-      "Amroha",
-      "Auraiya",
-      "Azamgarh",
-      "Baghpat",
-      "Bahraich",
-      "Ballia",
-      "Balrampur",
-      "Banda",
-      "Barabanki",
-      "Bareilly",
-      "Basti",
-      "Bijnor",
-      "Budaun",
-      "Bulandshahr",
-      "Chandauli",
-      "Chitrakoot",
-      "Deoria",
-      "Etah",
-      "Etawah",
-      "Faizabad",
-      "Farrukhabad",
-      "Fatehpur",
-      "Firozabad",
-      "Gautam Buddh Nagar",
-      "Ghaziabad",
-      "Gonda",
-      "Gorakhpur",
-      "Hamirpur",
-      "Hapur",
-      "Hardoi",
-      "Hathras",
-      "Jalaun",
-      "Jaunpur",
-      "Jhansi",
-      "Kannauj",
-      "Kanpur",
-      "Kasganj",
-      "Kaushambi",
-      "Kushinagar",
-      "Lakhimpur Kheri",
-      "Lucknow",
-      "Mathura",
-      "Meerut",
-      "Mirzapur",
-      "Moradabad",
-      "Muzaffarnagar",
-      "Noida",
-      "Pratapgarh",
-      "Raebareli",
-      "Rampur",
-      "Saharanpur",
-      "Sambhal",
-      "Sant Kabir Nagar",
-      "Shahjahanpur",
-      "Shrawasti",
-      "Siddharth Nagar",
-      "Sitapur",
-      "Sonbhadra",
-      "Sultanpur",
-      "Unnao",
-      "Varanasi",
-    ],
-    WestBengal: [
-      "Alipurduar",
-      "Bankura",
-      "Birbhum",
-      "Burdwan",
-      "Cooch Behar",
-      "Darjeeling",
-      "Hooghly",
-      "Howrah",
-      "Jalpaiguri",
-      "Kolkata",
-      "Malda",
-      "Murshidabad",
-      "Nadia",
-      "North 24 Parganas",
-      "North Dinajpur",
-      "Paschim Medinipur",
-      "Purba Medinipur",
-      "Purulia",
-      "South 24 Parganas",
-      "South Dinajpur",
-      "Uttar Dinajpur",
-    ],
-    "Andaman And Nicobar Islands": [
-      "Port Blair",
-      "Car Nicobar",
-      "Mayabunder",
-      "Diglipur",
-      "Rangat",
-    ],
-    Chandigarh: ["Chandigarh"],
-    "Dadra and Nagar Haveli and Daman and Diu": ["Daman", "Diu", "Silvassa"],
-    "Jammu and Kashmir": [
-      "Srinagar",
-      "Jammu",
-      "Anantnag",
-      "Baramulla",
-      "Doda",
-      "Gulmarg",
-      "Kathua",
-      "Poonch",
-      "Rajouri",
-      "Udhampur",
-    ],
-    Ladakh: ["Leh", "Kargil"],
-    Lakshadweep: [
-      "Kavaratti",
-      "Andrott",
-      "Kalapeni",
-      "Minicoy",
-      "Agatti",
-      "Kadmat",
-      "Chetlat",
-    ],
-    Puducherry: ["Puducherry", "Karaikal", "Mahe", "Yanam"],
+  const [All_Country_Code, setAll_Country_Code] = useState([]);
+  const getall_country_code = async () => {
+    try {
+      setselect_loading("country_code");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "country_code");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Country_Code(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // =============================get all country code==========================================
+
+  const [All_Country, setAll_Country] = useState([]);
+  const getall_country = async () => {
+    try {
+      setselect_loading("country");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "country");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Country(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // =============================get all state==========================================
+
+  const [All_State, setAll_State] = useState([]);
+  const getall_state = async () => {
+    try {
+      setselect_loading("state");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "state");
+      params.append("parent_lookup_value", leadinfo.country3);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_State(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // =============================get all city==========================================
+
+  const [All_City, setAll_City] = useState([]);
+  const getall_city = async () => {
+    try {
+      setselect_loading("city");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "city");
+      params.append("parent_lookup_value", leadinfo.state3);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_City(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // =============================get all funding==========================================
+
+  const [All_Funding, setAll_Funding] = useState([]);
+  const getall_funding = async () => {
+    try {
+      setselect_loading("funding");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "funding");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Funding(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // =============================get all timelind==========================================
+
+  const [All_Timeline, setAll_Timeline] = useState([]);
+  const getall_timeline = async () => {
+    try {
+      setselect_loading("timeline");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "timeline");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Timeline(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
   };
 
   const requirment = ["Buy", "Rent", "Lease"];
 
   const transaction_type = ["Full White", "Collecter Rate", "Flexiable"];
   const furnishing = ["Furnished", "Unfurnished", "Semi Furnished"];
-  const funding = [
-    "Home Loan",
-    "Self Funding",
-    "Loan Against Property",
-    "Personal Loan",
-    "Business Loan",
-  ];
-  const timeline = [
-    "Urgent",
-    "More then 1 month",
-    "Not Confirmed",
-    "Within 15 days",
-  ];
-
-  const states = Object.keys(statesAndCities);
-  const cities = statesAndCities[leadinfo.state3] || [];
 
   const navigate = useNavigate();
   const config = {
@@ -3754,11 +1853,11 @@ function Leadinfo() {
       </div>
 
       <div style={{ padding: "50px" }}>
-        <div className="container  bg-white mt-5 mb-5 ml-200px w-[80%] shadow-2xl rounded-xl">
+        <div className="container  bg-white mt-5  ml-200px w-[80%] shadow-2xl rounded-xl">
           <div className="row" id="r" style={{ transition: "0.5s" }}>
             <div className="col-12">
               <div className="p-3 py-5">
-                <div className="d-flex justify-content-between align-items-center mb-3">
+                <div className="d-flex justify-content-between align-items-center">
                   <h4
                     className="text-right"
                     style={{ cursor: "pointer" }}
@@ -3807,7 +1906,7 @@ function Leadinfo() {
                 {/*----------------------------------------leadinfo basic details start------------------------------------------------------------------- */}
 
                 <div className="row" id="leadinfobasic1">
-                  <div className="col-md-3 mb-3 custom-input">
+                  <div className="col-md-3 custom-input">
                     <label className="form-label">Title</label>
                     <select
                       className="form-control form-control-sm"
@@ -3825,7 +1924,7 @@ function Leadinfo() {
                       <option>col</option>
                     </select>
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Name</label>
                     <input
                       type="text"
@@ -3837,7 +1936,7 @@ function Leadinfo() {
                       }
                     />
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4 custom-input">
                     <label className="form-label">Surname</label>
                     <input
                       type="text"
@@ -3850,7 +1949,7 @@ function Leadinfo() {
                   </div>
                 </div>
                 <div className="row" id="leadinfobasic2">
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     {" "}
                     <label className="form-label">Country</label>
                     {leadinfo.country_code.map((item, index) => (
@@ -3861,15 +1960,31 @@ function Leadinfo() {
                         onChange={(event) =>
                           handlecountry_codechange1(index, event)
                         }
+                        value={leadinfo?.country_code[index]}
+                        onClick={() => {
+                          if (All_Country_Code.length === 0) {
+                            getall_country_code();
+                          }
+                        }}
                       >
-                        <option value={item}>India +91</option>
-                        {countrycode.map((item) => (
-                          <option>{item}</option>
-                        ))}
+                        {select_loading === "country_code" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option value="">-- Select Country Code --</option>
+
+                            {/* Dynamic Fetched List */}
+                            {All_Country_Code.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
                       </select>
                     ))}
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4 custom-input">
                     <label className="form-label">Mobile Number</label>
                     {leadinfo.mobile_no.map((item, index) => (
                       <input
@@ -3884,7 +1999,7 @@ function Leadinfo() {
                       />
                     ))}
                   </div>
-                  <div className="col-md-2 mb-2 custom-input">
+                  <div className="col-md-2 custom-input">
                     <label className="form-label">Type</label>
                     {leadinfo.mobile_type.map((item, index) => (
                       <select
@@ -3902,7 +2017,7 @@ function Leadinfo() {
                     ))}
                   </div>
                   <div
-                    className="col-md-1 mb-1 custom-input"
+                    className="col-md-1  custom-input"
                     style={{ marginTop: "70px" }}
                   >
                     {leadinfo.action11.map((item, index) => (
@@ -3922,7 +2037,7 @@ function Leadinfo() {
                       </div>
                     ))}
                   </div>
-                  <div className="col-md-1 mb-1 custom-input">
+                  <div className="col-md-1 custom-input">
                     <label className="form-label">Add</label>
                     <button
                       className="form-control form-control-sm"
@@ -3947,7 +2062,7 @@ function Leadinfo() {
                     </button>
                   </div>
 
-                  <div className="col-md-8 mb-8 custom-input">
+                  <div className="col-md-8 custom-input">
                     <label className="form-label">Email-Address</label>
                     {leadinfo.email.map((item, index) => (
                       <input
@@ -3960,7 +2075,7 @@ function Leadinfo() {
                     ))}
                   </div>
 
-                  <div className="col-md-2 mb-2 custom-input">
+                  <div className="col-md-2  custom-input">
                     <label className="form-label">Type</label>
                     {leadinfo.email_type.map((item, index) => (
                       <select
@@ -3978,7 +2093,7 @@ function Leadinfo() {
                   </div>
 
                   <div
-                    className="col-md-1 mb-1 custom-input"
+                    className="col-md-1  custom-input"
                     style={{ marginTop: "70px" }}
                   >
                     {leadinfo.action22.map((item, index) => (
@@ -3998,7 +2113,7 @@ function Leadinfo() {
                       </div>
                     ))}
                   </div>
-                  <div className="col-md-1 mb-1 custom-input">
+                  <div className="col-md-1 custom-input">
                     <label className="form-label">add</label>
                     <button
                       className="form-control form-control-sm"
@@ -4023,7 +2138,7 @@ function Leadinfo() {
                     </button>
                   </div>
 
-                  <div className="col-md-8 mb-8 custom-input">
+                  <div className="col-md-8 custom-input">
                     <label className="form-label">Tags</label>
                     <input
                       type="text"
@@ -4034,7 +2149,7 @@ function Leadinfo() {
                       }
                     />
                   </div>
-                  <div className="col-md-10 mb-10 custom-input">
+                  <div className="col-md-10  custom-input">
                     <label className="form-label">Descriptions</label>
                     <textarea
                       defaultValue={leadData?.descriptions || ""}
@@ -4048,7 +2163,7 @@ function Leadinfo() {
                     />
                   </div>
 
-                  <div className="col-md-12 mb-12 custom-input">
+                  <div className="col-md-12  custom-input">
                     <label
                       className="form-label"
                       style={{ fontSize: "16px", marginTop: "10px" }}
@@ -4058,7 +2173,7 @@ function Leadinfo() {
                     <hr style={{ marginTop: "-5px" }}></hr>
                   </div>
 
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6 custom-input">
                     <label className="form-label">Stage</label>
                     <select
                       className="form-control form-control-sm"
@@ -4082,7 +2197,7 @@ function Leadinfo() {
                       </optgroup>
                     </select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6 custom-input">
                     <label className="form-label">Lead Type</label>
                     <select
                       className="form-control form-control-sm"
@@ -4096,7 +2211,7 @@ function Leadinfo() {
                       <option>Cold</option>
                     </select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6 custom-input">
                     <label className="form-label">Owner</label>
                     {/* <select className="form-control form-control-sm"onChange={(e)=>setleadinfo({...leadinfo,owner:e.target.value})}>
                               <option>{leadData?.owner[0] || '---select---'}</option>
@@ -4125,7 +2240,7 @@ function Leadinfo() {
                       ))}
                     </Select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6 custom-input">
                     <label className="form-label">Team</label>
                     <select
                       className="form-control form-control-sm"
@@ -4140,7 +2255,7 @@ function Leadinfo() {
                       <option> Pre Sales</option>
                     </select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Visible to</label>
                     <select
                       className="form-control form-control-sm"
@@ -4154,9 +2269,9 @@ function Leadinfo() {
                       <option>All Users</option>
                     </select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input"></div>
+                  <div className="col-md-6  custom-input"></div>
 
-                  <div className="col-md-12 mb-12 custom-input">
+                  <div className="col-md-12 custom-input">
                     <label
                       className="form-label"
                       style={{ fontSize: "16px", marginTop: "10px" }}
@@ -4166,7 +2281,7 @@ function Leadinfo() {
                     <hr style={{ marginTop: "-5px" }}></hr>
                   </div>
 
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6 custom-input">
                     <label className="form-label">Campaign</label>
                     <select
                       className="form-control form-control-sm"
@@ -4180,7 +2295,7 @@ function Leadinfo() {
                       <option>Organic Campaign</option>
                     </select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Source</label>
                     <select
                       className="form-control form-control-sm"
@@ -4196,7 +2311,7 @@ function Leadinfo() {
                       ))}
                     </select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Sub-Source</label>
                     <select
                       className="form-control form-control-sm"
@@ -4215,7 +2330,7 @@ function Leadinfo() {
                     (leadinfo.source === "Channel Partner" &&
                       leadinfo.campaign === "Organic Campaign")) && (
                     <>
-                      {/* <div className="col-md-5 mb-5 custom-input">
+                      {/* <div className="col-md-5  custom-input">
                         <label className="form-label">Referrer Name</label>
                         <select className="form-control form-control-sm" onChange={(e) => setleadinfo({ ...leadinfo, channel_partner: e.target.value })}
                           value={leadinfo.channel_partner || ''}
@@ -4230,7 +2345,7 @@ function Leadinfo() {
                         }
                         </select>
                       </div> */}
-                      <div className="col-md-5 mb-5 custom-input">
+                      <div className="col-md-5  custom-input">
                         {" "}
                         <label className="form-label">Referrer Name</label>
                         <Autocomplete
@@ -4249,7 +2364,7 @@ function Leadinfo() {
                         />
                       </div>
                       <div
-                        className="col-md-1 mb-1 custom-input"
+                        className="col-md-1  custom-input"
                         onClick={handleShow1}
                       >
                         <label className="form-label">Add</label>
@@ -4277,16 +2392,10 @@ function Leadinfo() {
                     </>
                   )}
 
-                  <div className="col-md-12 mb-12 custom-input">
+                  <div className="col-md-12 custom-input">
                     <hr></hr>
                   </div>
-                  {/* <div className="col-md-6 mb-6 custom-input"><label className="form-label">Intersted Project</label><select className="form-control form-control-sm"onChange={(e)=>setleadinfo({...leadinfo,intrested_project:e.target.value})}>
-                    <option>{leadData?.intrested_project || '---Select---'}</option>
-                        <option>Suresh Kumar</option>
-                        <option>Rakesh Kumar</option>
-                        <option>Admin</option>
-                        </select>
-                    </div> */}
+  
                 </div>
                 {/* ---------------------------------------leadinfo basic details end ------------------------------------------------------------------------*/}
 
@@ -4297,7 +2406,7 @@ function Leadinfo() {
                   id="leadinforequirment"
                   style={{ display: "none" }}
                 >
-                  <div className="col-md-3 mb-3 custom-input">
+                  <div className="col-md-3 custom-input">
                     <label className="form-label">Requirment</label>
                     <select
                       className="form-control form-control-sm"
@@ -4312,7 +2421,7 @@ function Leadinfo() {
                       ))}
                     </select>
                   </div>
-                  <div className="col-md-3 mb-3 custom-input">
+                  <div className="col-md-3 custom-input">
                     <label className="form-label">Property Type</label>
 
                     <Select
@@ -4339,7 +2448,7 @@ function Leadinfo() {
                     </Select>
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4 custom-input">
                     <label
                       className="form-label"
                       style={{ display: "inline-block" }}
@@ -4368,7 +2477,7 @@ function Leadinfo() {
                     />
                     Investor
                   </div>
-                  <div className="col-md-2 mb-2 custom-input">
+                  <div className="col-md-2  custom-input">
                     <label className="form-label">NRI</label>
                     <br></br>
                     <input
@@ -4381,7 +2490,7 @@ function Leadinfo() {
                     />
                     Yes
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Sub Type</label>
 
                     <Select
@@ -4410,7 +2519,7 @@ function Leadinfo() {
                     </Select>
                   </div>
 
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Unit Type</label>
                     <Select
                       className="form-control form-control-sm"
@@ -4438,10 +2547,7 @@ function Leadinfo() {
                   </div>
                   {leadinfo.requirment === "Rent" && (
                     <>
-                      <div
-                        id="rentbudgetmin"
-                        className="col-md-6 mb-6 custom-input"
-                      >
+                      <div id="rentbudgetmin" className="col-md-6 custom-input">
                         <label className="form-label">Budget Min</label>
                         <select
                           className="form-control form-control-sm"
@@ -4464,7 +2570,7 @@ function Leadinfo() {
 
                       <div
                         id="rentbudgetmax"
-                        className="col-md-6 mb-6 custom-input"
+                        className="col-md-6  custom-input"
                       >
                         <label className="form-label">Budget Max</label>
                         <select
@@ -4490,10 +2596,7 @@ function Leadinfo() {
 
                   {leadinfo.requirment === "Buy" && (
                     <>
-                      <div
-                        id="buybudgetmin"
-                        className="col-md-6 mb-6 custom-input"
-                      >
+                      <div id="buybudgetmin" className="col-md-6  custom-input">
                         <label className="form-label">Budget Min</label>
                         <select
                           className="form-control form-control-sm"
@@ -4513,10 +2616,7 @@ function Leadinfo() {
                         </select>
                       </div>
 
-                      <div
-                        id="buybudgetmax"
-                        className="col-md-6 mb-6 custom-input"
-                      >
+                      <div id="buybudgetmax" className="col-md-6 custom-input">
                         <label className="form-label">Budget Max</label>
                         <select
                           className="form-control form-control-sm"
@@ -4537,7 +2637,7 @@ function Leadinfo() {
                       </div>
                     </>
                   )}
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Minimum Area</label>
                     <select
                       className="form-control form-control-sm"
@@ -4556,7 +2656,7 @@ function Leadinfo() {
                       ))}
                     </select>
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4 custom-input">
                     <label className="form-label">Maximum Area</label>
                     <select
                       className="form-control form-control-sm"
@@ -4576,7 +2676,7 @@ function Leadinfo() {
                     </select>
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4 custom-input">
                     <label className="form-label">Area Metric</label>
                     <select
                       className="form-control form-control-sm"
@@ -4594,7 +2694,7 @@ function Leadinfo() {
                       <option>Kanal</option>
                     </select>
                   </div>
-                  <div className="col-md-12 mb-12 custom-input">
+                  <div className="col-md-12 custom-input">
                     <label
                       className="form-label"
                       style={{ fontSize: "16px", marginTop: "10px" }}
@@ -4656,7 +2756,7 @@ function Leadinfo() {
                       id="select_location"
                       style={{ margin: "5px", padding: "10px" }}
                     >
-                      <div className="col-md-5 mb-5 custom-input">
+                      <div className="col-md-5 custom-input">
                         <label className="form-label">Country(country3)</label>
                         <select
                           className="form-control form-control-sm"
@@ -4666,20 +2766,31 @@ function Leadinfo() {
                               country3: e.target.value,
                             })
                           }
+                          value={leadinfo?.country3}
+                          onClick={() => {
+                            if (All_Country.length === 0) {
+                              getall_country();
+                            }
+                          }}
                         >
-                          <option>India</option>
-                          {asianCountries.map((country, index) => (
-                            <option
-                              key={index}
-                              value={country.toLowerCase().replace(/\s+/g, "-")}
-                            >
-                              {country}
-                            </option>
-                          ))}
+                          {select_loading === "country" ? (
+                            <option>⏳ Loading...</option>
+                          ) : (
+                            <>
+                              <option value="">-- Select Country --</option>
+
+                              {/* Dynamic Fetched List */}
+                              {All_Country.map((val, i) => (
+                                <option key={i} value={val.lookup_value}>
+                                  {val.lookup_value}
+                                </option>
+                              ))}
+                            </>
+                          )}
                         </select>
                       </div>
 
-                      <div className="col-md-5 mb-5 custom-input">
+                      <div className="col-md-5 custom-input">
                         <label className="form-label">State(state3)</label>
                         <select
                           type="text"
@@ -4687,40 +2798,59 @@ function Leadinfo() {
                           onChange={(e) =>
                             setleadinfo({ ...leadinfo, state3: e.target.value })
                           }
+                          value={leadinfo?.state3}
+                          onClick={() => {
+                            getall_state();
+                          }}
                         >
-                          <option value="">--Select State--</option>
-                          {states.map((state) => (
-                            <option key={state} value={state}>
-                              {state}
-                            </option>
-                          ))}
+                          {select_loading === "state" ? (
+                            <option>⏳ Loading...</option>
+                          ) : (
+                            <>
+                              <option value="">-- Select State --</option>
+
+                              {/* Dynamic Fetched List */}
+                              {All_State.map((val, i) => (
+                                <option key={i} value={val.lookup_value}>
+                                  {val.lookup_value}
+                                </option>
+                              ))}
+                            </>
+                          )}
                         </select>
                       </div>
-                      <div className="col-md-2 mb-2 custom-input"></div>
+                      <div className="col-md-2 custom-input"></div>
 
-                      <div className="col-md-5 mb-5 custom-input">
+                      <div className="col-md-5  custom-input">
                         <label className="form-label">City(city3)</label>
-                        {/* <select  className="form-control form-control-sm"  onChange={(e)=>setleadinfo({...leadinfo,city2:e.target.value})}>
-                          <option>---select country---</option>
-                          <option>India</option>
-                          </select> */}
                         <select
                           className="form-control form-control-sm"
-                          value={leadinfo.city3}
                           onChange={(e) =>
                             setleadinfo({ ...leadinfo, city3: e.target.value })
                           }
-                          disabled={!leadinfo.state3 || cities.length === 0} // Disable if no state or invalid state
+                          value={leadinfo?.city3}
+                          onClick={() => {
+                            getall_city();
+                          }}
+                          disabled={!leadinfo.state3 || All_City.length === 0} // Disable if no state or invalid state
                         >
-                          <option value="">--Select City--</option>
-                          {cities.map((city) => (
-                            <option key={city} value={city}>
-                              {city}
-                            </option>
-                          ))}
+                          {select_loading === "city" ? (
+                            <option>⏳ Loading...</option>
+                          ) : (
+                            <>
+                              <option value="">-- Select City --</option>
+
+                              {/* Dynamic Fetched List */}
+                              {All_City.map((val, i) => (
+                                <option key={i} value={val.lookup_value}>
+                                  {val.lookup_value}
+                                </option>
+                              ))}
+                            </>
+                          )}
                         </select>
                       </div>
-                      <div className="col-md-5 mb-5 custom-input">
+                      <div className="col-md-5  custom-input">
                         <label className="form-label">Area/Project</label>
                         <Select
                           className="form-control form-control-sm"
@@ -4755,7 +2885,7 @@ function Leadinfo() {
                           ))}
                         </Select>
                       </div>
-                      <div className="col-md-5 mb-5 custom-input">
+                      <div className="col-md-5 custom-input">
                         <label className="form-label">Block(block3)</label>
                         <Select
                           className="form-control form-control-sm"
@@ -4798,7 +2928,7 @@ function Leadinfo() {
                         </Select>
                       </div>
 
-                      <div className="col-md-5 mb-5 custom-input">
+                      <div className="col-md-5 custom-input">
                         <label className="form-label">Specific Unit</label>
                         <input
                           type="text"
@@ -4822,7 +2952,7 @@ function Leadinfo() {
                         display: "none",
                       }}
                     >
-                      <div className="col-md-8 mb-8 custom-input">
+                      <div className="col-md-8 custom-input">
                         <label className="form-label">Search Location</label>
                         <input
                           type="text"
@@ -4837,8 +2967,8 @@ function Leadinfo() {
                           }
                         />
                       </div>
-                      <div className="col-md-2 mb-2 custom-input"></div>
-                      <div className="col-md-2 mb-2 custom-input">
+                      <div className="col-md-2  custom-input"></div>
+                      <div className="col-md-2 custom-input">
                         <label
                           className="form-label"
                           style={{ visibility: "hidden" }}
@@ -4852,7 +2982,7 @@ function Leadinfo() {
                           Get
                         </button>
                       </div>
-                      <div className="col-md-8 mb-8 custom-input">
+                      <div className="col-md-8 custom-input">
                         <label className="form-label">Street Address</label>
                         <input
                           type="text"
@@ -4865,7 +2995,7 @@ function Leadinfo() {
                           }
                         />
                       </div>
-                      <div className="col-md-4 mb-4 custom-input">
+                      <div className="col-md-4 custom-input">
                         <label className="form-label">Range</label>
                         <select
                           className="form-control form-control-sm"
@@ -4883,7 +3013,7 @@ function Leadinfo() {
                           <option value="25">Within 25 km.</option>
                         </select>
                       </div>
-                      {/* <div className="col-md-2 mb-2 custom-input"><label className="form-label">Unit</label>
+                      {/* <div className="col-md-2  custom-input"><label className="form-label">Unit</label>
                         <select className="form-control form-control-sm" onChange={(e)=>setleadinfo({...leadinfo,range_unit:e.target.value})}>
                           <option>---select---</option>
                           <option>K.M</option>
@@ -4891,7 +3021,7 @@ function Leadinfo() {
                         </div> */}
                       {/* <div className="col-md-4"></div> */}
 
-                      <div className="col-md-3 mb-3 custom-input ">
+                      <div className="col-md-3  custom-input ">
                         <label className="form-label">City(city2)</label>
                         <input
                           type="text"
@@ -4902,7 +3032,7 @@ function Leadinfo() {
                           }
                         />
                       </div>
-                      <div className="col-md-3 mb-3 custom-input ">
+                      <div className="col-md-3  custom-input ">
                         <label className="form-label">Area(area2)</label>
                         <input
                           type="text"
@@ -4912,7 +3042,7 @@ function Leadinfo() {
                           }
                         />
                       </div>
-                      <div className="col-md-3 mb-3 custom-input ">
+                      <div className="col-md-3  custom-input ">
                         <label className="form-label">Block(block)</label>
                         <input
                           type="text"
@@ -4923,7 +3053,7 @@ function Leadinfo() {
                           }
                         />
                       </div>
-                      <div className="col-md-3 mb-3 custom-input ">
+                      <div className="col-md-3  custom-input ">
                         <label className="form-label">Pin Code(pincode2)</label>
                         <input
                           type="text"
@@ -4938,7 +3068,7 @@ function Leadinfo() {
                         />
                       </div>
 
-                      <div className="col-md-3 mb-3 custom-input ">
+                      <div className="col-md-3  custom-input ">
                         <label className="form-label">Country(country2)</label>
                         <input
                           type="text"
@@ -4952,7 +3082,7 @@ function Leadinfo() {
                           }
                         />
                       </div>
-                      <div className="col-md-3 mb-3 custom-input ">
+                      <div className="col-md-3  custom-input ">
                         <label className="form-label">State(state2)</label>
                         <input
                           type="text"
@@ -4963,7 +3093,7 @@ function Leadinfo() {
                           }
                         />
                       </div>
-                      <div className="col-md-3 mb-3 custom-input ">
+                      <div className="col-md-3  custom-input ">
                         <label className="form-label">Lattitude</label>
                         <input
                           type="text"
@@ -4977,7 +3107,7 @@ function Leadinfo() {
                           }
                         />
                       </div>
-                      <div className="col-md-3 mb-3 custom-input ">
+                      <div className="col-md-3  custom-input ">
                         <label className="form-label">Longitude</label>
                         <input
                           type="text"
@@ -4995,7 +3125,7 @@ function Leadinfo() {
                     </div>
                   </div>
 
-                  <div className="col-md-12 mb-12 custom-input">
+                  <div className="col-md-12  custom-input">
                     <label
                       className="form-label"
                       style={{ fontSize: "16px", marginTop: "10px" }}
@@ -5005,7 +3135,7 @@ function Leadinfo() {
                     <hr style={{ marginTop: "-5px" }}></hr>
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4 custom-input">
                     <label className="form-label">Facing</label>
                     <Select
                       className="form-control form-control-sm"
@@ -5032,7 +3162,7 @@ function Leadinfo() {
                       ))}
                     </Select>
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Road</label>
                     <Select
                       className="form-control form-control-sm"
@@ -5059,7 +3189,7 @@ function Leadinfo() {
                       ))}
                     </Select>
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4 custom-input">
                     <label className="form-label">Direction</label>
                     <Select
                       className="form-control form-control-sm"
@@ -5089,37 +3219,69 @@ function Leadinfo() {
                     </Select>
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Funding</label>
                     <select
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, funding: e.target.value })
                       }
+                      value={leadinfo?.funding}
+                      onClick={() => {
+                        if (All_Funding.length === 0) {
+                          getall_funding();
+                        }
+                      }}
                     >
-                      <option>Select</option>
-                      {funding.map((item) => (
-                        <option>{item}</option>
-                      ))}
+                      {select_loading === "funding" ? (
+                        <option>⏳ Loading...</option>
+                      ) : (
+                        <>
+                          <option value="">-- Select funding --</option>
+
+                          {/* Dynamic Fetched List */}
+                          {All_Funding.map((val, i) => (
+                            <option key={i} value={val.lookup_value}>
+                              {val.lookup_value}
+                            </option>
+                          ))}
+                        </>
+                      )}
                     </select>
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4 custom-input">
                     <label className="form-label">Timeline</label>
                     <select
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, timeline: e.target.value })
                       }
+                      value={leadinfo?.timeline}
+                      onClick={() => {
+                        if (All_Timeline.length === 0) {
+                          getall_timeline();
+                        }
+                      }}
                     >
-                      <option>Select</option>
-                      {timeline.map((item) => (
-                        <option>{item}</option>
-                      ))}
+                      {select_loading === "timeline" ? (
+                        <option>⏳ Loading...</option>
+                      ) : (
+                        <>
+                          <option value="">-- Select timeline --</option>
+
+                          {/* Dynamic Fetched List */}
+                          {All_Timeline.map((val, i) => (
+                            <option key={i} value={val.lookup_value}>
+                              {val.lookup_value}
+                            </option>
+                          ))}
+                        </>
+                      )}
                     </select>
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Furnishing</label>
                     <select
                       className="form-control form-control-sm"
@@ -5133,7 +3295,7 @@ function Leadinfo() {
                       ))}
                     </select>
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Property Unit Type</label>
                     <Select
                       className="form-control form-control-sm"
@@ -5168,7 +3330,7 @@ function Leadinfo() {
                     </Select>
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Transaction Type</label>
                     <select
                       className="form-control form-control-sm"
@@ -5188,7 +3350,7 @@ function Leadinfo() {
 
                   {/* Conditionally render the progress bar */}
                   {leadinfo.transaction_type === "Flexiable" && (
-                    <div className="col-md-8 mb-8 custom-input">
+                    <div className="col-md-8  custom-input">
                       <label className="form-label">White Portion</label>
                       <div
                         className="progress-container"
@@ -5215,7 +3377,7 @@ function Leadinfo() {
                     </div>
                   )}
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Send Matched Deal</label>
                     <Select
                       className="form-control form-control-sm"
@@ -5249,57 +3411,81 @@ function Leadinfo() {
                   id="leadinfoprofessional"
                   style={{ display: "none" }}
                 >
-                  <div className="col-md-5 mb-5 custom-input">
+                  <div className="col-md-5  custom-input">
                     <label className="form-label">Profession Category</label>
                     <select
                       className="form-control form-control-sm"
                       onChange={handleProfessionCategoryChange}
+                      onClick={getall_profession_category}
+                      value={leadinfo.profession_category}
                     >
-                      <option>
-                        {leadData?.profession_subcategory || "---Select---"}
-                      </option>
-                      {professtiondetails.profession_category.map(
-                        (category) => (
-                          <option key={category} value={category}>
-                            {category}
-                          </option>
-                        )
+                      {select_loading === "profession_category" ? (
+                        <option>⏳ Loading...</option>
+                      ) : (
+                        <>
+                          <option>---Select profession category---</option>
+
+                          {/* Dynamic Fetched List */}
+                          {All_Profession_Category.map((val, i) => (
+                            <option key={i} value={val.lookup_value}>
+                              {val.lookup_value}
+                            </option>
+                          ))}
+                        </>
                       )}
                     </select>
                   </div>
-                  <div className="col-md-7 mb-7 custom-input">
+                  <div className="col-md-7  custom-input">
                     <label className="form-label">
                       Profession Sub-Category
                     </label>
                     <select
                       className="form-control form-control-sm"
                       onChange={handleProfessionSubcategoryChange}
+                      onClick={getall_profession_sub_category}
+                      value={leadinfo.profession_subcategory}
                     >
-                      <option>
-                        {leadData?.profession_subcategory || "---Select---"}
-                      </option>
-                      {availableSubcategories.map((subcategory) => (
-                        <option key={subcategory} value={subcategory}>
-                          {subcategory}
-                        </option>
-                      ))}
+                      {select_loading === "profession_sub_category" ? (
+                        <option>⏳ Loading...</option>
+                      ) : (
+                        <>
+                          <option>---Select profession sub category---</option>
+
+                          {/* Dynamic Fetched List */}
+                          {All_Profession_Sub_Category.map((val, i) => (
+                            <option key={i} value={val.lookup_value}>
+                              {val.lookup_value}
+                            </option>
+                          ))}
+                        </>
+                      )}
                     </select>
                   </div>
-                  <div className="col-md-5 mb-5 custom-input">
+                  <div className="col-md-5  custom-input">
                     <label className="form-label">Designation</label>
                     <select
                       className="form-control form-control-sm"
                       onChange={handleDesignationChange}
+                      onClick={getall_designation}
+                      value={leadinfo.designation}
                     >
-                      <option>{leadData?.designation || "---Select---"}</option>
-                      {availableDesignations.map((designation) => (
-                        <option key={designation} value={designation}>
-                          {designation}
-                        </option>
-                      ))}
+                      {select_loading === "profession_sub_category" ? (
+                        <option>⏳ Loading...</option>
+                      ) : (
+                        <>
+                          <option>---Select designation---</option>
+
+                          {/* Dynamic Fetched List */}
+                          {All_Designation.map((val, i) => (
+                            <option key={i} value={val.lookup_value}>
+                              {val.lookup_value}
+                            </option>
+                          ))}
+                        </>
+                      )}
                     </select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">
                       Company/Organisation/Department Name
                     </label>
@@ -5321,7 +3507,7 @@ function Leadinfo() {
                       ))}
                     </select>
                   </div>
-                  <div className="col-md-1 mb-1 custom-input">
+                  <div className="col-md-1  custom-input">
                     <label className="form-label">Add</label>
                     <button
                       className="form-control form-control-sm"
@@ -5348,7 +3534,7 @@ function Leadinfo() {
                     </button>
                   </div>
 
-                  <div className="col-md-12 mb-12 custom-input">
+                  <div className="col-md-12  custom-input">
                     <hr></hr>
                   </div>
                 </div>
@@ -5361,7 +3547,7 @@ function Leadinfo() {
                   id="leadinfopersonal"
                   style={{ display: "none" }}
                 >
-                  <div className="col-md-12 mb-12 custom-input">
+                  <div className="col-md-12  custom-input">
                     <label className="form-label">Father/Husband name</label>
                     <input
                       type="text"
@@ -5370,7 +3556,7 @@ function Leadinfo() {
                     />
                   </div>
 
-                  <div className="col-md-3 mb-3 custom-input ">
+                  <div className="col-md-3  custom-input ">
                     <label className="form-label">H.No</label>
                     <input
                       type="text"
@@ -5381,7 +3567,7 @@ function Leadinfo() {
                       }
                     />
                   </div>
-                  <div className="col-md-9 mb-9 custom-input">
+                  <div className="col-md-9  custom-input">
                     <label className="form-label">Area(area1)</label>
                     <input
                       type="text"
@@ -5393,7 +3579,7 @@ function Leadinfo() {
                     />
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Location(location1)</label>
                     <input
                       type="text"
@@ -5404,7 +3590,7 @@ function Leadinfo() {
                       }
                     />
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">City(city1)</label>
                     <input
                       type="text"
@@ -5415,7 +3601,7 @@ function Leadinfo() {
                       }
                     />
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Pin Code(pincode1)</label>
                     <input
                       type="text"
@@ -5427,7 +3613,7 @@ function Leadinfo() {
                     />
                   </div>
 
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">State(state1)</label>
                     <input
                       type="text"
@@ -5438,7 +3624,7 @@ function Leadinfo() {
                       }
                     />
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Country(country1)</label>
                     <input
                       type="text"
@@ -5450,7 +3636,7 @@ function Leadinfo() {
                     />
                   </div>
 
-                  <div className="col-md-12 mb-12 custom-input">
+                  <div className="col-md-12  custom-input">
                     <label
                       className="form-label"
                       style={{ fontSize: "16px", marginTop: "10px" }}
@@ -5460,7 +3646,7 @@ function Leadinfo() {
                     <hr style={{ marginTop: "-5px" }}></hr>
                   </div>
 
-                  <div className="col-md-5 mb-5 custom-input">
+                  <div className="col-md-5  custom-input">
                     <label className="form-label">Gender</label>
                     <select
                       className="form-control form-control-sm"
@@ -5474,7 +3660,7 @@ function Leadinfo() {
                       <option>Others</option>
                     </select>
                   </div>
-                  <div className="col-md-7 mb-7 custom-input">
+                  <div className="col-md-7  custom-input">
                     <label className="form-label">Maritial Status</label>
                     <select
                       className="form-control form-control-sm"
@@ -5494,7 +3680,7 @@ function Leadinfo() {
                     </select>
                   </div>
 
-                  <div className="col-md-5 mb-5 custom-input">
+                  <div className="col-md-5  custom-input">
                     <label className="form-label">Birth Date</label>
                     <input
                       type="text"
@@ -5505,7 +3691,7 @@ function Leadinfo() {
                       }
                     />
                   </div>
-                  <div className="col-md-7 mb-7 custom-input">
+                  <div className="col-md-7  custom-input">
                     <label className="form-label">Anniversary Date</label>
                     <input
                       type="text"
@@ -5520,7 +3706,7 @@ function Leadinfo() {
                     />
                   </div>
 
-                  <div className="col-md-3 mb-3 custom-input">
+                  <div className="col-md-3  custom-input">
                     {" "}
                     <label className="form-label">Education</label>
                     {Array.isArray(leadinfo.education)
@@ -5547,7 +3733,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-3 mb-3 custom-input">
+                  <div className="col-md-3  custom-input">
                     <label className="form-label">Degree</label>
                     {Array.isArray(leadinfo.degree)
                       ? leadinfo.degree.map((name, index) => (
@@ -5656,7 +3842,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">
                       School/College/University
                     </label>
@@ -5678,7 +3864,7 @@ function Leadinfo() {
                       : []}
                   </div>
                   <div
-                    className="col-md-1 mb-1 custom-input"
+                    className="col-md-1  custom-input"
                     style={{ marginTop: "70px" }}
                   >
                     {Array.isArray(leadinfo.action4)
@@ -5700,7 +3886,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-1 mb-1 custom-input">
+                  <div className="col-md-1  custom-input">
                     <label className="form-label">add</label>
                     <button
                       className="form-control form-control-sm"
@@ -5725,7 +3911,7 @@ function Leadinfo() {
                     </button>
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Loan</label>
                     {Array.isArray(leadinfo.loan)
                       ? leadinfo.loan.map((item, index) => (
@@ -5748,7 +3934,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-3 mb-3 custom-input">
+                  <div className="col-md-3  custom-input">
                     <label className="form-label">Bank</label>
                     {Array.isArray(leadinfo.bank)
                       ? leadinfo.bank.map((item, index) => (
@@ -5835,7 +4021,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-3 mb-3 custom-input">
+                  <div className="col-md-3 custom-input">
                     <label className="form-label">Amount</label>
                     {Array.isArray(leadinfo.amount)
                       ? leadinfo.amount.map((item, index) => (
@@ -5852,7 +4038,7 @@ function Leadinfo() {
                       : []}
                   </div>
                   <div
-                    className="col-md-1 mb-1 custom-input"
+                    className="col-md-1  custom-input"
                     style={{ marginTop: "70px" }}
                   >
                     {Array.isArray(leadinfo.action5)
@@ -5874,7 +4060,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-1 mb-1 custom-input">
+                  <div className="col-md-1  custom-input">
                     <label className="form-label">add</label>
                     <button
                       className="form-control form-control-sm"
@@ -5899,7 +4085,7 @@ function Leadinfo() {
                     </button>
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Social Media</label>
                     {Array.isArray(leadinfo.social_media)
                       ? leadinfo.social_media.map((item, index) => (
@@ -5922,7 +4108,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Url</label>
                     {Array.isArray(leadinfo.url)
                       ? leadinfo.url.map((item, index) => (
@@ -5937,7 +4123,7 @@ function Leadinfo() {
                       : []}
                   </div>
                   <div
-                    className="col-md-1 mb-1 custom-input"
+                    className="col-md-1  custom-input"
                     style={{ marginTop: "70px" }}
                   >
                     {Array.isArray(leadinfo.action6)
@@ -5959,7 +4145,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-1 mb-1 custom-input">
+                  <div className="col-md-1  custom-input">
                     <label className="form-label">add</label>
                     <button
                       className="form-control form-control-sm"
@@ -5984,7 +4170,7 @@ function Leadinfo() {
                     </button>
                   </div>
 
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Income</label>
                     {Array.isArray(leadinfo.income)
                       ? leadinfo.income.map((item, index) => (
@@ -6004,7 +4190,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Amount</label>
                     {Array.isArray(leadinfo.amount1)
                       ? leadinfo.amount1.map((item, index) => (
@@ -6021,7 +4207,7 @@ function Leadinfo() {
                       : []}
                   </div>
                   <div
-                    className="col-md-1 mb-1 custom-input"
+                    className="col-md-1  custom-input"
                     style={{ marginTop: "70px" }}
                   >
                     {Array.isArray(leadinfo.action7)
@@ -6043,7 +4229,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-1 mb-1 custom-input">
+                  <div className="col-md-1  custom-input">
                     <label className="form-label">add</label>
                     <button
                       className="form-control form-control-sm"
@@ -6068,7 +4254,7 @@ function Leadinfo() {
                     </button>
                   </div>
 
-                  <div className="col-md-3 mb-3 custom-input">
+                  <div className="col-md-3  custom-input">
                     <label className="form-label">Document No.</label>
                     {Array.isArray(leadinfo.document_no)
                       ? leadinfo.document_no.map((item, index) => (
@@ -6084,7 +4270,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-3 mb-3 custom-input">
+                  <div className="col-md-3  custom-input">
                     <label className="form-label">Document Name</label>
                     {Array.isArray(leadinfo.document_name)
                       ? leadinfo.document_name.map((item, index) => (
@@ -6110,7 +4296,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  {/* <div className="col-md-4 mb-4 custom-input"><label className="form-label">Document Picture</label>
+                  {/* <div className="col-md-4 custom-input"><label className="form-label">Document Picture</label>
                             {
                             leadinfo.document_pic.map((item,index)=>
                             (
@@ -6123,7 +4309,7 @@ function Leadinfo() {
                             ))
                             }
                             </div> */}
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Document Picture</label>
                     {/* {Array.isArray(leadinfo.document_pic) && leadinfo.document_pic.length > 0 
                                 ? leadinfo.document_pic.map((pic, index) => 
@@ -6187,7 +4373,7 @@ function Leadinfo() {
                   </div>
 
                   <div
-                    className="col-md-1 mb-1 custom-input"
+                    className="col-md-1  custom-input"
                     style={{ marginTop: "120px" }}
                   >
                     {Array.isArray(leadinfo.action8)
@@ -6209,7 +4395,7 @@ function Leadinfo() {
                         ))
                       : []}
                   </div>
-                  <div className="col-md-1 mb-1 custom-input">
+                  <div className="col-md-1  custom-input">
                     <label className="form-label">add</label>
                     <button
                       className="form-control form-control-sm"
@@ -6236,9 +4422,9 @@ function Leadinfo() {
                 </div>
                 {/*==================================================== leadinfo personal end======================================================= */}
                 <div className="row mt-4">
-                  <div className="col-md-8 mb-8 custom-input"></div>
-                  {/* <div className="col-md-4 mb-4 custom-input"><button className="form-control" >Shedule Follow-up</button></div> */}
-                  <div className="col-md-2 mb-2 custom-input">
+                  <div className="col-md-8  custom-input"></div>
+                  {/* <div className="col-md-4  custom-input"><button className="form-control" >Shedule Follow-up</button></div> */}
+                  <div className="col-md-2  custom-input">
                     <button
                       className="btn btn-primary btn-sm form-control"
                       onClick={leadinfodetails}
@@ -6259,7 +4445,7 @@ function Leadinfo() {
                       Save
                     </button>
                   </div>
-                  <div className="col-md-2 mb-2 custom-input">
+                  <div className="col-md-2  custom-input">
                     <button
                       className="btn btn-outline-danger btn-sm form-control"
                       onClick={() => navigate(-1)}
@@ -6283,7 +4469,7 @@ function Leadinfo() {
                     </button>
                   </div>
 
-                  {/* <div className="col-md-4 mb-4 custom-input"><button className="form-control">Save & View Lead</button></div> */}
+                  {/* <div className="col-md-4  custom-input"><button className="form-control">Save & View Lead</button></div> */}
                 </div>
               </div>
             </div>
@@ -6299,7 +4485,7 @@ function Leadinfo() {
               <Modal.Body>
                 <div style={{ width: "100%" }}>
                   <div className="row" id="basicdetails1">
-                    <div className="col-md-2 mb-2 custom-input">
+                    <div className="col-md-2  custom-input">
                       <label className="form-label">Title</label>
                       <select
                         className="form-control form-control-sm"
@@ -6319,7 +4505,7 @@ function Leadinfo() {
                         <option>Maj.</option>
                       </select>
                     </div>
-                    <div className="col-md-5 mb-5 custom-input">
+                    <div className="col-md-5  custom-input">
                       <label className="form-label">Name</label>
                       <input
                         type="text"
@@ -6331,7 +4517,7 @@ function Leadinfo() {
                         }
                       />
                     </div>
-                    <div className="col-md-5 mb-5 custom-input">
+                    <div className="col-md-5  custom-input">
                       <label className="form-label">Surname</label>
                       <input
                         type="text"
@@ -6345,7 +4531,7 @@ function Leadinfo() {
                   </div>
                 </div>
                 <div className="row mt-3" id="basicdetails2">
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     {" "}
                     <label className="form-label">Country</label>
                     {contact.country_code.map((item, index) => (
@@ -6356,15 +4542,31 @@ function Leadinfo() {
                         onChange={(event) =>
                           handlecountry_codechange(index, event)
                         }
+                        value={contact?.country_code[index]}
+                        onClick={() => {
+                          if (All_Country_Code.length === 0) {
+                            getall_country_code();
+                          }
+                        }}
                       >
-                        <option value={item}>---phone---</option>
-                        {countrycode.map((item) => (
-                          <option>{item}</option>
-                        ))}
+                        {select_loading === "country_code" ? (
+                          <option>⏳ Loading...</option>
+                        ) : (
+                          <>
+                            <option value="">-- Select Country Code --</option>
+
+                            {/* Dynamic Fetched List */}
+                            {All_Country_Code.map((val, i) => (
+                              <option key={i} value={val.lookup_value}>
+                                {val.lookup_value}
+                              </option>
+                            ))}
+                          </>
+                        )}
                       </select>
                     ))}
                   </div>
-                  <div className="col-md-4 mb-4 custom-input">
+                  <div className="col-md-4  custom-input">
                     <label className="form-label">Mobile Number</label>
                     {contact.mobile_no.map((item, index) => (
                       <input
@@ -6379,7 +4581,7 @@ function Leadinfo() {
                       />
                     ))}
                   </div>
-                  <div className="col-md-2 mb-2 custom-input">
+                  <div className="col-md-2  custom-input">
                     <label className="form-label">Type</label>
                     {contact.mobile_type.map((item, index) => (
                       <select
@@ -6398,7 +4600,7 @@ function Leadinfo() {
                     ))}
                   </div>
                   <div
-                    className="col-md-1 mb-1 custom-input"
+                    className="col-md-1  custom-input"
                     style={{ marginTop: "90px" }}
                   >
                     {contact.action1.map((item, index) => (
@@ -6412,7 +4614,7 @@ function Leadinfo() {
                       </div>
                     ))}
                   </div>
-                  <div className="col-md-1 mb-1 custom-input">
+                  <div className="col-md-1  custom-input">
                     <label className="form-label">add</label>
                     <button
                       className="form-control form-control-sm"
@@ -6422,7 +4624,7 @@ function Leadinfo() {
                     </button>
                   </div>
 
-                  <div className="col-md-8 mb-8 custom-input">
+                  <div className="col-md-8  custom-input">
                     <label className="form-label">Email-Address</label>
                     {contact.email.map((item, index) => (
                       <input
@@ -6454,7 +4656,7 @@ function Leadinfo() {
                   </div>
 
                   <div
-                    className="col-md-1 mb-1 custom-input"
+                    className="col-md-1  custom-input"
                     style={{ marginTop: "90px" }}
                   >
                     {contact.action2.map((item, index) => (
@@ -6468,7 +4670,7 @@ function Leadinfo() {
                       </div>
                     ))}
                   </div>
-                  <div className="col-md-1 mb-1 custom-input">
+                  <div className="col-md-1  custom-input">
                     <label className="form-label">add</label>
                     <button
                       className="form-control form-control-sm"
@@ -6477,7 +4679,7 @@ function Leadinfo() {
                       +
                     </button>
                   </div>
-                  <div className="col-md-12 mb-12 custom-input">
+                  <div className="col-md-12  custom-input">
                     <label
                       className="form-label"
                       style={{ fontSize: "16px", marginTop: "10px" }}
@@ -6487,7 +4689,7 @@ function Leadinfo() {
                     <hr style={{ marginTop: "-5px" }}></hr>
                   </div>
 
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Source</label>
                     <select
                       className="form-control form-control-sm"
@@ -6514,7 +4716,7 @@ function Leadinfo() {
                       <option>Whatsapp</option>
                     </select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Team</label>
                     <select
                       className="form-control form-control-sm"
@@ -6529,7 +4731,7 @@ function Leadinfo() {
                       <option> Pre Sales</option>
                     </select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Owner</label>
                     {/* <select className="form-control form-control-sm" onChange={(e)=>setcontact({...contact,owner:e.target.value})}>
                     <option>Select</option>
@@ -6555,7 +4757,7 @@ function Leadinfo() {
                       ))}
                     </Select>
                   </div>
-                  <div className="col-md-6 mb-6 custom-input">
+                  <div className="col-md-6  custom-input">
                     <label className="form-label">Visible to</label>
                     <select
                       className="form-control form-control-sm"
