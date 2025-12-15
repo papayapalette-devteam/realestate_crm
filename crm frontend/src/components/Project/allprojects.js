@@ -750,7 +750,12 @@ function Allprojects() {
          <div id="projectlistview" className="project-list-view">
           <div style={{marginTop:"53px",paddingLeft:"80px",backgroundColor:"white",display:"flex",paddingTop:"10px",paddingBottom:"10px"}}>
         
-        <h3 style={{marginLeft:"10px",cursor:"pointer"}}>Project </h3>
+               <h3
+    onClick={()=>window.location.reload()}
+    className="text-2xl font-semibold cursor-pointer hover:text-blue-600 transition-colors"
+  >
+    Project
+  </h3>
         <Tooltip title="Export Data.." arrow>
             <button  class="btn btn-secondary " type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{color:"black",backgroundColor:"transparent",border:"none"}}>
             <img src="https://static.thenounproject.com/png/61783-200.png" style={{height:"25px"}} alt=""/>

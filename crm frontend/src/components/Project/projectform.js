@@ -33,6 +33,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import Tooltip from "@mui/material/Tooltip";
 import Swal from "sweetalert2";
+import UniqueLoader from "../loader";
 
 function Projectform() {
   const [isLoading, setIsLoading] = useState(false);
@@ -133,6 +134,7 @@ const removeActionKeys = (obj) => {
     const payload = removeActionKeys(project);
 
     try {
+      setselect_loading("add-project")
       const resp = await api.post("project", payload);
       // Handle the response
       if (resp.status === 200) {
@@ -156,6 +158,10 @@ const removeActionKeys = (obj) => {
         showConfirmButton: true,
       });
       console.log(error);
+    }
+    finally
+    {
+      setselect_loading("")
     }
   };
 
@@ -1748,7 +1754,7 @@ const handlepicchange = async (index, event) => {
     facing: "",
     road: "",
     ownership: "",
-    stage: "",
+    stage: "Inactive",
     builtup_type: "",
     floor: [""],
     cluter_details: [""],
@@ -1789,6 +1795,8 @@ const handlepicchange = async (index, event) => {
     image: [""],
     action12: [],
   });
+
+  
 
   useEffect(() => {
     if (!units.size || !project?.add_size?.length) return;
@@ -9468,6 +9476,25 @@ const handlepicchange = async (index, event) => {
           </div>
         </div>
       </div>
+
+          <>
+                   {select_loading==="add-project" && (
+                     <div 
+                     style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: "100vw",
+                      height: "100vh",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 9999,}}>
+                      <UniqueLoader/>
+                     </div>
+                   )}
+                 </>
+
     </div>
   );
 }
