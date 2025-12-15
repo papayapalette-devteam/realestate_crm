@@ -256,7 +256,7 @@ router.get("/get-grouped-data", getGroupedDataLead);
 
 //============================================= all routing for lead end=======================================================
 
-router.post("/project", uploadFields, createProject);
+router.post("/project", createProject);
 router.post("/check-duplicates",  checkDuplicatesController);
 router.post("/add-units",  addUnitsToProject);
 router.get("/viewproject", view_project);

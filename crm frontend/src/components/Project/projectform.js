@@ -9,7 +9,6 @@ import axios from "axios";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
-// import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
@@ -30,7 +29,6 @@ import {
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import { SvgIcon } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
-// import { Factory, School } from '@mui/icons-material';
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import Tooltip from "@mui/material/Tooltip";
@@ -74,13 +72,12 @@ function Projectform() {
     total_block: "",
     total_floor: "",
     total_units: "",
-    zone: [],
     status: "",
     launched_on: "",
     expected_competion: "",
     possession: "",
     parking_type: [],
-    approved_bank: "",
+    approved_bank: [],
     approvals: [""],
     registration_no: [""],
     date: [""],
@@ -111,17 +108,32 @@ function Projectform() {
     Payment_plan: [],
   });
 
-  const config = {
-    headers: {
-      "Content-Type": "multipart/form-data", // Set the Content-Type here
-    },
-  };
+  console.log(project);
+  
+const removeActionKeys = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map(removeActionKeys);
+  }
+
+  if (obj !== null && typeof obj === "object") {
+    return Object.keys(obj).reduce((acc, key) => {
+      if (!key.toLowerCase().startsWith("action")) {
+        acc[key] = removeActionKeys(obj[key]);
+      }
+      return acc;
+    }, {});
+  }
+
+  return obj;
+};
+
 
   const addproject = async (e) => {
-    // e.preventDefault();
+    
+    const payload = removeActionKeys(project);
 
     try {
-      const resp = await api.post("project", project, config);
+      const resp = await api.post("project", payload);
       // Handle the response
       if (resp.status === 200) {
         Swal.fire({
@@ -139,7 +151,7 @@ function Projectform() {
       // Handle error
       Swal.fire({
         title: "❌ Error",
-        text: error.response?.data?.message || "Something went wrong!",
+        text: error.response?.data?.errors || error.response?.data?.message  || "Something went wrong!",
         icon: "error",
         showConfirmButton: true,
       });
@@ -453,7 +465,7 @@ function Projectform() {
     }
   };
 
-    // get all bank
+  // get all bank
   const [All_Bank, setAll_Bank] = useState([]);
   const getall_bank = async () => {
     try {
@@ -470,7 +482,7 @@ function Projectform() {
     }
   };
 
-    // get all project status
+  // get all project status
   const [All_Project_Status, setAll_Project_Status] = useState([]);
   const getall_project_status = async () => {
     try {
@@ -487,7 +499,7 @@ function Projectform() {
     }
   };
 
-    // get all approvals
+  // get all approvals
   const [All_Approvals, setAll_Approvals] = useState([]);
   const getall_approvals = async () => {
     try {
@@ -503,8 +515,7 @@ function Projectform() {
     }
   };
 
-
-    // get all direction
+  // get all direction
 
   const [All_Direction, setAll_Direction] = useState([]);
   const getall_direction = async () => {
@@ -517,14 +528,12 @@ function Projectform() {
       setAll_Direction(resp.data.data);
     } catch (error) {
       console.log(error);
-    }
-    finally
-    {
+    } finally {
       setselect_loading("");
     }
   };
 
-      // get all facing
+  // get all facing
 
   const [All_Facing, setAll_Facing] = useState([]);
   const getall_facing = async () => {
@@ -537,14 +546,12 @@ function Projectform() {
       setAll_Facing(resp.data.data);
     } catch (error) {
       console.log(error);
-    }
-    finally
-    {
+    } finally {
       setselect_loading("");
     }
   };
 
-        // get all road
+  // get all road
 
   const [All_Road, setAll_Road] = useState([]);
   const getall_road = async () => {
@@ -557,14 +564,12 @@ function Projectform() {
       setAll_Road(resp.data.data);
     } catch (error) {
       console.log(error);
-    }
-    finally
-    {
+    } finally {
       setselect_loading("");
     }
   };
 
-          // get all destination
+  // get all destination
 
   const [All_Destination, setAll_Destination] = useState([]);
   const getall_destination = async () => {
@@ -577,15 +582,66 @@ function Projectform() {
       setAll_Destination(resp.data.data);
     } catch (error) {
       console.log(error);
-    }
-    finally
-    {
+    } finally {
       setselect_loading("");
     }
   };
 
+  // get all state
 
+  const [All_State, setAll_State] = useState([]);
+  const getall_state = async () => {
+    try {
+      setselect_loading("state");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "state");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
 
+      setAll_State(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  // get property city
+
+  const [All_City, setAll_City] = useState([]);
+
+  const getall_city = async () => {
+    try {
+      setselect_loading("city");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "city");
+      params.append("parent_lookup_value", project.state);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      setAll_City(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  const [All_City_unit, setAll_City_unit] = useState([]);
+
+  const getall_city_unit = async () => {
+    try {
+      setselect_loading("city-unit");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "city");
+      params.append("parent_lookup_value", units.ustate);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      setAll_City_unit(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
 
   function addFn1() {
     setproject({
@@ -640,18 +696,56 @@ function Projectform() {
       date: newdate,
     });
   };
-  const handlepicchange = (index, event) => {
-    const newpic = [...project.pic];
-    const files = Array.from(event.target.files);
-    newpic[index] = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }));
-    setproject({
-      ...project,
-      pic: newpic,
+
+
+   // Upload to backend API
+  const uploadFiles = async (files) => {
+    setselect_loading("project_pic_upload")
+  if (!files.length) return [];
+
+  const formData = new FormData();
+  files.forEach((file) => formData.append("files", file));
+
+  try {
+    const res = await api.post("api/upload/upload-files", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
-  };
+
+
+
+    return res.data.urls; // 👈 IMPORTANT
+  } catch (error) {
+    console.error("Upload failed:", error);
+    alert("Upload failed!");
+    return [];
+  }
+  finally
+  {
+    setselect_loading("")
+  }
+};
+
+
+const handlepicchange = async (index, event) => {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+
+  const uploadedFiles = await uploadFiles(files);
+
+  
+  const newpic = [...project.pic];
+
+  newpic[index] = uploadedFiles
+
+  setproject((prev) => ({
+    ...prev,
+    pic: newpic,
+  }));
+};
+
+
+
+
 
   function addFn3() {
     setunits((prevunits) => ({
@@ -1278,35 +1372,31 @@ function Projectform() {
   //==========================------------------------------- size toggle end--------------------------=================================
 
   // ======================------------------- both check boxes code start ---------------===============================================
-  
 
-const [checkboxItems, setcheckboxItems] = useState([]);
+  const [checkboxItems, setcheckboxItems] = useState([]);
 
-const getall_basic_aminities = async () => {
-  try {
-    setselect_loading("basic-aminities");
-    const params = new URLSearchParams();
-    params.append("lookup_type", "basic_aminities");
-    const resp = await api.get(`api/LookupList?${params.toString()}`);
-    
-    const list = resp.data.data;
+  const getall_basic_aminities = async () => {
+    try {
+      setselect_loading("basic-aminities");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "basic_aminities");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
 
+      const list = resp.data.data;
 
-    // 👇 set only lookup_value in checkboxItems state
-    const onlyValues = list.map(item => item.lookup_value);
-    setcheckboxItems(onlyValues);
+      // 👇 set only lookup_value in checkboxItems state
+      const onlyValues = list.map((item) => item.lookup_value);
+      setcheckboxItems(onlyValues);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
 
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setselect_loading("");
-  }
-};
-
-useEffect(() => {
-  getall_basic_aminities();
-}, []);
-
+  useEffect(() => {
+    getall_basic_aminities();
+  }, []);
 
   const [checkedItems, setCheckedItems] = useState(
     Array(checkboxItems.length).fill(false)
@@ -1351,35 +1441,30 @@ useEffect(() => {
     }));
   };
 
-  
-
   const [checkboxItems1, setcheckboxItems1] = useState([]);
 
-const getall_featured_aminities = async () => {
-  try {
-    setselect_loading("basic-aminities");
-    const params = new URLSearchParams();
-    params.append("lookup_type", "featured_aminities");
-    const resp = await api.get(`api/LookupList?${params.toString()}`);
-    
-    const list = resp.data.data;
+  const getall_featured_aminities = async () => {
+    try {
+      setselect_loading("basic-aminities");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "featured_aminities");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
 
+      const list = resp.data.data;
 
-    // 👇 set only lookup_value in checkboxItems state
-    const onlyValues = list.map(item => item.lookup_value);
-    setcheckboxItems1(onlyValues);
+      // 👇 set only lookup_value in checkboxItems state
+      const onlyValues = list.map((item) => item.lookup_value);
+      setcheckboxItems1(onlyValues);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
 
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setselect_loading("");
-  }
-};
-
-useEffect(() => {
-  getall_featured_aminities();
-}, []);
-
+  useEffect(() => {
+    getall_featured_aminities();
+  }, []);
 
   const [checkedItems1, setCheckedItems1] = useState(
     Array(checkboxItems1.length).fill(false)
@@ -1632,15 +1717,20 @@ useEffect(() => {
   // ================================-----------------size add and delete end------------------------=========================================
 
   // ==============================----------------------add unit start===========================================---------------------------
-  const [unit, setunit] = useState([]);
-  const [units, setunits] = useState({
+  const [unit,setunit] = useState([]);
+  const [units,setunits] = useState({
     project_name: project?.name || "",
     unit_no: "",
     unit_type: "",
     category: "",
-    sub_category: [],
+    sub_category: "",
     block: "",
     size: "",
+    size_length: "",
+    size_breadth: "",
+    size_unit: "",
+    size_total_area: "",
+    size_total_area_unit: "",
     land_type: "",
     khewat_no: [""],
     killa_no: [""],
@@ -1653,7 +1743,7 @@ useEffect(() => {
     action6: [],
     direction: "",
     side_open: "",
-    fornt_on_road: "",
+    front_on_road: "",
     total_owner: "",
     facing: "",
     road: "",
@@ -1700,8 +1790,26 @@ useEffect(() => {
     action12: [],
   });
 
+  useEffect(() => {
+    if (!units.size || !project?.add_size?.length) return;
 
-        // get all builtup type
+    const size_data = project.add_size.find(
+      (item) => item.size_name?.trim() === units.size?.trim()
+    );
+
+    if (!size_data) return;
+
+    setunits((prev) => ({
+      ...prev,
+      size_length: size_data.length || "",
+      size_breadth: size_data.bredth || "",
+      size_total_area: size_data.total_area || "",
+      size_unit: size_data.yard1 || "",
+      size_total_area_unit: size_data.yard3 || "",
+    }));
+  }, [units.size, project.add_size]);
+
+  // get all builtup type
   const [All_Builtup_Type, setAll_Builtup_Type] = useState([]);
   const getall_builtup_type = async () => {
     try {
@@ -1718,7 +1826,6 @@ useEffect(() => {
     }
   };
 
-  
   useEffect(() => {
     if (project?.name) {
       setunits((prevState) => ({
@@ -1806,11 +1913,11 @@ useEffect(() => {
     });
   };
 
-  const handlepreviewchange = (index, event) => {
+  const handlepreviewchange = async(index, event) => {
     const newpreview = [...units.preview];
     const files = Array.from(event.target.files);
-
-    newpreview[index] = { files: files };
+    const uploadedFiles = await uploadFiles(files);
+    newpreview[index] = uploadedFiles;
     setunits({
       ...units,
       preview: newpreview,
@@ -1898,40 +2005,23 @@ useEffect(() => {
   //     linkded_contact: newlinkedcontact
   //   });
   // };
-  const handlepicchange1 = (index, event) => {
+  const handlepicchange1 = async(index, event) => {
     const newpic1 = [...units.image];
     const files = Array.from(event.target.files);
-    newpic1[index] = { files: files };
+    const uploadedFiles = await uploadFiles(files);
+    newpic1[index] = uploadedFiles;
     setunits({
       ...units,
       image: newpic1,
     });
   };
 
-  const handleSubCategoryChange1 = (event) => {
-    const {
-      target: { value },
-    } = event;
-    // Ensure the value is an array if multiple options are selected
-    setunits({
-      ...units,
-      sub_category: typeof value === "string" ? value.split(",") : value,
-    });
-  };
 
-  const handleToggle1 = (value) => {
-    const currentIndex = units.sub_category.indexOf(value);
-    const newChecked = [...units.sub_category];
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
+ 
 
-    setunits({ ...units, sub_category: newChecked });
-  };
-
+  console.log(units);
+  
   const addunit = () => {
     if (units.unit_no) {
       console.log(units.preview);
@@ -2018,7 +2108,7 @@ useEffect(() => {
   const [price, setprice] = useState([]);
   const [prices, setprices] = useState({
     block: "",
-    category: [],
+    category: "",
     sub_category: "",
     size: "",
     covered_area: "",
@@ -2404,16 +2494,7 @@ useEffect(() => {
     setteams(selectedteam);
     setproject({ ...project, team: selectedteam });
   };
-  const bankOptions = [
-    "State Bank of India",
-    "HDFC Bank",
-    "ICICI Bank",
-    "Axis Bank",
-    "Punjab National Bank",
-    "Bank of Baroda",
-    "Union Bank of India",
-    "Kotak Mahindra Bank",
-  ];
+
   const [selectedBanks, setSelectedBanks] = useState([]);
 
   const handleChange = (event) => {
@@ -2705,9 +2786,9 @@ useEffect(() => {
 
   // ========================================add onwer end==============================================================================
 
-    const [All_Property_Unit_Type, setAll_Property_Unit_Type] = useState([]);
-  
-     const getall_unit_type = async () => {
+  const [All_Property_Unit_Type, setAll_Property_Unit_Type] = useState([]);
+
+  const getall_unit_type = async () => {
     try {
       setselect_loading("unit-type");
       const params = new URLSearchParams();
@@ -2722,125 +2803,6 @@ useEffect(() => {
       setselect_loading(false);
     }
   };
-  
-
-  // const options = {
-  //   unit_type: {
-  //     Plot: [
-  //       "1 Kanal",
-  //       "12 Marla",
-  //       "3 Kanal",
-  //       "4 Kanal",
-  //       "5 Kanal",
-  //       "6 Kanal",
-  //       "7 Kanal",
-  //       "1 Acre",
-  //       "2 Acre",
-  //       "3 Acre",
-  //       "4 Acre",
-  //       "5 Acre",
-  //       "6 Acre",
-  //       "7 Acre",
-  //       "8 Acre",
-  //       "9 Acre",
-  //       "10 Acre",
-  //       "5 Marla",
-  //       "2 Kanal",
-  //       "16 Marla",
-  //       "14 Marla",
-  //       "12 Marla",
-  //       "10 Marla",
-  //       "8 Marla",
-  //       "6 Marla",
-  //       "4 Marla",
-  //       "3 Marla",
-  //       "2 Marla",
-  //     ],
-  //     "Independent House": [
-  //       "1 Kanal",
-  //       "2 Kanal",
-  //       "12 Marla",
-  //       "3 Kanal",
-  //       "4 Kanal",
-  //       "5 Kanal",
-  //       "6 Kanal",
-  //       "7 Kanal",
-  //       "1 Acre",
-  //       "2 Acre",
-  //       "3 Acre",
-  //       "4 Acre",
-  //       "5 Acre",
-  //       "6 Acre",
-  //       "7 Acre",
-  //       "8 Acre",
-  //       "9 Acre",
-  //       "10 Acre",
-  //       "5 Marla",
-  //       "16 Marla",
-  //       "14 Marla",
-  //       "10 Marla",
-  //       "8 Marla",
-  //       "6 Marla",
-  //       "4 Marla",
-  //       "3 Marla",
-  //       "2 Marla",
-  //     ],
-  //     "Flat/Apartment": [
-  //       "1 BHK",
-  //       "2 BHK",
-  //       "3 BHK",
-  //       "4 BHK",
-  //       "5 BHK",
-  //       ,
-  //       "STUDIO",
-  //     ],
-  //     "Builder Floor": [
-  //       "1 BHK",
-  //       "12 Marla",
-  //       "3 Kanal",
-  //       "4 Kanal",
-  //       "5 Kanal",
-  //       "6 Kanal",
-  //       "7 Kanal",
-  //       "1 Acre",
-  //       "2 Acre",
-  //       "3 Acre",
-  //       "4 Acre",
-  //       "5 Acre",
-  //       "6 Acre",
-  //       "7 Acre",
-  //       "8 Acre",
-  //       "9 Acre",
-  //       "10 Acre",
-  //       "5 Marla",
-  //       "2 BHK",
-  //       "3 BHK",
-  //       "4 BHK",
-  //       "5 BHK",
-  //       "STUDIO",
-  //     ],
-  //     Shop: ["BOOTH", "KIOSAK"],
-  //     Showroom: ["SCO", "SCF", "DSS"],
-  //     "Office Space": ["LOCABLE OFFICE", "VIRTUAL OFFICE"],
-  //     "Retail Store": ["HYPER MARKET", "DEPARTMETAL STORE"],
-  //     Soho: ["SOHO"],
-  //     "Excutive Room": ["ROOM"],
-  //     Land: ["CROPLAND", "WOODLAND", "PASTURE", "COMMERCIAL"],
-  //     "Farm House": ["FARM"],
-  //     Plots: ["1 KANAL", "10 MARLA", "2 KANAL", "1 ACRE", "2 KANAL"],
-  //     "Ware house": ["WRHSE"],
-  //     "Cold Storage": ["CLDSTRG"],
-  //     "Rice Seller": ["RCSLR"],
-  //     Building: ["BLDG"],
-  //     Factory: ["FCTRY"],
-  //     School: ["NURSERY SCHOOL", "CRECH", "HIGH SCHOOL", "PRIMERY SCHOOL"],
-  //     Hotel: ["HOTEL", "GUEST HOUSE", "HOMESTAYS"],
-  //     Universities: ["DEEMED", "PRIVATE"],
-  //     Hospital: ["NURSING HOME", "CLINIC"],
-  //     College: ["ART COLLEGE", "TECHNICAL COLLEGE", "MEDICAL COLLEGE"],
-  //   },
-  // };
-
 
   const handlesizesubcategorychange = (event) => {
     const selectedSubcategory = event.target.value;
@@ -2850,673 +2812,7 @@ useEffect(() => {
       sub_category: selectedSubcategory,
       unit_type: "", // Reset designation when subcategory changes
     }));
-
   };
-
-  const statesAndCities = {
-    AndhraPradesh: [
-      "Anantapur",
-      "Chittoor",
-      "East Godavari",
-      "Guntur",
-      "Krishna",
-      "Kurnool",
-      "Prakasam",
-      "Srikakulam",
-      "Visakhapatnam",
-      "Vizianagaram",
-      "West Godavari",
-      "YSR Kadapa",
-    ],
-    ArunachalPradesh: [
-      "Tawang",
-      "West Kameng",
-      "East Kameng",
-      "Papum Pare",
-      "Kurung Kumey",
-      "Kra Daadi",
-      "Lower Subansiri",
-      "Upper Subansiri",
-      "West Siang",
-      "East Siang",
-      "Upper Siang",
-      "Lower Siang",
-      "Lower Dibang Valley",
-      "Dibang Valley",
-      "Anjaw",
-      "Lohit",
-      "Namsai",
-      "Changlang",
-      "Tirap",
-      "Longding",
-    ],
-    Assam: [
-      "Baksa",
-      "Barpeta",
-      "Biswanath",
-      "Bongaigaon",
-      "Cachar",
-      "Charaideo",
-      "Chirang",
-      "Darrang",
-      "Dhemaji",
-      "Dhubri",
-      "Dibrugarh",
-      "Goalpara",
-      "Golaghat",
-      "Hailakandi",
-      "Hojai",
-      "Jorhat",
-      "Kamrup",
-      "Kamrup Metropolitan",
-      "Karbi Anglong",
-      "Karimganj",
-      "Kokrajhar",
-      "Lakhimpur",
-      "Majuli",
-      "Morigaon",
-      "Nagaon",
-      "Nalbari",
-      "Dima Hasao",
-      "Sivasagar",
-      "Sonitpur",
-      "South Salmara-Mankachar",
-      "Tinsukia",
-      "Udalguri",
-      "West Karbi Anglong",
-    ],
-    Bihar: [
-      "Araria",
-      "Arwal",
-      "Aurangabad",
-      "Banka",
-      "Begusarai",
-      "Bhagalpur",
-      "Bhojpur",
-      "Buxar",
-      "Darbhanga",
-      "East Champaran",
-      "Gaya",
-      "Gopalganj",
-      "Jamui",
-      "Jehanabad",
-      "Kaimur",
-      "Katihar",
-      "Khagaria",
-      "Kishanganj",
-      "Lakhisarai",
-      "Madhepura",
-      "Madhubani",
-      "Munger",
-      "Muzaffarpur",
-      "Nalanda",
-      "Nawada",
-      "Patna",
-      "Purnia",
-      "Rohtas",
-      "Saharsa",
-      "Samastipur",
-      "Saran",
-      "Sheikhpura",
-      "Sheohar",
-      "Sitamarhi",
-      "Siwan",
-      "Supaul",
-      "Vaishali",
-      "West Champaran",
-    ],
-    Delhi: [
-      "Central Delhi",
-      "East Delhi",
-      "New Delhi",
-      "North Delhi",
-      "North East Delhi",
-      "North West Delhi",
-      "Shahdara",
-      "South Delhi",
-      "South East Delhi",
-      "South West Delhi",
-      "West Delhi",
-    ],
-    Goa: ["North Goa", "South Goa"],
-    Gujarat: [
-      "Ahmedabad",
-      "Amreli",
-      "Anand",
-      "Banaskantha",
-      "Bharuch",
-      "Bhavnagar",
-      "Botad",
-      "Chhota Udepur",
-      "Dahod",
-      "Dang",
-      "Gir Somnath",
-      "Jamnagar",
-      "Junagadh",
-      "Kachchh",
-      "Kheda",
-      "Mahisagar",
-      "Mehsana",
-      "Morbi",
-      "Narmada",
-      "Navsari",
-      "Panchmahal",
-      "Patan",
-      "Porbandar",
-      "Rajkot",
-      "Sabarkantha",
-      "Surat",
-      "Surendranagar",
-      "Tapi",
-      "Vadodara",
-      "Valsad",
-    ],
-    Haryana: [
-      "Ambala",
-      "Bhiwani",
-      "Charkhi Dadri",
-      "Faridabad",
-      "Fatehabad",
-      "Gurugram",
-      "Hisar",
-      "Jhajjar",
-      "Jind",
-      "Kaithal",
-      "Karnal",
-      "Kurukshetra",
-      "Mahendragarh",
-      "Narnaul",
-      "Palwal",
-      "Panchkula",
-      "Panipat",
-      "Rewari",
-      "Rohtak",
-      "Sirsa",
-      "Sonipat",
-      "Yamunanagar",
-    ],
-    HimachalPradesh: [
-      "Bilaspur",
-      "Chamba",
-      "Hamirpur",
-      "Kangra",
-      "Kullu",
-      "Kullu",
-      "Mandi",
-      "Shimla",
-      "Sirmaur",
-      "Solan",
-      "Una",
-    ],
-    Jharkhand: [
-      "Bokaro",
-      "Chatra",
-      "Deoghar",
-      "Dhanbad",
-      "Dumka",
-      "East Singhbhum",
-      "Garhwa",
-      "Giridih",
-      "Godda",
-      "Gumla",
-      "Hazaribagh",
-      "Jamtara",
-      "Khunti",
-      "Koderma",
-      "Latehar",
-      "Lohardaga",
-      "Pakur",
-      "Palamu",
-      "Ramgarh",
-      "Ranchi",
-      "Sahebganj",
-      "Seraikela Kharsawan",
-      "Simdega",
-      "West Singhbhum",
-    ],
-    Karnataka: [
-      "Bagalkot",
-      "Ballari",
-      "Belagavi",
-      "Bengaluru Rural",
-      "Bengaluru Urban",
-      "Bidar",
-      "Chamarajanagar",
-      "Chikballapur",
-      "Chikkamagaluru",
-      "Chitradurga",
-      "Dakshina Kannada",
-      "Davanagere",
-      "Dharwad",
-      "Gadag",
-      "Hassan",
-      "Haveri",
-      "Kalaburagi",
-      "Kodagu",
-      "Kolar",
-      "Koppal",
-      "Mandya",
-      "Mysuru",
-      "Raichur",
-      "Ramanagara",
-      "Shivamogga",
-      "Tumakuru",
-      "Udupi",
-      "Uttara Kannada",
-      "Vijayapura",
-      "Yadgir",
-    ],
-    Kerala: [
-      "Alappuzha",
-      "Ernakulam",
-      "Idukki",
-      "Kannur",
-      "Kasaragod",
-      "Kottayam",
-      "Kollam",
-      "Kozhikode",
-      "Malappuram",
-      "Palakkad",
-      "Pathanamthitta",
-      "Thiruvananthapuram",
-      "Thrissur",
-      "Wayanad",
-    ],
-    MadhyaPradesh: [
-      "Alirajpur",
-      "Anuppur",
-      "Ashoknagar",
-      "Balaghat",
-      "Barwani",
-      "Betul",
-      "Bhind",
-      "Bhopal",
-      "Burhanpur",
-      "Chhindwara",
-      "Datia",
-      "Dewas",
-      "Dhar",
-      "Dindori",
-      "Guna",
-      "Gwalior",
-      "Harda",
-      "Hoshangabad",
-      "Indore",
-      "Jabalpur",
-      "Jhabua",
-      "Katni",
-      "Khandwa",
-      "Khargone",
-      "Mandla",
-      "Mandsaur",
-      "Morena",
-      "Narsinghpur",
-      "Neemuch",
-      "Panna",
-      "Rewa",
-      "Rajgarh",
-      "Sagar",
-      "Satna",
-      "Sehore",
-      "Seoni",
-      "Shahdol",
-      "Shajapur",
-      "Sheopur",
-      "Shivpuri",
-      "Sidhi",
-      "Singrauli",
-      "Tikamgarh",
-      "Ujjain",
-      "Umaria",
-      "Vidisha",
-    ],
-    Maharashtra: [
-      "Ahmednagar",
-      "Akola",
-      "Amravati",
-      "Aurangabad",
-      "Beed",
-      "Bhandara",
-      "Buldhana",
-      "Chandrapur",
-      "Dhule",
-      "Gadchiroli",
-      "Gondia",
-      "Hingoli",
-      "Jalgaon",
-      "Jalna",
-      "Kolhapur",
-      "Latur",
-      "Mumbai City",
-      "Mumbai Suburban",
-      "Nagpur",
-      "Nanded",
-      "Nandurbar",
-      "Nashik",
-      "Osmanabad",
-      "Palghar",
-      "Parbhani",
-      "Pune",
-      "Raigad",
-      "Ratnagiri",
-      "Sangli",
-      "Satara",
-      "Sindhudurg",
-      "Solapur",
-      "Thane",
-      "Wardha",
-      "Washim",
-      "Yavatmal",
-    ],
-    Manipur: [
-      "Bishnupur",
-      "Chandel",
-      "Churachandpur",
-      "Imphal East",
-      "Imphal West",
-      "Jiribam",
-      "Kakching",
-      "Kamjong",
-      "Kangpokpi",
-      "Noney",
-      "Senapati",
-      "Tamenglong",
-      "Tengnoupal",
-      "Thoubal",
-      "Ukhrul",
-    ],
-    Meghalaya: [
-      "East Garo Hills",
-      "East Khasi Hills",
-      "Jaintia Hills",
-      "Ri Bhoi",
-      "West Garo Hills",
-      "West Khasi Hills",
-    ],
-    Mizoram: [
-      "Aizawl",
-      "Champhai",
-      "Kolasib",
-      "Lawngtlai",
-      "Lunglei",
-      "Mamit",
-      "Saiha",
-      "Serchhip",
-    ],
-    Nagaland: [
-      "Dimapur",
-      "Kohima",
-      "Mokokchung",
-      "Mon",
-      "Peren",
-      "Phek",
-      "Tuensang",
-      "Wokha",
-      "Zunheboto",
-    ],
-    Odisha: [
-      "Angul",
-      "Balangir",
-      "Balasore",
-      "Bargarh",
-      "Bhadrak",
-      "Boudh",
-      "Cuttack",
-      "Deogarh",
-      "Dhenkanal",
-      "Ganjam",
-      "Gajapati",
-      "Jagatsinghpur",
-      "Jajpur",
-      "Jharsuguda",
-      "Kalahandi",
-      "Kandhamal",
-      "Kendrapara",
-      "Kendujhar",
-      "Khordha",
-      "Koraput",
-      "Malkangiri",
-      "Mayurbhanj",
-      "Nabarangpur",
-      "Nayagarh",
-      "Nuapada",
-      "Puri",
-      "Rayagada",
-      "Sambalpur",
-      "Subarnapur",
-      "Sundargarh",
-    ],
-    Punjab: [
-      "Amritsar",
-      "Barnala",
-      "Bathinda",
-      "Faridkot",
-      "Fatehgarh Sahib",
-      "Firozpur",
-      "Gurdaspur",
-      "Hoshiarpur",
-      "Jalandhar",
-      "Kapurthala",
-      "Ludhiana",
-      "Mansa",
-      "Moga",
-      "Muktsar",
-      "Nawan Shehar",
-      "Patiala",
-      "Rupnagar",
-      "Sangrur",
-      "SAS Nagar",
-      "Sri Muktsar Sahib",
-    ],
-    Rajasthan: [
-      "Ajmer",
-      "Alwar",
-      "Banswara",
-      "Baran",
-      "Barmer",
-      "Bhilwara",
-      "Bikaner",
-      "Bundi",
-      "Churu",
-      "Dausa",
-      "Dholpur",
-      "Dungarpur",
-      "Hanumangarh",
-      "Jaipur",
-      "Jaisalmer",
-      "Jhalawar",
-      "Jhunjhunu",
-      "Jodhpur",
-      "Karauli",
-      "Kota",
-      "Nagaur",
-      "Pali",
-      "Pratapgarh",
-      "Rajsamand",
-      "Sawai Madhopur",
-      "Sikar",
-      "Sirohi",
-      "Tonk",
-      "Udaipur",
-    ],
-    Sikkim: ["East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim"],
-    TamilNadu: [
-      "Chennai",
-      "Coimbatore",
-      "Cuddalore",
-      "Dharmapuri",
-      "Dindigul",
-      "Erode",
-      "Kancheepuram",
-      "Kanyakumari",
-      "Karur",
-      "Krishnagiri",
-      "Madurai",
-      "Nagapattinam",
-      "Namakkal",
-      "Nilgiris",
-      "Perambalur",
-      "Pudukkottai",
-      "Ramanathapuram",
-      "Salem",
-      "Sivagangai",
-      "Tenkasi",
-      "Thanjavur",
-      "The Nilgiris",
-      "Thoothukudi",
-      "Tiruvallur",
-      "Tirunelveli",
-      "Tirupur",
-      "Vellore",
-      "Viluppuram",
-      "Virudhunagar",
-    ],
-    Telangana: [
-      "Adilabad",
-      "Hyderabad",
-      "Jagtial",
-      "Jangaon",
-      "Jayashankar",
-      "Jogulamba",
-      "Kamareddy",
-      "Karimnagar",
-      "Khammam",
-      "Mahabubabad",
-      "Mahabubnagar",
-      "Mancherial",
-      "Medak",
-      "Medchal",
-      "Nalgonda",
-      "Nagarkurnool",
-      "Nirmal",
-      "Nizamabad",
-      "Peddapalli",
-      "Sangareddy",
-      "Siddipet",
-      "Suryapet",
-      "Vikarabad",
-      "Warangal",
-      "Khammam",
-      "Kothagudem",
-    ],
-    Tripura: [
-      "Dhalai",
-      "Gomati",
-      "Khowai",
-      "North Tripura",
-      "Sepahijala",
-      "South Tripura",
-      "Unakoti",
-      "West Tripura",
-    ],
-    UttarPradesh: [
-      "Agra",
-      "Aligarh",
-      "Ambedkar Nagar",
-      "Amethi",
-      "Amroha",
-      "Auraiya",
-      "Azamgarh",
-      "Baghpat",
-      "Bahraich",
-      "Ballia",
-      "Balrampur",
-      "Banda",
-      "Barabanki",
-      "Bareilly",
-      "Basti",
-      "Bijnor",
-      "Budaun",
-      "Bulandshahr",
-      "Chandauli",
-      "Chitrakoot",
-      "Deoria",
-      "Etah",
-      "Etawah",
-      "Faizabad",
-      "Farrukhabad",
-      "Fatehpur",
-      "Firozabad",
-      "Gautam Buddh Nagar",
-      "Ghaziabad",
-      "Gonda",
-      "Gorakhpur",
-      "Hamirpur",
-      "Hapur",
-      "Hardoi",
-      "Hathras",
-      "Jalaun",
-      "Jaunpur",
-      "Jhansi",
-      "Kannauj",
-      "Kanpur",
-      "Kasganj",
-      "Kaushambi",
-      "Kushinagar",
-      "Lakhimpur Kheri",
-      "Lucknow",
-      "Mathura",
-      "Meerut",
-      "Mirzapur",
-      "Moradabad",
-      "Muzaffarnagar",
-      "Pratapgarh",
-      "Raebareli",
-      "Rampur",
-      "Saharanpur",
-      "Sambhal",
-      "Sant Kabir Nagar",
-      "Shahjahanpur",
-      "Shrawasti",
-      "Siddharth Nagar",
-      "Sitapur",
-      "Sonbhadra",
-      "Sultanpur",
-      "Unnao",
-      "Varanasi",
-    ],
-    WestBengal: [
-      "Alipurduar",
-      "Bankura",
-      "Birbhum",
-      "Burdwan",
-      "Cooch Behar",
-      "Darjeeling",
-      "Hooghly",
-      "Howrah",
-      "Jalpaiguri",
-      "Kolkata",
-      "Malda",
-      "Murshidabad",
-      "Nadia",
-      "North 24 Parganas",
-      "North Dinajpur",
-      "Paschim Medinipur",
-      "Purba Medinipur",
-      "Purulia",
-      "South 24 Parganas",
-      "South Dinajpur",
-      "Uttar Dinajpur",
-    ],
-  };
-
-  const states = Object.keys(statesAndCities);
-  const cities = statesAndCities[project.state] || [];
-
-  const ustates = Object.keys(statesAndCities);
-  const ucities = statesAndCities[units.ustate] || [];
-
-  // const asianCountries = [
-  //   "Afghanistan", "Armenia", "Azerbaijan", "Bahrain", "Bangladesh", "Bhutan",
-  //   "Brunei", "Burma (Myanmar)", "Cambodia", "China", "Cyprus", "Georgia",
-  //   "India", "Indonesia", "Iran", "Iraq", "Israel", "Japan", "Jordan",
-  //   "Kazakhstan", "Kuwait", "Kyrgyzstan", "Laos", "Lebanon", "Malaysia",
-  //   "Maldives", "Mongolia", "Nepal", "North Korea", "Oman", "Pakistan",
-  //   "Palestine", "Philippines", "Qatar", "Saudi Arabia", "Singapore",
-  //   "South Korea", "Sri Lanka", "Syria", "Tajikistan", "Thailand",
-  //   "Timor-Leste", "Turkmenistan", "United Arab Emirates", "Uzbekistan",
-  //   "Vietnam", "Yemen"
-  // ];
 
   const handleSuggestionClick1 = (contact, index) => {
     setShowSuggestions(false);
@@ -3669,7 +2965,7 @@ useEffect(() => {
     "water_pump_type",
     "direction",
     "side_open",
-    "fornt_on_road",
+    "front_on_road",
     "total_owner",
     "facing",
     "road",
@@ -5001,6 +4297,7 @@ useEffect(() => {
                       {project.pic.map((item, index) => (
                         <div key={index} className="custom-file-wrapper mt-2">
                           <input
+                          multiple
                             type="file"
                             id={`doc-upload-${index}`}
                             name="pic"
@@ -5019,10 +4316,14 @@ useEffect(() => {
                             Upload
                           </label>
                           <div className="d-flex flex-wrap gap-2 mt-2">
-                            {(item || []).map((obj, i) => (
+                            {
+                            select_loading==="project_pic_upload" ? (
+                              <CircularProgress size={24}/>
+                            ) :
+                            (item || []).map((obj, i) => (
                               <div key={i} style={{ position: "relative" }}>
                                 <img
-                                  src={obj.preview}
+                                  src={obj}
                                   alt="Preview"
                                   style={{
                                     width: "80px",
@@ -5284,13 +4585,20 @@ useEffect(() => {
                         onChange={(e) =>
                           setproject({ ...project, city: e.target.value })
                         }
+                        onClick={() => {
+                          getall_city();
+                        }}
                       >
-                        <option>{project.city} </option>
-                        {cities.map((city) => (
-                          <option key={city} value={city}>
-                            {city}
-                          </option>
-                        ))}
+                        <option>---Select---</option>
+                        {select_loading === "city" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_City.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
                       </select>
                     </div>
                     <div className="col-md-4  custom-input">
@@ -5311,13 +4619,22 @@ useEffect(() => {
                         onChange={(e) =>
                           setproject({ ...project, state: e.target.value })
                         }
+                        onClick={() => {
+                          if (All_State.length === 0) {
+                            getall_state();
+                          }
+                        }}
                       >
-                        <option>{project.state}</option>
-                        {states.map((state) => (
-                          <option key={state} value={state}>
-                            {state}
-                          </option>
-                        ))}
+                        <option>---Select---</option>
+                        {select_loading === "state" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_State.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
                       </select>
                     </div>
                     <div className="col-md-6  custom-input">
@@ -6047,21 +5364,21 @@ useEffect(() => {
                                   onClick={() => handleTypeClick2(type)}
                                   style={{
                                     backgroundColor:
-                                    selectedType1 === type ? "green" : "",
+                                      selectedType1 === type ? "green" : "",
                                     border: "1px solid #ccc",
                                     borderRadius: "6px",
                                     fontWeight: "bold",
                                     transition: "all 0.3s ease",
-                                    boxShadow: selectedType1 === type
-                                      ? "0 4px 10px rgba(4, 4, 4, 0.4)"
-                                      : "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                    boxShadow:
+                                      selectedType1 === type
+                                        ? "0 4px 10px rgba(4, 4, 4, 0.4)"
+                                        : "0 2px 6px rgba(0, 0, 0, 0.1)",
                                   }}
                                   onMouseEnter={(e) => {
                                     e.target.style.transform = "scale(1.05)";
                                   }}
                                   onMouseLeave={(e) => {
                                     e.target.style.transform = "scale(1)";
-                                
                                   }}
                                 >
                                   {type}
@@ -6069,10 +5386,6 @@ useEffect(() => {
                               </div>
                             ))}
                           </div>
-
-                           
-
-
                         </div>
 
                         <div className="col-md-12  custom-input">
@@ -6102,19 +5415,21 @@ useEffect(() => {
                                     unit_type: e.target.value,
                                   })
                                 }
-                                   onClick={() => {getall_unit_type()}}
-                                   value={sizes.unit_type}
+                                onClick={() => {
+                                  getall_unit_type();
+                                }}
+                                value={sizes.unit_type}
                               >
                                 <option>---Select---</option>
-                            {select_loading === "unit-type" ? (
-                              <CircularProgress />
-                            ) : (
-                              All_Property_Unit_Type.map((name) => (
-                                <option value={name.lookup_value}>
-                                  {name.lookup_value}
-                                </option>
-                              ))
-                            )}
+                                {select_loading === "unit-type" ? (
+                                  <CircularProgress />
+                                ) : (
+                                  All_Property_Unit_Type.map((name) => (
+                                    <option value={name.lookup_value}>
+                                      {name.lookup_value}
+                                    </option>
+                                  ))
+                                )}
                               </select>
                             </div>
                             <div className="col-md-6  custom-input"></div>
@@ -6785,26 +6100,24 @@ useEffect(() => {
                                 <button
                                   className="form-control form-control-sm"
                                   onClick={() => handleTypeClick1(type)}
-                                 
-                                    style={{
+                                  style={{
                                     backgroundColor:
-                                    selectedType === type ? "green" : "",
+                                      selectedType === type ? "green" : "",
                                     border: "1px solid #ccc",
                                     borderRadius: "6px",
                                     fontWeight: "bold",
                                     transition: "all 0.3s ease",
-                                    boxShadow: selectedType === type
-                                      ? "0 4px 10px rgba(4, 4, 4, 0.4)"
-                                      : "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                    boxShadow:
+                                      selectedType === type
+                                        ? "0 4px 10px rgba(4, 4, 4, 0.4)"
+                                        : "0 2px 6px rgba(0, 0, 0, 0.1)",
                                   }}
                                   onMouseEnter={(e) => {
                                     e.target.style.transform = "scale(1.05)";
                                   }}
                                   onMouseLeave={(e) => {
                                     e.target.style.transform = "scale(1)";
-                                
                                   }}
-                                
                                 >
                                   {type}
                                 </button>
@@ -6821,11 +6134,12 @@ useEffect(() => {
                             labelId="subcategory-label"
                             id="subcategory"
                             value={units.sub_category}
-                            onChange={handleSubCategoryChange1}
+                            onChange={(e) =>
+                              setunits({ ...units, sub_category: e.target.value })
+                            }
                           >
-                           <option>---select--- </option>
+                            <option>---select--- </option>
                             {project.sub_category.map((subCategory) => (
-      
                               <option>{subCategory}</option>
                             ))}
                           </select>
@@ -6859,6 +6173,29 @@ useEffect(() => {
                             ))}
                           </select>
                         </div>
+                        {units.size && (
+                          <>
+                            <div className="col-md-4 custom-input">
+                              <label className="form-label">Length</label>
+                              <p>
+                                {units.size_length} {units.size_unit}
+                              </p>
+                            </div>
+                            <div className="col-md-4 custom-input">
+                              <label className="form-label">Breadth</label>
+                              <p>
+                                {units.size_breadth} {units.size_unit}
+                              </p>
+                            </div>
+                            <div className="col-md-4 custom-input">
+                              <label className="form-label">Total Area</label>
+                              <p>
+                                {units.size_total_area}{" "}
+                                {units.size_total_area_unit}
+                              </p>
+                            </div>
+                          </>
+                        )}
 
                         {project.category.includes("Agricultural") && (
                           <>
@@ -7139,7 +6476,7 @@ useEffect(() => {
                                 onChange={(e) =>
                                   setunits({
                                     ...units,
-                                    fornt_on_road: e.target.value,
+                                    front_on_road: e.target.value,
                                   })
                                 }
                               >
@@ -7201,22 +6538,22 @@ useEffect(() => {
                                     direction: e.target.value,
                                   })
                                 }
-                                  onClick={() => {
-                                    if (All_Direction.length === 0) {
-                                      getall_direction();
-                                    }
-                                  }}
+                                onClick={() => {
+                                  if (All_Direction.length === 0) {
+                                    getall_direction();
+                                  }
+                                }}
                               >
                                 <option>---Select---</option>
                                 {select_loading === "direction" ? (
-                          <CircularProgress />
-                        ) : (
-                          All_Direction.map((name) => (
-                            <option value={name.lookup_value}>
-                              {name.lookup_value}
-                            </option>
-                          ))
-                        )}
+                                  <CircularProgress />
+                                ) : (
+                                  All_Direction.map((name) => (
+                                    <option value={name.lookup_value}>
+                                      {name.lookup_value}
+                                    </option>
+                                  ))
+                                )}
                               </select>
                             </div>
                             <div className="col-md-4  custom-input">
@@ -7226,22 +6563,22 @@ useEffect(() => {
                                 onChange={(e) =>
                                   setunits({ ...units, facing: e.target.value })
                                 }
-                                 onClick={() => {
-                                    if (All_Facing.length === 0) {
-                                      getall_facing();
-                                    }
-                                  }}
+                                onClick={() => {
+                                  if (All_Facing.length === 0) {
+                                    getall_facing();
+                                  }
+                                }}
                               >
                                 <option>---Select---</option>
-                                 {select_loading === "facing" ? (
-                          <CircularProgress />
-                        ) : (
-                          All_Facing.map((name) => (
-                            <option value={name.lookup_value}>
-                              {name.lookup_value}
-                            </option>
-                          ))
-                        )}
+                                {select_loading === "facing" ? (
+                                  <CircularProgress />
+                                ) : (
+                                  All_Facing.map((name) => (
+                                    <option value={name.lookup_value}>
+                                      {name.lookup_value}
+                                    </option>
+                                  ))
+                                )}
                               </select>
                             </div>
                             <div className="col-md-4 custom-input">
@@ -7251,22 +6588,22 @@ useEffect(() => {
                                 onChange={(e) =>
                                   setunits({ ...units, road: e.target.value })
                                 }
-                                 onClick={() => {
-                                    if (All_Road.length === 0) {
-                                      getall_road();
-                                    }
-                                  }}
+                                onClick={() => {
+                                  if (All_Road.length === 0) {
+                                    getall_road();
+                                  }
+                                }}
                               >
                                 <option>---Select---</option>
-                               {select_loading === "road" ? (
-                          <CircularProgress />
-                        ) : (
-                          All_Road.map((name) => (
-                            <option value={name.lookup_value}>
-                              {name.lookup_value}
-                            </option>
-                          ))
-                        )}
+                                {select_loading === "road" ? (
+                                  <CircularProgress />
+                                ) : (
+                                  All_Road.map((name) => (
+                                    <option value={name.lookup_value}>
+                                      {name.lookup_value}
+                                    </option>
+                                  ))
+                                )}
                               </select>
                             </div>
                             <div className="col-md-6  custom-input">
@@ -7335,17 +6672,19 @@ useEffect(() => {
                                     builtup_type: e.target.value,
                                   })
                                 }
-                                onClick={() => {getall_builtup_type()}}
+                                onClick={() => {
+                                  getall_builtup_type();
+                                }}
                                 value={units.builtup_type}
                               >
                                 <option>---Select---</option>
-                             {select_loading === "builtup-type" ? (
-                          <CircularProgress />
-                        ) : (
-                          All_Builtup_Type.map((name) => (
-                            <option>{name.lookup_value}</option>
-                          ))
-                        )}
+                                {select_loading === "builtup-type" ? (
+                                  <CircularProgress />
+                                ) : (
+                                  All_Builtup_Type.map((name) => (
+                                    <option>{name.lookup_value}</option>
+                                  ))
+                                )}
                               </select>
                             </div>
                             <div className="col-md-6  custom-input"></div>
@@ -7742,13 +7081,18 @@ useEffect(() => {
                                       ucity: e.target.value,
                                     })
                                   }
+                                  onClick={() => getall_city_unit()}
                                 >
-                                  <option>{units.ucity}</option>
-                                  {ucities.map((city) => (
-                                    <option key={city} value={city}>
-                                      {city}
-                                    </option>
-                                  ))}
+                                  <option>---Select---</option>
+                                  {select_loading === "city-unit" ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    All_City_unit.map((name) => (
+                                      <option value={name.lookup_value}>
+                                        {name.lookup_value}
+                                      </option>
+                                    ))
+                                  )}
                                 </select>
                               </div>
                               <div className="col-md-4  custom-input">
@@ -7772,13 +7116,18 @@ useEffect(() => {
                                       ustate: e.target.value,
                                     })
                                   }
+                                  onClick={() => getall_state()}
                                 >
-                                  <option>{units.ustate}</option>
-                                  {ustates.map((state) => (
-                                    <option key={state} value={state}>
-                                      {state}
-                                    </option>
-                                  ))}
+                                  <option>---Select---</option>
+                                  {select_loading === "state" ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    All_State.map((name) => (
+                                      <option value={name.lookup_value}>
+                                        {name.lookup_value}
+                                      </option>
+                                    ))
+                                  )}
                                 </select>
                               </div>
                               <div className="col-md-6  custom-input">
@@ -8216,19 +7565,27 @@ useEffect(() => {
                                             handlepreviewchange(index, event)
                                           }
                                         />
-                                        {name.previewUrls &&
-                                          name.previewUrls.map((url, idx) => (
-                                            <img
-                                              key={idx}
-                                              src={url}
-                                              alt={`preview ${index}-${idx}`}
-                                              style={{
-                                                width: "100px",
-                                                height: "100px",
-                                                objectFit: "cover",
-                                              }}
-                                            />
-                                          ))}
+                                     <div className="d-flex flex-wrap gap-2 mt-2">
+                            {
+                            select_loading==="project_pic_upload" ? (
+                              <CircularProgress size={24}/>
+                            ) :
+                            (name || []).map((obj, i) => (
+                              <div key={i} style={{ position: "relative" }}>
+                                <img
+                                  src={obj}
+                                  alt="Preview"
+                                  style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    objectFit: "cover",
+                                    borderRadius: "6px",
+                                    border: "1px solid #ccc",
+                                  }}
+                                />
+                              </div>
+                            ))}
+                          </div>
                                       </div>
                                     ))
                                   : []}
@@ -8506,54 +7863,53 @@ useEffect(() => {
                             : []}
                         </div>
 
-                        {/* <div className='col-md-2 mb-2 custom-input' id="suggestion-box" style={{ position: 'relative' }}><label className='form-label'>Linked Contact</label>
-                    {
-                      Array.isArray(units.linkded_contact) ?
-                      units.linkded_contact.map((item,index)=>
-                      (
-                        <input type="text" className="form-control form-control-sm" value={units.linkded_contact} onChange={(event)=>handlelinkedcontactchange(index,event)} style={{marginTop:"5px"}} />
-                        
-                      )):[]
-                    }
-                    </div> */}
+              
 
-                        {/* <div className="col-md-9 mb-9 custom-input" id="suggestion-box" style={{ position: 'relative' }}><label className="form-label" style={{visibility:"hidden"}}>Search</label><input type="search"className="form-control form-control-sm" value={documents.linkded_contact}  placeholder="Type here For Search in Contact" required="true" onChange={(e)=>setdocuments({...documents,linkded_contact:e.target.value})}/></div> */}
-                        {showSuggestions && filteredSuggestions.length > 0 && (
-                          <ul className="suggestion-list">
-                            {filteredSuggestions.map((suggestion, index) => (
-                              <li
-                                key={index}
-                                onClick={() =>
-                                  handleSuggestionClick1(suggestion, index)
-                                }
-                              >
-                                {suggestion.title} {suggestion.first_name}{" "}
-                                {suggestion.last_name}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
+                   
 
-                        <div
-                          className="col-md-3  custom-input"
-                          id="suggestion-box"
-                          style={{ position: "relative" }}
-                        >
-                          <label className="form-label">Pic</label>
-                          {Array.isArray(units.image)
-                            ? units.image.map((item, index) => (
-                                <input
-                                  type="file"
-                                  name="image"
-                                  className="form-control form-control-sm"
-                                  onChange={(event) =>
-                                    handlepicchange1(index, event)
-                                  }
-                                  style={{ marginTop: "5px" }}
-                                />
-                              ))
-                            : []}
-                        </div>
+                       <div
+  className="col-md-3 custom-input"
+  id="suggestion-box"
+  style={{ position: "relative" }}
+>
+  <label className="form-label">Pic</label>
+
+  {Array.isArray(units.image) &&
+    units.image.map((item, index) => (
+      <div key={index} style={{ marginTop: "6px" }}>
+        <input
+          type="file"
+          className="form-control form-control-sm"
+          onChange={(event) => handlepicchange1(index, event)}
+        />
+
+        {/* Loader */}
+        {select_loading==="project_pic_upload" && (
+          <div style={{ marginTop: "6px", textAlign: "center" }}>
+            <CircularProgress size={24} />
+          </div>
+        )}
+
+        {/* Image Preview */}
+        {item && (
+          <img
+            src={item}
+            alt="preview"
+            style={{
+              width: "100px",
+              height: "100px",
+              marginTop: "6px",
+              objectFit: "cover",
+              borderRadius: "6px",
+              border: "1px solid #ddd",
+            }}
+          />
+        )}
+      </div>
+    ))}
+</div>
+
+
                         <div
                           className="col-md-1  custom-input"
                           style={{ marginTop: "70px" }}
@@ -8661,30 +8017,28 @@ useEffect(() => {
             >
               <div className="p-3 py-5">
                 <div className="row ">
-                 <div className="flex justify-between items-center gap-3">
-               
-                      <button
-                        id="basicaminities1"
-                        className="btn-primary-custom active px-4"
-                        onClick={basicaminities}
-                      >
-                        Basic
-                      </button>
-                      <button
-                        id="featuredaminities1"
-                        className="btn-primary-custom px-4"
-                        onClick={featuredaminities}
-                      >
-                        Featured
-                      </button>
-                      <button
-                        id="nearbyaminities1"
-                        className="btn-primary-custom px-4"
-                        onClick={nearbyaminities}
-                      >
-                        Nearby
-                      </button>
-                   
+                  <div className="flex justify-between items-center gap-3">
+                    <button
+                      id="basicaminities1"
+                      className="btn-primary-custom active px-4"
+                      onClick={basicaminities}
+                    >
+                      Basic
+                    </button>
+                    <button
+                      id="featuredaminities1"
+                      className="btn-primary-custom px-4"
+                      onClick={featuredaminities}
+                    >
+                      Featured
+                    </button>
+                    <button
+                      id="nearbyaminities1"
+                      className="btn-primary-custom px-4"
+                      onClick={nearbyaminities}
+                    >
+                      Nearby
+                    </button>
                   </div>
                   <div
                     id="basicaminities"
@@ -8869,25 +8223,22 @@ useEffect(() => {
                             destination: e.target.value,
                           })
                         }
-                        onClick={()=>
-                        {
-                          if(All_Destination.length===0)
-                          {
-                            getall_destination()
+                        onClick={() => {
+                          if (All_Destination.length === 0) {
+                            getall_destination();
                           }
-                        }
-                        }
+                        }}
                       >
                         <option>---Select---</option>
-                       {select_loading === "destination" ? (
-                            <CircularProgress />
-                          ) : (
-                            All_Destination.map((name) => (
-                              <option value={name.lookup_value}>
-                                {name.lookup_value}
-                              </option>
-                            ))
-                          )}
+                        {select_loading === "destination" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_Destination.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
                       </select>
                     </div>
                     <div className="col-md-3  custom-input">

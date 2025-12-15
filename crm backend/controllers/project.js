@@ -4,8 +4,9 @@ const add_contact = require("../models/add_contact");
 const path = require("path");
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
-const mongoose = require("mongoose");
+const Joi = require("joi");
 const { log } = require("console");
+const projectValidator =require("../Validation/project.js")
 
 require("dotenv").config();
 cloudinary.config({
@@ -16,6 +17,18 @@ cloudinary.config({
 
 const createProject = async (req, res) => {
   try {
+
+    const { error } = projectValidator.validate(req.body, {
+    abortEarly: false,
+  });
+
+  if (error) {
+    return res.status(400).json({
+      message: "Validation error",
+      errors: error.details.map(e => e.message),
+    });
+  }
+
     const {
       name,
       developer_name,
@@ -39,6 +52,7 @@ const createProject = async (req, res) => {
       approvals,
       registration_no,
       date,
+      pic,
       owner,
       team,
       visible_to,
@@ -66,140 +80,7 @@ const createProject = async (req, res) => {
       res.status(400).send({ message: "Developer name is required" });
       return;
     }
-    const imagefiles = [];
 
-    if (req.files) {
-      const imagefield = req.files.filter((file) =>
-        file.fieldname.includes("pic")
-      );
-
-      if (imagefield.length > 0) {
-        for (let file of imagefield) {
-          const result = await cloudinary.uploader.upload(file.path);
-          imagefiles.push(result.secure_url);
-          fs.unlink(file.path, (err) => {
-            if (err) {
-              console.error(`Failed to delete file: ${file.path}`, err);
-            } else {
-              console.log(`Successfully deleted file: ${file.path}`);
-            }
-          });
-        }
-      }
-    }
-
-    const addunit_details = [];
-    let u = 0;
-    while (u < req.body.add_unit?.length) {
-      const unit = req.body.add_unit[u];
-
-      unitDetails = {
-        project_name: unit.project_name,
-        unit_no: unit.unit_no,
-        owner_details: unit.owner_details,
-        associated_contact: unit.associated_contact,
-        unit_type: unit.unit_type,
-        category: unit.category,
-        sub_category: unit.sub_category,
-        block: unit.block,
-        size: unit.size,
-        direction: unit.direction,
-        facing: unit.facing,
-        road: unit.road,
-        ownership: unit.ownership,
-        stage: unit.stage,
-        builtup_type: unit.builtup_type,
-        floor: unit.floor,
-        cluter_details: unit.cluter_details,
-        length: unit.length,
-        bredth: unit.bredth,
-        total_area: unit.total_area,
-        measurment2: unit.measurment2,
-        ocupation_date: unit.ocupation_date,
-        age_of_construction: unit.age_of_construction,
-        furnishing_details: unit.furnishing_details,
-        furnished_item: unit.furnished_item,
-        remarks: unit.remarks,
-        location: unit.location,
-        lattitude: unit.lattitude,
-        langitude: unit.langitude,
-        uaddress: unit.uaddress,
-        ustreet: unit.ustreet,
-        ulocality: unit.ulocality,
-        ucity: unit.ucity,
-        uzip: unit.uzip,
-        ustate: unit.ustate,
-        ucountry: unit.ucountry,
-        relation: unit.relation,
-        s_no: unit.s_no,
-        descriptions: unit.descriptions,
-        // category: unit.category,
-        s_no1: unit.s_no1,
-        url: unit.url,
-        document_name: unit.document_name,
-        document_no: unit.document_no,
-        document_Date: unit.document_Date,
-        linkded_contact: unit.linkded_contact,
-      };
-
-      // Prepare for file upload
-      const imagefiles = [];
-      const imagefiles1 = [];
-
-      if (req.files) {
-        const imagefield = req.files.filter((file) =>
-          file.fieldname.includes(`add_unit[${u}][preview]`)
-        );
-        const imagefield1 = req.files.filter((file) =>
-          file.fieldname.includes(`add_unit[${u}][image]`)
-        );
-
-        for (let file of imagefield) {
-          try {
-            const result = await cloudinary.uploader.upload(file.path);
-            imagefiles.push(result.secure_url);
-
-            // Delete file after upload
-            fs.unlink(file.path, (err) => {
-              if (err) {
-                console.error(`Failed to delete file: ${file.path}`, err);
-              } else {
-                console.log(`Successfully deleted file: ${file.path}`);
-              }
-            });
-          } catch (error) {
-            console.error("Error uploading file:", error);
-          }
-        }
-
-        for (let file of imagefield1) {
-          try {
-            const result = await cloudinary.uploader.upload(file.path);
-            imagefiles1.push(result.secure_url);
-
-            // Delete file after upload
-            fs.unlink(file.path, (err) => {
-              if (err) {
-                console.error(`Failed to delete file: ${file.path}`, err);
-              } else {
-                console.log(`Successfully deleted file: ${file.path}`);
-              }
-            });
-          } catch (error) {
-            console.error("Error uploading file:", error);
-          }
-        }
-      }
-      if (imagefiles.length > 0) {
-        unitDetails.preview = imagefiles; // Attach preview images
-      }
-      if (imagefiles1.length > 0) {
-        unitDetails.image = imagefiles1; // Attach main images
-      }
-
-      addunit_details.push(unitDetails);
-      u++;
-    }
 
     // Simply pass the add_block as it is if no further modification is needed
     const newProject = new addproject({
@@ -225,7 +106,7 @@ const createProject = async (req, res) => {
       approvals,
       registration_no,
       date,
-      pic: imagefiles,
+      pic,
       owner,
       team,
       visible_to,
@@ -241,7 +122,7 @@ const createProject = async (req, res) => {
       country,
       add_block,
       add_size,
-      add_unit: addunit_details,
+      add_unit,
       basic_aminities,
       features_aminities,
       nearby_aminities,
@@ -450,7 +331,7 @@ const view_units = async (req, res) => {
       });
     }
 
-    console.log(matchStage);
+
     
     const units = await addproject.aggregate(
       [
