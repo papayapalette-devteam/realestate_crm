@@ -4279,6 +4279,7 @@ const handlepicchange = async (index, event) => {
                           onChange={(event) =>
                             handleregistrationchange(index, event)
                           }
+                          value={project.registration_no[index]}
                         />
                       ))}
                     </div>

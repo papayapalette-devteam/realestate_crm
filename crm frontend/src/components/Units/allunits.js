@@ -3375,7 +3375,7 @@ function handleCheckbox(idx, val) {
                                 {item.unit_no}
                               </span>{" "}
                               ({item.unit_type}) {item.builtup_type} <br></br>
-                              {item.sub_category.join(",")}({item.category}){" "}
+                              {item?.sub_category}({item.category}){" "}
                               <br></br>
                               {item.size}
                             </>
