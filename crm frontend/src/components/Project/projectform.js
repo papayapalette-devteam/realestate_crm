@@ -5463,31 +5463,7 @@ const handlepicchange = async (index, event) => {
                             </div>
                             <div className="col-md-8  custom-input"></div>
 
-                            {/* <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Total Seleble Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,length:e.target.value})}/></div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
-                                <option>Yard</option>
-                                <option>Sq Feet</option>
-                                <option>Plot</option>
-                                <option>All Users</option>
-                                </select>
-                             </div>
-                             <div className='col-md-6 mb-6 custom-input'></div>
-                
-                             <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}> Carpet Area</label><input type='text' onBlur={calculateTotalArea}  className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,bredth:e.target.value})}/></div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
-                                <option>Yard</option>
-                                <option>Sq Feet</option>
-                                <option>Plot</option>
-                                <option>All Users</option>
-                                </select>
-                             </div>
-                             <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}> Total Area</label><input type='text' className='form-control form-control-sm'  value={sizes.total_area} readOnly /></div>
-                    <div className="col-md-3 mb-3 custom-input"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
-                                <option>Sq Yard</option>
-                                <option>Plot</option>
-                                <option>All Users</option>
-                                </select>
-                             </div> */}
+         
                           </>
                         )}
 
@@ -5985,11 +5961,7 @@ const handlepicchange = async (index, event) => {
                     <Modal.Title>Add Unit</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    {/* <div style={{display:"flex",gap:"50px"}}>
-               <div  id='unitdetail'  style={{cursor:'pointer',fontWeight:"bold"}} onClick={unitdetail1}><span>Unit</span> </div>
-                <div  id='unitlocationdetails' style={{cursor:'pointer',fontWeight:"bold"}}  onClick={unitdetail2}><span>Location</span></div>
-                <div  id='ownerdetails' style={{cursor:'pointer',fontWeight:"bold"}}  onClick={unitdetail3}><span>Add Owner</span></div>
-               </div> */}
+ 
                     <div className="flex flex-wrap items-center gap-3 sm:gap-6 bg-white p-3 rounded-xl shadow-sm border border-gray-100">
                       {/* TAB 1 */}
                       <div

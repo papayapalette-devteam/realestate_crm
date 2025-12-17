@@ -20,7 +20,13 @@ import Modal from "react-bootstrap/Modal";
 import { React, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { Select, MenuItem, Checkbox, ListItemText,CircularProgress } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  CircularProgress,
+} from "@mui/material";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import { SvgIcon } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
@@ -30,7 +36,6 @@ import { saveAs } from "file-saver";
 import Tooltip from "@mui/material/Tooltip";
 import Swal from "sweetalert2";
 import UniqueLoader from "../loader";
-
 
 function EditProjectform() {
   const location = useLocation();
@@ -109,7 +114,7 @@ function EditProjectform() {
     price_list: [],
     Payment_plan: [],
   });
-console.log(project);
+  console.log(project);
 
   const config = {
     headers: {
@@ -370,56 +375,37 @@ console.log(project);
     document.getElementById("prices").style.color = "black";
   };
 
+    const activateTab = (activeId) => {
+    const allTabs = [
+      "basicaminities1",
+      "featuredaminities1",
+      "nearbyaminities1",
+    ];
+    allTabs.forEach((id) => {
+      document.getElementById(id).classList.remove("active");
+    });
+    document.getElementById(activeId).classList.add("active");
+  };
+
   const basicaminities = () => {
     document.getElementById("basicaminities").style.display = "flex";
     document.getElementById("featuredaminities").style.display = "none";
     document.getElementById("nearbyaminities").style.display = "none";
-
-    document.getElementById("featuredaminities1").style.color = "black";
-    document.getElementById("featuredaminities1").style.backgroundColor =
-      "white";
-    document.getElementById("nearbyaminities1").style.color = "black";
-    document.getElementById("nearbyaminities1").style.backgroundColor = "white";
-
-    document.getElementById("basicaminities1").style.backgroundColor = "black";
-    document.getElementById("basicaminities1").style.color = "white";
-    document.getElementById("basicaminities1").style.borderRadius = "50px";
-    document.getElementById("basicaminities1").style.width = "80px";
-    document.getElementById("basicaminities1").style.textAlign = "center";
+    activateTab("basicaminities1");
   };
+
   const featuredaminities = () => {
     document.getElementById("basicaminities").style.display = "none";
     document.getElementById("featuredaminities").style.display = "flex";
     document.getElementById("nearbyaminities").style.display = "none";
-
-    document.getElementById("basicaminities1").style.color = "black";
-    document.getElementById("basicaminities1").style.backgroundColor = "white";
-    document.getElementById("nearbyaminities1").style.color = "black";
-    document.getElementById("nearbyaminities1").style.backgroundColor = "white";
-
-    document.getElementById("featuredaminities1").style.backgroundColor =
-      "black";
-    document.getElementById("featuredaminities1").style.color = "white";
-    document.getElementById("featuredaminities1").style.borderRadius = "50px";
-    document.getElementById("featuredaminities1").style.width = "80px";
-    document.getElementById("featuredaminities1").style.textAlign = "center";
+    activateTab("featuredaminities1");
   };
+
   const nearbyaminities = () => {
     document.getElementById("basicaminities").style.display = "none";
     document.getElementById("featuredaminities").style.display = "none";
     document.getElementById("nearbyaminities").style.display = "flex";
-
-    document.getElementById("basicaminities1").style.color = "black";
-    document.getElementById("basicaminities1").style.backgroundColor = "white";
-    document.getElementById("featuredaminities1").style.color = "black";
-    document.getElementById("featuredaminities1").style.backgroundColor =
-      "white";
-
-    document.getElementById("nearbyaminities1").style.backgroundColor = "black";
-    document.getElementById("nearbyaminities1").style.color = "white";
-    document.getElementById("nearbyaminities1").style.borderRadius = "50px";
-    document.getElementById("nearbyaminities1").style.width = "80px";
-    document.getElementById("nearbyaminities1").style.textAlign = "center";
+    activateTab("nearbyaminities1");
   };
   const pricedetails = () => {
     document.getElementById("basicdetails1").style.display = "none";
@@ -753,48 +739,43 @@ console.log(project);
     });
   };
 
-   const uploadFiles = async (files) => {
-      setselect_loading("project_pic_upload")
+  const uploadFiles = async (files) => {
+    setselect_loading("project_pic_upload");
     if (!files.length) return [];
-  
+
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
-  
+
     try {
       const res = await api.post("api/upload/upload-files", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-  
-  
-  
+
       return res.data.urls; // 👈 IMPORTANT
     } catch (error) {
       console.error("Upload failed:", error);
       alert("Upload failed!");
       return [];
-    }
-    finally
-    {
-      setselect_loading("")
+    } finally {
+      setselect_loading("");
     }
   };
 
- const handlepicchange = async (index, event) => {
-  const files = Array.from(event.target.files);
-  if (!files.length) return;
+  const handlepicchange = async (index, event) => {
+    const files = Array.from(event.target.files);
+    if (!files.length) return;
 
-  const uploadedFiles = await uploadFiles(files);
+    const uploadedFiles = await uploadFiles(files);
 
-  
-  const newpic = [...project.pic];
+    const newpic = [...project.pic];
 
-  newpic[index] = uploadedFiles
+    newpic[index] = uploadedFiles;
 
-  setproject((prev) => ({
-    ...prev,
-    pic: newpic,
-  }));
-};
+    setproject((prev) => ({
+      ...prev,
+      pic: newpic,
+    }));
+  };
 
   function addFn3() {
     setunits((prevunits) => ({
@@ -1835,7 +1816,7 @@ console.log(project);
     unit_no: "",
     unit_type: "",
     category: "",
-    sub_category: [],
+    sub_category: "",
     block: "",
     size: "",
     land_type: "",
@@ -1885,7 +1866,6 @@ console.log(project);
     s_no: [],
     preview: [],
     descriptions: [],
-    category: [],
     action10: [],
     s_no1: [],
     url: [],
@@ -1897,58 +1877,95 @@ console.log(project);
     image: [""],
     action12: [],
   });
-  const unit_type = {
-    Plot: ["Vacant", "25% Built Up", "40% Built Up", "Fenced", "Boundry Wall"],
-    "Independent House": [
-      "Single Storey",
-      "Duplex",
-      "Triplex",
-      "Double Storey",
-      "Bunglow",
-      "Courtyard",
-      "Villa",
-      "2.5 Storey",
-      "Triple Storey",
-    ],
-    "Flat/Apartment": ["Studio", "Penthouse", "Duplex", "Triplex", "Simplex"],
-    "Builder Floor": ["Studio", "Duplex", "Penthouse", "Simplex"],
 
-    Shop: [
-      "Booth With Basement",
-      "Booth With First Floor",
-      "Booth With Basement & First Floor",
-      "Triple Storey",
-      "Double Storey",
-    ],
-    Showroom: [
-      "Ground Floor Builtup",
-      "Ground Floor Builtup With Basement",
-      "Double Storey",
-      "Double Storey With Basement",
-      "Double Height",
-      "Triple Storey Builtup",
-      "Triple Storey Builtup With Basement",
-    ],
-    "Office Space": ["Locable Office", "Virtual Office"],
-    "Retail Store": ["Hyper Market", "Departmetal Store"],
-    Soho: ["Soho"],
-    "Excutive Room": ["Room"],
+  useEffect(() => {
+    if (!units.size || !project?.add_size?.length) return;
 
-    Land: ["Cropland", "Woodland", "Pasture", "Commercial"],
-    "Farm House": ["Farm"],
-    Plots: ["1 Kanal", "10 Marla", "2 Kanal", "1 Acre", "2 Kanal"],
-    "Ware House": ["Wrhse"],
-    "Cold Storage": ["Cldstrg"],
-    "Rice Seller": ["Rcslr"],
-    Building: ["Bldg"],
-    Factory: ["Fctry"],
+    const size_data = project.add_size.find(
+      (item) => item.size_name?.trim() === units.size?.trim()
+    );
 
-    School: ["Nursery School", "Crech", "High School", "Primery School"],
-    Hotel: ["Hotel", "Guest House", "Homestays"],
-    Universities: ["Deemed", "Private"],
-    Hospital: ["Nursing Home", "Clinic"],
-    College: ["Art College", "Technical College", "Medical College"],
+    if (!size_data) return;
+
+    setunits((prev) => ({
+      ...prev,
+      size_length: size_data.length || "",
+      size_breadth: size_data.bredth || "",
+      size_total_area: size_data.total_area || "",
+      size_unit: size_data.yard1 || "",
+      size_total_area_unit: size_data.yard3 || "",
+    }));
+  }, [units.size, project.add_size]);
+
+  // get all builtup type
+  const [All_Builtup_Type, setAll_Builtup_Type] = useState([]);
+  const getall_builtup_type = async () => {
+    try {
+      setselect_loading("builtup-type");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "builtup_type");
+      params.append("parent_lookup_value", units.sub_category);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+      setAll_Builtup_Type(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading(false);
+    }
   };
+
+  // const unit_type = {
+  //   Plot: ["Vacant", "25% Built Up", "40% Built Up", "Fenced", "Boundry Wall"],
+  //   "Independent House": [
+  //     "Single Storey",
+  //     "Duplex",
+  //     "Triplex",
+  //     "Double Storey",
+  //     "Bunglow",
+  //     "Courtyard",
+  //     "Villa",
+  //     "2.5 Storey",
+  //     "Triple Storey",
+  //   ],
+  //   "Flat/Apartment": ["Studio", "Penthouse", "Duplex", "Triplex", "Simplex"],
+  //   "Builder Floor": ["Studio", "Duplex", "Penthouse", "Simplex"],
+
+  //   Shop: [
+  //     "Booth With Basement",
+  //     "Booth With First Floor",
+  //     "Booth With Basement & First Floor",
+  //     "Triple Storey",
+  //     "Double Storey",
+  //   ],
+  //   Showroom: [
+  //     "Ground Floor Builtup",
+  //     "Ground Floor Builtup With Basement",
+  //     "Double Storey",
+  //     "Double Storey With Basement",
+  //     "Double Height",
+  //     "Triple Storey Builtup",
+  //     "Triple Storey Builtup With Basement",
+  //   ],
+  //   "Office Space": ["Locable Office", "Virtual Office"],
+  //   "Retail Store": ["Hyper Market", "Departmetal Store"],
+  //   Soho: ["Soho"],
+  //   "Excutive Room": ["Room"],
+
+  //   Land: ["Cropland", "Woodland", "Pasture", "Commercial"],
+  //   "Farm House": ["Farm"],
+  //   Plots: ["1 Kanal", "10 Marla", "2 Kanal", "1 Acre", "2 Kanal"],
+  //   "Ware House": ["Wrhse"],
+  //   "Cold Storage": ["Cldstrg"],
+  //   "Rice Seller": ["Rcslr"],
+  //   Building: ["Bldg"],
+  //   Factory: ["Fctry"],
+
+  //   School: ["Nursery School", "Crech", "High School", "Primery School"],
+  //   Hotel: ["Hotel", "Guest House", "Homestays"],
+  //   Universities: ["Deemed", "Private"],
+  //   Hospital: ["Nursing Home", "Clinic"],
+  //   College: ["Art College", "Technical College", "Medical College"],
+  // };
 
   useEffect(() => {
     if (project?.name) {
@@ -2037,11 +2054,11 @@ console.log(project);
     });
   };
 
-  const handlepreviewchange = (index, event) => {
+  const handlepreviewchange = async(index, event) => {
     const newpreview = [...units.preview];
     const files = Array.from(event.target.files);
-
-    newpreview[index] = { files: files };
+    const uploadedFiles = await uploadFiles(files);
+    newpreview[index] = uploadedFiles;
     setunits({
       ...units,
       preview: newpreview,
@@ -2144,10 +2161,11 @@ console.log(project);
       linkded_contact: newlinkedcontact,
     });
   };
-  const handlepicchange1 = (index, event) => {
+ const handlepicchange1 = async(index, event) => {
     const newpic1 = [...units.image];
     const files = Array.from(event.target.files);
-    newpic1[index] = { files: files };
+    const uploadedFiles = await uploadFiles(files);
+    newpic1[index] = uploadedFiles;
     setunits({
       ...units,
       image: newpic1,
@@ -2973,124 +2991,23 @@ console.log(project);
 
   // ========================================add onwer end==============================================================================
 
-  const options = {
-    unit_type: {
-      Plot: [
-        "1 Kanal",
-        "12 Marla",
-        "3 Kanal",
-        "4 Kanal",
-        "5 Kanal",
-        "6 Kanal",
-        "7 Kanal",
-        "1 Acre",
-        "2 Acre",
-        "3 Acre",
-        "4 Acre",
-        "5 Acre",
-        "6 Acre",
-        "7 Acre",
-        "8 Acre",
-        "9 Acre",
-        "10 Acre",
-        "5 Marla",
-        "2 Kanal",
-        "16 Marla",
-        "14 Marla",
-        "12 Marla",
-        "10 Marla",
-        "8 Marla",
-        "6 Marla",
-        "4 Marla",
-        "3 Marla",
-        "2 Marla",
-      ],
-      "Independent House": [
-        "1 Kanal",
-        "2 Kanal",
-        "12 Marla",
-        "3 Kanal",
-        "4 Kanal",
-        "5 Kanal",
-        "6 Kanal",
-        "7 Kanal",
-        "1 Acre",
-        "2 Acre",
-        "3 Acre",
-        "4 Acre",
-        "5 Acre",
-        "6 Acre",
-        "7 Acre",
-        "8 Acre",
-        "9 Acre",
-        "10 Acre",
-        "5 Marla",
-        "16 Marla",
-        "14 Marla",
-        "10 Marla",
-        "8 Marla",
-        "6 Marla",
-        "4 Marla",
-        "3 Marla",
-        "2 Marla",
-      ],
-      "Flat/Apartment": [
-        "1 BHK",
-        "2 BHK",
-        "3 BHK",
-        "4 BHK",
-        "5 BHK",
-        ,
-        "STUDIO",
-      ],
-      "Builder Floor": [
-        "1 BHK",
-        "12 Marla",
-        "3 Kanal",
-        "4 Kanal",
-        "5 Kanal",
-        "6 Kanal",
-        "7 Kanal",
-        "1 Acre",
-        "2 Acre",
-        "3 Acre",
-        "4 Acre",
-        "5 Acre",
-        "6 Acre",
-        "7 Acre",
-        "8 Acre",
-        "9 Acre",
-        "10 Acre",
-        "5 Marla",
-        "2 BHK",
-        "3 BHK",
-        "4 BHK",
-        "5 BHK",
-        "STUDIO",
-      ],
-      Shop: ["BOOTH", "KIOSAK"],
-      Showroom: ["SCO", "SCF", "DSS"],
-      "Office Space": ["LOCABLE OFFICE", "VIRTUAL OFFICE"],
-      "Retail Store": ["HYPER MARKET", "DEPARTMETAL STORE"],
-      Soho: ["SOHO"],
-      "Excutive Room": ["ROOM"],
-      Land: ["CROPLAND", "WOODLAND", "PASTURE", "COMMERCIAL"],
-      "Farm House": ["FARM"],
-      Plots: ["1 KANAL", "10 MARLA", "2 KANAL", "1 ACRE", "2 KANAL"],
-      "Ware house": ["WRHSE"],
-      "Cold Storage": ["CLDSTRG"],
-      "Rice Seller": ["RCSLR"],
-      Building: ["BLDG"],
-      Factory: ["FCTRY"],
-      School: ["NURSERY SCHOOL", "CRECH", "HIGH SCHOOL", "PRIMERY SCHOOL"],
-      Hotel: ["HOTEL", "GUEST HOUSE", "HOMESTAYS"],
-      Universities: ["DEEMED", "PRIVATE"],
-      Hospital: ["NURSING HOME", "CLINIC"],
-      College: ["ART COLLEGE", "TECHNICAL COLLEGE", "MEDICAL COLLEGE"],
-    },
-  };
+  const [All_Property_Unit_Type, setAll_Property_Unit_Type] = useState([]);
 
-  const [availableunit, setavailableunit] = useState([]);
+  const getall_unit_type = async () => {
+    try {
+      setselect_loading("unit-type");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "property_unit_type");
+      params.append("parent_lookup_value", sizes.sub_category);
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      setAll_Property_Unit_Type(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading(false);
+    }
+  };
 
   const handlesizesubcategorychange = (event) => {
     const selectedSubcategory = event.target.value;
@@ -3100,9 +3017,6 @@ console.log(project);
       sub_category: selectedSubcategory,
       unit_type: "", // Reset designation when subcategory changes
     }));
-
-    // Update available designations based on selected profession subcategory
-    setavailableunit(options.unit_type[selectedSubcategory] || []);
   };
 
   const statesAndCities = {
@@ -3757,56 +3671,6 @@ console.log(project);
 
   const ustates = Object.keys(statesAndCities);
   const ucities = statesAndCities[units.ustate] || [];
-
-  const asianCountries = [
-    "Afghanistan",
-    "Armenia",
-    "Azerbaijan",
-    "Bahrain",
-    "Bangladesh",
-    "Bhutan",
-    "Brunei",
-    "Burma (Myanmar)",
-    "Cambodia",
-    "China",
-    "Cyprus",
-    "Georgia",
-    "India",
-    "Indonesia",
-    "Iran",
-    "Iraq",
-    "Israel",
-    "Japan",
-    "Jordan",
-    "Kazakhstan",
-    "Kuwait",
-    "Kyrgyzstan",
-    "Laos",
-    "Lebanon",
-    "Malaysia",
-    "Maldives",
-    "Mongolia",
-    "Nepal",
-    "North Korea",
-    "Oman",
-    "Pakistan",
-    "Palestine",
-    "Philippines",
-    "Qatar",
-    "Saudi Arabia",
-    "Singapore",
-    "South Korea",
-    "Sri Lanka",
-    "Syria",
-    "Tajikistan",
-    "Thailand",
-    "Timor-Leste",
-    "Turkmenistan",
-    "United Arab Emirates",
-    "Uzbekistan",
-    "Vietnam",
-    "Yemen",
-  ];
 
   const handleSuggestionClick1 = (contact, index) => {
     setShowSuggestions(false);
@@ -5675,26 +5539,26 @@ console.log(project);
                   </div>
                   <div className="col-md-7 custom-input"></div>
 
-                    <div className="col-md-10  custom-input">
-                                     <label className="form-label">Descriptions</label>
-                                     <div
-                                       style={{
-                                         border: "1px solid lightblue",
-                                         borderRadius: "8px",
-                                         overflow: "hidden",
-                                       }}
-                                     >
-                                       <ReactQuill
-                                         value={project.descriptions}
-                                         formats={formats}
-                                         modules={modules}
-                                         style={{ height: "200px" }}
-                                         onChange={(value) =>
-                                           setproject({ ...project, descriptions: value })
-                                         }
-                                       />
-                                     </div>
-                                   </div>
+                  <div className="col-md-10  custom-input">
+                    <label className="form-label">Descriptions</label>
+                    <div
+                      style={{
+                        border: "1px solid lightblue",
+                        borderRadius: "8px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <ReactQuill
+                        value={project.descriptions}
+                        formats={formats}
+                        modules={modules}
+                        style={{ height: "200px" }}
+                        onChange={(value) =>
+                          setproject({ ...project, descriptions: value })
+                        }
+                      />
+                    </div>
+                  </div>
                   <div className="col-md-2 custom-input"></div>
 
                   <div
@@ -5738,40 +5602,40 @@ console.log(project);
                       </div>
                     ))}
                   </div>
-                 <div className="col-md-6  custom-input">
-                                  <label className="form-label">Sub Category</label>
-              
-                                  <Select
-                                    className="form-control form-control-sm"
-                                    style={{ border: "none" }}
-                                    labelId="subcategory-label"
-                                    id="subcategory"
-                                    multiple
-                                    value={project.sub_category || []}
-                                    onChange={handleSubCategoryChange}
-                                    renderValue={(selected) => selected.join(", ")}
-                                  >
-                                    <MenuItem value="">
-                                      <em>Select</em>
-                                    </MenuItem>
-                                    {All_Sub_Category.map((subCategory) => (
-                                      <MenuItem
-                                        key={subCategory}
-                                        value={subCategory.lookup_value}
-                                      >
-                                        <Checkbox
-                                          checked={
-                                            project.sub_category.indexOf(
-                                              subCategory.lookup_value
-                                            ) > -1
-                                          }
-                                          onChange={() => handleToggle(subCategory)}
-                                        />
-                                        <ListItemText primary={subCategory.lookup_value} />
-                                      </MenuItem>
-                                    ))}
-                                  </Select>
-                                </div>
+                  <div className="col-md-6  custom-input">
+                    <label className="form-label">Sub Category</label>
+
+                    <Select
+                      className="form-control form-control-sm"
+                      style={{ border: "none" }}
+                      labelId="subcategory-label"
+                      id="subcategory"
+                      multiple
+                      value={project.sub_category || []}
+                      onChange={handleSubCategoryChange}
+                      renderValue={(selected) => selected.join(", ")}
+                    >
+                      <MenuItem value="">
+                        <em>Select</em>
+                      </MenuItem>
+                      {All_Sub_Category.map((subCategory) => (
+                        <MenuItem
+                          key={subCategory}
+                          value={subCategory.lookup_value}
+                        >
+                          <Checkbox
+                            checked={
+                              project.sub_category.indexOf(
+                                subCategory.lookup_value
+                              ) > -1
+                            }
+                            onChange={() => handleToggle(subCategory)}
+                          />
+                          <ListItemText primary={subCategory.lookup_value} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </div>
                   <div className="col-md-6 custom-input"></div>
 
                   <div className="col-md-2 custom-input">
@@ -5881,32 +5745,32 @@ console.log(project);
                     style={{ padding: "20px,0" }}
                   >
                     <div className="col-md-8  custom-input">
-                                       <label className="form-label">Status</label>
-                                       <select
-                                         className="form-control form-control-sm"
-                                         required="true"
-                                         value={project.status}
-                                         onClick={() => {
-                                           if (All_Project_Status.length === 0) {
-                                             getall_project_status();
-                                           }
-                                         }}
-                                         onChange={(e) =>
-                                           setproject({ ...project, status: e.target.value })
-                                         }
-                                       >
-                                         <option>---select project status---</option>
-                                         {select_loading === "project-status" ? (
-                                           <CircularProgress />
-                                         ) : (
-                                           All_Project_Status.map((name) => (
-                                             <option value={name.lookup_value}>
-                                               {name.lookup_value}
-                                             </option>
-                                           ))
-                                         )}
-                                       </select>
-                                     </div>
+                      <label className="form-label">Status</label>
+                      <select
+                        className="form-control form-control-sm"
+                        required="true"
+                        value={project.status}
+                        onClick={() => {
+                          if (All_Project_Status.length === 0) {
+                            getall_project_status();
+                          }
+                        }}
+                        onChange={(e) =>
+                          setproject({ ...project, status: e.target.value })
+                        }
+                      >
+                        <option>---select project status---</option>
+                        {select_loading === "project-status" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_Project_Status.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
+                      </select>
+                    </div>
                     <div className="col-md-4 custom-input"></div>
 
                     <div className="col-md-4 custom-input">
@@ -5952,206 +5816,206 @@ console.log(project);
                       />
                     </div>
 
-                 <div className="col-md-6 custom-input">
-                                    <label className="form-label">Parking Type</label>
-                                    <Select
-                                      className="form-control form-control-sm"
-                                      style={{ border: "none" }}
-                                      multiple
-                                      value={project.parking_type || []}
-                                      onChange={handleparkingChange}
-                                      renderValue={(selected) => selected.join(", ")}
-                                      onOpen={() => {
-                                        if (All_Parking_Type.length === 0) {
-                                          getall_parking_type();
-                                        }
-                                      }}
-                                    >
-                                      {select_loading === "parking-type" ? (
-                                        <CircularProgress />
-                                      ) : (
-                                        All_Parking_Type.map((name) => (
-                                          <MenuItem key={name} value={name.lookup_value}>
-                                            <Checkbox
-                                              checked={
-                                                project.parking_type.indexOf(
-                                                  name.lookup_value
-                                                ) > -1
-                                              }
-                                            />
-                                            <ListItemText primary={name.lookup_value} />
-                                          </MenuItem>
-                                        ))
-                                      )}
-                                    </Select>
-                                  </div>
-                                  <div className="col-md-6  custom-input">
-                                    <label className="form-label">Approved Bank</label>
-                                    <Select
-                                      className="form-control form-control-sm"
-                                      style={{ border: "none" }}
-                                      labelId="bank-select-label"
-                                      multiple
-                                      value={project.approved_bank || []}
-                                      onChange={handleChange}
-                                      renderValue={(selected) => selected.join(", ")}
-                                      onOpen={() => {
-                                        if (All_Bank.length === 0) {
-                                          getall_bank();
-                                        }
-                                      }}
-                                    >
-                                      {select_loading === "bank" ? (
-                                        <CircularProgress />
-                                      ) : (
-                                        All_Bank.map((name) => (
-                                          <MenuItem key={name} value={name.lookup_value}>
-                                            <Checkbox
-                                              checked={
-                                                project.approved_bank.indexOf(
-                                                  name.lookup_value
-                                                ) > -1
-                                              }
-                                            />
-                                            <ListItemText primary={name.lookup_value} />
-                                          </MenuItem>
-                                        ))
-                                      )}
-                                    </Select>
-                                  </div>
-                           <div className="col-md-3 custom-input">
-                              <label className="form-label">Approvals</label>
-                              {project.approvals.map((item, index) => (
-                                <select
-                                  required="true"
-                                  value={project.approvals[index]}
-                                  style={{ marginTop: "10px" }}
-                                  className="form-control form-control-sm"
-                                  onClick={() => {
-                                    if (All_Approvals.length === 0) {
-                                      getall_approvals();
-                                    }
-                                  }}
-                                  onChange={(event) =>
-                                    handleapprovalschange(index, event)
-                                  }
-                                >
-                                  <option>{project?.approvals[index]}</option>
-                                  <option>---choose---</option>
-                                  {select_loading === "approvals" ? (
-                                    <CircularProgress />
-                                  ) : (
-                                    All_Approvals.map((name) => (
-                                      <option value={name.lookup_value}>
-                                        {name.lookup_value}
-                                      </option>
-                                    ))
-                                  )}
-                                </select>
-                              ))}
-                            </div>
-                            <div className="col-md-2 custom-input">
-                              <label className="form-label">Registration No.</label>
-                              {project.registration_no.map((item, index) => (
-                                <input
-                                  type="text"
-                                  required="true"
-                                  style={{ marginTop: "10px" }}
-                                  className="form-control form-control-sm"
-                                  onChange={(event) =>
-                                    handleregistrationchange(index, event)
-                                  }
-                                  value={project.registration_no[index]}
-                                />
-                              ))}
-                            </div>
-                            <div className="col-md-2 custom-input">
-                              <label className="form-label">Date</label>
-                              {project.date.map((item, index) => (
-                                <input
-                                  type="date"
-                                  required="true"
-                                  style={{ marginTop: "10px" }}
-                                  className="form-control form-control-sm"
-                                  placeholder="enter phone number"
-                                  onChange={(event) => handledatechange(index, event)}
-                                />
-                              ))}
-                            </div>
-                            <div className="col-md-2 custom-input">
-                              <label
-                                className="form-label"
-                                style={{ visibility: "hidden" }}
-                              >
-                                Pic
-                              </label>
-                              {project.pic.map((item, index) => (
-                                <div key={index} className="custom-file-wrapper mt-2">
-                                  <input
-                                    multiple
-                                    type="file"
-                                    id={`doc-upload-${index}`}
-                                    name="pic"
-                                    style={{ marginTop: "10px", display: "none" }}
-                                    className="form-control form-control-sm"
-                                    onChange={(event) => handlepicchange(index, event)}
-                                  />
-                                  
-                                  <label
-                                    htmlFor={`doc-upload-${index}`}
-                                    className="upload-label"
-                                  >
-                                    <i
-                                      className="bi bi-image-fill me-2"
-                                      style={{ fontSize: "1.4rem", cursor: "pointer" }}
-                                    ></i>{" "}
-                                    Upload
-                                  </label>
-                                  <div className="d-flex flex-wrap gap-2 mt-2">
-                                    {
-                                    select_loading==="project_pic_upload" ? (
-                                      <CircularProgress size={24}/>
-                                    ) :
-                                    (item || []).map((obj, i) => (
-                                      <div key={i} style={{ position: "relative" }}>
-                                        <img
-                                          src={obj}
-                                          alt="Preview"
-                                          style={{
-                                            width: "80px",
-                                            height: "80px",
-                                            objectFit: "cover",
-                                            borderRadius: "6px",
-                                            border: "1px solid #ccc",
-                                          }}
-                                        />
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                            <div
-                              className="col-md-1 custom-input"
-                              style={{ marginTop: "50px" }}
-                            >
-                              {project.approvals.map((item, index) => (
-                                <div>
-                                  {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
-                                  <span
-                                    class="material-icons mt-3"
+                    <div className="col-md-6 custom-input">
+                      <label className="form-label">Parking Type</label>
+                      <Select
+                        className="form-control form-control-sm"
+                        style={{ border: "none" }}
+                        multiple
+                        value={project.parking_type || []}
+                        onChange={handleparkingChange}
+                        renderValue={(selected) => selected.join(", ")}
+                        onOpen={() => {
+                          if (All_Parking_Type.length === 0) {
+                            getall_parking_type();
+                          }
+                        }}
+                      >
+                        {select_loading === "parking-type" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_Parking_Type.map((name) => (
+                            <MenuItem key={name} value={name.lookup_value}>
+                              <Checkbox
+                                checked={
+                                  project.parking_type.indexOf(
+                                    name.lookup_value
+                                  ) > -1
+                                }
+                              />
+                              <ListItemText primary={name.lookup_value} />
+                            </MenuItem>
+                          ))
+                        )}
+                      </Select>
+                    </div>
+                    <div className="col-md-6  custom-input">
+                      <label className="form-label">Approved Bank</label>
+                      <Select
+                        className="form-control form-control-sm"
+                        style={{ border: "none" }}
+                        labelId="bank-select-label"
+                        multiple
+                        value={project.approved_bank || []}
+                        onChange={handleChange}
+                        renderValue={(selected) => selected.join(", ")}
+                        onOpen={() => {
+                          if (All_Bank.length === 0) {
+                            getall_bank();
+                          }
+                        }}
+                      >
+                        {select_loading === "bank" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_Bank.map((name) => (
+                            <MenuItem key={name} value={name.lookup_value}>
+                              <Checkbox
+                                checked={
+                                  project.approved_bank.indexOf(
+                                    name.lookup_value
+                                  ) > -1
+                                }
+                              />
+                              <ListItemText primary={name.lookup_value} />
+                            </MenuItem>
+                          ))
+                        )}
+                      </Select>
+                    </div>
+                    <div className="col-md-3 custom-input">
+                      <label className="form-label">Approvals</label>
+                      {project.approvals.map((item, index) => (
+                        <select
+                          required="true"
+                          value={project.approvals[index]}
+                          style={{ marginTop: "10px" }}
+                          className="form-control form-control-sm"
+                          onClick={() => {
+                            if (All_Approvals.length === 0) {
+                              getall_approvals();
+                            }
+                          }}
+                          onChange={(event) =>
+                            handleapprovalschange(index, event)
+                          }
+                        >
+                          <option>{project?.approvals[index]}</option>
+                          <option>---choose---</option>
+                          {select_loading === "approvals" ? (
+                            <CircularProgress />
+                          ) : (
+                            All_Approvals.map((name) => (
+                              <option value={name.lookup_value}>
+                                {name.lookup_value}
+                              </option>
+                            ))
+                          )}
+                        </select>
+                      ))}
+                    </div>
+                    <div className="col-md-2 custom-input">
+                      <label className="form-label">Registration No.</label>
+                      {project.registration_no.map((item, index) => (
+                        <input
+                          type="text"
+                          required="true"
+                          style={{ marginTop: "10px" }}
+                          className="form-control form-control-sm"
+                          onChange={(event) =>
+                            handleregistrationchange(index, event)
+                          }
+                          value={project.registration_no[index]}
+                        />
+                      ))}
+                    </div>
+                    <div className="col-md-2 custom-input">
+                      <label className="form-label">Date</label>
+                      {project.date.map((item, index) => (
+                        <input
+                          type="date"
+                          required="true"
+                          style={{ marginTop: "10px" }}
+                          className="form-control form-control-sm"
+                          placeholder="enter phone number"
+                          onChange={(event) => handledatechange(index, event)}
+                        />
+                      ))}
+                    </div>
+                    <div className="col-md-2 custom-input">
+                      <label
+                        className="form-label"
+                        style={{ visibility: "hidden" }}
+                      >
+                        Pic
+                      </label>
+                      {project.pic.map((item, index) => (
+                        <div key={index} className="custom-file-wrapper mt-2">
+                          <input
+                            multiple
+                            type="file"
+                            id={`doc-upload-${index}`}
+                            name="pic"
+                            style={{ marginTop: "10px", display: "none" }}
+                            className="form-control form-control-sm"
+                            onChange={(event) => handlepicchange(index, event)}
+                          />
+
+                          <label
+                            htmlFor={`doc-upload-${index}`}
+                            className="upload-label"
+                          >
+                            <i
+                              className="bi bi-image-fill me-2"
+                              style={{ fontSize: "1.4rem", cursor: "pointer" }}
+                            ></i>{" "}
+                            Upload
+                          </label>
+                          <div className="d-flex flex-wrap gap-2 mt-2">
+                            {select_loading === "project_pic_upload" ? (
+                              <CircularProgress size={24} />
+                            ) : (
+                              (item || []).map((obj, i) => (
+                                <div key={i} style={{ position: "relative" }}>
+                                  <img
+                                    src={obj}
+                                    alt="Preview"
                                     style={{
-                                      color: "red",
-                                      fontSize: "24px",
-                                      cursor: "pointer",
+                                      width: "80px",
+                                      height: "80px",
+                                      objectFit: "cover",
+                                      borderRadius: "6px",
+                                      border: "1px solid #ccc",
                                     }}
-                                    onClick={() => deleteall1(index)}
-                                  >
-                                    delete
-                                  </span>
+                                  />
                                 </div>
-                              ))}
-                            </div>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div
+                      className="col-md-1 custom-input"
+                      style={{ marginTop: "50px" }}
+                    >
+                      {project.approvals.map((item, index) => (
+                        <div>
+                          {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
+                          <span
+                            class="material-icons mt-3"
+                            style={{
+                              color: "red",
+                              fontSize: "24px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => deleteall1(index)}
+                          >
+                            delete
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                     <div className="col-md-1 custom-input">
                       <label className="form-label">add</label>
                       <button
@@ -6261,28 +6125,9 @@ console.log(project);
                     className="col-md-12"
                     style={{ border: "1px solid black", padding: "10px" }}
                   >
-                    {/* <div style={{border:"1px solid black",marginTop:"10px"}}>
-                {mapLoaded && (
-                          <LoadScript
-                            googleMapsApiKey="AIzaSyACfBzaJSVH8eur7U9JxdjI1bAeTLXsUJc"
-                                                                >
-                                    <GoogleMap
-                              mapContainerStyle={mapStyles}
-                                zoom={13}
-                                center={defaultCenter}
-                                >
-                            <Marker
-                              position={{ lat: defaultCenter.lat, lng: defaultCenter.lng }}
-                              draggable={true}
-                              onDragEnd={handleMarkerDragEnd}
-                            />
-                            </GoogleMap>
-                            </LoadScript>
-                )}
-                          </div> */}
                     <div className="row">
-                      <div className="col-md-6">
-                        <label className="form-label">Location</label>
+                      <div className="col-md-6 custom-input">
+                        <label className="form-label ">Location</label>
                         <input
                           type="text"
                           className="form-control form-control-sm"
@@ -6295,7 +6140,7 @@ console.log(project);
                         />
                       </div>
                       {/* <div className='col-md-5'></div> */}
-                      <div className="col-md-1">
+                      <div className="col-md-1 custom-input">
                         <label
                           className="form-label"
                           style={{ visibility: "hidden" }}
@@ -6310,8 +6155,8 @@ console.log(project);
                           Get
                         </button>
                       </div>
-                      <div className="col-md-5"></div>
-                      <div className="col-md-5">
+                      <div className="col-md-5 custom-input"></div>
+                      <div className="col-md-5 custom-input">
                         <label className="form-label">Lattitude</label>
                         <input
                           type="number"
@@ -6325,7 +6170,7 @@ console.log(project);
                           readOnly
                         />
                       </div>
-                      <div className="col-md-5">
+                      <div className="col-md-5 custom-input">
                         <label className="form-label">Langitude</label>
                         <input
                           type="number"
@@ -6342,7 +6187,7 @@ console.log(project);
                     </div>
                   </div>
 
-                  <div className="col-md-12">
+                  <div className="col-md-12 custom-input">
                     <label
                       className="form-label"
                       style={{ fontSize: "16px", marginTop: "10px" }}
@@ -6358,7 +6203,7 @@ console.log(project);
                       padding: "10px",
                     }}
                   >
-                    <div className="col-md-8">
+                    <div className="col-md-8 custom-input">
                       <label className="form-label">ADDRESS</label>
                       <input
                         type="text"
@@ -6369,8 +6214,8 @@ console.log(project);
                         }
                       />
                     </div>
-                    <div className="col-md-4"></div>
-                    <div className="col-md-8">
+                    <div className="col-md-4 custom-input"></div>
+                    <div className="col-md-8 custom-input">
                       <label className="form-label">STREET</label>
                       <input
                         type="text"
@@ -6381,8 +6226,8 @@ console.log(project);
                         }
                       />
                     </div>
-                    <div className="col-md-4"></div>
-                    <div className="col-md-4">
+                    <div className="col-md-4 custom-input"></div>
+                    <div className="col-md-4 custom-input">
                       <label className="form-label">LOCALITY</label>
                       <input
                         type="text"
@@ -6393,7 +6238,7 @@ console.log(project);
                         }
                       />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-4 custom-input">
                       <label className="form-label">CITY</label>
                       <select
                         type="text"
@@ -6401,16 +6246,24 @@ console.log(project);
                         onChange={(e) =>
                           setproject({ ...project, city: e.target.value })
                         }
+                        onClick={() => {
+                          getall_city();
+                        }}
                       >
                         <option>{project.city} </option>
-                        {cities.map((city) => (
-                          <option key={city} value={city}>
-                            {city}
-                          </option>
-                        ))}
+                        <option>---Select---</option>
+                        {select_loading === "city" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_City.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
                       </select>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-4 custom-input">
                       <label className="form-label">ZIP</label>
                       <input
                         type="text"
@@ -6421,23 +6274,33 @@ console.log(project);
                         }
                       />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 custom-input">
                       <label className="form-label">State</label>
                       <select
                         className="form-control form-control-sm"
                         onChange={(e) =>
                           setproject({ ...project, state: e.target.value })
                         }
+                        onClick={() => {
+                          if (All_State.length === 0) {
+                            getall_state();
+                          }
+                        }}
                       >
                         <option>{project.state}</option>
-                        {states.map((state) => (
-                          <option key={state} value={state}>
-                            {state}
-                          </option>
-                        ))}
+                        <option>---Select---</option>
+                        {select_loading === "state" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_State.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
                       </select>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 custom-input">
                       <label className="form-label">Country</label>
                       <select
                         className="form-control form-control-sm"
@@ -6458,101 +6321,31 @@ console.log(project);
             {/* ------------------------------------------------------location Details end--------------------------------------------------------------  */}
 
             {/*-------------------------------------------------- block details start--------------------------------------------------------- */}
-            <div
-              className="col-md-12"
-              id="block"
-              style={{ display: "none", marginTop: "-80px" }}
-            >
-              <div className="p-3 py-5">
-                <div className="row ">
-                  <div className="col-md-7"></div>
-                  <div className="col-md-2">
-                    <button
-                      onClick={handleShow1}
-                      style={{
-                        width: "100%",
-                        height: "45px",
-                        padding: "6px 12px",
-                        borderRadius: "20px",
-                        fontWeight: "600",
-                        fontSize: "14px",
-                        letterSpacing: "0.6px",
-                        backgroundColor: "#2c3e50", // dark navy blue, classy and modern
-                        color: "#ecf0f1", // light grey text
-                        border: "1.5px solid #2c3e50",
-                        transition: "all 0.3s ease",
-                        cursor: "pointer",
-                        outline: "none",
-                        userSelect: "none",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#ecf0f1"; // light background on hover
-                        e.currentTarget.style.color = "#2c3e50"; // dark text on hover
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow =
-                          "0 4px 12px rgba(44, 62, 80, 0.2)";
-                        e.currentTarget.style.transform = "scale(1.05)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "#2c3e50";
-                        e.currentTarget.style.color = "#ecf0f1";
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow = "none";
-                        e.currentTarget.style.transform = "scale(1)";
-                      }}
-                    >
-                      Add Block
-                    </button>
-                  </div>
+            <div id="block" className="hidden w-full mt-0">
+              <div className="w-full bg-white rounded-lg shadow-sm p-4">
+                {/* Actions Row */}
+                <div className="w-full flex flex-wrap items-center justify-end gap-3">
+                  <button
+                    onClick={handleShow1}
+                    className="btn-primary-custom w-auto px-4"
+                  >
+                    Add Block
+                  </button>
 
-                  <div className="col-md-2">
-                    <button
-                      onClick={handleShow11}
-                      style={{
-                        width: "100%",
-                        height: "45px",
-                        padding: "6px 12px",
-                        borderRadius: "20px",
-                        fontWeight: "600",
-                        fontSize: "14px",
-                        letterSpacing: "0.6px",
-                        backgroundColor: "#2c3e50", // dark navy blue, classy and modern
-                        color: "#ecf0f1", // light grey text
-                        border: "1.5px solid #2c3e50",
-                        transition: "all 0.3s ease",
-                        cursor: "pointer",
-                        outline: "none",
-                        userSelect: "none",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#ecf0f1"; // light background on hover
-                        e.currentTarget.style.color = "#2c3e50"; // dark text on hover
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow =
-                          "0 4px 12px rgba(44, 62, 80, 0.2)";
-                        e.currentTarget.style.transform = "scale(1.05)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "#2c3e50";
-                        e.currentTarget.style.color = "#ecf0f1";
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow = "none";
-                        e.currentTarget.style.transform = "scale(1)";
-                      }}
-                    >
-                      Import Block
-                    </button>
-                  </div>
-                  <Tooltip title="Download Data.." arrow>
-                    <div className="col-md-1">
-                      <img
-                        src="https://cdn-icons-png.flaticon.com/512/4007/4007698.png"
-                        onClick={generateExcelFileblock}
-                        style={{ height: "40px", cursor: "pointer" }}
-                        alt=""
-                      ></img>
-                    </div>
-                  </Tooltip>
+                  <button
+                    onClick={handleShow11}
+                    className="btn-primary-custom w-auto px-4"
+                  >
+                    Import Block
+                  </button>
+
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/4007/4007698.png"
+                    onClick={generateExcelFileblock}
+                    className="h-10 cursor-pointer hover:scale-110 transition"
+                    alt="download"
+                  />
+
                   <TableContainer
                     component={Paper}
                     style={{
@@ -6668,7 +6461,7 @@ console.log(project);
                     <Modal.Body>
                       <div style={{ width: "100%" }}>
                         <div className="row" id="basicdetails1">
-                          <div className="col-md-6">
+                          <div className="col-md-6 custom-input">
                             <label className="form-label">
                               Block/Tower Name
                             </label>
@@ -6685,24 +6478,40 @@ console.log(project);
                               }
                             />
                           </div>
-                          <div className="col-md-6"></div>
+                          <div className="col-md-6 custom-input"></div>
 
-                          <div className="col-md-12">
+                          <div className="col-md-12 custom-input">
                             <label className="form-label">Category</label>
                           </div>
                           <div
-                            className="col-md-12"
+                            className="col-md-12 custom-input"
                             style={{ display: "flex", flexWrap: "wrap" }}
                           >
-                            {project.category.map((type) => (
-                              <div className="col-md-3" key={type}>
+                            {project?.category.map((type) => (
+                              <div className="col-md-2 custom-input" key={type}>
                                 <button
-                                  className="form-control form-control-sm"
+                                  className="form-control form-control-sm category-button"
                                   onClick={() => handleTypeClick3(type)}
                                   style={{
                                     backgroundColor: selectedType2(type)
-                                      ? "green"
-                                      : "",
+                                      ? "#28a745"
+                                      : "#f8f9fa", // green or light gray
+                                    color: selectedType2(type)
+                                      ? "white"
+                                      : "#333",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "6px",
+                                    fontWeight: "bold",
+                                    transition: "all 0.3s ease",
+                                    boxShadow: selectedType2(type)
+                                      ? "0 4px 10px rgba(40, 167, 69, 0.4)"
+                                      : "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.transform = "scale(1.05)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.transform = "scale(1)";
                                   }}
                                 >
                                   {type}
@@ -6711,7 +6520,7 @@ console.log(project);
                             ))}
                           </div>
 
-                          <div className="col-md-12">
+                          <div className="col-md-12 custom-input">
                             <label className="form-label">Sub Category</label>
                             <Select
                               className="form-control form-control-sm"
@@ -6741,7 +6550,7 @@ console.log(project);
 
                           {project.category.includes("Agricultural") && (
                             <>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label className="form-label">Land Area</label>
                                 <input
                                   type="text"
@@ -6755,7 +6564,7 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label
                                   className="form-label"
                                   style={{ visibility: "hidden" }}
@@ -6779,7 +6588,7 @@ console.log(project);
                                   <option>Hectare</option>
                                 </select>
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label className="form-label">
                                   TOTAL Units
                                 </label>
@@ -6796,8 +6605,11 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-3"></div>
-                              <div className="col-md-10" id="zonelist">
+                              <div className="col-md-3 custom-input"></div>
+                              <div
+                                className="col-md-10 custom-input"
+                                id="zonelist"
+                              >
                                 <label className="form-label">Zone</label>
                                 <Select
                                   className="form-control form-control-sm"
@@ -6819,7 +6631,7 @@ console.log(project);
                                   ))}
                                 </Select>
                               </div>
-                              <div className="col-md-7">
+                              <div className="col-md-7 custom-input">
                                 <label className="form-label">
                                   Rera Number
                                 </label>
@@ -6839,7 +6651,7 @@ console.log(project);
                           )}
                           {!project.category.includes("Agricultural") && (
                             <>
-                              <div className="col-md-2">
+                              <div className="col-md-2 custom-input">
                                 <label className="form-label">Land Area</label>
                                 <input
                                   type="text"
@@ -6853,7 +6665,7 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-2">
+                              <div className="col-md-2 custom-input">
                                 <label
                                   className="form-label"
                                   style={{ visibility: "hidden" }}
@@ -6877,7 +6689,7 @@ console.log(project);
                                   <option>Hectare</option>
                                 </select>
                               </div>
-                              <div className="col-md-2">
+                              <div className="col-md-2 custom-input">
                                 <label className="form-label">
                                   Total Blocks
                                 </label>
@@ -6894,7 +6706,7 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-2">
+                              <div className="col-md-2 custom-input">
                                 <label className="form-label">
                                   TOTAL Floor
                                 </label>
@@ -6911,7 +6723,7 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-2">
+                              <div className="col-md-2 custom-input">
                                 <label className="form-label">
                                   TOTAL Units
                                 </label>
@@ -6928,8 +6740,8 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-2"></div>
-                              <div className="col-md-12">
+                              <div className="col-md-2 custom-input"></div>
+                              <div className="col-md-12 custom-input">
                                 <label className="form-label">Status</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -6939,16 +6751,26 @@ console.log(project);
                                       status: e.target.value,
                                     })
                                   }
+                                  onClick={() => {
+                                    if (All_Project_Status.length === 0) {
+                                      getall_project_status();
+                                    }
+                                  }}
                                 >
-                                  <option>---Select---</option>
-                                  <option>Upcoming</option>
-                                  <option>Pre Launch</option>
-                                  <option>Launched</option>
-                                  <option>Under Construction</option>
-                                  <option>Ready to Move</option>
+                                  <option>{block?.status}</option>
+                                  <option>---select project status---</option>
+                                  {select_loading === "project-status" ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    All_Project_Status.map((name) => (
+                                      <option value={name.lookup_value}>
+                                        {name.lookup_value}
+                                      </option>
+                                    ))
+                                  )}
                                 </select>
                               </div>
-                              <div className="col-md-4">
+                              <div className="col-md-4 custom-input">
                                 <label className="form-label">
                                   Launched On
                                 </label>
@@ -6964,7 +6786,7 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-4">
+                              <div className="col-md-4 custom-input">
                                 <label className="form-label">
                                   Expected Competion
                                 </label>
@@ -6980,7 +6802,7 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-4">
+                              <div className="col-md-4 custom-input">
                                 <label className="form-label">Possession</label>
                                 <input
                                   type="date"
@@ -6995,7 +6817,7 @@ console.log(project);
                                 />
                               </div>
 
-                              <div className="col-md-10">
+                              <div className="col-md-10 custom-input">
                                 <label className="form-label">
                                   Parking Type
                                 </label>
@@ -7029,8 +6851,8 @@ console.log(project);
                                   ))}
                                 </Select>
                               </div>
-                              <div className="col-md-6"></div>
-                              <div className="col-md-7">
+                              <div className="col-md-6 custom-input"></div>
+                              <div className="col-md-7 custom-input">
                                 <label className="form-label">
                                   Rera Number
                                 </label>
@@ -7066,96 +6888,26 @@ console.log(project);
             {/*--------------------================================= block details end------------------------------============================== */}
 
             {/*------------------------------======================== size details start================----------------------------------- */}
-            <div
-              className="col-md-12"
-              id="sizedetails"
-              style={{
-                display: "none",
-                marginTop: "-80px",
-                lineHeight: "30px",
-              }}
-            >
-              <div className="p-3 py-5">
-                <div className="row ">
-                  <div className="col-md-7"></div>
-                  <div className="col-md-2">
-                    <button
-                      onClick={handleShow2}
-                      style={{
-                        width: "100%",
-                        padding: "6px 12px",
-                        borderRadius: "20px",
-                        fontWeight: "600",
-                        fontSize: "14px",
-                        letterSpacing: "0.6px",
-                        backgroundColor: "#2c3e50", // dark navy blue, classy and modern
-                        color: "#ecf0f1", // light grey text
-                        border: "1.5px solid #2c3e50",
-                        transition: "all 0.3s ease",
-                        cursor: "pointer",
-                        outline: "none",
-                        userSelect: "none",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#ecf0f1"; // light background on hover
-                        e.currentTarget.style.color = "#2c3e50"; // dark text on hover
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow =
-                          "0 4px 12px rgba(44, 62, 80, 0.2)";
-                        e.currentTarget.style.transform = "scale(1.05)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "#2c3e50";
-                        e.currentTarget.style.color = "#ecf0f1";
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow = "none";
-                        e.currentTarget.style.transform = "scale(1)";
-                      }}
-                    >
-                      Add Size
-                    </button>
-                  </div>
+            <div id="sizedetails" className="hidden w-full mt-0">
+              <div className="w-full bg-white rounded-lg shadow-sm p-4">
+                {/* Actions Row */}
+                <div className="w-full flex flex-wrap items-center justify-end gap-3">
+                  <button
+                    onClick={handleShow2}
+                    className="btn-primary-custom w-auto px-4"
+                  >
+                    Add Size
+                  </button>
 
-                  <div className="col-md-2">
-                    <button
-                      onClick={handleShow10}
-                      style={{
-                        width: "100%",
-                        padding: "6px 12px",
-                        borderRadius: "20px",
-                        fontWeight: "600",
-                        fontSize: "14px",
-                        letterSpacing: "0.6px",
-                        backgroundColor: "#2c3e50", // dark navy blue, classy and modern
-                        color: "#ecf0f1", // light grey text
-                        border: "1.5px solid #2c3e50",
-                        transition: "all 0.3s ease",
-                        cursor: "pointer",
-                        outline: "none",
-                        userSelect: "none",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#ecf0f1"; // light background on hover
-                        e.currentTarget.style.color = "#2c3e50"; // dark text on hover
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow =
-                          "0 4px 12px rgba(44, 62, 80, 0.2)";
-                        e.currentTarget.style.transform = "scale(1.05)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "#2c3e50";
-                        e.currentTarget.style.color = "#ecf0f1";
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow = "none";
-                        e.currentTarget.style.transform = "scale(1)";
-                      }}
-                    >
-                      Import Size
-                    </button>
-                  </div>
+                  <button
+                    onClick={handleShow10}
+                    className="btn-primary-custom w-auto px-4"
+                  >
+                    Import Size
+                  </button>
 
                   <Tooltip title="Download Data.." arrow>
-                    <div className="col-md-1">
+                    <div className="col-md-1  custom-input">
                       <img
                         src="https://cdn-icons-png.flaticon.com/512/4007/4007698.png"
                         onClick={generateExcelFilesize}
@@ -7164,6 +6916,7 @@ console.log(project);
                       ></img>
                     </div>
                   </Tooltip>
+
                   <TableContainer
                     component={Paper}
                     style={{
@@ -7268,7 +7021,7 @@ console.log(project);
                     <Modal.Body>
                       <div style={{ width: "100%" }}>
                         <div className="row" id="basicdetails1">
-                          <div className="col-md-8">
+                          <div className="col-md-8 custom-input">
                             <label className="form-label">Size Name</label>
                             <input
                               type="text"
@@ -7279,9 +7032,9 @@ console.log(project);
                               placeholder="first name"
                             />
                           </div>
-                          <div className="col-md-4"></div>
+                          <div className="col-md-4 custom-input"></div>
 
-                          <div className="col-md-8">
+                          <div className="col-md-8 custom-input">
                             <label className="form-label">Block</label>
                             <select
                               className="form-control form-control-sm"
@@ -7295,13 +7048,13 @@ console.log(project);
                               ))}
                             </select>
                           </div>
-                          <div className="col-md-4"></div>
+                          <div className="col-md-4 custom-input"></div>
 
-                          <div className="col-md-12">
+                          <div className="col-md-12 custom-input">
                             <label className="form-label">Category</label>
                           </div>
                           <div
-                            className="col-md-12"
+                            className="col-md-12 custom-input"
                             style={{ display: "flex" }}
                           >
                             <div
@@ -7325,7 +7078,7 @@ console.log(project);
                             </div>
                           </div>
 
-                          <div className="col-md-12">
+                          <div className="col-md-12 custom-input">
                             <label className="form-label">Sub Category</label>
                             <select
                               className="form-control form-control-sm"
@@ -7342,7 +7095,7 @@ console.log(project);
 
                           {!project.category.includes("Agricultural") && (
                             <>
-                              <div className="col-md-6">
+                              <div className="col-md-6 custom-input">
                                 <label className="form-label">Unit Type</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -7352,20 +7105,30 @@ console.log(project);
                                       unit_type: e.target.value,
                                     })
                                   }
+                                  onClick={() => {
+                                    getall_unit_type();
+                                  }}
+                                  value={sizes.unit_type}
                                 >
-                                  <option>---select---</option>
-                                  {availableunit.map((item) => (
-                                    <option>{item}</option>
-                                  ))}
+                                  <option>---Select---</option>
+                                  {select_loading === "unit-type" ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    All_Property_Unit_Type.map((name) => (
+                                      <option value={name.lookup_value}>
+                                        {name.lookup_value}
+                                      </option>
+                                    ))
+                                  )}
                                 </select>
                               </div>
-                              <div className="col-md-6"></div>
+                              <div className="col-md-6 custom-input"></div>
                             </>
                           )}
 
                           {project.category.includes("Agricultural") && (
                             <>
-                              <div className="col-md-4">
+                              <div className="col-md-4 custom-input">
                                 <label className="form-label">Type</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -7379,38 +7142,12 @@ console.log(project);
                                   <option>Marla</option>
                                 </select>
                               </div>
-                              <div className="col-md-8"></div>
-
-                              {/* <div className="col-md-3"><label className="form-label" style={{visibility:"hidden"}}>Total Seleble Area</label><input type='text' className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,length:e.target.value})}/></div>
-                    <div className="col-md-3"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
-                                <option>Yard</option>
-                                <option>Sq Feet</option>
-                                <option>Plot</option>
-                                <option>All Users</option>
-                                </select>
-                             </div>
-                             <div className='col-md-6'></div>
-                
-                             <div className="col-md-3"><label className="form-label" style={{visibility:"hidden"}}> Carpet Area</label><input type='text' onBlur={calculateTotalArea}  className='form-control form-control-sm' onChange={(e)=>setsizes({...sizes,bredth:e.target.value})}/></div>
-                    <div className="col-md-3"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
-                                <option>Yard</option>
-                                <option>Sq Feet</option>
-                                <option>Plot</option>
-                                <option>All Users</option>
-                                </select>
-                             </div>
-                             <div className="col-md-3"><label className="form-label" style={{visibility:"hidden"}}> Total Area</label><input type='text' className='form-control form-control-sm'  value={sizes.total_area} readOnly /></div>
-                    <div className="col-md-3"><label className="form-label" style={{visibility:"hidden"}}>Measurement</label><select  className="form-control form-control-sm">
-                                <option>Sq Yard</option>
-                                <option>Plot</option>
-                                <option>All Users</option>
-                                </select>
-                             </div> */}
+                              <div className="col-md-8 custom-input"></div>
                             </>
                           )}
 
                           <div
-                            className="col-md-6"
+                            className="col-md-6 custom-input"
                             style={{ marginTop: "10px" }}
                           >
                             <input
@@ -7431,7 +7168,7 @@ console.log(project);
                                 border: "1px dashed black",
                               }}
                             >
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label className="form-label">
                                   Total Seleble Area
                                 </label>
@@ -7446,7 +7183,7 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label
                                   className="form-label"
                                   style={{ visibility: "hidden" }}
@@ -7468,8 +7205,8 @@ console.log(project);
                                   <option>Inch</option>
                                 </select>
                               </div>
-                              <div className="col-md-6"></div>
-                              <div className="col-md-3">
+                              <div className="col-md-6 custom-input"></div>
+                              <div className="col-md-3 custom-input">
                                 <label className="form-label">
                                   {" "}
                                   Covered Area
@@ -7485,7 +7222,7 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label
                                   className="form-label"
                                   style={{ visibility: "hidden" }}
@@ -7496,8 +7233,8 @@ console.log(project);
                                   <option>{sizes.sq_feet1}</option>
                                 </select>
                               </div>
-                              <div className="col-md-6"></div>
-                              <div className="col-md-3">
+                              <div className="col-md-6 custom-input"></div>
+                              <div className="col-md-3 custom-input">
                                 <label className="form-label">
                                   {" "}
                                   Carpet Area
@@ -7514,7 +7251,7 @@ console.log(project);
                                   onBlur={totalpercentage}
                                 />
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label
                                   className="form-label"
                                   style={{ visibility: "hidden" }}
@@ -7525,7 +7262,7 @@ console.log(project);
                                   <option>{sizes.sq_feet1}</option>
                                 </select>
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label className="form-label"> Loading</label>
                                 <input
                                   type="text"
@@ -7533,7 +7270,7 @@ console.log(project);
                                   value={sizes.loading}
                                 />
                               </div>
-                              <div className="col-md-2">
+                              <div className="col-md-2 custom-input">
                                 <label
                                   className="form-label"
                                   style={{ visibility: "hidden" }}
@@ -7544,12 +7281,12 @@ console.log(project);
                                   <option>%</option>
                                 </select>
                               </div>
-                              <div className="col-md-1"></div>
+                              <div className="col-md-1 custom-input"></div>
                             </div>
                           )}
 
                           <div
-                            className="col-md-6"
+                            className="col-md-6 custom-input"
                             style={{ marginTop: "10px" }}
                           >
                             <input
@@ -7569,7 +7306,7 @@ console.log(project);
                                 border: "1px dashed black",
                               }}
                             >
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label className="form-label">
                                   Total Length
                                 </label>
@@ -7584,7 +7321,7 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label
                                   className="form-label"
                                   style={{ visibility: "hidden" }}
@@ -7607,9 +7344,9 @@ console.log(project);
                                   <option>Inch</option>
                                 </select>
                               </div>
-                              <div className="col-md-6"></div>
+                              <div className="col-md-6 custom-input"></div>
 
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label className="form-label">
                                   {" "}
                                   Total Breadth
@@ -7626,7 +7363,7 @@ console.log(project);
                                   }
                                 />
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label
                                   className="form-label"
                                   style={{ visibility: "hidden" }}
@@ -7646,7 +7383,7 @@ console.log(project);
                                   <option>{sizes.yard1}</option>
                                 </select>
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label className="form-label">
                                   {" "}
                                   Total Area
@@ -7658,7 +7395,7 @@ console.log(project);
                                   className="form-control form-control-sm"
                                 />
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3 custom-input">
                                 <label
                                   className="form-label"
                                   style={{ visibility: "hidden" }}
@@ -7702,105 +7439,35 @@ console.log(project);
 
             {/*---------------------------------=========================== unit details start-------------------===================================== */}
 
-            <div
-              className="col-md-12"
-              id="unitdetails"
-              style={{
-                display: "none",
-                marginTop: "-80px",
-                lineHeight: "30px",
-                overflow: "scroll",
-              }}
-            >
-              <div className="p-3 py-5">
-                <div className="row ">
-                  <div className="col-md-2">
-                    <button
-                      onClick={handleShow3}
-                      style={{
-                        width: "100%",
-                        padding: "6px 12px",
-                        borderRadius: "20px",
-                        fontWeight: "600",
-                        fontSize: "14px",
-                        letterSpacing: "0.6px",
-                        backgroundColor: "#2c3e50", // dark navy blue, classy and modern
-                        color: "#ecf0f1", // light grey text
-                        border: "1.5px solid #2c3e50",
-                        transition: "all 0.3s ease",
-                        cursor: "pointer",
-                        outline: "none",
-                        userSelect: "none",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#ecf0f1"; // light background on hover
-                        e.currentTarget.style.color = "#2c3e50"; // dark text on hover
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow =
-                          "0 4px 12px rgba(44, 62, 80, 0.2)";
-                        e.currentTarget.style.transform = "scale(1.05)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "#2c3e50";
-                        e.currentTarget.style.color = "#ecf0f1";
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow = "none";
-                        e.currentTarget.style.transform = "scale(1)";
-                      }}
-                    >
-                      Add Unit
-                    </button>
-                  </div>
-
-                  <div className="col-md-2">
-                    <button
-                      onClick={handleShow7}
-                      style={{
-                        width: "100%",
-                        padding: "6px 12px",
-                        borderRadius: "20px",
-                        fontWeight: "600",
-                        fontSize: "14px",
-                        letterSpacing: "0.6px",
-                        backgroundColor: "#2c3e50", // dark navy blue, classy and modern
-                        color: "#ecf0f1", // light grey text
-                        border: "1.5px solid #2c3e50",
-                        transition: "all 0.3s ease",
-                        cursor: "pointer",
-                        outline: "none",
-                        userSelect: "none",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#ecf0f1"; // light background on hover
-                        e.currentTarget.style.color = "#2c3e50"; // dark text on hover
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow =
-                          "0 4px 12px rgba(44, 62, 80, 0.2)";
-                        e.currentTarget.style.transform = "scale(1.05)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "#2c3e50";
-                        e.currentTarget.style.color = "#ecf0f1";
-                        e.currentTarget.style.borderColor = "#2c3e50";
-                        e.currentTarget.style.boxShadow = "none";
-                        e.currentTarget.style.transform = "scale(1)";
-                      }}
-                    >
-                      Import Unit
-                    </button>
-                  </div>
-                  <div className="col-md-7"></div>
-
-                  <Tooltip title="Download Data.." arrow>
-                    <div className="col-md-1">
-                      <img
-                        src="https://cdn-icons-png.flaticon.com/512/4007/4007698.png"
-                        onClick={generateExcelFileunit}
-                        style={{ height: "40px", cursor: "pointer" }}
-                        alt=""
-                      ></img>
-                    </div>
-                  </Tooltip>
+             <div id="unitdetails" className="hidden w-full mt-0">
+              <div className="w-full bg-white rounded-lg shadow-sm p-4">
+                {/* Actions Row */}
+                             <div className="w-full flex flex-wrap items-center justify-end gap-3">
+                               <button
+                                 onClick={handleShow3}
+                                 className="btn-primary-custom w-auto px-4"
+                               >
+                                 Add Unit
+                               </button>
+             
+                               <button
+                                 onClick={handleShow7}
+                                 className="btn-primary-custom w-auto px-4"
+                               >
+                                 Import Unit
+                               </button>
+             
+                               <Tooltip title="Download Data.." arrow>
+                                 <div className="col-md-1  custom-input">
+                                   <img
+                                     src="https://cdn-icons-png.flaticon.com/512/4007/4007698.png"
+                                     onClick={generateExcelFileunit}
+                                     style={{ height: "40px", cursor: "pointer" }}
+                                     alt=""
+                                   ></img>
+                                 </div>
+                               </Tooltip>
+                             </div>
                   <TableContainer
                     component={Paper}
                     style={{
@@ -8051,81 +7718,81 @@ console.log(project);
                       <Modal.Title>Add Unit</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                      {/* <div style={{display:"flex",gap:"50px"}}>
-               <div  id='unitdetail'  style={{cursor:'pointer',fontWeight:"bold"}} onClick={unitdetail1}><span>Unit</span> </div>
-                <div  id='unitlocationdetails' style={{cursor:'pointer',fontWeight:"bold"}}  onClick={unitdetail2}><span>Location</span></div>
-                <div  id='ownerdetails' style={{cursor:'pointer',fontWeight:"bold"}}  onClick={unitdetail3}><span>Add Owner</span></div>
-               </div> */}
-                      <div style={{ display: "flex", gap: "50px" }}>
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-6 bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                        {/* TAB 1 */}
                         <div
-                          id="unitdetail"
-                          style={{
-                            cursor: "pointer",
-                            fontWeight: "bold",
-                            backgroundColor:
-                              activeUnit === 1 ? "#f0f0f0" : "transparent", // Optional: to highlight active tab
-                          }}
                           onClick={unitdetail1}
+                          className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+                       ${
+                         activeUnit === 1
+                           ? "bg-blue-600 text-white shadow-md scale-105"
+                           : "text-gray-600 hover:bg-gray-100 hover:text-black"
+                       }`}
                         >
-                          <span>Unit</span>
+                          Unit
                         </div>
+
+                        {/* TAB 2 */}
                         <div
-                          id="unitlocationdetails"
-                          style={{
-                            cursor: "pointer",
-                            fontWeight: "bold",
-                            backgroundColor:
-                              activeUnit === 2 ? "#f0f0f0" : "transparent", // Optional: to highlight active tab
-                          }}
                           onClick={unitdetail2}
+                          className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+                       ${
+                         activeUnit === 2
+                           ? "bg-blue-600 text-white shadow-md scale-105"
+                           : "text-gray-600 hover:bg-gray-100 hover:text-black"
+                       }`}
                         >
-                          <span>Location</span>
+                          Location
                         </div>
+
+                        {/* TAB 3 */}
                         <div
-                          id="ownerdetails1"
-                          style={{
-                            cursor: "pointer",
-                            fontWeight: "bold",
-                            backgroundColor:
-                              activeUnit === 3 ? "#f0f0f0" : "transparent", // Optional: to highlight active tab
-                          }}
                           onClick={unitdetail3}
+                          className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+                       ${
+                         activeUnit === 3
+                           ? "bg-blue-600 text-white shadow-md scale-105"
+                           : "text-gray-600 hover:bg-gray-100 hover:text-black"
+                       }`}
                         >
-                          <span>Add Owner</span>
+                          Add Owner
                         </div>
+
+                        {/* TAB 4 */}
                         <div
-                          id="adddocuments"
-                          style={{
-                            cursor: "pointer",
-                            fontWeight: "bold",
-                            backgroundColor:
-                              activeUnit === 4 ? "#f0f0f0" : "transparent", // Optional: to highlight active tab
-                          }}
                           onClick={unitdetail4}
+                          className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+                       ${
+                         activeUnit === 4
+                           ? "bg-blue-600 text-white shadow-md scale-105"
+                           : "text-gray-600 hover:bg-gray-100 hover:text-black"
+                       }`}
                         >
-                          <span>Add Documents</span>
+                          Add Documents
                         </div>
+
+                        {/* TAB 5 */}
                         <div
-                          id="upload"
-                          style={{
-                            cursor: "pointer",
-                            fontWeight: "bold",
-                            backgroundColor:
-                              activeUnit === 5 ? "#f0f0f0" : "transparent", // Optional: to highlight active tab
-                          }}
                           onClick={unitdetail5}
+                          className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+                       ${
+                         activeUnit === 5
+                           ? "bg-blue-600 text-white shadow-md scale-105"
+                           : "text-gray-600 hover:bg-gray-100 hover:text-black"
+                       }`}
                         >
-                          <span>Upload</span>
+                          Upload
                         </div>
                       </div>
 
                       <hr></hr>
                       <div style={{ width: "100%" }}>
                         <div className="row" id="unitdetails1">
-                          <div className="col-md-8">
+                          <div className="col-md-8  custom-input">
                             <label className="form-label">Unit Number</label>
                             <input
                               type="text"
+                              required="true"
                               className="form-control form-control-sm"
                               placeholder="unit number"
                               onChange={(e) =>
@@ -8133,7 +7800,7 @@ console.log(project);
                               }
                             />
                           </div>
-                          <div className="col-md-4">
+                          <div className="col-md-4  custom-input">
                             <label className="form-label">Unit Type</label>
                             <select
                               className="form-control form-control-sm"
@@ -8152,27 +7819,44 @@ console.log(project);
                             </select>
                           </div>
                           <div
-                            className="col-md-12"
+                            className="col-md-12  custom-input"
                             style={{ display: "flex" }}
                           >
                             <label className="form-label">Category</label>
                           </div>
                           <div
-                            className="col-md-12"
+                            className="col-md-12  custom-input"
                             style={{ display: "flex" }}
                           >
                             <div
-                              className="col-md-12"
+                              className="col-md-12  custom-input"
                               style={{ display: "flex", flexWrap: "wrap" }}
                             >
                               {project.category.map((type) => (
-                                <div className="col-md-3" key={type}>
+                                <div
+                                  className="col-md-3  custom-input"
+                                  key={type}
+                                >
                                   <button
                                     className="form-control form-control-sm"
                                     onClick={() => handleTypeClick1(type)}
                                     style={{
                                       backgroundColor:
                                         selectedType === type ? "green" : "",
+                                      border: "1px solid #ccc",
+                                      borderRadius: "6px",
+                                      fontWeight: "bold",
+                                      transition: "all 0.3s ease",
+                                      boxShadow:
+                                        selectedType === type
+                                          ? "0 4px 10px rgba(4, 4, 4, 0.4)"
+                                          : "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.target.style.transform = "scale(1.05)";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.target.style.transform = "scale(1)";
                                     }}
                                   >
                                     {type}
@@ -8182,39 +7866,29 @@ console.log(project);
                             </div>
                           </div>
 
-                          <div className="col-md-6">
+                          <div className="col-md-6  custom-input">
                             <label className="form-label">Sub Category</label>
 
-                            <Select
+                            <select
                               className="form-control form-control-sm"
-                              style={{ border: "none" }}
                               labelId="subcategory-label"
                               id="subcategory"
-                              multiple
                               value={units.sub_category}
-                              onChange={handleSubCategoryChange1}
-                              renderValue={(selected) => selected.join(", ")}
+                              onChange={(e) =>
+                                setunits({
+                                  ...units,
+                                  sub_category: e.target.value,
+                                })
+                              }
                             >
-                              <MenuItem value="">
-                                <em>Select</em>
-                              </MenuItem>
+                              <option>---select--- </option>
                               {project.sub_category.map((subCategory) => (
-                                <MenuItem key={subCategory} value={subCategory}>
-                                  <Checkbox
-                                    checked={
-                                      units.sub_category.indexOf(subCategory) >
-                                      -1
-                                    }
-                                    onChange={() => handleToggle1(subCategory)}
-                                  />
-                                  <ListItemText primary={subCategory} />
-                                </MenuItem>
+                                <option>{subCategory}</option>
                               ))}
-                            </Select>
+                            </select>
                           </div>
-                          <div className="col-md-6"></div>
-
-                          <div className="col-md-6">
+                          <div className="col-md-6  custom-input"></div>
+                          <div className="col-md-6  custom-input">
                             <label className="form-label">Block</label>
                             <select
                               className="form-control form-control-sm"
@@ -8222,13 +7896,13 @@ console.log(project);
                                 setunits({ ...units, block: e.target.value })
                               }
                             >
-                              <option>---choose---</option>
+                              <option>choose</option>
                               {project.add_block.map((item) => (
                                 <option>{item.block_name}</option>
                               ))}
                             </select>
                           </div>
-                          <div className="col-md-6">
+                          <div className="col-md-6 custom-input">
                             <label className="form-label">Size</label>
                             <select
                               className="form-control form-control-sm"
@@ -8242,10 +7916,33 @@ console.log(project);
                               ))}
                             </select>
                           </div>
+                          {units.size && (
+                            <>
+                              <div className="col-md-4 custom-input">
+                                <label className="form-label">Length</label>
+                                <p>
+                                  {units.size_length} {units.size_unit}
+                                </p>
+                              </div>
+                              <div className="col-md-4 custom-input">
+                                <label className="form-label">Breadth</label>
+                                <p>
+                                  {units.size_breadth} {units.size_unit}
+                                </p>
+                              </div>
+                              <div className="col-md-4 custom-input">
+                                <label className="form-label">Total Area</label>
+                                <p>
+                                  {units.size_total_area}{" "}
+                                  {units.size_total_area_unit}
+                                </p>
+                              </div>
+                            </>
+                          )}
 
                           {project.category.includes("Agricultural") && (
                             <>
-                              <div className="col-md-6">
+                              <div className="col-md-6  custom-input">
                                 <label className="form-label">Land Type</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -8262,9 +7959,9 @@ console.log(project);
                                   <option>Pasture</option>
                                 </select>
                               </div>
-                              <div className="col-md-6"></div>
+                              <div className="col-md-6  custom-input"></div>
                               <div
-                                className="col-md-12"
+                                className="col-md-12  custom-input"
                                 style={{
                                   color: "green",
                                   fontWeight: "bolder",
@@ -8274,7 +7971,7 @@ console.log(project);
                                 Land Details<hr></hr>
                               </div>
 
-                              <div className="col-md-3">
+                              <div className="col-md-3  custom-input">
                                 <label className="form-label">Khewat No</label>
                                 {Array.isArray(units.khewat_no)
                                   ? units.khewat_no.map((item, index) => (
@@ -8289,7 +7986,7 @@ console.log(project);
                                   : []}
                               </div>
 
-                              <div className="col-md-3">
+                              <div className="col-md-3  custom-input">
                                 <label className="form-label">Killa No</label>
                                 {Array.isArray(units.killa_no)
                                   ? units.killa_no.map((item, index) => (
@@ -8304,7 +8001,7 @@ console.log(project);
                                   : []}
                               </div>
 
-                              <div className="col-md-3">
+                              <div className="col-md-3  custom-input">
                                 <label className="form-label">Share</label>
                                 {Array.isArray(units.share)
                                   ? units.share.map((item, index) => (
@@ -8320,7 +8017,7 @@ console.log(project);
                               </div>
 
                               <div
-                                className="col-md-1"
+                                className="col-md-1  custom-input"
                                 style={{ marginTop: "90px" }}
                               >
                                 {Array.isArray(units.action5)
@@ -8340,7 +8037,7 @@ console.log(project);
                                   : []}
                               </div>
 
-                              <div className="col-md-1">
+                              <div className="col-md-1  custom-input">
                                 <label className="form-label">add</label>
                                 <button
                                   className="form-control form-control-sm"
@@ -8349,11 +8046,11 @@ console.log(project);
                                   +
                                 </button>
                               </div>
-                              <div className="col-md-12">
+                              <div className="col-md-12  custom-input">
                                 Total Land Area:-{units.total_land_area}
                               </div>
                               <div
-                                className="col-md-12"
+                                className="col-md-12  custom-input"
                                 style={{
                                   color: "green",
                                   fontWeight: "bolder",
@@ -8363,7 +8060,7 @@ console.log(project);
                                 Water Details<hr></hr>
                               </div>
 
-                              <div className="col-md-3">
+                              <div className="col-md-3  custom-input">
                                 <label className="form-label">
                                   Water Source
                                 </label>
@@ -8385,7 +8082,7 @@ console.log(project);
                                     ))
                                   : []}
                               </div>
-                              <div className="col-md-3">
+                              <div className="col-md-3  custom-input">
                                 <label className="form-label">
                                   Water Level
                                 </label>
@@ -8406,7 +8103,7 @@ console.log(project);
                                   : []}
                               </div>
 
-                              <div className="col-md-3">
+                              <div className="col-md-3  custom-input">
                                 <label className="form-label">
                                   Water Pump Type
                                 </label>
@@ -8431,7 +8128,7 @@ console.log(project);
                                   : []}
                               </div>
                               <div
-                                className="col-md-1"
+                                className="col-md-1  custom-input"
                                 style={{ marginTop: "90px" }}
                               >
                                 {Array.isArray(units.action6)
@@ -8450,7 +8147,7 @@ console.log(project);
                                     ))
                                   : []}
                               </div>
-                              <div className="col-md-1">
+                              <div className="col-md-1  custom-input">
                                 <label className="form-label">add</label>
                                 <button
                                   className="form-control form-control-sm"
@@ -8461,13 +8158,13 @@ console.log(project);
                               </div>
 
                               <div
-                                className="col-md-12"
+                                className="col-md-12  custom-input"
                                 style={{ color: "green", fontWeight: "bolder" }}
                               >
                                 Basic Details<hr></hr>
                               </div>
 
-                              <div className="col-md-4">
+                              <div className="col-md-4  custom-input">
                                 <label className="form-label">Facing</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -8486,14 +8183,14 @@ console.log(project);
                                 </select>
                               </div>
 
-                              <div className="col-md-4">
+                              <div className="col-md-4  custom-input">
                                 <label className="form-label">Side Open</label>
                                 <select
                                   className="form-control form-control-sm"
                                   onChange={(e) =>
                                     setunits({
                                       ...units,
-                                      facing: e.target.value,
+                                      side_open: e.target.value,
                                     })
                                   }
                                 >
@@ -8504,7 +8201,7 @@ console.log(project);
                                 </select>
                               </div>
 
-                              <div className="col-md-4">
+                              <div className="col-md-4  custom-input">
                                 <label className="form-label">Road</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -8522,7 +8219,7 @@ console.log(project);
                                 </select>
                               </div>
 
-                              <div className="col-md-4">
+                              <div className="col-md-4  custom-input">
                                 <label className="form-label">
                                   Front On Road
                                 </label>
@@ -8531,7 +8228,7 @@ console.log(project);
                                   onChange={(e) =>
                                     setunits({
                                       ...units,
-                                      facing: e.target.value,
+                                      front_on_road: e.target.value,
                                     })
                                   }
                                 >
@@ -8548,7 +8245,7 @@ console.log(project);
                                 </select>
                               </div>
 
-                              <div className="col-md-4">
+                              <div className="col-md-4  custom-input">
                                 <label className="form-label">Ownership</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -8564,7 +8261,7 @@ console.log(project);
                                   <option>Individual</option>
                                 </select>
                               </div>
-                              <div className="col-md-4">
+                              <div className="col-md-4  custom-input">
                                 <label className="form-label">
                                   No. Of Owner
                                 </label>
@@ -8588,7 +8285,7 @@ console.log(project);
 
                           {!project.category.includes("Agricultural") && (
                             <>
-                              <div className="col-md-4">
+                              <div className="col-md-4  custom-input">
                                 <label className="form-label">Direction</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -8598,19 +8295,25 @@ console.log(project);
                                       direction: e.target.value,
                                     })
                                   }
+                                  onClick={() => {
+                                    if (All_Direction.length === 0) {
+                                      getall_direction();
+                                    }
+                                  }}
                                 >
                                   <option>---Select---</option>
-                                  <option>East</option>
-                                  <option>West</option>
-                                  <option>North</option>
-                                  <option>South</option>
-                                  <option>North East</option>
-                                  <option>South East</option>
-                                  <option>South West</option>
-                                  <option>North West</option>
+                                  {select_loading === "direction" ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    All_Direction.map((name) => (
+                                      <option value={name.lookup_value}>
+                                        {name.lookup_value}
+                                      </option>
+                                    ))
+                                  )}
                                 </select>
                               </div>
-                              <div className="col-md-4">
+                              <div className="col-md-4  custom-input">
                                 <label className="form-label">Facing</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -8620,47 +8323,50 @@ console.log(project);
                                       facing: e.target.value,
                                     })
                                   }
+                                  onClick={() => {
+                                    if (All_Facing.length === 0) {
+                                      getall_facing();
+                                    }
+                                  }}
                                 >
                                   <option>---Select---</option>
-                                  <option>Park</option>
-                                  <option>Green Belt</option>
-                                  <option>Highway</option>
-                                  <option>Commercial</option>
-                                  <option>School</option>
-                                  <option>Hospital</option>
-                                  <option>Mandir</option>
-                                  <option>Gurudwara</option>
-                                  <option>Crech</option>
-                                  <option>Clinic</option>
-                                  <option>Community Centre</option>
-                                  <option>1 Kanal</option>
-                                  <option>14m Marla</option>
-                                  <option>10 Marla</option>
-                                  <option>8 Marla</option>
-                                  <option>6 Marla</option>
-                                  <option>4 Marla</option>
-                                  <option>2 Marla</option>
-                                  <option> 3 Marla</option>
-                                  <option> 2 Kanal</option>
+                                  {select_loading === "facing" ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    All_Facing.map((name) => (
+                                      <option value={name.lookup_value}>
+                                        {name.lookup_value}
+                                      </option>
+                                    ))
+                                  )}
                                 </select>
                               </div>
-                              <div className="col-md-4">
+                              <div className="col-md-4 custom-input">
                                 <label className="form-label">Road</label>
                                 <select
                                   className="form-control form-control-sm"
                                   onChange={(e) =>
                                     setunits({ ...units, road: e.target.value })
                                   }
+                                  onClick={() => {
+                                    if (All_Road.length === 0) {
+                                      getall_road();
+                                    }
+                                  }}
                                 >
                                   <option>---Select---</option>
-                                  <option>9 Mtr Wide</option>
-                                  <option>12 Mtr Wide</option>
-                                  <option> 18 Mtr Wide</option>
-                                  <option>24 Mtr Wide</option>
-                                  <option> 60 Mtr Wide</option>
+                                  {select_loading === "road" ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    All_Road.map((name) => (
+                                      <option value={name.lookup_value}>
+                                        {name.lookup_value}
+                                      </option>
+                                    ))
+                                  )}
                                 </select>
                               </div>
-                              <div className="col-md-6">
+                              <div className="col-md-6  custom-input">
                                 <label className="form-label">Ownership</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -8678,7 +8384,7 @@ console.log(project);
                                   <option>Sale Agreement(Lal Dora)</option>
                                 </select>
                               </div>
-                              <div className="col-md-6">
+                              <div className="col-md-6  custom-input">
                                 <label className="form-label">Stage</label>
                                 <select
                                   className="form-control form-control-sm"
@@ -8698,7 +8404,7 @@ console.log(project);
                           )}
 
                           <div
-                            className="col-md-6"
+                            className="col-md-6  custom-input"
                             style={{ marginTop: "10px" }}
                           >
                             <input
@@ -8708,18 +8414,20 @@ console.log(project);
                             />
                             <label>Show Builtup Details</label>
                           </div>
-                          <div className="col-md-6"></div>
+                          <div className="col-md-6  custom-input"></div>
                           {showabuiltup && (
                             <>
-                              <div className="col-md-12">
+                              <div className="col-md-12  custom-input">
                                 <label className="form-label">
                                   Builtup Details
                                 </label>
                                 <hr></hr>
                               </div>
 
-                              <div className="col-md-6">
-                                <label className="form-label">Type</label>
+                              <div className="col-md-6  custom-input">
+                                <label className="form-label">
+                                  Builtup Type
+                                </label>
                                 <select
                                   className="form-control form-control-sm"
                                   style={{ marginTop: "10px" }}
@@ -8729,26 +8437,22 @@ console.log(project);
                                       builtup_type: e.target.value,
                                     })
                                   }
+                                  onClick={() => {
+                                    getall_builtup_type();
+                                  }}
+                                  value={units.builtup_type}
                                 >
                                   <option>---Select---</option>
-
-                                  {
-                                    // Combine all unit types for selected sub_categories
-                                    [
-                                      ...new Set(
-                                        units.sub_category.flatMap(
-                                          (sub) => unit_type[sub] || []
-                                        )
-                                      ),
-                                    ].map((item, index) => (
-                                      <option key={index} value={item}>
-                                        {item}
-                                      </option>
+                                  {select_loading === "builtup-type" ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    All_Builtup_Type.map((name) => (
+                                      <option>{name.lookup_value}</option>
                                     ))
-                                  }
+                                  )}
                                 </select>
                               </div>
-                              <div className="col-md-6"></div>
+                              <div className="col-md-6  custom-input"></div>
 
                               <div
                                 className="row mt-2"
@@ -8760,7 +8464,7 @@ console.log(project);
                                   width: "100%",
                                 }}
                               >
-                                <div className="col-md-2">
+                                <div className="col-md-2  custom-input">
                                   <label className="form-label">Floor</label>
                                   {Array.isArray(units.floor)
                                     ? units.floor.map((item, index) => (
@@ -8785,7 +8489,7 @@ console.log(project);
                                       ))
                                     : []}
                                 </div>
-                                <div className="col-md-2">
+                                <div className="col-md-2  custom-input">
                                   <label
                                     className="form-label"
                                     style={{ width: "500px" }}
@@ -8823,7 +8527,7 @@ console.log(project);
                                       )
                                     : []}
                                 </div>
-                                <div className="col-md-2">
+                                <div className="col-md-2  custom-input">
                                   <label className="form-label">Length</label>
                                   {Array.isArray(units.length)
                                     ? units.length.map((item, index) => (
@@ -8837,7 +8541,7 @@ console.log(project);
                                       ))
                                     : []}
                                 </div>
-                                <div className="col-md-2">
+                                <div className="col-md-2  custom-input">
                                   <label className="form-label">Breadth</label>
                                   {Array.isArray(units.bredth)
                                     ? units.bredth.map((item, index) => (
@@ -8851,7 +8555,7 @@ console.log(project);
                                       ))
                                     : []}
                                 </div>
-                                <div className="col-md-2">
+                                <div className="col-md-2  custom-input">
                                   <label className="form-label">
                                     Total Area
                                   </label>
@@ -8876,7 +8580,7 @@ console.log(project);
                                 </div>
 
                                 <div
-                                  className="col-md-1"
+                                  className="col-md-1  custom-input"
                                   style={{ marginTop: "90px" }}
                                 >
                                   {Array.isArray(units.action3)
@@ -8895,7 +8599,7 @@ console.log(project);
                                       ))
                                     : []}
                                 </div>
-                                <div className="col-md-1">
+                                <div className="col-md-1  custom-input">
                                   <label className="form-label">add</label>
                                   <button
                                     className="form-control form-control-sm"
@@ -8908,11 +8612,10 @@ console.log(project);
                             </>
                           )}
 
-                          <div className="col-md-6">
+                          <div className="col-md-6  custom-input">
                             <label>Occupation Date</label>
                             <input
                               type="date"
-                              value={units.ocupation_date}
                               className="form-control form-control-sm"
                               onChange={(e) =>
                                 setunits({
@@ -8922,7 +8625,7 @@ console.log(project);
                               }
                             />
                           </div>
-                          <div className="col-md-6">
+                          <div className="col-md-6  custom-input">
                             <label>Age of Construction</label>
                             <input
                               type="text"
@@ -8936,7 +8639,7 @@ console.log(project);
                             />
                           </div>
 
-                          <div className="col-md-6">
+                          <div className="col-md-6  custom-input">
                             <label className="form-label">
                               Furnishing Details
                             </label>
@@ -8958,7 +8661,7 @@ console.log(project);
                           </div>
                           {(units.furnishing_details === "Furnished" ||
                             units.furnishing_details === "Semi Furnished") && (
-                            <div className="col-md-12">
+                            <div className="col-md-12  custom-input">
                               <label>Enter Furnishing Details</label>
                               <input
                                 type="text"
@@ -8972,9 +8675,9 @@ console.log(project);
                               />
                             </div>
                           )}
-                          <div className="col-md-6"></div>
+                          <div className="col-md-6  custom-input"></div>
 
-                          <div className="col-md-8">
+                          <div className="col-md-8  custom-input">
                             <label>Furnished Items</label>
                             <input
                               type="text"
@@ -8991,13 +8694,13 @@ console.log(project);
                       </div>
                       <div className="row">
                         <div
-                          className="col-md-12"
+                          className="col-md-12  custom-input"
                           id="unitlocation"
                           style={{ display: "none", lineHeight: "30px" }}
                         >
                           <div className="p-3 py-5">
                             <div
-                              className="col-md-12"
+                              className="col-md-12  custom-input"
                               style={{
                                 border: "1px solid black",
                                 marginTop: "30px",
@@ -9028,7 +8731,7 @@ console.log(project);
                                 </LoadScript>
                               </div>
                               <div className="row">
-                                <div className="col-md-6">
+                                <div className="col-md-6  custom-input">
                                   <label className="form-label">Location</label>
                                   <input
                                     type="text"
@@ -9043,8 +8746,8 @@ console.log(project);
                                     }
                                   />
                                 </div>
-                                {/* <div className='col-md-5'></div> */}
-                                <div className="col-md-2">
+                                {/* <div className='col-md-5 mb-5 custom-input'></div> */}
+                                <div className="col-md-2  custom-input">
                                   <label
                                     className="form-label"
                                     style={{ visibility: "hidden" }}
@@ -9059,8 +8762,8 @@ console.log(project);
                                     Get
                                   </button>
                                 </div>
-                                <div className="col-md-4"></div>
-                                <div className="col-md-5">
+                                <div className="col-md-4  custom-input"></div>
+                                <div className="col-md-5  custom-input">
                                   <label className="form-label">
                                     Lattitude
                                   </label>
@@ -9072,7 +8775,7 @@ console.log(project);
                                     readOnly
                                   />
                                 </div>
-                                <div className="col-md-5">
+                                <div className="col-md-5  custom-input">
                                   <label className="form-label">
                                     Langitude
                                   </label>
@@ -9084,7 +8787,7 @@ console.log(project);
                                     readOnly
                                   />
                                 </div>
-                                <div className="col-md-12">
+                                <div className="col-md-12  custom-input">
                                   <label
                                     className="form-label"
                                     style={{
@@ -9096,7 +8799,7 @@ console.log(project);
                                   </label>
                                 </div>
 
-                                <div className="col-md-8">
+                                <div className="col-md-8  custom-input">
                                   <label className="form-label">ADDRESS</label>
                                   <input
                                     type="text"
@@ -9110,8 +8813,8 @@ console.log(project);
                                     }
                                   />
                                 </div>
-                                <div className="col-md-4"></div>
-                                <div className="col-md-8">
+                                <div className="col-md-4  custom-input"></div>
+                                <div className="col-md-8  custom-input">
                                   <label className="form-label">STREET</label>
                                   <input
                                     type="text"
@@ -9125,8 +8828,8 @@ console.log(project);
                                     }
                                   />
                                 </div>
-                                <div className="col-md-4"></div>
-                                <div className="col-md-4">
+                                <div className="col-md-4  custom-input"></div>
+                                <div className="col-md-4  custom-input">
                                   <label className="form-label">LOCALITY</label>
                                   <input
                                     type="text"
@@ -9140,7 +8843,7 @@ console.log(project);
                                     }
                                   />
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-4  custom-input">
                                   <label className="form-label">CITY</label>
                                   <select
                                     type="text"
@@ -9151,16 +8854,21 @@ console.log(project);
                                         ucity: e.target.value,
                                       })
                                     }
+                                    onClick={() => getall_city_unit()}
                                   >
-                                    <option>{units.ucity}</option>
-                                    {ucities.map((city) => (
-                                      <option key={city} value={city}>
-                                        {city}
-                                      </option>
-                                    ))}
+                                    <option>---Select---</option>
+                                    {select_loading === "city-unit" ? (
+                                      <CircularProgress />
+                                    ) : (
+                                      All_City_unit.map((name) => (
+                                        <option value={name.lookup_value}>
+                                          {name.lookup_value}
+                                        </option>
+                                      ))
+                                    )}
                                   </select>
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-4  custom-input">
                                   <label className="form-label">ZIP</label>
                                   <input
                                     type="text"
@@ -9174,7 +8882,7 @@ console.log(project);
                                     }
                                   />
                                 </div>
-                                <div className="col-md-6">
+                                <div className="col-md-6  custom-input">
                                   <label className="form-label">State</label>
                                   <select
                                     className="form-control form-control-sm"
@@ -9184,16 +8892,21 @@ console.log(project);
                                         ustate: e.target.value,
                                       })
                                     }
+                                    onClick={() => getall_state()}
                                   >
-                                    <option>{units.ustate}</option>
-                                    {ustates.map((state) => (
-                                      <option key={state} value={state}>
-                                        {state}
-                                      </option>
-                                    ))}
+                                    <option>---Select---</option>
+                                    {select_loading === "state" ? (
+                                      <CircularProgress />
+                                    ) : (
+                                      All_State.map((name) => (
+                                        <option value={name.lookup_value}>
+                                          {name.lookup_value}
+                                        </option>
+                                      ))
+                                    )}
                                   </select>
                                 </div>
-                                <div className="col-md-6">
+                                <div className="col-md-6  custom-input">
                                   <label className="form-label">Country</label>
                                   <select
                                     className="form-control form-control-sm"
@@ -9222,7 +8935,7 @@ console.log(project);
                       >
                         <div className="row" style={{ width: "100%" }}>
                           <div
-                            className="col-md-9"
+                            className="col-md-9  custom-input"
                             id="suggestion-box"
                             style={{ position: "relative" }}
                           >
@@ -9252,30 +8965,56 @@ console.log(project);
                                       onClick={() =>
                                         handleSuggestionClick(suggestion)
                                       }
+                                      style={{ fontSize: "12px" }}
                                     >
-                                      {suggestion.first_name}
+                                      {suggestion.first_name}{" "}
+                                      {suggestion.last_name}
+                                      <br></br>
+                                      {suggestion.mobile_no}
                                     </li>
                                   )
                                 )}
                               </ul>
                             )}
-                          <div className="col-md-3">
-                            <label className="form-label">Add Contact</label>
+                          <div className="col-md-1  custom-input">
+                            <label
+                              className="form-label"
+                              style={{ visibility: "hidden" }}
+                            >
+                              Add
+                            </label>
+                            {/* <button className="form-control form-control-sm" style={{width:"50px"}} onClick={()=>navigate('/sortaddcontact')}>+</button> */}
                             <button
                               className="form-control form-control-sm"
-                              style={{ width: "50px" }}
                               onClick={() => navigate("/sortaddcontact")}
+                              style={{
+                                backgroundColor: "#007bff",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "4px",
+                                fontWeight: "500",
+                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                transition: "all 0.2s ease-in-out",
+                              }}
+                              onMouseOver={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "#0056b3")
+                              }
+                              onMouseOut={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "#007bff")
+                              }
                             >
                               +
                             </button>
                           </div>
 
                           <div
-                            className="col-md-12"
+                            className="col-md-12  custom-input"
                             style={{ marginTop: "20px" }}
                           >
                             <label className="form-label">Owner Contact</label>
-                            <div className="col-md-12">
+                            <div className="col-md-12  custom-input">
                               <hr></hr>
                             </div>
                             {selectedcontact1.length >= 0 && (
@@ -9284,31 +9023,42 @@ console.log(project);
                                   <tbody>
                                     {selectedcontact1.map((contact) => (
                                       <StyledTableRow>
-                                        <img
-                                          style={{
-                                            height: "70px",
-                                            width: "80px",
-                                          }}
-                                          src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png"
-                                          alt=""
-                                        ></img>
                                         <StyledTableCell
                                           style={{
-                                            fontFamily: "times new roman",
                                             cursor: "pointer",
+                                            fontSize: "12px",
+                                          }}
+                                        >
+                                          <img
+                                            style={{
+                                              height: "40px",
+                                              width: "90px",
+                                            }}
+                                            src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png"
+                                            alt=""
+                                          ></img>
+                                        </StyledTableCell>
+
+                                        <StyledTableCell
+                                          style={{
+                                            cursor: "pointer",
+                                            fontSize: "12px",
                                           }}
                                         >
                                           {contact.title} {contact.first_name}{" "}
                                           {contact.last_name}
                                           <br></br>
-                                          <SvgIcon component={EmailIcon} />
+                                          <SvgIcon
+                                            component={EmailIcon}
+                                            style={{ fontSize: "10px" }}
+                                          />
                                           <span>{contact.email}</span>
                                         </StyledTableCell>
 
                                         <StyledTableCell
                                           style={{
-                                            fontFamily: "times new roman",
                                             cursor: "pointer",
+                                            fontSize: "12px",
                                           }}
                                         >
                                           {contact.mobile_no.map(
@@ -9316,6 +9066,7 @@ console.log(project);
                                               <span key={index}>
                                                 <SvgIcon
                                                   component={PhoneIphoneIcon}
+                                                  style={{ fontSize: "10px" }}
                                                 />
                                                 {number}
                                                 <br></br>
@@ -9326,8 +9077,8 @@ console.log(project);
 
                                         <StyledTableCell
                                           style={{
-                                            fontFamily: "times new roman",
                                             cursor: "pointer",
+                                            fontSize: "12px",
                                           }}
                                         >
                                           S/W/O <br></br>
@@ -9336,8 +9087,8 @@ console.log(project);
 
                                         <StyledTableCell
                                           style={{
-                                            fontFamily: "times new roman",
                                             cursor: "pointer",
+                                            fontSize: "12px",
                                           }}
                                         >
                                           permanent address: <br></br>
@@ -9351,8 +9102,8 @@ console.log(project);
 
                                         <StyledTableCell
                                           style={{
-                                            fontFamily: "times new roman",
                                             cursor: "pointer",
+                                            fontSize: "12px",
                                           }}
                                         >
                                           <span
@@ -9366,17 +9117,20 @@ console.log(project);
                                         </StyledTableCell>
 
                                         <StyledTableCell>
-                                          <img
+                                          {/* <img style={{height:"40px",cursor:"pointer"}} src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png" alt="" onClick={() => removeContact(contact._id)}></img> */}
+                                          <span
+                                            class="material-icons"
                                             style={{
-                                              height: "40px",
+                                              color: "red",
+                                              fontSize: "24px",
                                               cursor: "pointer",
                                             }}
-                                            src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png"
-                                            alt=""
                                             onClick={() =>
                                               removeContact(contact._id)
                                             }
-                                          ></img>
+                                          >
+                                            delete
+                                          </span>
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     ))}
@@ -9387,13 +9141,13 @@ console.log(project);
                           </div>
 
                           <div
-                            className="col-md-12"
+                            className="col-md-12  custom-input"
                             style={{ marginTop: "20px" }}
                           >
                             <label className="form-label">
                               Associate Contact
                             </label>
-                            <div className="col-md-12">
+                            <div className="col-md-12  custom-input">
                               <hr></hr>
                             </div>
                             {selectedcontact2.length >= 0 && (
@@ -9402,31 +9156,37 @@ console.log(project);
                                   <tbody>
                                     {selectedcontact2.map((contact) => (
                                       <StyledTableRow>
-                                        <img
-                                          style={{
-                                            height: "70px",
-                                            width: "80px",
-                                          }}
-                                          src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png"
-                                          alt="Contact"
-                                        />
+                                        <StyledTableCell>
+                                          <img
+                                            style={{
+                                              height: "40px",
+                                              width: "50px",
+                                            }}
+                                            src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png"
+                                            alt="Contact"
+                                          />
+                                        </StyledTableCell>
+
                                         <StyledTableCell
                                           style={{
-                                            fontFamily: "times new roman",
+                                            fontSize: "12px",
                                             cursor: "pointer",
                                           }}
                                         >
                                           {contact.title} {contact.first_name}{" "}
                                           {contact.last_name}
                                           <br />
-                                          <SvgIcon component={EmailIcon} />
+                                          <SvgIcon
+                                            component={EmailIcon}
+                                            style={{ fontSize: "10px" }}
+                                          />
                                           <span>{contact.email}</span>
                                         </StyledTableCell>
 
                                         <StyledTableCell
                                           style={{
-                                            fontFamily: "times new roman",
                                             cursor: "pointer",
+                                            fontSize: "12px",
                                           }}
                                         >
                                           {Array.isArray(contact.mobile_no)
@@ -9437,6 +9197,9 @@ console.log(project);
                                                       component={
                                                         PhoneIphoneIcon
                                                       }
+                                                      style={{
+                                                        fontSize: "10px",
+                                                      }}
                                                     />
                                                     {number}
                                                     <br />
@@ -9448,8 +9211,8 @@ console.log(project);
 
                                         <StyledTableCell
                                           style={{
-                                            fontFamily: "times new roman",
                                             cursor: "pointer",
+                                            fontSize: "12px",
                                           }}
                                         >
                                           S/W/O <br />
@@ -9458,8 +9221,8 @@ console.log(project);
 
                                         <StyledTableCell
                                           style={{
-                                            fontFamily: "times new roman",
                                             cursor: "pointer",
+                                            fontSize: "12px",
                                           }}
                                         >
                                           permanent address: <br />
@@ -9472,8 +9235,8 @@ console.log(project);
 
                                         <StyledTableCell
                                           style={{
-                                            fontFamily: "times new roman",
                                             cursor: "pointer",
+                                            fontSize: "12px",
                                           }}
                                         >
                                           <span
@@ -9487,17 +9250,20 @@ console.log(project);
                                         </StyledTableCell>
 
                                         <StyledTableCell>
-                                          <img
+                                          {/* <img style={{ height: "40px", cursor: "pointer" }} src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png" onClick={() => removeContact(contact._id)} alt="Remove" /> */}
+                                          <span
+                                            class="material-icons"
                                             style={{
-                                              height: "40px",
+                                              color: "red",
+                                              fontSize: "24px",
                                               cursor: "pointer",
                                             }}
-                                            src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png"
                                             onClick={() =>
                                               removeContact(contact._id)
                                             }
-                                            alt="Remove"
-                                          />
+                                          >
+                                            delete
+                                          </span>
                                         </StyledTableCell>
                                       </StyledTableRow>
                                     ))}
@@ -9513,7 +9279,7 @@ console.log(project);
                         id="uploadmedia"
                         style={{ padding: "5px", display: "none" }}
                       >
-                        <div className="d-flex justify-content-between align-items-center mb-3">
+                        <div className="d-flex justify-content-between align-items-center ">
                           <h6 className="text-right">Upload Images</h6>
                         </div>
                         <hr></hr>
@@ -9563,7 +9329,7 @@ console.log(project);
                                     ? units.s_no.map((name, index) => (
                                         <div
                                           key={index}
-                                          className="col-md-12"
+                                          className="col-md-12  custom-input"
                                           style={{ marginTop: "10px" }}
                                         >
                                           <input
@@ -9582,7 +9348,7 @@ console.log(project);
                                     ? units.preview.map((name, index) => (
                                         <div
                                           key={index}
-                                          className="col-md-12"
+                                          className="col-md-12  custom-input"
                                           style={{ marginTop: "10px" }}
                                         >
                                           <input
@@ -9594,19 +9360,33 @@ console.log(project);
                                               handlepreviewchange(index, event)
                                             }
                                           />
-                                          {name.previewUrls &&
-                                            name.previewUrls.map((url, idx) => (
-                                              <img
-                                                key={idx}
-                                                src={url}
-                                                alt={`preview ${index}-${idx}`}
-                                                style={{
-                                                  width: "100px",
-                                                  height: "100px",
-                                                  objectFit: "cover",
-                                                }}
-                                              />
-                                            ))}
+                                          <div className="d-flex flex-wrap gap-2 mt-2">
+                                            {select_loading ===
+                                            "project_pic_upload" ? (
+                                              <CircularProgress size={24} />
+                                            ) : (
+                                              (name || []).map((obj, i) => (
+                                                <div
+                                                  key={i}
+                                                  style={{
+                                                    position: "relative",
+                                                  }}
+                                                >
+                                                  <img
+                                                    src={obj}
+                                                    alt="Preview"
+                                                    style={{
+                                                      width: "80px",
+                                                      height: "80px",
+                                                      objectFit: "cover",
+                                                      borderRadius: "6px",
+                                                      border: "1px solid #ccc",
+                                                    }}
+                                                  />
+                                                </div>
+                                              ))
+                                            )}
+                                          </div>
                                         </div>
                                       ))
                                     : []}
@@ -9616,7 +9396,7 @@ console.log(project);
                                     ? units.descriptions.map((name, index) => (
                                         <div
                                           key={index}
-                                          className="col-md-12"
+                                          className="col-md-12  custom-input"
                                           style={{ marginTop: "10px" }}
                                         >
                                           <input
@@ -9638,7 +9418,7 @@ console.log(project);
                                     ? units.category.map((name, index) => (
                                         <div
                                           key={index}
-                                          className="col-md-12"
+                                          className="col-md-12  custom-input"
                                           style={{ marginTop: "10px" }}
                                         >
                                           <select
@@ -9667,21 +9447,24 @@ console.log(project);
                                     ? units.action10.map((name, index) => (
                                         <div
                                           key={index}
-                                          className="col-md-12"
+                                          className="col-md-12  custom-input"
                                           style={{ marginTop: "10px" }}
                                         >
                                           <div>
-                                            <img
-                                              src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                              alt="delete button"
+                                            {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit(index)} style={{height:"40px",cursor:"pointer"}}/> */}
+                                            <span
+                                              class="material-icons"
+                                              style={{
+                                                color: "red",
+                                                fontSize: "24px",
+                                                cursor: "pointer",
+                                              }}
                                               onClick={() =>
                                                 deleteallunit(index)
                                               }
-                                              style={{
-                                                height: "40px",
-                                                cursor: "pointer",
-                                              }}
-                                            />
+                                            >
+                                              delete
+                                            </span>
                                           </div>
                                         </div>
                                       ))
@@ -9693,16 +9476,16 @@ console.log(project);
                         </div>
                         <div className="row mt-4">
                           <div
-                            className="col-md-3"
+                            className="col-md-3  custom-input"
                             style={{ marginLeft: "70%" }}
                             onClick={addFnunit}
                           >
-                            <button className="form-control form-control-sm">
+                            <button className="form-control form-control-sm custom-btn">
                               Add Image
                             </button>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-between align-items-center mb-3">
+                        <div className="d-flex justify-content-between align-items-center ">
                           <h6 className="text-right">Upload Videos</h6>
                         </div>
                         <hr></hr>
@@ -9743,7 +9526,7 @@ console.log(project);
                                     ? units.s_no1.map((name, index) => (
                                         <div
                                           key={index}
-                                          className="col-md-12"
+                                          className="col-md-12  custom-input"
                                           style={{ marginTop: "10px" }}
                                         >
                                           <input
@@ -9763,7 +9546,7 @@ console.log(project);
                                     ? units.url.map((name, index) => (
                                         <div
                                           key={index}
-                                          className="col-md-12"
+                                          className="col-md-12  custom-input"
                                           style={{ marginTop: "10px" }}
                                         >
                                           <input
@@ -9783,21 +9566,24 @@ console.log(project);
                                     ? units.action11.map((name, index) => (
                                         <div
                                           key={index}
-                                          className="col-md-12"
+                                          className="col-md-12  custom-input"
                                           style={{ marginTop: "10px" }}
                                         >
                                           <div>
-                                            <img
-                                              src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                              alt="delete button"
+                                            {/* <img src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
+                                            <span
+                                              class="material-icons"
+                                              style={{
+                                                color: "red",
+                                                fontSize: "24px",
+                                                cursor: "pointer",
+                                              }}
                                               onClick={() =>
                                                 deleteallunit1(index)
                                               }
-                                              style={{
-                                                height: "40px",
-                                                cursor: "pointer",
-                                              }}
-                                            />
+                                            >
+                                              delete
+                                            </span>
                                           </div>
                                         </div>
                                       ))
@@ -9809,20 +9595,20 @@ console.log(project);
                         </div>
                         <div className="row mt-4">
                           <div
-                            className="col-md-3"
+                            className="col-md-3  custom-input"
                             style={{ marginLeft: "70%" }}
                             onClick={addFnunit1}
                           >
-                            <button className="form-control form-control-sm">
+                            <button className="form-control form-control-sm custom-btn">
                               Add Video Link
                             </button>
                           </div>
 
-                          <div className="col-md-12">
+                          <div className="col-md-12  custom-input">
                             <hr></hr>
                           </div>
 
-                          <div className="col-md-2"></div>
+                          <div className="col-md-2  custom-input"></div>
                         </div>
                       </div>
 
@@ -9830,11 +9616,11 @@ console.log(project);
                         id="documentform"
                         style={{ padding: "5px", display: "none" }}
                       >
-                        <div className="d-flex justify-content-between align-items-center mb-3"></div>
+                        <div className="d-flex justify-content-between align-items-center "></div>
                         <hr></hr>
 
                         <div className="row mt-2">
-                          <div className="col-md-3">
+                          <div className="col-md-3  custom-input">
                             <label className="form-label">Document Name</label>
                             {Array.isArray(units.document_name)
                               ? units.document_name.map((item, index) => (
@@ -9857,7 +9643,7 @@ console.log(project);
                               : []}
                           </div>
 
-                          <div className="col-md-2">
+                          <div className="col-md-2  custom-input">
                             <label className="form-label">Document No</label>
                             {Array.isArray(units.document_no)
                               ? units.document_no.map((item, index) => (
@@ -9873,7 +9659,7 @@ console.log(project);
                               : []}
                           </div>
 
-                          <div className="col-md-2">
+                          <div className="col-md-2  custom-input">
                             <label className="form-label">Date</label>
                             {Array.isArray(units.document_Date)
                               ? units.document_Date.map((item, index) => (
@@ -9889,76 +9675,77 @@ console.log(project);
                               : []}
                           </div>
 
-                          {/* <div className='col-md-2' id="suggestion-box" style={{ position: 'relative' }}><label className='form-label'>Linked Contact</label>
-                    {
-                      Array.isArray(units.linkded_contact) ?
-                      units.linkded_contact.map((item,index)=>
-                      (
-                        <input type="text" className="form-control form-control-sm" value={units.linkded_contact} onChange={(event)=>handlelinkedcontactchange(index,event)} style={{marginTop:"5px"}} />
-                        
-                      )):[]
-                    }
-                    </div> */}
-
-                          {/* <div className="col-md-9" id="suggestion-box" style={{ position: 'relative' }}><label className="form-label" style={{visibility:"hidden"}}>Search</label><input type="search"className="form-control form-control-sm" value={documents.linkded_contact}  placeholder="Type here For Search in Contact" required="true" onChange={(e)=>setdocuments({...documents,linkded_contact:e.target.value})}/></div> */}
-                          {showSuggestions &&
-                            filteredSuggestions.length > 0 && (
-                              <ul className="suggestion-list">
-                                {filteredSuggestions.map(
-                                  (suggestion, index) => (
-                                    <li
-                                      key={index}
-                                      onClick={() =>
-                                        handleSuggestionClick1(
-                                          suggestion,
-                                          index
-                                        )
-                                      }
-                                    >
-                                      {suggestion.title} {suggestion.first_name}{" "}
-                                      {suggestion.last_name}
-                                    </li>
-                                  )
-                                )}
-                              </ul>
-                            )}
-
                           <div
-                            className="col-md-3"
+                            className="col-md-3 custom-input"
                             id="suggestion-box"
                             style={{ position: "relative" }}
                           >
                             <label className="form-label">Pic</label>
-                            {Array.isArray(units.image)
-                              ? units.image.map((item, index) => (
+
+                            {Array.isArray(units.image) &&
+                              units.image.map((item, index) => (
+                                <div key={index} style={{ marginTop: "6px" }}>
                                   <input
                                     type="file"
                                     className="form-control form-control-sm"
                                     onChange={(event) =>
                                       handlepicchange1(index, event)
                                     }
-                                    style={{ marginTop: "5px" }}
                                   />
+
+                                  {/* Loader */}
+                                  {select_loading === "project_pic_upload" && (
+                                    <div
+                                      style={{
+                                        marginTop: "6px",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      <CircularProgress size={24} />
+                                    </div>
+                                  )}
+
+                                  {/* Image Preview */}
+                                  {item && (
+                                    <img
+                                      src={item}
+                                      alt="preview"
+                                      style={{
+                                        width: "100px",
+                                        height: "100px",
+                                        marginTop: "6px",
+                                        objectFit: "cover",
+                                        borderRadius: "6px",
+                                        border: "1px solid #ddd",
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                              ))}
+                          </div>
+
+                          <div
+                            className="col-md-1  custom-input"
+                            style={{ marginTop: "70px" }}
+                          >
+                            {Array.isArray(units.action12)
+                              ? units.action12.map((item, index) => (
+                                  <div style={{ marginTop: "10px" }}>
+                                    <img
+                                      src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
+                                      alt="delete button"
+                                      onClick={() => deleteall12(index)}
+                                      style={{
+                                        height: "40px",
+                                        cursor: "pointer",
+                                      }}
+                                    />
+                                  </div>
                                 ))
                               : []}
                           </div>
-                          <div
-                            className="col-md-1"
-                            style={{ marginTop: "70px" }}
-                          >
-                            {units.action12.map((item, index) => (
-                              <div style={{ marginTop: "10px" }}>
-                                <img
-                                  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                  alt="delete button"
-                                  onClick={() => deleteall12(index)}
-                                  style={{ height: "40px", cursor: "pointer" }}
-                                />
-                              </div>
-                            ))}
-                          </div>
 
-                          <div className="col-md-1">
+                          <div className="col-md-1  custom-input">
                             <label
                               className="form-label"
                               style={{ visibility: "hidden" }}
@@ -9966,61 +9753,21 @@ console.log(project);
                               Add
                             </label>
                             <button
-                              className="form-control form-control-sm"
+                              className="form-control form-control-sm custom-btn"
                               onClick={addFn12}
                             >
                               +
                             </button>
                           </div>
-                          {/* <TableContainer component={Paper} style={{height:"400px",width:"1000px",overflowY:"scroll",marginTop:"40px",marginLeft:"50px"}}>
-    <Table sx={{ minWidth: 700 }} aria-label="customized table">
-     
-    <TableHead>
-        <TableRow>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Serial</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman"}}>Document Name</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Linked Contact</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Number</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Date</StyledTableCell>
-          <StyledTableCell style={{ fontFamily: "times new roman" }}>Action</StyledTableCell>
-        </TableRow>
-      </TableHead>
-      <tbody>
-        {
-         Array.isArray(project.add_unit)?
-         project.add_unit.map ((item, index) => (
-          <StyledTableRow key={index}>
-            <StyledTableCell >
-             {index+1}
-            </StyledTableCell>
-            <StyledTableCell  >
-            {item.document_name}
-            </StyledTableCell>
-            <StyledTableCell  >
-            {item.linkded_contact}
-            </StyledTableCell>
-            <StyledTableCell  >
-            {item.document_no}
-            </StyledTableCell>
-            <StyledTableCell >
-            {item.document_Date}
-            </StyledTableCell>
-            <StyledTableCell style={{ padding: "10px", cursor: "pointer", fontFamily: "times new roman", fontSize: "10px" }}  >
-            <div style={{marginTop:"10px"}}><img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall12(index)}  style={{height:"40px",cursor:"pointer"}}/></div>
-            </StyledTableCell>
-          </StyledTableRow>
-        )):[]}
-      </tbody>
-    </Table>
-    </TableContainer> */}
                         </div>
                       </div>
                     </Modal.Body>
                     <Modal.Footer>
-                      <Button variant="secondary" onClick={addunit}>
+                      <Button onClick={addunit} variant="secondary">
                         Add Unit
                       </Button>
-                      <Button variant="secondary" onClick={handleClose3}>
+
+                      <Button onClick={handleClose3} variant="secondary">
                         Close
                       </Button>
                     </Modal.Footer>
@@ -10041,7 +9788,7 @@ console.log(project);
                     <Modal.Body>
                       <div style={{ width: "100%" }}>
                         <div className="row">
-                          <div className="col-md-4">
+                          <div className="col-md-4 custom-input">
                             <label className="form-label">Relation</label>
                             <select
                               className="form-control form-control-sm"
@@ -10068,13 +9815,13 @@ console.log(project);
                   </Modal>
                 </div>
               </div>
-            </div>
+         
             {/*=======================----------------------------------------- unit details end====================------------------------------ */}
 
             {/* -----------------------=========================aminities details===================----------------------------------------------- */}
 
-            <div
-              className="col-md-12"
+             <div
+              className="col-md-12  custom-input"
               id="aminities"
               style={{
                 display: "none",
@@ -10084,318 +9831,397 @@ console.log(project);
             >
               <div className="p-3 py-5">
                 <div className="row ">
-                  <div style={{ display: "flex" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "50px",
-                        border: "1px solid gray",
-                        padding: "5px",
-                        borderRadius: "50px",
-                        marginLeft: "20%",
-                      }}
+                   <div className="flex justify-between items-center gap-3">
+                    <button
+                      id="basicaminities1"
+                      className="btn-primary-custom active px-4"
+                      onClick={basicaminities}
                     >
-                      <div
-                        id="basicaminities1"
-                        onClick={basicaminities}
-                        style={{
-                          cursor: "pointer",
-                          fontWeight: "bold",
-                          backgroundColor: "black",
-                          color: "white",
-                          borderRadius: "50px",
-                          width: "80px",
-                          textAlign: "center",
-                          transition: "0.5s ease-out",
-                        }}
-                      >
-                        Basic{" "}
-                      </div>
-                      <div
-                        id="featuredaminities1"
-                        onClick={featuredaminities}
-                        style={{
-                          cursor: "pointer",
-                          fontWeight: "bold",
-                          transition: "0.5s ease-out",
-                        }}
-                      >
-                        Featured
-                      </div>
-                      <div
-                        id="nearbyaminities1"
-                        onClick={nearbyaminities}
-                        style={{
-                          cursor: "pointer",
-                          fontWeight: "bold",
-                          transition: "0.5s ease-out",
-                        }}
-                      >
-                        Nearby
-                      </div>
-                    </div>
+                      Basic
+                    </button>
+                    <button
+                      id="featuredaminities1"
+                      className="btn-primary-custom px-4"
+                      onClick={featuredaminities}
+                    >
+                      Featured
+                    </button>
+                    <button
+                      id="nearbyaminities1"
+                      className="btn-primary-custom px-4"
+                      onClick={nearbyaminities}
+                    >
+                      Nearby
+                    </button>
                   </div>
-                  <div
-                    className="row"
+                 <div
                     id="basicaminities"
-                    style={{ marginTop: "20px" }}
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "20px",
+                      justifyContent: "center",
+                      marginTop: "20px",
+                    }}
                   >
+                    {/* SELECT ALL CARD */}
                     <div
-                      className="col-md-12"
-                      style={{ width: "250px", marginLeft: "200px" }}
+                      onClick={handleSelectAllChange}
+                      style={{
+                        width: "220px",
+                        padding: "18px",
+                        borderRadius: "12px",
+                        background: selectAll ? "#007BFF" : "#e3f2fd",
+                        color: selectAll ? "#fff" : "#0d6efd",
+                        fontWeight: "700",
+                        fontSize: "17px",
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        boxShadow: "0 5px 10px rgba(0,0,0,0.1)",
+                        transition: "all 0.3s ease",
+                        border: selectAll
+                          ? "2px solid #0056b3"
+                          : "2px dashed #90caf9",
+                      }}
                     >
                       <input
                         type="checkbox"
-                        style={{ transform: "scale(1.5)", marginRight: "10px" }}
                         checked={selectAll}
+                        onClick={(e) => e.stopPropagation()} // stop bubbling
                         onChange={handleSelectAllChange}
-                      ></input>
-                      Select All
+                        style={{ marginRight: "12px", transform: "scale(1.4)" }}
+                      />
+                      Select All Amenities
                     </div>
+
+                    {/* AMENITY CARDS */}
                     {checkboxItems.map((item, index) => (
                       <div
-                        className="col-md-6"
-                        style={{ marginTop: "20px" }}
                         key={index}
+                        onClick={() => handleCheckboxChange(index)}
+                        style={{
+                          width: "220px",
+                          padding: "16px",
+                          borderRadius: "10px",
+                          backgroundColor: checkedItems[index]
+                            ? "#4CAF50"
+                            : "#f9f9f9",
+                          color: checkedItems[index] ? "#fff" : "#333",
+                          fontWeight: "500",
+                          fontSize: "16px",
+                          display: "flex",
+                          alignItems: "center",
+                          cursor: "pointer",
+                          boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                          transition: "all 0.3s ease",
+                          border: checkedItems[index]
+                            ? "2px solid #388e3c"
+                            : "2px solid #ddd",
+                        }}
                       >
                         <input
                           type="checkbox"
-                          style={{
-                            transform: "scale(1.5)",
-                            marginRight: "10px",
-                          }}
                           checked={checkedItems[index]}
+                          onClick={(e) => e.stopPropagation()} // prevent double trigger
                           onChange={() => handleCheckboxChange(index)}
+                          style={{
+                            marginRight: "10px",
+                            transform: "scale(1.3)",
+                          }}
                         />
                         {item}
                       </div>
                     ))}
                   </div>
+
                   <div
                     className="row"
                     id="featuredaminities"
-                    style={{ marginTop: "20px", display: "none" }}
+                    style={{
+                      marginTop: "20px",
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "20px",
+                      justifyContent: "center",
+                      display: "none", // keep this if you’re toggling visibility dynamically
+                    }}
                   >
+                    {/* SELECT ALL CARD */}
                     <div
-                      className="col-md-12"
-                      style={{ width: "250px", marginLeft: "200px" }}
+                      onClick={handleSelectAllChange1}
+                      style={{
+                        width: "220px",
+                        padding: "18px",
+                        borderRadius: "12px",
+                        background: selectAll1 ? "#007BFF" : "#e3f2fd",
+                        color: selectAll1 ? "#fff" : "#0d6efd",
+                        fontWeight: "700",
+                        fontSize: "17px",
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        boxShadow: "0 5px 10px rgba(0,0,0,0.1)",
+                        transition: "all 0.3s ease",
+                        border: selectAll1
+                          ? "2px solid #0056b3"
+                          : "2px dashed #90caf9",
+                      }}
                     >
                       <input
                         type="checkbox"
-                        style={{ transform: "scale(1.5)", marginRight: "10px" }}
                         checked={selectAll1}
+                        onClick={(e) => e.stopPropagation()}
                         onChange={handleSelectAllChange1}
-                      ></input>
-                      Select All
+                        style={{ marginRight: "12px", transform: "scale(1.4)" }}
+                      />
+                      Select All Featured
                     </div>
+
+                    {/* FEATURED AMENITY CARDS */}
                     {checkboxItems1.map((item, index) => (
                       <div
-                        className="col-md-3"
-                        style={{ marginTop: "20px" }}
                         key={index}
+                        onClick={() => handleCheckboxChange1(index)}
+                        style={{
+                          width: "220px",
+                          padding: "16px",
+                          borderRadius: "10px",
+                          backgroundColor: checkedItems1[index]
+                            ? "#4CAF50"
+                            : "#f9f9f9",
+                          color: checkedItems1[index] ? "#fff" : "#333",
+                          fontWeight: "500",
+                          fontSize: "16px",
+                          display: "flex",
+                          alignItems: "center",
+                          cursor: "pointer",
+                          boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                          transition: "all 0.3s ease",
+                          border: checkedItems1[index]
+                            ? "2px solid #388e3c"
+                            : "2px solid #ddd",
+                        }}
                       >
                         <input
                           type="checkbox"
-                          style={{
-                            transform: "scale(1.5)",
-                            marginRight: "10px",
-                          }}
                           checked={checkedItems1[index]}
+                          onClick={(e) => e.stopPropagation()}
                           onChange={() => handleCheckboxChange1(index)}
+                          style={{
+                            marginRight: "10px",
+                            transform: "scale(1.3)",
+                          }}
                         />
                         {item}
                       </div>
                     ))}
                   </div>
-                  <div
-                    className="row"
-                    id="nearbyaminities"
-                    style={{ marginTop: "20px", display: "none" }}
-                  >
-                    <div className="col-md-12"></div>
-                    <br></br>
-
-                    <div className="col-md-3">
-                      <label className="form-label">Destination</label>
-                      <select
-                        id="choosedestination"
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setdestinations({
-                            ...destinations,
-                            destination: e.target.value,
-                          })
-                        }
-                      >
-                        <option>Select</option>
-                        <option>Bus Stop</option>
-                        <option>Railway Station</option>
-                        <option>Airport</option>
-                        <option>Taxi Stand</option>
-                        <option>Atm</option>
-                        <option>Bank</option>
-                        <option>Church</option>
-                        <option>Mosque</option>
-                        <option>Park</option>
-                        <option>Restaurants</option>
-                        <option>School</option>
-                        <option>Temple</option>
-                        <option>Super Market</option>
-                      </select>
-                    </div>
-                    <div className="col-md-3">
-                      <label className="form-label">Name Of Destination</label>
-                      <input
-                        id="nameofdestination"
-                        type="text"
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setdestinations((prevprofile) => ({
-                            ...prevprofile,
-                            name_of_destination: e.target.value,
-                          }))
-                        }
-                      />{" "}
-                    </div>
-                    <div className="col-md-2">
-                      <label className="form-label">Distance</label>
-                      <input
-                        id="destination"
-                        type="text"
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setdestinations((prevprofile) => ({
-                            ...prevprofile,
-                            distance: e.target.value,
-                          }))
-                        }
-                      />{" "}
-                    </div>
-                    <div className="col-md-2">
-                      <label
-                        className="form-label"
-                        style={{ visibility: "hidden" }}
-                      >
-                        Measurement
-                      </label>
-                      <select
-                        id="measurment"
-                        className="form-control form-control-sm"
-                        onChange={(e) =>
-                          setdestinations((prevprofile) => ({
-                            ...prevprofile,
-                            measurment: e.target.value,
-                          }))
-                        }
-                      >
-                        <option>Select</option>
-                        <option>K.M</option>
-                        <option>Miles</option>
-                        <option>Meter</option>
-                      </select>
-                    </div>
-                    <div className="col-md-1">
-                      <label
-                        className="form-label"
-                        style={{ visibility: "hidden" }}
-                      >
-                        Add
-                      </label>
-                      <button
-                        className="form-control form-control-sm"
-                        onClick={adddestination}
-                      >
-                        +
-                      </button>
-                    </div>
-                    <div className="col-md-4"></div>
-                    <br></br>
-                    <div className="col-md-12">
-                      <label className="form-label">List Of Destinations</label>
-                    </div>
-                    <TableContainer
-                      component={Paper}
-                      style={{
-                        height: "400px",
-                        width: "1100px",
-                        overflowY: "scroll",
-                        marginTop: "40px",
-                        marginLeft: "10px",
-                      }}
-                    >
-                      <Table
-                        sx={{ minWidth: 700 }}
-                        aria-label="customized table"
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <StyledTableCell
-                              style={{ fontFamily: "times new roman" }}
-                            >
-                              Sr.
-                            </StyledTableCell>
-                            <StyledTableCell
-                              style={{ fontFamily: "times new roman" }}
-                            >
-                              Name Of Destination
-                            </StyledTableCell>
-                            <StyledTableCell
-                              style={{ fontFamily: "times new roman" }}
-                            >
-                              Type Of Destination
-                            </StyledTableCell>
-                            <StyledTableCell
-                              style={{ fontFamily: "times new roman" }}
-                            >
-                              Distance
-                            </StyledTableCell>
-                            <StyledTableCell
-                              style={{ fontFamily: "times new roman" }}
-                            >
-                              Action
-                            </StyledTableCell>
-                          </TableRow>
-                        </TableHead>
-                        <tbody>
-                          {project.nearby_aminities.map((item, index) => (
-                            <StyledTableRow
-                              key={index}
-                              style={{ backgroundColor: "white" }}
-                            >
-                              <StyledTableCell
-                                style={{
-                                  padding: "10px",
-                                  cursor: "pointer",
-                                  fontFamily: "times new roman",
-                                  fontSize: "10px",
-                                }}
-                              >
-                                {index + 1}
-                              </StyledTableCell>
-                              <StyledTableCell>
-                                {item.name_of_destination}{" "}
-                              </StyledTableCell>
-                              <StyledTableCell>
-                                {item.destination}{" "}
-                              </StyledTableCell>
-                              <StyledTableCell>
-                                {item.distance}
-                                {item.measurment}{" "}
-                              </StyledTableCell>
-                              <StyledTableCell>
-                                <img
-                                  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                  alt="delete button"
-                                  onClick={() => deletedestination(index)}
-                                  style={{ height: "40px", cursor: "pointer" }}
-                                />
-                              </StyledTableCell>
-                            </StyledTableRow>
-                          ))}
-                        </tbody>
-                      </Table>
-                    </TableContainer>
-                  </div>
+                 <div
+                                    className="row"
+                                    id="nearbyaminities"
+                                    style={{ marginTop: "20px", display: "none" }}
+                                  >
+                                    <div className="col-md-12  custom-input"></div>
+                                    <br></br>
+                
+                                    <div className="col-md-3  custom-input">
+                                      <label className="form-label">Destination</label>
+                                      <select
+                                        id="choosedestination"
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setdestinations({
+                                            ...destinations,
+                                            destination: e.target.value,
+                                          })
+                                        }
+                                        onClick={() => {
+                                          if (All_Destination.length === 0) {
+                                            getall_destination();
+                                          }
+                                        }}
+                                      >
+                                        <option>---Select---</option>
+                                        {select_loading === "destination" ? (
+                                          <CircularProgress />
+                                        ) : (
+                                          All_Destination.map((name) => (
+                                            <option value={name.lookup_value}>
+                                              {name.lookup_value}
+                                            </option>
+                                          ))
+                                        )}
+                                      </select>
+                                    </div>
+                                    <div className="col-md-3  custom-input">
+                                      <label className="form-label">Name Of Destination</label>
+                                      <input
+                                        id="nameofdestination"
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setdestinations((prevprofile) => ({
+                                            ...prevprofile,
+                                            name_of_destination: e.target.value,
+                                          }))
+                                        }
+                                      />{" "}
+                                    </div>
+                                    <div className="col-md-2  custom-input">
+                                      <label className="form-label">Distance</label>
+                                      <input
+                                        id="destination"
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setdestinations((prevprofile) => ({
+                                            ...prevprofile,
+                                            distance: e.target.value,
+                                          }))
+                                        }
+                                      />{" "}
+                                    </div>
+                                    <div className="col-md-2  custom-input">
+                                      <label
+                                        className="form-label"
+                                        style={{ visibility: "hidden" }}
+                                      >
+                                        Measurement
+                                      </label>
+                                      <select
+                                        id="measurment"
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setdestinations((prevprofile) => ({
+                                            ...prevprofile,
+                                            measurment: e.target.value,
+                                          }))
+                                        }
+                                      >
+                                        <option>Select</option>
+                                        <option>K.M</option>
+                                        <option>Miles</option>
+                                        <option>Meter</option>
+                                      </select>
+                                    </div>
+                                    <div className="col-md-1  custom-input">
+                                      <label
+                                        className="form-label"
+                                        style={{ visibility: "hidden" }}
+                                      >
+                                        Add
+                                      </label>
+                                      {/* <button className='form-control form-control-sm' onClick={adddestination}>+</button> */}
+                                      <button
+                                        className="form-control form-control-sm"
+                                        onClick={adddestination}
+                                        style={{
+                                          backgroundColor: "#007bff",
+                                          color: "#fff",
+                                          border: "none",
+                                          borderRadius: "4px",
+                                          fontWeight: "500",
+                                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                          transition: "all 0.2s ease-in-out",
+                                        }}
+                                        onMouseOver={(e) =>
+                                          (e.currentTarget.style.backgroundColor = "#0056b3")
+                                        }
+                                        onMouseOut={(e) =>
+                                          (e.currentTarget.style.backgroundColor = "#007bff")
+                                        }
+                                      >
+                                        +
+                                      </button>
+                                    </div>
+                                    <div className="col-md-4  custom-input"></div>
+                                    <br></br>
+                                    <div className="col-md-12  custom-input">
+                                      <label className="form-label">List Of Destinations</label>
+                                    </div>
+                
+                                    {/* Table */}
+                                    <div className="mt-6 w-full overflow-x-auto">
+                                      <TableContainer
+                                        component={Paper}
+                                        className="max-h-[400px] overflow-y-scroll"
+                                      >
+                                        <Table
+                                          sx={{ minWidth: 700 }}
+                                          aria-label="customized table"
+                                        >
+                                          <TableHead>
+                                            <TableRow>
+                                              <StyledTableCell
+                                                style={{ backgroundColor: "gray" }}
+                                              >
+                                                Sr.
+                                              </StyledTableCell>
+                                              <StyledTableCell
+                                                style={{ backgroundColor: "gray" }}
+                                              >
+                                                Name Of Destination
+                                              </StyledTableCell>
+                                              <StyledTableCell
+                                                style={{ backgroundColor: "gray" }}
+                                              >
+                                                Type Of Destination
+                                              </StyledTableCell>
+                                              <StyledTableCell
+                                                style={{ backgroundColor: "gray" }}
+                                              >
+                                                Distance
+                                              </StyledTableCell>
+                                              <StyledTableCell
+                                                style={{ backgroundColor: "gray" }}
+                                              >
+                                                Action
+                                              </StyledTableCell>
+                                            </TableRow>
+                                          </TableHead>
+                                          <tbody>
+                                            {project.nearby_aminities.map((item, index) => (
+                                              <StyledTableRow
+                                                key={index}
+                                                style={{ backgroundColor: "white" }}
+                                              >
+                                                <StyledTableCell
+                                                  style={{ padding: "10px", cursor: "pointer" }}
+                                                >
+                                                  {index + 1}
+                                                </StyledTableCell>
+                                                <StyledTableCell>
+                                                  {item.name_of_destination}{" "}
+                                                </StyledTableCell>
+                                                <StyledTableCell>
+                                                  {item.destination}{" "}
+                                                </StyledTableCell>
+                                                <StyledTableCell>
+                                                  {item.distance}
+                                                  {item.measurment}{" "}
+                                                </StyledTableCell>
+                                                <StyledTableCell>
+                                                  {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletedestination(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
+                                                  <span
+                                                    class="material-icons"
+                                                    style={{
+                                                      color: "red",
+                                                      fontSize: "24px",
+                                                      cursor: "pointer",
+                                                    }}
+                                                    onClick={() => deletedestination(index)}
+                                                  >
+                                                    delete
+                                                  </span>
+                                                </StyledTableCell>
+                                              </StyledTableRow>
+                                            ))}
+                                          </tbody>
+                                        </Table>
+                                      </TableContainer>
+                                    </div>
+                                  </div>
                 </div>
               </div>
             </div>
@@ -10403,703 +10229,745 @@ console.log(project);
 
             {/* -------------------=====================================price start==================================---------------------------------- */}
 
-            <div
-              className="col-md-12"
-              id="price"
-              style={{
-                display: "none",
-                marginTop: "-80px",
-                lineHeight: "30px",
-              }}
-            >
-              <div className="p-3 py-5">
-                <div
-                  className="row"
-                  id="nearbyaminities"
-                  style={{ marginTop: "20px" }}
-                >
-                  <div className="col-md-12"></div>
-                  <br></br>
-
-                  <div className="col-md-10">
-                    <label className="form-label">Price List</label>
-                  </div>
-                  <div className="col-md-1">
-                    <button
-                      className="form-control form-control-sm"
-                      onClick={handleShow4}
-                    >
-                      Add
-                    </button>
-                  </div>
-                  <div className="col-md-12">
-                    <hr></hr>
-                  </div>
-                  <TableContainer
-                    component={Paper}
-                    style={{
-                      height: "400px",
-                      width: "1100px",
-                      overflowY: "scroll",
-                      marginLeft: "10px",
-                    }}
-                  >
-                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                      <TableHead>
-                        <TableRow>
-                          <StyledTableCell
-                            style={{ fontFamily: "times new roman" }}
-                          >
-                            Block Name
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{ fontFamily: "times new roman" }}
-                          >
-                            Sub Category
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{ fontFamily: "times new roman" }}
-                          >
-                            Size
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{ fontFamily: "times new roman" }}
-                          >
-                            Charge
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{ fontFamily: "times new roman" }}
-                          >
-                            Taxes
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{ fontFamily: "times new roman" }}
-                          >
-                            Total Price
-                          </StyledTableCell>
-                        </TableRow>
-                      </TableHead>
-                      <tbody>
-                        {project.price_list.map((item, index) => (
-                          <StyledTableRow
-                            key={index}
-                            style={{ backgroundColor: "white" }}
-                          >
-                            <StyledTableCell
-                              style={{
-                                padding: "10px",
-                                fontFamily: "times new roman",
-                              }}
+              <div
+                        className="col-md-12  custom-input"
+                        id="price"
+                        style={{
+                          display: "none",
+                          marginTop: "-80px",
+                          lineHeight: "30px",
+                        }}
+                      >
+                        <div id="price" className="w-full mt-0">
+                          <div className="w-full bg-white rounded-lg shadow-sm p-4">
+                            <div className="col-md-12  custom-input"></div>
+                            <br></br>
+          
+                            <div className="col-md-10  custom-input">
+                              <label className="form-label">Price List</label>
+                            </div>
+                            <div className="col-md-1  custom-input">
+                              {/* <button className='form-control form-control-sm' onClick={handleShow4}>Add</button> */}
+                              <button
+                                className="form-control form-control-sm btn-add"
+                                onClick={handleShow4}
+                              >
+                                +
+                              </button>
+                            </div>
+                            <div className="col-md-12  custom-input">
+                              <hr></hr>
+                            </div>
+                            {/* Table */}
+                            <div className="mt-6 w-full overflow-x-auto">
+                              <TableContainer
+                                component={Paper}
+                                className="max-h-[400px] overflow-y-scroll"
+                              >
+                                <Table
+                                  sx={{ minWidth: 700 }}
+                                  aria-label="customized table"
+                                >
+                                  <TableHead>
+                                    <TableRow>
+                                      <StyledTableCell
+                                        style={{ backgroundColor: "gray" }}
+                                      >
+                                        Block Name
+                                      </StyledTableCell>
+                                      <StyledTableCell
+                                        style={{ backgroundColor: "gray" }}
+                                      >
+                                        Sub Category
+                                      </StyledTableCell>
+                                      <StyledTableCell
+                                        style={{ backgroundColor: "gray" }}
+                                      >
+                                        Size
+                                      </StyledTableCell>
+                                      <StyledTableCell
+                                        style={{ backgroundColor: "gray" }}
+                                      >
+                                        Charge
+                                      </StyledTableCell>
+                                      <StyledTableCell
+                                        style={{ backgroundColor: "gray" }}
+                                      >
+                                        Taxes
+                                      </StyledTableCell>
+                                      <StyledTableCell
+                                        style={{ backgroundColor: "gray" }}
+                                      >
+                                        Total Price
+                                      </StyledTableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <tbody>
+                                    {project.price_list.map((item, index) => (
+                                      <StyledTableRow
+                                        key={index}
+                                        style={{ backgroundColor: "white" }}
+                                      >
+                                        <StyledTableCell
+                                          style={{ padding: "10px", fontSize: "10px" }}
+                                        >
+                                          {item.block}
+                                        </StyledTableCell>
+                                        <StyledTableCell>
+                                          {item.sub_category}{" "}
+                                        </StyledTableCell>
+                                        <StyledTableCell>{item.size} </StyledTableCell>
+                                        <StyledTableCell>{item.blank1}</StyledTableCell>
+                                        <StyledTableCell>{item.blank4}</StyledTableCell>
+                                        <StyledTableCell>
+                                          {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteprice(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
+                                          <span
+                                            class="material-icons"
+                                            style={{
+                                              color: "red",
+                                              fontSize: "24px",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() => deleteprice(index)}
+                                          >
+                                            delete
+                                          </span>
+                                        </StyledTableCell>
+                                      </StyledTableRow>
+                                    ))}
+                                  </tbody>
+                                </Table>
+                              </TableContainer>
+                            </div>
+          
+                            <Modal show={show4} onHide={handleClose4} size="lg">
+                              <Modal.Header>
+                                <Modal.Title>Price Details</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                <div className="row">
+                                  <div
+                                    className="col-md-12  custom-input"
+                                    style={{
+                                      marginTop: "20px",
+                                      display: "flex",
+                                      gap: "30px",
+                                    }}
+                                  >
+                                    {" "}
+                                    <u
+                                      id="baseprice1"
+                                      onClick={baseprice}
+                                      style={{ cursor: "pointer", fontWeight: "bold" }}
+                                    >
+                                      Base Price
+                                    </u>
+                                    <u
+                                      id="charges1"
+                                      onClick={charges}
+                                      style={{ cursor: "pointer", fontWeight: "bold" }}
+                                    >
+                                      Charges
+                                    </u>
+                                    <u
+                                      id="taxes1"
+                                      onClick={taxes}
+                                      style={{ cursor: "pointer", fontWeight: "bold" }}
+                                    >
+                                      Taxes
+                                    </u>
+                                  </div>
+                                  <div
+                                    className="row"
+                                    id="baseprice"
+                                    style={{ marginTop: "20px", padding: "30px" }}
+                                  >
+                                    <hr></hr>
+                                    <div className="col-md-4  custom-input">
+                                      <label className="form-label">Block</label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({ ...prices, block: e.target.value })
+                                        }
+                                      >
+                                        <option>---Select---</option>
+                                        {project.add_block.map((item) => (
+                                          <option>{item.block_name}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="col-md-4  custom-input">
+                                      <label className="form-label">Category</label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({
+                                            ...prices,
+                                            category: e.target.value,
+                                          })
+                                        }
+                                      >
+                                        <option>---Select---</option>
+                                        {project.category.map((type) => (
+                                          <option>{type}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="col-md-4  custom-input">
+                                      <label className="form-label">Sub Category</label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({
+                                            ...prices,
+                                            sub_category: e.target.value,
+                                          })
+                                        }
+                                      >
+                                        <option>---Select---</option>
+                                        {project.sub_category.map((item) => (
+                                          <option>{item}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="col-md-8  custom-input">
+                                      <label className="form-label">Size</label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({ ...prices, size: e.target.value })
+                                        }
+                                      >
+                                        <option>---Select---</option>
+                                        {project.add_size.map((item) => (
+                                          <option>{item.size_name}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="col-md-4  custom-input">
+                                      <label className="form-label">Covered Area</label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({
+                                            ...prices,
+                                            covered_area: e.target.value,
+                                          })
+                                        }
+                                      >
+                                        <option>---Select---</option>
+                                        <option>Covered Area</option>
+                                        <option> Carpet Area</option>
+                                        <option>Total Area</option>
+                                      </select>
+                                    </div>
+                                    <div className="col-md-6  custom-input">
+                                      <label className="form-label">Base Rate</label>
+                                      <input
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                      ></input>
+                                    </div>
+                                    <br></br>
+                                    <div className="col-md-6  custom-input"></div>
+                                  </div>
+          
+                                  <div
+                                    className="row"
+                                    id="charges"
+                                    style={{
+                                      marginTop: "20px",
+                                      padding: "30px",
+                                      display: "none",
+                                    }}
+                                  >
+                                    <div className="col-md-12  custom-input">
+                                      <hr></hr>
+                                    </div>
+                                    <div className="col-md-4  custom-input">
+                                      <label className="form-label">Name</label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={handlechargenamechange}
+                                      >
+                                        <option>---Select---</option>
+                                        <option>Preferred Location Charges</option>
+                                        <option>Amenities Charges</option>
+                                        <option>Govt. Charges</option>
+                                      </select>
+                                    </div>
+                                    <div className="col-md-4  custom-input">
+                                      <label className="form-label">Type</label>
+                                      {prices.chargename && (
+                                        <select
+                                          className="form-control form-control-sm"
+                                          onChange={(e) =>
+                                            setprices({
+                                              ...prices,
+                                              chargetype: e.target.value,
+                                            })
+                                          }
+                                        >
+                                          <option>Select</option>
+                                          {chargeCategories[prices.chargename].map(
+                                            (charge, index) => (
+                                              <option key={index} value={charge}>
+                                                {charge}
+                                              </option>
+                                            )
+                                          )}
+                                        </select>
+                                      )}
+                                    </div>
+                                    <div className="col-md-4  custom-input"></div>
+          
+                                    <div className="col-md-4  custom-input">
+                                      <label className="form-label">
+                                        Calculation ype
+                                      </label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({
+                                            ...prices,
+                                            calculation_type: e.target.value,
+                                          })
+                                        }
+                                      >
+                                        <option>Select</option>
+                                        <option>Calculate</option>
+                                        <option>Absolute</option>
+                                      </select>
+                                    </div>
+                                    <div className="col-md-2  custom-input">
+                                      <label
+                                        className="form-label"
+                                        style={{ visibility: "hidden" }}
+                                      >
+                                        blank1
+                                      </label>
+                                      <input
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({ ...prices, blank1: e.target.value })
+                                        }
+                                      ></input>
+                                    </div>
+                                    <br></br>
+                                    <div className="col-md-3  custom-input">
+                                      <label
+                                        className="form-label"
+                                        style={{ visibility: "hidden" }}
+                                      >
+                                        blank2
+                                      </label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({ ...prices, blank2: e.target.value })
+                                        }
+                                      >
+                                        <option>Select</option>
+                                        <option>My Team</option>
+                                        <option>My Self</option>
+                                        <option>All Users</option>
+                                      </select>
+                                    </div>
+                                    <div className="col-md-3  custom-input">
+                                      <label
+                                        className="form-label"
+                                        style={{ visibility: "hidden" }}
+                                      >
+                                        blank3
+                                      </label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({ ...prices, blank3: e.target.value })
+                                        }
+                                      >
+                                        <option>Select</option>
+                                        <option>My Team</option>
+                                        <option>My Self</option>
+                                        <option>All Users</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <div
+                                    className="row"
+                                    id="taxes"
+                                    style={{
+                                      marginTop: "20px",
+                                      padding: "30px",
+                                      display: "none",
+                                    }}
+                                  >
+                                    <div className="col-md-12  custom-input">
+                                      <hr></hr>
+                                    </div>
+                                    <div className="col-md-5  custom-input">
+                                      <label className="form-label">Name</label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({ ...prices, name1: e.target.value })
+                                        }
+                                      >
+                                        <option>Select</option>
+                                        <option>Goods and Service Tax(GST)</option>
+                                        <option>Registration Charges</option>
+                                        <option>Stamp Duty</option>
+                                      </select>
+                                    </div>
+                                    <div className="col-md-5  custom-input">
+                                      <label className="form-label">Type</label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({ ...prices, type1: e.target.value })
+                                        }
+                                      >
+                                        <option>Select</option>
+                                        <option>My Team</option>
+                                        <option>My Self</option>
+                                        <option>All Users</option>
+                                      </select>
+                                    </div>
+                                    <div className="col-md-2  custom-input"></div>
+          
+                                    <div className="col-md-4  custom-input">
+                                      <label className="form-label">
+                                        Calculation ype
+                                      </label>
+                                      <select
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({
+                                            ...prices,
+                                            calculation_type1: e.target.value,
+                                          })
+                                        }
+                                      >
+                                        <option>---Select---</option>
+                                        <option>Calculate</option>
+                                        <option>Absolute</option>
+                                      </select>
+                                    </div>
+                                    <div className="col-md-4  custom-input">
+                                      <label
+                                        className="form-label"
+                                        style={{ visibility: "hidden" }}
+                                      >
+                                        blank4
+                                      </label>
+                                      <input
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        onChange={(e) =>
+                                          setprices({ ...prices, blank4: e.target.value })
+                                        }
+                                      ></input>
+                                    </div>
+                                    <br></br>
+                                  </div>
+                                </div>
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <Button variant="secondary" onClick={addprice}>
+                                  Add Price
+                                </Button>
+                                <Button variant="secondary" onClick={handleClose4}>
+                                  Close
+                                </Button>
+                              </Modal.Footer>
+                            </Modal>
+          
+                            <div
+                              className="col-md-10  custom-input"
+                              style={{ marginTop: "10px" }}
                             >
-                              {item.block}
-                            </StyledTableCell>
-                            <StyledTableCell>
-                              {item.sub_category}{" "}
-                            </StyledTableCell>
-                            <StyledTableCell>{item.size} </StyledTableCell>
-                            <StyledTableCell>{item.blank1}</StyledTableCell>
-                            <StyledTableCell>{item.blank4}</StyledTableCell>
-                            <StyledTableCell>
-                              <img
-                                src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                alt="delete button"
-                                onClick={() => deleteprice(index)}
-                                style={{ height: "40px", cursor: "pointer" }}
-                              />
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        ))}
-                      </tbody>
-                    </Table>
-                  </TableContainer>
-
-                  <Modal show={show4} onHide={handleClose4} size="lg">
-                    <Modal.Header>
-                      <Modal.Title>Price Details</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <div className="row">
-                        <div
-                          className="col-md-12"
-                          style={{
-                            marginTop: "20px",
-                            display: "flex",
-                            gap: "30px",
-                          }}
-                        >
-                          {" "}
-                          <u
-                            id="baseprice1"
-                            onClick={baseprice}
-                            style={{ cursor: "pointer", fontWeight: "bold" }}
-                          >
-                            Base Price
-                          </u>
-                          <u
-                            id="charges1"
-                            onClick={charges}
-                            style={{ cursor: "pointer", fontWeight: "bold" }}
-                          >
-                            Charges
-                          </u>
-                          <u
-                            id="taxes1"
-                            onClick={taxes}
-                            style={{ cursor: "pointer", fontWeight: "bold" }}
-                          >
-                            Taxes
-                          </u>
-                        </div>
-                        <div
-                          className="row"
-                          id="baseprice"
-                          style={{ marginTop: "20px", padding: "30px" }}
-                        >
-                          <hr></hr>
-                          <div className="col-md-4">
-                            <label className="form-label">Block</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({ ...prices, block: e.target.value })
-                              }
+                              <label className="form-label">Payment Plan</label>
+                            </div>
+                            <div
+                              className="col-md-1  custom-input"
+                              style={{ marginTop: "10px" }}
                             >
-                              <option>---Select---</option>
-                              {project.add_block.map((item) => (
-                                <option>{item.block_name}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="col-md-4">
-                            <label className="form-label">Category</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({
-                                  ...prices,
-                                  category: e.target.value,
-                                })
-                              }
-                            >
-                              <option>---Select---</option>
-                              {project.category.map((type) => (
-                                <option>{type}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="col-md-4">
-                            <label className="form-label">Sub Category</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({
-                                  ...prices,
-                                  sub_category: e.target.value,
-                                })
-                              }
-                            >
-                              <option>---Select---</option>
-                              {project.sub_category.map((item) => (
-                                <option>{item}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="col-md-8">
-                            <label className="form-label">Size</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({ ...prices, size: e.target.value })
-                              }
-                            >
-                              <option>---Select---</option>
-                              {project.add_size.map((item) => (
-                                <option>{item.size_name}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="col-md-4">
-                            <label className="form-label">Covered Area</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({
-                                  ...prices,
-                                  covered_area: e.target.value,
-                                })
-                              }
-                            >
-                              <option>---Select---</option>
-                              <option>Covered Area</option>
-                              <option> Carpet Area</option>
-                              <option>Total Area</option>
-                            </select>
-                          </div>
-                          <div className="col-md-6">
-                            <label className="form-label">Base Rate</label>
-                            <input
-                              type="text"
-                              className="form-control form-control-sm"
-                            ></input>
-                          </div>
-                          <br></br>
-                          <div className="col-md-6"></div>
-                        </div>
-
-                        <div
-                          className="row"
-                          id="charges"
-                          style={{
-                            marginTop: "20px",
-                            padding: "30px",
-                            display: "none",
-                          }}
-                        >
-                          <div className="col-md-12">
-                            <hr></hr>
-                          </div>
-                          <div className="col-md-4">
-                            <label className="form-label">Name</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={handlechargenamechange}
-                            >
-                              <option>---Select---</option>
-                              <option>Preferred Location Charges</option>
-                              <option>Amenities Charges</option>
-                              <option>Govt. Charges</option>
-                            </select>
-                          </div>
-                          <div className="col-md-4">
-                            <label className="form-label">Type</label>
-                            {prices.chargename && (
-                              <select
+                              {/* <button className='form-control form-control-sm' onClick={handleShow5}>Add</button> */}
+                              <button
                                 className="form-control form-control-sm"
-                                onChange={(e) =>
-                                  setprices({
-                                    ...prices,
-                                    chargetype: e.target.value,
-                                  })
+                                onClick={handleShow5}
+                                style={{
+                                  backgroundColor: "#007bff",
+                                  color: "#fff",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  fontWeight: "500",
+                                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                  transition: "all 0.2s ease-in-out",
+                                }}
+                                onMouseOver={(e) =>
+                                  (e.currentTarget.style.backgroundColor = "#0056b3")
+                                }
+                                onMouseOut={(e) =>
+                                  (e.currentTarget.style.backgroundColor = "#007bff")
                                 }
                               >
-                                <option>Select</option>
-                                {chargeCategories[prices.chargename].map(
-                                  (charge, index) => (
-                                    <option key={index} value={charge}>
-                                      {charge}
-                                    </option>
-                                  )
-                                )}
-                              </select>
-                            )}
-                          </div>
-                          <div className="col-md-4"></div>
-
-                          <div className="col-md-4">
-                            <label className="form-label">
-                              Calculation ype
-                            </label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({
-                                  ...prices,
-                                  calculation_type: e.target.value,
-                                })
-                              }
+                                +
+                              </button>
+                            </div>
+                            <div className="col-md-12  custom-input">
+                              <hr></hr>
+                            </div>
+                            <div className="mt-6 w-full overflow-x-auto">
+                              <TableContainer
+                                component={Paper}
+                                className="max-h-[400px] overflow-y-scroll"
+                              >
+                                <Table
+                                  sx={{ minWidth: 700 }}
+                                  aria-label="customized table"
+                                >
+                                  <TableHead>
+                                    <TableRow>
+                                      <StyledTableCell
+                                        style={{ backgroundColor: "gray" }}
+                                      >
+                                        Serial
+                                      </StyledTableCell>
+                                      <StyledTableCell
+                                        style={{ backgroundColor: "gray" }}
+                                      >
+                                        Plan Name
+                                      </StyledTableCell>
+                                      <StyledTableCell
+                                        style={{ backgroundColor: "gray" }}
+                                      >
+                                        Action
+                                      </StyledTableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <tbody>
+                                    {project.Payment_plan.map((item, index) => (
+                                      <StyledTableRow
+                                        key={index}
+                                        style={{ backgroundColor: "white" }}
+                                      >
+                                        <StyledTableCell
+                                          style={{
+                                            padding: "10px",
+                                            cursor: "pointer",
+                                            fontSize: "10px",
+                                          }}
+                                        >
+                                          {index + 1}
+                                        </StyledTableCell>
+                                        <StyledTableCell>
+                                          {item.payment_planname}{" "}
+                                        </StyledTableCell>
+                                        <StyledTableCell>
+                                          {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletepayment(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
+                                          <span
+                                            class="material-icons"
+                                            style={{
+                                              color: "red",
+                                              fontSize: "24px",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() => deletepayment(index)}
+                                          >
+                                            delete
+                                          </span>
+                                        </StyledTableCell>
+                                      </StyledTableRow>
+                                    ))}
+                                  </tbody>
+                                </Table>
+                              </TableContainer>
+                            </div>
+                            <Modal
+                              show={show5}
+                              onHide={handleClose5}
+                              size="xl"
+                              style={{ zIndex: 99999 }}
                             >
-                              <option>Select</option>
-                              <option>Calculate</option>
-                              <option>Absolute</option>
-                            </select>
+                              <Modal.Header>
+                                <Modal.Title>Add Payment Plan</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                <div className="row">
+                                  <div className="col-md-6  custom-input">
+                                    <label className="form-label">
+                                      Payment Plan Name
+                                    </label>
+                                    <input
+                                      type="text"
+                                      className="form-control form-control-sm"
+                                      onChange={(e) =>
+                                        setpayments({
+                                          ...payments,
+                                          payment_planname: e.target.value,
+                                        })
+                                      }
+                                    ></input>
+                                  </div>
+                                  <div className="col-md-6  custom-input"></div>
+          
+                                  <div className="col-md-4  custom-input">
+                                    <label className="form-label">Step Name</label>
+                                    {payments.step_name.map((item, index) => (
+                                      <input
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        style={{ marginTop: "10px" }}
+                                        onChange={(event) =>
+                                          handlestepnamechange(index, event)
+                                        }
+                                      ></input>
+                                    ))}
+                                  </div>
+                                  <div className="col-md-2  custom-input">
+                                    <label
+                                      className="form-label"
+                                      style={{ width: "200px" }}
+                                    >
+                                      Calculation Type
+                                    </label>
+                                    {payments.calculation_type.map((item, index) => (
+                                      <select
+                                        className="form-control form-control-sm"
+                                        style={{ marginTop: "10px" }}
+                                        onChange={(event) =>
+                                          handlecalculationtypechange(index, event)
+                                        }
+                                      >
+                                        <option>---Select---</option>
+                                        <option>Calculate</option>
+                                        <option>Absolute</option>
+                                      </select>
+                                    ))}
+                                  </div>
+          
+                                  <div className="col-md-1  custom-input">
+                                    <label
+                                      className="form-label"
+                                      style={{ visibility: "hidden" }}
+                                    >
+                                      Blank1
+                                    </label>
+                                    {payments.blank1.map((item, index) => (
+                                      <input
+                                        type="text"
+                                        style={{ marginTop: "10px" }}
+                                        className="form-control form-control-sm"
+                                        onChange={(event) =>
+                                          handleblank1change(index, event)
+                                        }
+                                      ></input>
+                                    ))}
+                                  </div>
+          
+                                  <div className="col-md-1  custom-input">
+                                    <label
+                                      className="form-label"
+                                      style={{ visibility: "hidden" }}
+                                    >
+                                      Blank2
+                                    </label>
+                                    {payments.blank2.map((item, index) => (
+                                      <input
+                                        type="text"
+                                        style={{ marginTop: "10px" }}
+                                        className="form-control form-control-sm"
+                                        onChange={(event) =>
+                                          handleblank2change(index, event)
+                                        }
+                                      ></input>
+                                    ))}
+                                  </div>
+          
+                                  <div className="col-md-2  custom-input">
+                                    <label
+                                      className="form-label"
+                                      style={{ visibility: "hidden" }}
+                                    >
+                                      Blank3
+                                    </label>
+                                    {payments.blank3.map((item, index) => (
+                                      <select
+                                        className="form-control form-control-sm"
+                                        style={{ marginTop: "10px" }}
+                                        onChange={(event) =>
+                                          handleblank3change(index, event)
+                                        }
+                                      >
+                                        <option>Select</option>
+                                        <option>My Team</option>
+                                        <option>My Self</option>
+                                        <option>All Users</option>
+                                      </select>
+                                    ))}
+                                  </div>
+          
+                                  <div
+                                    className="col-md-1  custom-input"
+                                    style={{ marginTop: "90px" }}
+                                  >
+                                    {payments.action4.map((item, index) => (
+                                      //  <img src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall4(index)} style={{height:"40px",cursor:"pointer"}}/>
+                                      <span
+                                        class="material-icons"
+                                        style={{
+                                          color: "red",
+                                          fontSize: "24px",
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={() => deleteall4(index)}
+                                      >
+                                        delete
+                                      </span>
+                                    ))}
+                                  </div>
+                                  <div className="col-md-1  custom-input">
+                                    <label
+                                      className="form-label"
+                                      style={{ visibility: "hidden" }}
+                                    >
+                                      add
+                                    </label>
+                                    <button
+                                      className="form-control form-control-sm custom-btn"
+                                      onClick={addFn4}
+                                    >
+                                      +
+                                    </button>
+                                  </div>
+          
+                                  <div className="col-md-8 custom-input">
+                                    <label className="form-label">
+                                      Terms & Condition
+                                    </label>
+                                    <textarea
+                                      className="form-control form-control-sm"
+                                      style={{ height: "100px" }}
+                                    />
+                                  </div>
+                                  <div className="col-md-4 custom-input"></div>
+                                </div>
+                              </Modal.Body>
+                              <Modal.Footer>
+                                <Button variant="secondary" onClick={addpayment}>
+                                  Add Payment
+                                </Button>
+                                <Button variant="secondary" onClick={handleClose5}>
+                                  Close
+                                </Button>
+                              </Modal.Footer>
+                            </Modal>
                           </div>
-                          <div className="col-md-2">
-                            <label
-                              className="form-label"
-                              style={{ visibility: "hidden" }}
-                            >
-                              blank1
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({ ...prices, blank1: e.target.value })
-                              }
-                            ></input>
-                          </div>
-                          <br></br>
-                          <div className="col-md-3">
-                            <label
-                              className="form-label"
-                              style={{ visibility: "hidden" }}
-                            >
-                              blank2
-                            </label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({ ...prices, blank2: e.target.value })
-                              }
-                            >
-                              <option>Select</option>
-                              <option>My Team</option>
-                              <option>My Self</option>
-                              <option>All Users</option>
-                            </select>
-                          </div>
-                          <div className="col-md-3">
-                            <label
-                              className="form-label"
-                              style={{ visibility: "hidden" }}
-                            >
-                              blank3
-                            </label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({ ...prices, blank3: e.target.value })
-                              }
-                            >
-                              <option>Select</option>
-                              <option>My Team</option>
-                              <option>My Self</option>
-                              <option>All Users</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div
-                          className="row"
-                          id="taxes"
-                          style={{
-                            marginTop: "20px",
-                            padding: "30px",
-                            display: "none",
-                          }}
-                        >
-                          <div className="col-md-12">
-                            <hr></hr>
-                          </div>
-                          <div className="col-md-5">
-                            <label className="form-label">Name</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({ ...prices, name1: e.target.value })
-                              }
-                            >
-                              <option>Select</option>
-                              <option>Goods and Service Tax(GST)</option>
-                              <option>Registration Charges</option>
-                              <option>Stamp Duty</option>
-                            </select>
-                          </div>
-                          <div className="col-md-5">
-                            <label className="form-label">Type</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({ ...prices, type1: e.target.value })
-                              }
-                            >
-                              <option>Select</option>
-                              <option>My Team</option>
-                              <option>My Self</option>
-                              <option>All Users</option>
-                            </select>
-                          </div>
-                          <div className="col-md-2"></div>
-
-                          <div className="col-md-4">
-                            <label className="form-label">
-                              Calculation ype
-                            </label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({
-                                  ...prices,
-                                  calculation_type1: e.target.value,
-                                })
-                              }
-                            >
-                              <option>---Select---</option>
-                              <option>Calculate</option>
-                              <option>Absolute</option>
-                            </select>
-                          </div>
-                          <div className="col-md-4">
-                            <label
-                              className="form-label"
-                              style={{ visibility: "hidden" }}
-                            >
-                              blank4
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setprices({ ...prices, blank4: e.target.value })
-                              }
-                            ></input>
-                          </div>
-                          <br></br>
                         </div>
                       </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button variant="secondary" onClick={addprice}>
-                        Add Price
-                      </Button>
-                      <Button variant="secondary" onClick={handleClose4}>
-                        Close
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
-
-                  <div className="col-md-10" style={{ marginTop: "10px" }}>
-                    <label className="form-label">Payment Plan</label>
-                  </div>
-                  <div className="col-md-1" style={{ marginTop: "10px" }}>
-                    <button
-                      className="form-control form-control-sm"
-                      onClick={handleShow5}
-                    >
-                      Add
-                    </button>
-                  </div>
-                  <div className="col-md-12">
-                    <hr></hr>
-                  </div>
-                  <TableContainer
-                    component={Paper}
-                    style={{
-                      height: "400px",
-                      width: "1100px",
-                      overflowY: "scroll",
-                      marginLeft: "10px",
-                    }}
-                  >
-                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                      <TableHead>
-                        <TableRow>
-                          <StyledTableCell
-                            style={{ fontFamily: "times new roman" }}
-                          >
-                            Serial
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{ fontFamily: "times new roman" }}
-                          >
-                            Plan Name
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{ fontFamily: "times new roman" }}
-                          >
-                            Action
-                          </StyledTableCell>
-                        </TableRow>
-                      </TableHead>
-                      <tbody>
-                        {project.Payment_plan.map((item, index) => (
-                          <StyledTableRow
-                            key={index}
-                            style={{ backgroundColor: "white" }}
-                          >
-                            <StyledTableCell
-                              style={{
-                                padding: "10px",
-                                cursor: "pointer",
-                                fontFamily: "times new roman",
-                                fontSize: "14px",
-                              }}
-                            >
-                              {index + 1}
-                            </StyledTableCell>
-                            <StyledTableCell>
-                              {item.payment_planname}{" "}
-                            </StyledTableCell>
-                            <StyledTableCell>
-                              <img
-                                src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                alt="delete button"
-                                onClick={() => deletepayment(index)}
-                                style={{ height: "40px", cursor: "pointer" }}
-                              />
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        ))}
-                      </tbody>
-                    </Table>
-                  </TableContainer>
-                  <Modal show={show5} onHide={handleClose5} size="xl">
-                    <Modal.Header>
-                      <Modal.Title>Add Payment Plan</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <div className="row">
-                        <div className="col-md-6">
-                          <label className="form-label">
-                            Payment Plan Name
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control form-control-sm"
-                            onChange={(e) =>
-                              setpayments({
-                                ...payments,
-                                payment_planname: e.target.value,
-                              })
-                            }
-                          ></input>
-                        </div>
-                        <div className="col-md-6"></div>
-
-                        <div className="col-md-4">
-                          <label className="form-label">Step Name</label>
-                          {payments.step_name.map((item, index) => (
-                            <input
-                              type="text"
-                              className="form-control form-control-sm"
-                              style={{ marginTop: "10px" }}
-                              onChange={(event) =>
-                                handlestepnamechange(index, event)
-                              }
-                            ></input>
-                          ))}
-                        </div>
-                        <div className="col-md-2">
-                          <label
-                            className="form-label"
-                            style={{ width: "200px" }}
-                          >
-                            Calculation Type
-                          </label>
-                          {payments.calculation_type.map((item, index) => (
-                            <select
-                              className="form-control form-control-sm"
-                              style={{ marginTop: "10px" }}
-                              onChange={(event) =>
-                                handlecalculationtypechange(index, event)
-                              }
-                            >
-                              <option>---Select---</option>
-                              <option>Calculate</option>
-                              <option>Absolute</option>
-                            </select>
-                          ))}
-                        </div>
-
-                        <div className="col-md-1">
-                          <label
-                            className="form-label"
-                            style={{ visibility: "hidden" }}
-                          >
-                            Blank1
-                          </label>
-                          {payments.blank1.map((item, index) => (
-                            <input
-                              type="text"
-                              style={{ marginTop: "10px" }}
-                              className="form-control form-control-sm"
-                              onChange={(event) =>
-                                handleblank1change(index, event)
-                              }
-                            ></input>
-                          ))}
-                        </div>
-
-                        <div className="col-md-1">
-                          <label
-                            className="form-label"
-                            style={{ visibility: "hidden" }}
-                          >
-                            Blank2
-                          </label>
-                          {payments.blank2.map((item, index) => (
-                            <input
-                              type="text"
-                              style={{ marginTop: "10px" }}
-                              className="form-control form-control-sm"
-                              onChange={(event) =>
-                                handleblank2change(index, event)
-                              }
-                            ></input>
-                          ))}
-                        </div>
-
-                        <div className="col-md-2">
-                          <label
-                            className="form-label"
-                            style={{ visibility: "hidden" }}
-                          >
-                            Blank3
-                          </label>
-                          {payments.blank3.map((item, index) => (
-                            <select
-                              className="form-control form-control-sm"
-                              style={{ marginTop: "10px" }}
-                              onChange={(event) =>
-                                handleblank3change(index, event)
-                              }
-                            >
-                              <option>Select</option>
-                              <option>My Team</option>
-                              <option>My Self</option>
-                              <option>All Users</option>
-                            </select>
-                          ))}
-                        </div>
-
-                        <div className="col-md-1" style={{ marginTop: "90px" }}>
-                          {payments.action4.map((item, index) => (
-                            <img
-                              src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                              alt="delete button"
-                              onClick={() => deleteall4(index)}
-                              style={{ height: "40px", cursor: "pointer" }}
-                            />
-                          ))}
-                        </div>
-                        <div className="col-md-1">
-                          <label
-                            className="form-label"
-                            style={{ visibility: "hidden" }}
-                          >
-                            add
-                          </label>
-                          <button
-                            className="form-control form-control-sm"
-                            onClick={addFn4}
-                          >
-                            +
-                          </button>
-                        </div>
-
-                        <div className="col-md-8">
-                          <label className="form-label">
-                            Terms & Condition
-                          </label>
-                          <textarea
-                            className="form-control form-control-sm"
-                            style={{ height: "100px" }}
-                          />
-                        </div>
-                        <div className="col-md-4"></div>
-                      </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button variant="secondary" onClick={addpayment}>
-                        Add Payment
-                      </Button>
-                      <Button variant="secondary" onClick={handleClose5}>
-                        Close
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
-                </div>
-              </div>
-            </div>
 
             <Modal show={show7} onHide={handleClose7} size="lg">
               <Modal.Header>
@@ -11129,13 +10997,13 @@ console.log(project);
                   {/* Mapping UI */}
                   {excelHeaders.length > 0 && (
                     <div className="mt-4">
-                      <h5 className="text-lg font-semibold mb-3 text-gray-700">
+                      <h5 className="text-lg font-semibold  text-gray-700">
                         🗺️ Map Your Excel Columns
                       </h5>
 
                       <div className="row">
                         {excelHeaders.map((header, index) => (
-                          <div key={index} className="col-md-4 mb-3 ">
+                          <div key={index} className="col-md-4 custom-input ">
                             <div className="p-2 border rounded shadow-sm bg-light zoom-card">
                               <label className="form-label fw-semibold">
                                 {header} ➝
@@ -11194,7 +11062,7 @@ console.log(project);
 
                         <div className="row">
                           {pendingContacts.map((entry, index) => (
-                            <div key={index} className="col-md-4 mb-3">
+                            <div key={index} className="col-md-4 custom-input">
                               <div className="p-2 border rounded bg-light">
                                 <p className="mb-1">
                                   <strong>Project:</strong> {entry.project_name}
@@ -11229,7 +11097,7 @@ console.log(project);
 
                         <div className="row">
                           {duplicateEntries.map((entry, index) => (
-                            <div key={index} className="col-md-4 mb-3">
+                            <div key={index} className="col-md-4 custom-input">
                               <div className="p-2 border rounded bg-light">
                                 <p className="mb-1">
                                   <strong>Project:</strong> {entry.project_name}
@@ -11342,7 +11210,7 @@ console.log(project);
 
                       <div className="row">
                         {excelHeadersblock.map((header, index) => (
-                          <div key={index} className="col-md-4 mb-3 ">
+                          <div key={index} className="col-md-4 custom-input ">
                             <div className="p-2 border rounded shadow-sm bg-light zoom-card">
                               <label className="form-label fw-semibold">
                                 {header} ➝
@@ -11399,7 +11267,7 @@ console.log(project);
 
                         <div className="row">
                           {pendingContactsblock.map((entry, index) => (
-                            <div key={index} className="col-md-4 mb-3">
+                            <div key={index} className="col-md-4 custom-input">
                               <div className="p-2 border rounded bg-light">
                                 <p className="mb-1">
                                   <strong>Block Name:</strong>{" "}
@@ -11436,7 +11304,7 @@ console.log(project);
 
                         <div className="row">
                           {duplicateEntriesblock.map((entry, index) => (
-                            <div key={index} className="col-md-4 mb-3">
+                            <div key={index} className="col-md-4 custom-input">
                               <div className="p-2 border rounded bg-light">
                                 <p className="mb-1">
                                   <strong>Block Name:</strong>{" "}
@@ -11550,7 +11418,7 @@ console.log(project);
 
                       <div className="row">
                         {excelHeaderssize.map((header, index) => (
-                          <div key={index} className="col-md-4 mb-3 ">
+                          <div key={index} className="col-md-4 custom-input ">
                             <div className="p-2 border rounded shadow-sm bg-light zoom-card">
                               <label className="form-label fw-semibold">
                                 {header} ➝
@@ -11607,7 +11475,7 @@ console.log(project);
 
                         <div className="row">
                           {pendingContactssize.map((entry, index) => (
-                            <div key={index} className="col-md-4 mb-3">
+                            <div key={index} className="col-md-4 custom-input">
                               <div className="p-2 border rounded bg-light">
                                 <p className="mb-1">
                                   <strong>Size:</strong> {entry.size_name}
@@ -11639,7 +11507,7 @@ console.log(project);
 
                         <div className="row">
                           {duplicateEntriessize.map((entry, index) => (
-                            <div key={index} className="col-md-4 mb-3">
+                            <div key={index} className="col-md-4 custom-input">
                               <div className="p-2 border rounded bg-light">
                                 <p className="mb-1">
                                   <strong>Size:</strong> {entry.size_name}
@@ -11760,7 +11628,7 @@ console.log(project);
 
             {/* ===========================-----------------------------price end--------------------------=============================================== */}
 
-            <div className="col-md-12">
+            <div className="col-md-12 custom-input">
               <hr></hr>
             </div>
             <ToastContainer />
@@ -11769,8 +11637,8 @@ console.log(project);
             className="row"
             style={{ marginLeft: "60%", marginBottom: "20px" }}
           >
-            <div className="col-md-4"></div>
-            <div className="col-md-4">
+            <div className="col-md-4 custom-input"></div>
+            <div className="col-md-4 custom-input">
               <button
                 onClick={() => navigate(-1)}
                 style={{
@@ -11807,9 +11675,7 @@ console.log(project);
               </button>
             </div>
 
-            {/* <div className="col-md-5" style={{marginTop:"20px"}}><button className="form-control form-control-sm">Save & View Project</button></div> */}
-            {/* <div className="col-md-3" style={{marginTop:"20px"}}><button className="form-control form-control-sm" onClick={addproject}>Update</button></div> */}
-            <div className="col-md-4">
+            <div className="col-md-4 custom-input">
               <button
                 onClick={addproject}
                 style={{
