@@ -116,8 +116,7 @@ function EditProjectform() {
     price_list: [],
     Payment_plan: [],
   });
-console.log(project);
-
+  console.log(project);
 
   const config = {
     headers: {
@@ -190,45 +189,41 @@ console.log(project);
 
       setIsLoading(true);
 
-    // remove top-level mongo fields
-let { _id, __v, createdAt, updatedAt, ...payload } = project;
+      // remove top-level mongo fields
+      let { _id, __v, createdAt, updatedAt, ...payload } = project;
 
-// fix populated + nested arrays
-payload = {
-  ...payload,
+      // fix populated + nested arrays
+      payload = {
+        ...payload,
 
-  // populated object → ObjectId
-  developer_name: payload.developer_name?._id || payload.developer_name,
+        // populated object → ObjectId
+        developer_name: payload.developer_name?._id || payload.developer_name,
 
-  // remove _id from nested arrays
-  add_block: payload.add_block?.map(({ _id, ...rest }) => rest),
-  add_size: payload.add_size?.map(({ _id, ...rest }) => rest),
-  price_list: payload.price_list?.map(({ _id, ...rest }) => rest),
-  Payment_plan: payload.Payment_plan?.map(({ _id, ...rest }) => rest),
-};
-
-
-
+        // remove _id from nested arrays
+        add_block: payload.add_block?.map(({ _id, ...rest }) => rest),
+        add_size: payload.add_size?.map(({ _id, ...rest }) => rest),
+        price_list: payload.price_list?.map(({ _id, ...rest }) => rest),
+        Payment_plan: payload.Payment_plan?.map(({ _id, ...rest }) => rest),
+      };
 
       const resp = await api.put(`updateproject/${id}`, payload);
-   
 
       if (resp.status === 200) {
-          Swal.fire({
+        Swal.fire({
           icon: "success",
           title: "Project Updated",
-          text: resp.data.message
+          text: resp.data.message,
         });
         setTimeout(() => {
           navigate("/project");
         }, 2000);
       }
     } catch (error) {
-          Swal.fire({
-          icon: "error",
-          title: error.response.data.message,
-          text: error.response.data.errors
-        });
+      Swal.fire({
+        icon: "error",
+        title: error.response.data.message,
+        text: error.response.data.errors,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -406,7 +401,7 @@ payload = {
     document.getElementById("prices").style.color = "black";
   };
 
-    const activateTab = (activeId) => {
+  const activateTab = (activeId) => {
     const allTabs = [
       "basicaminities1",
       "featuredaminities1",
@@ -1521,31 +1516,31 @@ payload = {
     }));
   };
 
-   const [checkboxItems1, setcheckboxItems1] = useState([]);
- 
-   const getall_featured_aminities = async () => {
-     try {
-       setselect_loading("basic-aminities");
-       const params = new URLSearchParams();
-       params.append("lookup_type", "featured_aminities");
-       const resp = await api.get(`api/LookupList?${params.toString()}`);
- 
-       const list = resp.data.data;
- 
-       // 👇 set only lookup_value in checkboxItems state
-       const onlyValues = list.map((item) => item.lookup_value);
-       setcheckboxItems1(onlyValues);
-     } catch (error) {
-       console.log(error);
-     } finally {
-       setselect_loading("");
-     }
-   };
- 
-   useEffect(() => {
-     getall_featured_aminities();
-   }, []);
-   
+  const [checkboxItems1, setcheckboxItems1] = useState([]);
+
+  const getall_featured_aminities = async () => {
+    try {
+      setselect_loading("basic-aminities");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "featured_aminities");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      const list = resp.data.data;
+
+      // 👇 set only lookup_value in checkboxItems state
+      const onlyValues = list.map((item) => item.lookup_value);
+      setcheckboxItems1(onlyValues);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  useEffect(() => {
+    getall_featured_aminities();
+  }, []);
+
   const [checkedItems1, setCheckedItems1] = useState(
     Array(checkboxItems1.length).fill(false)
   );
@@ -1807,72 +1802,77 @@ payload = {
 
   // ==============================----------------------add unit start===========================================---------------------------
   const [unit, setunit] = useState([]);
-  const [units, setunits] = useState({
-    project_name: project?.name || "",
-    unit_no: "",
-    unit_type: "",
-    category: "",
-    sub_category: "",
-    block: "",
-    size: "",
-    land_type: "",
-    khewat_no: [""],
-    killa_no: [""],
-    share: [""],
-    action5: [],
-    total_land_area: "",
-    water_source: [""],
-    water_level: [""],
-    water_pump_type: [""],
-    action6: [],
-    direction: "",
-    side_open: "",
-    fornt_on_road: "",
-    total_owner: "",
-    facing: "",
-    road: "",
-    ownership: "",
-    stage: "",
-    builtup_type: "",
-    floor: [""],
-    cluter_details: [""],
-    length: [""],
-    bredth: [""],
-    total_area: [""],
-    measurment2: ["sqfeet"],
-    action3: [],
-    ocupation_date: "",
-    age_of_construction: "",
-    furnishing_details: "",
-    enter_furnishing_details: "",
-    furnished_item: "",
-    location: "",
-    lattitude: "",
-    langitude: "",
-    uaddress: "",
-    ustreet: "",
-    ulocality: "",
-    ucity: "",
-    uzip: "",
-    ustate: "",
-    ucountry: "",
-    owner_details: [],
-    associated_contact: [],
-    relation: "",
-    s_no: [],
-    preview: [],
-    descriptions: [],
-    action10: [],
-    s_no1: [],
-    url: [],
-    action11: [],
-    document_name: [""],
-    document_no: [""],
-    document_Date: [""],
-    linkded_contact: [""],
-    image: [""],
-    action12: [],
-  });
+   const [units,setunits] = useState({
+     project_name: project?.name || "",
+     unit_no: "",
+     unit_type: "",
+     category: "",
+     sub_category: "",
+     block: "",
+     size: "",
+     size_length: "",
+     size_breadth: "",
+     size_unit: "",
+     size_total_area: "",
+     size_total_area_unit: "",
+     land_type: "",
+     khewat_no: [""],
+     killa_no: [""],
+     share: [""],
+     action5: [],
+     total_land_area: "",
+     water_source: [""],
+     water_level: [""],
+     water_pump_type: [""],
+     action6: [],
+     direction: "",
+     side_open: "",
+     front_on_road: "",
+     total_owner: "",
+     facing: "",
+     road: "",
+     ownership: "",
+     stage: "Inactive",
+     builtup_type: "",
+     floor: [""],
+     cluter_details: [""],
+     length: [""],
+     bredth: [""],
+     total_area: [""],
+     measurment2: ["sqfeet"],
+     action3: [],
+     ocupation_date: "",
+     age_of_construction: "",
+     furnishing_details: "",
+     enter_furnishing_details: "",
+     furnished_item: "",
+     location: "",
+     lattitude: "",
+     langitude: "",
+     uaddress: "",
+     ustreet: "",
+     ulocality: "",
+     ucity: "",
+     uzip: "",
+     ustate: "",
+     ucountry: "",
+     owner_details: [],
+     associated_contact: [],
+     relation: "",
+     s_no: [],
+     preview: [],
+     descriptions: [],
+     action10: [],
+     s_no1: [],
+     url: [],
+     action11: [],
+     document_name: [""],
+     document_no: [""],
+     document_Date: [""],
+     linkded_contact: [""],
+     image: [""],
+     action12: [],
+   });
 
   useEffect(() => {
     if (!units.size || !project?.add_size?.length) return;
@@ -2050,7 +2050,7 @@ payload = {
     });
   };
 
-  const handlepreviewchange = async(index, event) => {
+  const handlepreviewchange = async (index, event) => {
     const newpreview = [...units.preview];
     const files = Array.from(event.target.files);
     const uploadedFiles = await uploadFiles(files);
@@ -2157,7 +2157,7 @@ payload = {
       linkded_contact: newlinkedcontact,
     });
   };
- const handlepicchange1 = async(index, event) => {
+  const handlepicchange1 = async (index, event) => {
     const newpic1 = [...units.image];
     const files = Array.from(event.target.files);
     const uploadedFiles = await uploadFiles(files);
@@ -2212,10 +2212,10 @@ payload = {
     } catch (error) {
       console.error(error);
       Swal.fire({
-          icon: "error",
-          title: error.response.data.message,
-          text: error.response.data.errors
-        });
+        icon: "error",
+        title: error.response.data.message,
+        text: error.response.data.errors,
+      });
     } finally {
       setloading_unit(false);
     }
@@ -2242,7 +2242,6 @@ payload = {
   //           }
   //         };
 
-  
   const deleteunit = (index) => {
     // Filter out the destination at the given index
     const newunit = project.add_unit.filter((_, i) => i !== index);
@@ -3021,658 +3020,9 @@ payload = {
     }));
   };
 
-  const statesAndCities = {
-    AndhraPradesh: [
-      "Anantapur",
-      "Chittoor",
-      "East Godavari",
-      "Guntur",
-      "Krishna",
-      "Kurnool",
-      "Prakasam",
-      "Srikakulam",
-      "Visakhapatnam",
-      "Vizianagaram",
-      "West Godavari",
-      "YSR Kadapa",
-    ],
-    ArunachalPradesh: [
-      "Tawang",
-      "West Kameng",
-      "East Kameng",
-      "Papum Pare",
-      "Kurung Kumey",
-      "Kra Daadi",
-      "Lower Subansiri",
-      "Upper Subansiri",
-      "West Siang",
-      "East Siang",
-      "Upper Siang",
-      "Lower Siang",
-      "Lower Dibang Valley",
-      "Dibang Valley",
-      "Anjaw",
-      "Lohit",
-      "Namsai",
-      "Changlang",
-      "Tirap",
-      "Longding",
-    ],
-    Assam: [
-      "Baksa",
-      "Barpeta",
-      "Biswanath",
-      "Bongaigaon",
-      "Cachar",
-      "Charaideo",
-      "Chirang",
-      "Darrang",
-      "Dhemaji",
-      "Dhubri",
-      "Dibrugarh",
-      "Goalpara",
-      "Golaghat",
-      "Hailakandi",
-      "Hojai",
-      "Jorhat",
-      "Kamrup",
-      "Kamrup Metropolitan",
-      "Karbi Anglong",
-      "Karimganj",
-      "Kokrajhar",
-      "Lakhimpur",
-      "Majuli",
-      "Morigaon",
-      "Nagaon",
-      "Nalbari",
-      "Dima Hasao",
-      "Sivasagar",
-      "Sonitpur",
-      "South Salmara-Mankachar",
-      "Tinsukia",
-      "Udalguri",
-      "West Karbi Anglong",
-    ],
-    Bihar: [
-      "Araria",
-      "Arwal",
-      "Aurangabad",
-      "Banka",
-      "Begusarai",
-      "Bhagalpur",
-      "Bhojpur",
-      "Buxar",
-      "Darbhanga",
-      "East Champaran",
-      "Gaya",
-      "Gopalganj",
-      "Jamui",
-      "Jehanabad",
-      "Kaimur",
-      "Katihar",
-      "Khagaria",
-      "Kishanganj",
-      "Lakhisarai",
-      "Madhepura",
-      "Madhubani",
-      "Munger",
-      "Muzaffarpur",
-      "Nalanda",
-      "Nawada",
-      "Patna",
-      "Purnia",
-      "Rohtas",
-      "Saharsa",
-      "Samastipur",
-      "Saran",
-      "Sheikhpura",
-      "Sheohar",
-      "Sitamarhi",
-      "Siwan",
-      "Supaul",
-      "Vaishali",
-      "West Champaran",
-    ],
-    Delhi: [
-      "Central Delhi",
-      "East Delhi",
-      "New Delhi",
-      "North Delhi",
-      "North East Delhi",
-      "North West Delhi",
-      "Shahdara",
-      "South Delhi",
-      "South East Delhi",
-      "South West Delhi",
-      "West Delhi",
-    ],
-    Goa: ["North Goa", "South Goa"],
-    Gujarat: [
-      "Ahmedabad",
-      "Amreli",
-      "Anand",
-      "Banaskantha",
-      "Bharuch",
-      "Bhavnagar",
-      "Botad",
-      "Chhota Udepur",
-      "Dahod",
-      "Dang",
-      "Gir Somnath",
-      "Jamnagar",
-      "Junagadh",
-      "Kachchh",
-      "Kheda",
-      "Mahisagar",
-      "Mehsana",
-      "Morbi",
-      "Narmada",
-      "Navsari",
-      "Panchmahal",
-      "Patan",
-      "Porbandar",
-      "Rajkot",
-      "Sabarkantha",
-      "Surat",
-      "Surendranagar",
-      "Tapi",
-      "Vadodara",
-      "Valsad",
-    ],
-    Haryana: [
-      "Ambala",
-      "Bhiwani",
-      "Charkhi Dadri",
-      "Faridabad",
-      "Fatehabad",
-      "Gurugram",
-      "Hisar",
-      "Jhajjar",
-      "Jind",
-      "Kaithal",
-      "Karnal",
-      "Kurukshetra",
-      "Mahendragarh",
-      "Narnaul",
-      "Palwal",
-      "Panchkula",
-      "Panipat",
-      "Rewari",
-      "Rohtak",
-      "Sirsa",
-      "Sonipat",
-      "Yamunanagar",
-    ],
-    HimachalPradesh: [
-      "Bilaspur",
-      "Chamba",
-      "Hamirpur",
-      "Kangra",
-      "Kullu",
-      "Kullu",
-      "Mandi",
-      "Shimla",
-      "Sirmaur",
-      "Solan",
-      "Una",
-    ],
-    Jharkhand: [
-      "Bokaro",
-      "Chatra",
-      "Deoghar",
-      "Dhanbad",
-      "Dumka",
-      "East Singhbhum",
-      "Garhwa",
-      "Giridih",
-      "Godda",
-      "Gumla",
-      "Hazaribagh",
-      "Jamtara",
-      "Khunti",
-      "Koderma",
-      "Latehar",
-      "Lohardaga",
-      "Pakur",
-      "Palamu",
-      "Ramgarh",
-      "Ranchi",
-      "Sahebganj",
-      "Seraikela Kharsawan",
-      "Simdega",
-      "West Singhbhum",
-    ],
-    Karnataka: [
-      "Bagalkot",
-      "Ballari",
-      "Belagavi",
-      "Bengaluru Rural",
-      "Bengaluru Urban",
-      "Bidar",
-      "Chamarajanagar",
-      "Chikballapur",
-      "Chikkamagaluru",
-      "Chitradurga",
-      "Dakshina Kannada",
-      "Davanagere",
-      "Dharwad",
-      "Gadag",
-      "Hassan",
-      "Haveri",
-      "Kalaburagi",
-      "Kodagu",
-      "Kolar",
-      "Koppal",
-      "Mandya",
-      "Mysuru",
-      "Raichur",
-      "Ramanagara",
-      "Shivamogga",
-      "Tumakuru",
-      "Udupi",
-      "Uttara Kannada",
-      "Vijayapura",
-      "Yadgir",
-    ],
-    Kerala: [
-      "Alappuzha",
-      "Ernakulam",
-      "Idukki",
-      "Kannur",
-      "Kasaragod",
-      "Kottayam",
-      "Kollam",
-      "Kozhikode",
-      "Malappuram",
-      "Palakkad",
-      "Pathanamthitta",
-      "Thiruvananthapuram",
-      "Thrissur",
-      "Wayanad",
-    ],
-    MadhyaPradesh: [
-      "Alirajpur",
-      "Anuppur",
-      "Ashoknagar",
-      "Balaghat",
-      "Barwani",
-      "Betul",
-      "Bhind",
-      "Bhopal",
-      "Burhanpur",
-      "Chhindwara",
-      "Datia",
-      "Dewas",
-      "Dhar",
-      "Dindori",
-      "Guna",
-      "Gwalior",
-      "Harda",
-      "Hoshangabad",
-      "Indore",
-      "Jabalpur",
-      "Jhabua",
-      "Katni",
-      "Khandwa",
-      "Khargone",
-      "Mandla",
-      "Mandsaur",
-      "Morena",
-      "Narsinghpur",
-      "Neemuch",
-      "Panna",
-      "Rewa",
-      "Rajgarh",
-      "Sagar",
-      "Satna",
-      "Sehore",
-      "Seoni",
-      "Shahdol",
-      "Shajapur",
-      "Sheopur",
-      "Shivpuri",
-      "Sidhi",
-      "Singrauli",
-      "Tikamgarh",
-      "Ujjain",
-      "Umaria",
-      "Vidisha",
-    ],
-    Maharashtra: [
-      "Ahmednagar",
-      "Akola",
-      "Amravati",
-      "Aurangabad",
-      "Beed",
-      "Bhandara",
-      "Buldhana",
-      "Chandrapur",
-      "Dhule",
-      "Gadchiroli",
-      "Gondia",
-      "Hingoli",
-      "Jalgaon",
-      "Jalna",
-      "Kolhapur",
-      "Latur",
-      "Mumbai City",
-      "Mumbai Suburban",
-      "Nagpur",
-      "Nanded",
-      "Nandurbar",
-      "Nashik",
-      "Osmanabad",
-      "Palghar",
-      "Parbhani",
-      "Pune",
-      "Raigad",
-      "Ratnagiri",
-      "Sangli",
-      "Satara",
-      "Sindhudurg",
-      "Solapur",
-      "Thane",
-      "Wardha",
-      "Washim",
-      "Yavatmal",
-    ],
-    Manipur: [
-      "Bishnupur",
-      "Chandel",
-      "Churachandpur",
-      "Imphal East",
-      "Imphal West",
-      "Jiribam",
-      "Kakching",
-      "Kamjong",
-      "Kangpokpi",
-      "Noney",
-      "Senapati",
-      "Tamenglong",
-      "Tengnoupal",
-      "Thoubal",
-      "Ukhrul",
-    ],
-    Meghalaya: [
-      "East Garo Hills",
-      "East Khasi Hills",
-      "Jaintia Hills",
-      "Ri Bhoi",
-      "West Garo Hills",
-      "West Khasi Hills",
-    ],
-    Mizoram: [
-      "Aizawl",
-      "Champhai",
-      "Kolasib",
-      "Lawngtlai",
-      "Lunglei",
-      "Mamit",
-      "Saiha",
-      "Serchhip",
-    ],
-    Nagaland: [
-      "Dimapur",
-      "Kohima",
-      "Mokokchung",
-      "Mon",
-      "Peren",
-      "Phek",
-      "Tuensang",
-      "Wokha",
-      "Zunheboto",
-    ],
-    Odisha: [
-      "Angul",
-      "Balangir",
-      "Balasore",
-      "Bargarh",
-      "Bhadrak",
-      "Boudh",
-      "Cuttack",
-      "Deogarh",
-      "Dhenkanal",
-      "Ganjam",
-      "Gajapati",
-      "Jagatsinghpur",
-      "Jajpur",
-      "Jharsuguda",
-      "Kalahandi",
-      "Kandhamal",
-      "Kendrapara",
-      "Kendujhar",
-      "Khordha",
-      "Koraput",
-      "Malkangiri",
-      "Mayurbhanj",
-      "Nabarangpur",
-      "Nayagarh",
-      "Nuapada",
-      "Puri",
-      "Rayagada",
-      "Sambalpur",
-      "Subarnapur",
-      "Sundargarh",
-    ],
-    Punjab: [
-      "Amritsar",
-      "Barnala",
-      "Bathinda",
-      "Faridkot",
-      "Fatehgarh Sahib",
-      "Firozpur",
-      "Gurdaspur",
-      "Hoshiarpur",
-      "Jalandhar",
-      "Kapurthala",
-      "Ludhiana",
-      "Mansa",
-      "Moga",
-      "Muktsar",
-      "Nawan Shehar",
-      "Patiala",
-      "Rupnagar",
-      "Sangrur",
-      "SAS Nagar",
-      "Sri Muktsar Sahib",
-    ],
-    Rajasthan: [
-      "Ajmer",
-      "Alwar",
-      "Banswara",
-      "Baran",
-      "Barmer",
-      "Bhilwara",
-      "Bikaner",
-      "Bundi",
-      "Churu",
-      "Dausa",
-      "Dholpur",
-      "Dungarpur",
-      "Hanumangarh",
-      "Jaipur",
-      "Jaisalmer",
-      "Jhalawar",
-      "Jhunjhunu",
-      "Jodhpur",
-      "Karauli",
-      "Kota",
-      "Nagaur",
-      "Pali",
-      "Pratapgarh",
-      "Rajsamand",
-      "Sawai Madhopur",
-      "Sikar",
-      "Sirohi",
-      "Tonk",
-      "Udaipur",
-    ],
-    Sikkim: ["East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim"],
-    TamilNadu: [
-      "Chennai",
-      "Coimbatore",
-      "Cuddalore",
-      "Dharmapuri",
-      "Dindigul",
-      "Erode",
-      "Kancheepuram",
-      "Kanyakumari",
-      "Karur",
-      "Krishnagiri",
-      "Madurai",
-      "Nagapattinam",
-      "Namakkal",
-      "Nilgiris",
-      "Perambalur",
-      "Pudukkottai",
-      "Ramanathapuram",
-      "Salem",
-      "Sivagangai",
-      "Tenkasi",
-      "Thanjavur",
-      "The Nilgiris",
-      "Thoothukudi",
-      "Tiruvallur",
-      "Tirunelveli",
-      "Tirupur",
-      "Vellore",
-      "Viluppuram",
-      "Virudhunagar",
-    ],
-    Telangana: [
-      "Adilabad",
-      "Hyderabad",
-      "Jagtial",
-      "Jangaon",
-      "Jayashankar",
-      "Jogulamba",
-      "Kamareddy",
-      "Karimnagar",
-      "Khammam",
-      "Mahabubabad",
-      "Mahabubnagar",
-      "Mancherial",
-      "Medak",
-      "Medchal",
-      "Nalgonda",
-      "Nagarkurnool",
-      "Nirmal",
-      "Nizamabad",
-      "Peddapalli",
-      "Sangareddy",
-      "Siddipet",
-      "Suryapet",
-      "Vikarabad",
-      "Warangal",
-      "Khammam",
-      "Kothagudem",
-    ],
-    Tripura: [
-      "Dhalai",
-      "Gomati",
-      "Khowai",
-      "North Tripura",
-      "Sepahijala",
-      "South Tripura",
-      "Unakoti",
-      "West Tripura",
-    ],
-    UttarPradesh: [
-      "Agra",
-      "Aligarh",
-      "Ambedkar Nagar",
-      "Amethi",
-      "Amroha",
-      "Auraiya",
-      "Azamgarh",
-      "Baghpat",
-      "Bahraich",
-      "Ballia",
-      "Balrampur",
-      "Banda",
-      "Barabanki",
-      "Bareilly",
-      "Basti",
-      "Bijnor",
-      "Budaun",
-      "Bulandshahr",
-      "Chandauli",
-      "Chitrakoot",
-      "Deoria",
-      "Etah",
-      "Etawah",
-      "Faizabad",
-      "Farrukhabad",
-      "Fatehpur",
-      "Firozabad",
-      "Gautam Buddh Nagar",
-      "Ghaziabad",
-      "Gonda",
-      "Gorakhpur",
-      "Hamirpur",
-      "Hapur",
-      "Hardoi",
-      "Hathras",
-      "Jalaun",
-      "Jaunpur",
-      "Jhansi",
-      "Kannauj",
-      "Kanpur",
-      "Kasganj",
-      "Kaushambi",
-      "Kushinagar",
-      "Lakhimpur Kheri",
-      "Lucknow",
-      "Mathura",
-      "Meerut",
-      "Mirzapur",
-      "Moradabad",
-      "Muzaffarnagar",
-      "Pratapgarh",
-      "Raebareli",
-      "Rampur",
-      "Saharanpur",
-      "Sambhal",
-      "Sant Kabir Nagar",
-      "Shahjahanpur",
-      "Shrawasti",
-      "Siddharth Nagar",
-      "Sitapur",
-      "Sonbhadra",
-      "Sultanpur",
-      "Unnao",
-      "Varanasi",
-    ],
-    WestBengal: [
-      "Alipurduar",
-      "Bankura",
-      "Birbhum",
-      "Burdwan",
-      "Cooch Behar",
-      "Darjeeling",
-      "Hooghly",
-      "Howrah",
-      "Jalpaiguri",
-      "Kolkata",
-      "Malda",
-      "Murshidabad",
-      "Nadia",
-      "North 24 Parganas",
-      "North Dinajpur",
-      "Paschim Medinipur",
-      "Purba Medinipur",
-      "Purulia",
-      "South 24 Parganas",
-      "South Dinajpur",
-      "Uttar Dinajpur",
-    ],
-  };
 
-  const states = Object.keys(statesAndCities);
-  const cities = statesAndCities[project.state] || [];
 
-  const ustates = Object.keys(statesAndCities);
-  const ucities = statesAndCities[units.ustate] || [];
+
 
   const handleSuggestionClick1 = (contact, index) => {
     setShowSuggestions(false);
@@ -5214,7 +4564,7 @@ payload = {
       block_name: "block 1",
       category: "residential",
       sub_category: "plot",
-      land_area: 1000,
+      land_area: "1000",
       measurment: "Sqfeet",
       total_blocks: 2,
       total_floors: 2,
@@ -5741,292 +5091,286 @@ payload = {
                       ))}
                     </Select>
                   </div>
-                  <div
-                    className="row"
-                    id="withoutagriculture"
-                    style={{ padding: "20px,0" }}
-                  >
-                    <div className="col-md-8  custom-input">
-                      <label className="form-label">Status</label>
+
+                  <div className="col-md-12  custom-input">
+                    <label className="form-label">Status</label>
+                    <select
+                      className="form-control form-control-sm"
+                      required="true"
+                      value={project.status}
+                      onClick={() => {
+                        if (All_Project_Status.length === 0) {
+                          getall_project_status();
+                        }
+                      }}
+                      onChange={(e) =>
+                        setproject({ ...project, status: e.target.value })
+                      }
+                    >
+                      <option>---select project status---</option>
+                      {select_loading === "project-status" ? (
+                        <CircularProgress />
+                      ) : (
+                        All_Project_Status.map((name) => (
+                          <option value={name.lookup_value}>
+                            {name.lookup_value}
+                          </option>
+                        ))
+                      )}
+                    </select>
+                  </div>
+
+                  <div className="col-md-4 custom-input">
+                    <label className="form-label">Launched On</label>
+                    <input
+                      type="date"
+                      value={project.launched_on}
+                      className="form-control form-control-sm"
+                      required="true"
+                      onChange={(e) =>
+                        setproject({
+                          ...project,
+                          launched_on: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="col-md-4 custom-input">
+                    <label className="form-label">Expected Competion</label>
+                    <input
+                      type="date"
+                      value={project.expected_competion}
+                      className="form-control form-control-sm"
+                      required="true"
+                      onChange={(e) =>
+                        setproject({
+                          ...project,
+                          expected_competion: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="col-md-4 custom-input">
+                    <label className="form-label">Possession</label>
+                    <input
+                      type="date"
+                      value={project.possession}
+                      className="form-control form-control-sm"
+                      required="true"
+                      onChange={(e) =>
+                        setproject({ ...project, possession: e.target.value })
+                      }
+                    />
+                  </div>
+
+                  <div className="col-md-6 custom-input">
+                    <label className="form-label">Parking Type</label>
+                    <Select
+                      className="form-control form-control-sm"
+                      style={{ border: "none" }}
+                      multiple
+                      value={project.parking_type || []}
+                      onChange={handleparkingChange}
+                      renderValue={(selected) => selected.join(", ")}
+                      onOpen={() => {
+                        if (All_Parking_Type.length === 0) {
+                          getall_parking_type();
+                        }
+                      }}
+                    >
+                      {select_loading === "parking-type" ? (
+                        <CircularProgress />
+                      ) : (
+                        All_Parking_Type.map((name) => (
+                          <MenuItem key={name} value={name.lookup_value}>
+                            <Checkbox
+                              checked={
+                                project.parking_type.indexOf(
+                                  name.lookup_value
+                                ) > -1
+                              }
+                            />
+                            <ListItemText primary={name.lookup_value} />
+                          </MenuItem>
+                        ))
+                      )}
+                    </Select>
+                  </div>
+                  <div className="col-md-6  custom-input">
+                    <label className="form-label">Approved Bank</label>
+                    <Select
+                      className="form-control form-control-sm"
+                      style={{ border: "none" }}
+                      labelId="bank-select-label"
+                      multiple
+                      value={project.approved_bank || []}
+                      onChange={handleChange}
+                      renderValue={(selected) => selected.join(", ")}
+                      onOpen={() => {
+                        if (All_Bank.length === 0) {
+                          getall_bank();
+                        }
+                      }}
+                    >
+                      {select_loading === "bank" ? (
+                        <CircularProgress />
+                      ) : (
+                        All_Bank.map((name) => (
+                          <MenuItem key={name} value={name.lookup_value}>
+                            <Checkbox
+                              checked={
+                                project.approved_bank.indexOf(
+                                  name.lookup_value
+                                ) > -1
+                              }
+                            />
+                            <ListItemText primary={name.lookup_value} />
+                          </MenuItem>
+                        ))
+                      )}
+                    </Select>
+                  </div>
+                  <div className="col-md-3 custom-input">
+                    <label className="form-label">Approvals</label>
+                    {project.approvals.map((item, index) => (
                       <select
-                        className="form-control form-control-sm"
                         required="true"
-                        value={project.status}
+                        value={project.approvals[index]}
+                        style={{ marginTop: "10px" }}
+                        className="form-control form-control-sm"
                         onClick={() => {
-                          if (All_Project_Status.length === 0) {
-                            getall_project_status();
+                          if (All_Approvals.length === 0) {
+                            getall_approvals();
                           }
                         }}
-                        onChange={(e) =>
-                          setproject({ ...project, status: e.target.value })
+                        onChange={(event) =>
+                          handleapprovalschange(index, event)
                         }
                       >
-                        <option>---select project status---</option>
-                        {select_loading === "project-status" ? (
+                        <option>{project?.approvals[index]}</option>
+                        <option>---choose---</option>
+                        {select_loading === "approvals" ? (
                           <CircularProgress />
                         ) : (
-                          All_Project_Status.map((name) => (
+                          All_Approvals.map((name) => (
                             <option value={name.lookup_value}>
                               {name.lookup_value}
                             </option>
                           ))
                         )}
                       </select>
-                    </div>
-                    <div className="col-md-4 custom-input"></div>
-
-                    <div className="col-md-4 custom-input">
-                      <label className="form-label">Launched On</label>
+                    ))}
+                  </div>
+                  <div className="col-md-3 custom-input">
+                    <label className="form-label">Registration No.</label>
+                    {project.registration_no.map((item, index) => (
+                      <input
+                        type="text"
+                        required="true"
+                        style={{ marginTop: "10px" }}
+                        className="form-control form-control-sm"
+                        onChange={(event) =>
+                          handleregistrationchange(index, event)
+                        }
+                        value={project.registration_no[index]}
+                      />
+                    ))}
+                  </div>
+                  <div className="col-md-2 custom-input">
+                    <label className="form-label">Date</label>
+                    {project.date.map((item, index) => (
                       <input
                         type="date"
-                        value={project.launched_on}
-                        className="form-control form-control-sm"
                         required="true"
-                        onChange={(e) =>
-                          setproject({
-                            ...project,
-                            launched_on: e.target.value,
-                          })
-                        }
+                        style={{ marginTop: "10px" }}
+                        className="form-control form-control-sm"
+                        placeholder="enter phone number"
+                        onChange={(event) => handledatechange(index, event)}
                       />
-                    </div>
-                    <div className="col-md-4 custom-input">
-                      <label className="form-label">Expected Competion</label>
-                      <input
-                        type="date"
-                        value={project.expected_competion}
-                        className="form-control form-control-sm"
-                        required="true"
-                        onChange={(e) =>
-                          setproject({
-                            ...project,
-                            expected_competion: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="col-md-4 custom-input">
-                      <label className="form-label">Possession</label>
-                      <input
-                        type="date"
-                        value={project.possession}
-                        className="form-control form-control-sm"
-                        required="true"
-                        onChange={(e) =>
-                          setproject({ ...project, possession: e.target.value })
-                        }
-                      />
-                    </div>
-
-                    <div className="col-md-6 custom-input">
-                      <label className="form-label">Parking Type</label>
-                      <Select
-                        className="form-control form-control-sm"
-                        style={{ border: "none" }}
-                        multiple
-                        value={project.parking_type || []}
-                        onChange={handleparkingChange}
-                        renderValue={(selected) => selected.join(", ")}
-                        onOpen={() => {
-                          if (All_Parking_Type.length === 0) {
-                            getall_parking_type();
-                          }
-                        }}
-                      >
-                        {select_loading === "parking-type" ? (
-                          <CircularProgress />
-                        ) : (
-                          All_Parking_Type.map((name) => (
-                            <MenuItem key={name} value={name.lookup_value}>
-                              <Checkbox
-                                checked={
-                                  project.parking_type.indexOf(
-                                    name.lookup_value
-                                  ) > -1
-                                }
-                              />
-                              <ListItemText primary={name.lookup_value} />
-                            </MenuItem>
-                          ))
-                        )}
-                      </Select>
-                    </div>
-                    <div className="col-md-6  custom-input">
-                      <label className="form-label">Approved Bank</label>
-                      <Select
-                        className="form-control form-control-sm"
-                        style={{ border: "none" }}
-                        labelId="bank-select-label"
-                        multiple
-                        value={project.approved_bank || []}
-                        onChange={handleChange}
-                        renderValue={(selected) => selected.join(", ")}
-                        onOpen={() => {
-                          if (All_Bank.length === 0) {
-                            getall_bank();
-                          }
-                        }}
-                      >
-                        {select_loading === "bank" ? (
-                          <CircularProgress />
-                        ) : (
-                          All_Bank.map((name) => (
-                            <MenuItem key={name} value={name.lookup_value}>
-                              <Checkbox
-                                checked={
-                                  project.approved_bank.indexOf(
-                                    name.lookup_value
-                                  ) > -1
-                                }
-                              />
-                              <ListItemText primary={name.lookup_value} />
-                            </MenuItem>
-                          ))
-                        )}
-                      </Select>
-                    </div>
-                    <div className="col-md-3 custom-input">
-                      <label className="form-label">Approvals</label>
-                      {project.approvals.map((item, index) => (
-                        <select
-                          required="true"
-                          value={project.approvals[index]}
-                          style={{ marginTop: "10px" }}
+                    ))}
+                  </div>
+                  <div className="col-md-2 custom-input">
+                    <label
+                      className="form-label"
+                      style={{ visibility: "hidden" }}
+                    >
+                      Pic
+                    </label>
+                    {project.pic.map((item, index) => (
+                      <div key={index} className="custom-file-wrapper mt-2">
+                        <input
+                          multiple
+                          type="file"
+                          id={`doc-upload-${index}`}
+                          name="pic"
+                          style={{ marginTop: "10px", display: "none" }}
                           className="form-control form-control-sm"
-                          onClick={() => {
-                            if (All_Approvals.length === 0) {
-                              getall_approvals();
-                            }
-                          }}
-                          onChange={(event) =>
-                            handleapprovalschange(index, event)
-                          }
+                          onChange={(event) => handlepicchange(index, event)}
+                        />
+
+                        <label
+                          htmlFor={`doc-upload-${index}`}
+                          className="upload-label"
                         >
-                          <option>{project?.approvals[index]}</option>
-                          <option>---choose---</option>
-                          {select_loading === "approvals" ? (
-                            <CircularProgress />
+                          <i
+                            className="bi bi-image-fill me-2"
+                            style={{ fontSize: "1.4rem", cursor: "pointer" }}
+                          ></i>{" "}
+                          Upload
+                        </label>
+                        <div className="d-flex flex-wrap gap-2 mt-2">
+                          {select_loading === "project_pic_upload" ? (
+                            <CircularProgress size={24} />
                           ) : (
-                            All_Approvals.map((name) => (
-                              <option value={name.lookup_value}>
-                                {name.lookup_value}
-                              </option>
+                            (item || []).map((obj, i) => (
+                              <div key={i} style={{ position: "relative" }}>
+                                <img
+                                  src={obj}
+                                  alt="Preview"
+                                  style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    objectFit: "cover",
+                                    borderRadius: "6px",
+                                    border: "1px solid #ccc",
+                                  }}
+                                />
+                              </div>
                             ))
                           )}
-                        </select>
-                      ))}
-                    </div>
-                    <div className="col-md-2 custom-input">
-                      <label className="form-label">Registration No.</label>
-                      {project.registration_no.map((item, index) => (
-                        <input
-                          type="text"
-                          required="true"
-                          style={{ marginTop: "10px" }}
-                          className="form-control form-control-sm"
-                          onChange={(event) =>
-                            handleregistrationchange(index, event)
-                          }
-                          value={project.registration_no[index]}
-                        />
-                      ))}
-                    </div>
-                    <div className="col-md-2 custom-input">
-                      <label className="form-label">Date</label>
-                      {project.date.map((item, index) => (
-                        <input
-                          type="date"
-                          required="true"
-                          style={{ marginTop: "10px" }}
-                          className="form-control form-control-sm"
-                          placeholder="enter phone number"
-                          onChange={(event) => handledatechange(index, event)}
-                        />
-                      ))}
-                    </div>
-                    <div className="col-md-2 custom-input">
-                      <label
-                        className="form-label"
-                        style={{ visibility: "hidden" }}
-                      >
-                        Pic
-                      </label>
-                      {project.pic.map((item, index) => (
-                        <div key={index} className="custom-file-wrapper mt-2">
-                          <input
-                            multiple
-                            type="file"
-                            id={`doc-upload-${index}`}
-                            name="pic"
-                            style={{ marginTop: "10px", display: "none" }}
-                            className="form-control form-control-sm"
-                            onChange={(event) => handlepicchange(index, event)}
-                          />
-
-                          <label
-                            htmlFor={`doc-upload-${index}`}
-                            className="upload-label"
-                          >
-                            <i
-                              className="bi bi-image-fill me-2"
-                              style={{ fontSize: "1.4rem", cursor: "pointer" }}
-                            ></i>{" "}
-                            Upload
-                          </label>
-                          <div className="d-flex flex-wrap gap-2 mt-2">
-                            {select_loading === "project_pic_upload" ? (
-                              <CircularProgress size={24} />
-                            ) : (
-                              (item || []).map((obj, i) => (
-                                <div key={i} style={{ position: "relative" }}>
-                                  <img
-                                    src={obj}
-                                    alt="Preview"
-                                    style={{
-                                      width: "80px",
-                                      height: "80px",
-                                      objectFit: "cover",
-                                      borderRadius: "6px",
-                                      border: "1px solid #ccc",
-                                    }}
-                                  />
-                                </div>
-                              ))
-                            )}
-                          </div>
                         </div>
-                      ))}
-                    </div>
-                    <div
-                      className="col-md-1 custom-input"
-                      style={{ marginTop: "50px" }}
+                      </div>
+                    ))}
+                  </div>
+                  <div
+                    className="col-md-1 custom-input"
+                    style={{ marginTop: "50px" }}
+                  >
+                    {project.approvals.map((item, index) => (
+                      <div>
+                        {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
+                        <span
+                          class="material-icons mt-3"
+                          style={{
+                            color: "red",
+                            fontSize: "24px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => deleteall1(index)}
+                        >
+                          delete
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="col-md-1 custom-input">
+                    <label className="form-label">add</label>
+                    <button
+                      className="form-control form-control-sm add-btn"
+                      onClick={addFn1}
                     >
-                      {project.approvals.map((item, index) => (
-                        <div>
-                          {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
-                          <span
-                            class="material-icons mt-3"
-                            style={{
-                              color: "red",
-                              fontSize: "24px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => deleteall1(index)}
-                          >
-                            delete
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="col-md-1 custom-input">
-                      <label className="form-label">add</label>
-                      <button
-                        className="form-control form-control-sm add-btn"
-                        onClick={addFn1}
-                      >
-                        +
-                      </button>
-                    </div>
+                      +
+                    </button>
                   </div>
 
                   <div className="col-md-12 custom-input">
@@ -6355,7 +5699,7 @@ payload = {
                       width: "1000px",
                       overflowY: "scroll",
                       marginTop: "40px",
-                      marginLeft: "50px",
+                      marginLeft: "10px",
                     }}
                   >
                     <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -6415,7 +5759,7 @@ payload = {
                               {item.block_name}
                             </StyledTableCell>
                             <StyledTableCell style={{ fontSize: "12px" }}>
-                              Import Block
+                             
                               {Array.isArray(item.category) ? (
                                 item.category.map((categoryItem, index) => (
                                   <span key={index}>
@@ -6424,12 +5768,12 @@ payload = {
                                   </span> // Render each item with a key
                                 ))
                               ) : (
-                                <span>{item.category}</span> // Render a single category if it's not an array
+                                <span>{item.category.join(',')}</span> // Render a single category if it's not an array
                               )}
                             </StyledTableCell>
 
                             <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.sub_category}
+                              {item.sub_category.join(',')}
                             </StyledTableCell>
                             <StyledTableCell style={{ fontSize: "12px" }}>
                               {item.status}
@@ -6926,7 +6270,7 @@ payload = {
                       width: "1000px",
                       overflowY: "scroll",
                       marginTop: "40px",
-                      marginLeft: "50px",
+                      marginLeft: "10px",
                     }}
                   >
                     <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -7066,12 +6410,29 @@ payload = {
                               {project.category.map((type) => (
                                 <div className="col-md-3" key={type}>
                                   <button
-                                    className="form-control form-control-sm"
+                                    className="form-control form-control-sm category-button"
                                     onClick={() => handleTypeClick2(type)}
-                                    style={{
-                                      backgroundColor:
-                                        selectedType1 === type ? "green" : "",
-                                    }}
+                                   style={{
+                                    backgroundColor: selectedType1 === type
+                                      ? "#28a745"
+                                      : "#f8f9fa", // green or light gray
+                                    color: selectedType1 === type
+                                      ? "white"
+                                      : "#333",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "6px",
+                                    fontWeight: "bold",
+                                    transition: "all 0.3s ease",
+                                    boxShadow: selectedType1 === type
+                                      ? "0 4px 10px rgba(40, 167, 69, 0.4)"
+                                      : "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.transform = "scale(1.05)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.transform = "scale(1)";
+                                  }}
                                   >
                                     {type}
                                   </button>
@@ -7441,577 +6802,1123 @@ payload = {
 
             {/*---------------------------------=========================== unit details start-------------------===================================== */}
 
-             <div id="unitdetails" className="hidden w-full mt-0">
+            <div id="unitdetails" className="hidden w-full mt-0">
               <div className="w-full bg-white rounded-lg shadow-sm p-4">
                 {/* Actions Row */}
-                             <div className="w-full flex flex-wrap items-center justify-end gap-3">
-                               <button
-                                 onClick={handleShow3}
-                                 className="btn-primary-custom w-auto px-4"
-                               >
-                                 Add Unit
-                               </button>
-             
-                               <button
-                                 onClick={handleShow7}
-                                 className="btn-primary-custom w-auto px-4"
-                               >
-                                 Import Unit
-                               </button>
-             
-                               <Tooltip title="Download Data.." arrow>
-                                 <div className="col-md-1  custom-input">
-                                   <img
-                                     src="https://cdn-icons-png.flaticon.com/512/4007/4007698.png"
-                                     onClick={generateExcelFileunit}
-                                     style={{ height: "40px", cursor: "pointer" }}
-                                     alt=""
-                                   ></img>
-                                 </div>
-                               </Tooltip>
-                             </div>
-                  <TableContainer
-                    component={Paper}
-                    style={{
-                      height: "400px",
-                      width: "100%",
-                      overflowX: "scroll",
-                      overflowY: "scroll",
-                      marginTop: "40px",
-                      marginLeft: "10px",
-                    }}
+                <div className="w-full flex flex-wrap items-center justify-end gap-3">
+                  <button
+                    onClick={handleShow3}
+                    className="btn-primary-custom w-auto px-4"
                   >
-                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                      <>
-                        {loading_unit && (
-                          <div
-                            style={{
-                              position: "fixed",
-                              top: 0,
-                              left: 0,
-                              width: "100vw",
-                              height: "100vh",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              zIndex: 9999,
-                            }}
-                          >
-                            <UniqueLoader />
-                          </div>
-                        )}
-                      </>
+                    Add Unit
+                  </button>
 
-                      <TableHead>
-                        <TableRow>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Unit_No.
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Block
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Category
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Unit_Type
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Size
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Direction
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Road
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Facing
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Ownership
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Lattitude
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Longitude
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Builtup_Details
-                          </StyledTableCell>
-                          <StyledTableCell
-                            style={{
-                              fontSize: "12px",
-                              backgroundColor: "gray",
-                            }}
-                          >
-                            Action
-                          </StyledTableCell>
-                        </TableRow>
-                      </TableHead>
-                      <tbody>
-                        {allunits_ofproject?.map((item, index) => (
-                          <StyledTableRow
-                            key={index}
-                            style={{
-                              color: item.isDuplicate ? "red" : "black",
-                            }}
-                            className={
-                              item.isDuplicate ? "no-activity-flash" : ""
-                            }
-                          >
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.unit_no}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.block}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.category}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.unit_type}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.size}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.direction}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.road}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.facing}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.ownership}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.lattitude}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.langitude}
-                            </StyledTableCell>
-                            <StyledTableCell style={{ fontSize: "12px" }}>
-                              {item.type}
-                            </StyledTableCell>
-
-                            <StyledTableCell style={{ fontSize: "10px" }}>
-                              <div style={{ marginTop: "10px" }}>
-                                <span
-                                  class="material-icons"
-                                  style={{
-                                    color: "red",
-                                    fontSize: "24px",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={() => deleteunit(index)}
-                                >
-                                  delete
-                                </span>
-                                
-                              </div>
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        ))}
-                      </tbody>
-                    </Table>
-                  </TableContainer>
-
-                  {/* ✅ Pagination Controls */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      width: "50%",
-                      margin: "20px 0 0 10px",
-                    }}
+                  <button
+                    onClick={handleShow7}
+                    className="btn-primary-custom w-auto px-4"
                   >
-                    <Button
-                      variant="contained"
-                      size="small"
-                      disabled={page === 1}
-                      onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                    >
-                      Prev
-                    </Button>
+                    Import Unit
+                  </button>
 
-                    <span>
-                      Page {page} of {totalPages} | Total Units: {totalUnits}
-                    </span>
-
-                    <Button
-                      variant="contained"
-                      size="small"
-                      disabled={page === totalPages}
-                      onClick={() =>
-                        setPage((p) => Math.min(p + 1, totalPages))
-                      }
-                    >
-                      Next
-                    </Button>
-                  </div>
-
-                  <Modal show={show3} onHide={handleClose3} size={modalSize}>
-                    <Modal.Header>
-                      <Modal.Title>Add Unit</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <div className="flex flex-wrap items-center gap-3 sm:gap-6 bg-white p-3 rounded-xl shadow-sm border border-gray-100">
-                        {/* TAB 1 */}
+                  <Tooltip title="Download Data.." arrow>
+                    <div className="col-md-1  custom-input">
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/512/4007/4007698.png"
+                        onClick={generateExcelFileunit}
+                        style={{ height: "40px", cursor: "pointer" }}
+                        alt=""
+                      ></img>
+                    </div>
+                  </Tooltip>
+                </div>
+                <TableContainer
+                  component={Paper}
+                  style={{
+                    height: "400px",
+                    width: "100%",
+                    overflowX: "scroll",
+                    overflowY: "scroll",
+                    marginTop: "40px",
+                    marginLeft: "10px",
+                  }}
+                >
+                  <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                    <>
+                      {loading_unit && (
                         <div
-                          onClick={unitdetail1}
-                          className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+                          style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            width: "100vw",
+                            height: "100vh",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            zIndex: 9999,
+                          }}
+                        >
+                          <UniqueLoader />
+                        </div>
+                      )}
+                    </>
+
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Unit_No.
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Block
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Category
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Unit_Type
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Size
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Direction
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Road
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Facing
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Ownership
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Lattitude
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Longitude
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Builtup_Details
+                        </StyledTableCell>
+                        <StyledTableCell
+                          style={{
+                            fontSize: "12px",
+                            backgroundColor: "gray",
+                          }}
+                        >
+                          Action
+                        </StyledTableCell>
+                      </TableRow>
+                    </TableHead>
+                    <tbody>
+                      {allunits_ofproject?.map((item, index) => (
+                        <StyledTableRow
+                          key={index}
+                          style={{
+                            color: item.isDuplicate ? "red" : "black",
+                          }}
+                          className={
+                            item.isDuplicate ? "no-activity-flash" : ""
+                          }
+                        >
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.unit_no}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.block}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.category}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.unit_type}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.size}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.direction}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.road}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.facing}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.ownership}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.lattitude}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.langitude}
+                          </StyledTableCell>
+                          <StyledTableCell style={{ fontSize: "12px" }}>
+                            {item.type}
+                          </StyledTableCell>
+
+                          <StyledTableCell style={{ fontSize: "10px" }}>
+                            <div style={{ marginTop: "10px" }}>
+                              <span
+                                class="material-icons"
+                                style={{
+                                  color: "red",
+                                  fontSize: "24px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => deleteunit(index)}
+                              >
+                                delete
+                              </span>
+                            </div>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      ))}
+                    </tbody>
+                  </Table>
+                </TableContainer>
+
+                {/* ✅ Pagination Controls */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "50%",
+                    margin: "20px 0 0 10px",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    size="small"
+                    disabled={page === 1}
+                    onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                  >
+                    Prev
+                  </Button>
+
+                  <span>
+                    Page {page} of {totalPages} | Total Units: {totalUnits}
+                  </span>
+
+                  <Button
+                    variant="contained"
+                    size="small"
+                    disabled={page === totalPages}
+                    onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                  >
+                    Next
+                  </Button>
+                </div>
+
+                <Modal show={show3} onHide={handleClose3} size={modalSize}>
+                  <Modal.Header>
+                    <Modal.Title>Add Unit</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-6 bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                      {/* TAB 1 */}
+                      <div
+                        onClick={unitdetail1}
+                        className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
                        ${
                          activeUnit === 1
                            ? "bg-blue-600 text-white shadow-md scale-105"
                            : "text-gray-600 hover:bg-gray-100 hover:text-black"
                        }`}
-                        >
-                          Unit
-                        </div>
+                      >
+                        Unit
+                      </div>
 
-                        {/* TAB 2 */}
-                        <div
-                          onClick={unitdetail2}
-                          className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+                      {/* TAB 2 */}
+                      <div
+                        onClick={unitdetail2}
+                        className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
                        ${
                          activeUnit === 2
                            ? "bg-blue-600 text-white shadow-md scale-105"
                            : "text-gray-600 hover:bg-gray-100 hover:text-black"
                        }`}
-                        >
-                          Location
-                        </div>
+                      >
+                        Location
+                      </div>
 
-                        {/* TAB 3 */}
-                        <div
-                          onClick={unitdetail3}
-                          className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+                      {/* TAB 3 */}
+                      <div
+                        onClick={unitdetail3}
+                        className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
                        ${
                          activeUnit === 3
                            ? "bg-blue-600 text-white shadow-md scale-105"
                            : "text-gray-600 hover:bg-gray-100 hover:text-black"
                        }`}
-                        >
-                          Add Owner
-                        </div>
+                      >
+                        Add Owner
+                      </div>
 
-                        {/* TAB 4 */}
-                        <div
-                          onClick={unitdetail4}
-                          className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+                      {/* TAB 4 */}
+                      <div
+                        onClick={unitdetail4}
+                        className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
                        ${
                          activeUnit === 4
                            ? "bg-blue-600 text-white shadow-md scale-105"
                            : "text-gray-600 hover:bg-gray-100 hover:text-black"
                        }`}
-                        >
-                          Add Documents
-                        </div>
+                      >
+                        Add Documents
+                      </div>
 
-                        {/* TAB 5 */}
-                        <div
-                          onClick={unitdetail5}
-                          className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
+                      {/* TAB 5 */}
+                      <div
+                        onClick={unitdetail5}
+                        className={`cursor-pointer px-4 py-2 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300
                        ${
                          activeUnit === 5
                            ? "bg-blue-600 text-white shadow-md scale-105"
                            : "text-gray-600 hover:bg-gray-100 hover:text-black"
                        }`}
-                        >
-                          Upload
-                        </div>
+                      >
+                        Upload
                       </div>
+                    </div>
 
-                      <hr></hr>
-                      <div style={{ width: "100%" }}>
-                        <div className="row" id="unitdetails1">
-                          <div className="col-md-8  custom-input">
-                            <label className="form-label">Unit Number</label>
-                            <input
-                              type="text"
-                              required="true"
-                              className="form-control form-control-sm"
-                              placeholder="unit number"
-                              onChange={(e) =>
-                                setunits({ ...units, unit_no: e.target.value })
-                              }
-                            />
-                          </div>
-                          <div className="col-md-4  custom-input">
-                            <label className="form-label">Unit Type</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setunits({
-                                  ...units,
-                                  unit_type: e.target.value,
-                                })
-                              }
-                            >
-                              <option>---Select---</option>
-                              <option>Corner</option>
-                              <option> Two Side Open</option>
-                              <option>Three Side Open</option>
-                              <option>Ordinary </option>
-                            </select>
-                          </div>
+                    <hr></hr>
+                    <div style={{ width: "100%" }}>
+                      <div className="row" id="unitdetails1">
+                        <div className="col-md-8  custom-input">
+                          <label className="form-label">Unit Number</label>
+                          <input
+                            type="text"
+                            required="true"
+                            className="form-control form-control-sm"
+                            placeholder="unit number"
+                            onChange={(e) =>
+                              setunits({ ...units, unit_no: e.target.value })
+                            }
+                          />
+                        </div>
+                        <div className="col-md-4  custom-input">
+                          <label className="form-label">Unit Type</label>
+                          <select
+                            className="form-control form-control-sm"
+                            onChange={(e) =>
+                              setunits({
+                                ...units,
+                                unit_type: e.target.value,
+                              })
+                            }
+                          >
+                            <option>---Select---</option>
+                            <option>Corner</option>
+                            <option> Two Side Open</option>
+                            <option>Three Side Open</option>
+                            <option>Ordinary </option>
+                          </select>
+                        </div>
+                        <div
+                          className="col-md-12  custom-input"
+                          style={{ display: "flex" }}
+                        >
+                          <label className="form-label">Category</label>
+                        </div>
+                        <div
+                          className="col-md-12  custom-input"
+                          style={{ display: "flex" }}
+                        >
                           <div
                             className="col-md-12  custom-input"
-                            style={{ display: "flex" }}
+                            style={{ display: "flex", flexWrap: "wrap" }}
                           >
-                            <label className="form-label">Category</label>
+                            {project.category.map((type) => (
+                              <div
+                                className="col-md-3  custom-input"
+                                key={type}
+                              >
+                                <button
+                                  className="form-control form-control-sm"
+                                  onClick={() => handleTypeClick1(type)}
+                                  style={{
+                                    backgroundColor:
+                                      selectedType === type ? "green" : "",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "6px",
+                                    fontWeight: "bold",
+                                    transition: "all 0.3s ease",
+                                    boxShadow:
+                                      selectedType === type
+                                        ? "0 4px 10px rgba(4, 4, 4, 0.4)"
+                                        : "0 2px 6px rgba(0, 0, 0, 0.1)",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.transform = "scale(1.05)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.transform = "scale(1)";
+                                  }}
+                                >
+                                  {type}
+                                </button>
+                              </div>
+                            ))}
                           </div>
-                          <div
-                            className="col-md-12  custom-input"
-                            style={{ display: "flex" }}
+                        </div>
+
+                        <div className="col-md-6  custom-input">
+                          <label className="form-label">Sub Category</label>
+
+                          <select
+                            className="form-control form-control-sm"
+                            labelId="subcategory-label"
+                            id="subcategory"
+                            value={units.sub_category}
+                            onChange={(e) =>
+                              setunits({
+                                ...units,
+                                sub_category: e.target.value,
+                              })
+                            }
                           >
+                            <option>---select--- </option>
+                            {project.sub_category.map((subCategory) => (
+                              <option>{subCategory}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="col-md-6  custom-input"></div>
+                        <div className="col-md-6  custom-input">
+                          <label className="form-label">Block</label>
+                          <select
+                            className="form-control form-control-sm"
+                            onChange={(e) =>
+                              setunits({ ...units, block: e.target.value })
+                            }
+                          >
+                            <option>choose</option>
+                            {project.add_block.map((item) => (
+                              <option>{item.block_name}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="col-md-6 custom-input">
+                          <label className="form-label">Size</label>
+                          <select
+                            className="form-control form-control-sm"
+                            onChange={(e) =>
+                              setunits({ ...units, size: e.target.value })
+                            }
+                          >
+                            <option>choose</option>
+                            {project.add_size.map((item) => (
+                              <option>{item.size_name}</option>
+                            ))}
+                          </select>
+                        </div>
+                        {units.size && (
+                          <>
+                            <div className="col-md-4 custom-input">
+                              <label className="form-label">Length</label>
+                              <p>
+                                {units.size_length} {units.size_unit}
+                              </p>
+                            </div>
+                            <div className="col-md-4 custom-input">
+                              <label className="form-label">Breadth</label>
+                              <p>
+                                {units.size_breadth} {units.size_unit}
+                              </p>
+                            </div>
+                            <div className="col-md-4 custom-input">
+                              <label className="form-label">Total Area</label>
+                              <p>
+                                {units.size_total_area}{" "}
+                                {units.size_total_area_unit}
+                              </p>
+                            </div>
+                          </>
+                        )}
+
+                        {project.category.includes("Agricultural") && (
+                          <>
+                            <div className="col-md-6  custom-input">
+                              <label className="form-label">Land Type</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    land_type: e.target.value,
+                                  })
+                                }
+                              >
+                                <option>---Select---</option>
+                                <option>Crop Land</option>
+                                <option>Wood Land</option>
+                                <option>Pasture</option>
+                              </select>
+                            </div>
+                            <div className="col-md-6  custom-input"></div>
                             <div
                               className="col-md-12  custom-input"
-                              style={{ display: "flex", flexWrap: "wrap" }}
+                              style={{
+                                color: "green",
+                                fontWeight: "bolder",
+                                marginTop: "10px",
+                              }}
                             >
-                              {project.category.map((type) => (
-                                <div
-                                  className="col-md-3  custom-input"
-                                  key={type}
-                                >
-                                  <button
-                                    className="form-control form-control-sm"
-                                    onClick={() => handleTypeClick1(type)}
-                                    style={{
-                                      backgroundColor:
-                                        selectedType === type ? "green" : "",
-                                      border: "1px solid #ccc",
-                                      borderRadius: "6px",
-                                      fontWeight: "bold",
-                                      transition: "all 0.3s ease",
-                                      boxShadow:
-                                        selectedType === type
-                                          ? "0 4px 10px rgba(4, 4, 4, 0.4)"
-                                          : "0 2px 6px rgba(0, 0, 0, 0.1)",
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.target.style.transform = "scale(1.05)";
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.target.style.transform = "scale(1)";
-                                    }}
-                                  >
-                                    {type}
-                                  </button>
-                                </div>
-                              ))}
+                              Land Details<hr></hr>
                             </div>
-                          </div>
 
-                          <div className="col-md-6  custom-input">
-                            <label className="form-label">Sub Category</label>
+                            <div className="col-md-3  custom-input">
+                              <label className="form-label">Khewat No</label>
+                              {Array.isArray(units.khewat_no)
+                                ? units.khewat_no.map((item, index) => (
+                                    <input
+                                      className="form-control form-control-sm"
+                                      style={{ marginTop: "10px" }}
+                                      onChange={(event) =>
+                                        handlekhewatnochange(index, event)
+                                      }
+                                    />
+                                  ))
+                                : []}
+                            </div>
 
-                            <select
-                              className="form-control form-control-sm"
-                              labelId="subcategory-label"
-                              id="subcategory"
-                              value={units.sub_category}
-                              onChange={(e) =>
-                                setunits({
-                                  ...units,
-                                  sub_category: e.target.value,
-                                })
-                              }
+                            <div className="col-md-3  custom-input">
+                              <label className="form-label">Killa No</label>
+                              {Array.isArray(units.killa_no)
+                                ? units.killa_no.map((item, index) => (
+                                    <input
+                                      className="form-control form-control-sm"
+                                      style={{ marginTop: "10px" }}
+                                      onChange={(event) =>
+                                        handlekillanochange(index, event)
+                                      }
+                                    />
+                                  ))
+                                : []}
+                            </div>
+
+                            <div className="col-md-3  custom-input">
+                              <label className="form-label">Share</label>
+                              {Array.isArray(units.share)
+                                ? units.share.map((item, index) => (
+                                    <input
+                                      className="form-control form-control-sm"
+                                      style={{ marginTop: "10px" }}
+                                      onChange={(event) =>
+                                        handlesharenochange(index, event)
+                                      }
+                                    />
+                                  ))
+                                : []}
+                            </div>
+
+                            <div
+                              className="col-md-1  custom-input"
+                              style={{ marginTop: "90px" }}
                             >
-                              <option>---select--- </option>
-                              {project.sub_category.map((subCategory) => (
-                                <option>{subCategory}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="col-md-6  custom-input"></div>
-                          <div className="col-md-6  custom-input">
-                            <label className="form-label">Block</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setunits({ ...units, block: e.target.value })
-                              }
+                              {Array.isArray(units.action5)
+                                ? units.action5.map((item, index) => (
+                                    <div style={{ marginTop: "10px" }}>
+                                      <img
+                                        src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
+                                        alt="delete button"
+                                        onClick={() => deleteall5(index)}
+                                        style={{
+                                          height: "40px",
+                                          cursor: "pointer",
+                                        }}
+                                      />
+                                    </div>
+                                  ))
+                                : []}
+                            </div>
+
+                            <div className="col-md-1  custom-input">
+                              <label className="form-label">add</label>
+                              <button
+                                className="form-control form-control-sm"
+                                onClick={addFn5}
+                              >
+                                +
+                              </button>
+                            </div>
+                            <div className="col-md-12  custom-input">
+                              Total Land Area:-{units.total_land_area}
+                            </div>
+                            <div
+                              className="col-md-12  custom-input"
+                              style={{
+                                color: "green",
+                                fontWeight: "bolder",
+                                marginTop: "10px",
+                              }}
                             >
-                              <option>choose</option>
-                              {project.add_block.map((item) => (
-                                <option>{item.block_name}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="col-md-6 custom-input">
-                            <label className="form-label">Size</label>
-                            <select
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setunits({ ...units, size: e.target.value })
-                              }
+                              Water Details<hr></hr>
+                            </div>
+
+                            <div className="col-md-3  custom-input">
+                              <label className="form-label">Water Source</label>
+                              {Array.isArray(units.water_source)
+                                ? units.water_source.map((item, index) => (
+                                    <select
+                                      className="form-control form-control-sm"
+                                      style={{ marginTop: "10px" }}
+                                      onChange={(event) =>
+                                        handlewatersourcechange(index, event)
+                                      }
+                                    >
+                                      <option>---select---</option>
+                                      <option>Ground Water</option>
+                                      <option>Canal Water</option>
+                                      <option>Pond Water</option>
+                                      <option>Rain Water</option>
+                                    </select>
+                                  ))
+                                : []}
+                            </div>
+                            <div className="col-md-3  custom-input">
+                              <label className="form-label">Water Level</label>
+                              {Array.isArray(units.water_level)
+                                ? units.water_level.map((item, index) => (
+                                    <select
+                                      className="form-control form-control-sm"
+                                      style={{ marginTop: "10px" }}
+                                      onChange={(event) =>
+                                        handlewaterlevelchange(index, event)
+                                      }
+                                    >
+                                      <option>---select---</option>
+                                      <option>100ft.</option>
+                                      <option>200Ft.</option>
+                                    </select>
+                                  ))
+                                : []}
+                            </div>
+
+                            <div className="col-md-3  custom-input">
+                              <label className="form-label">
+                                Water Pump Type
+                              </label>
+                              {Array.isArray(units.water_pump_type)
+                                ? units.water_pump_type.map((item, index) => (
+                                    <select
+                                      className="form-control form-control-sm"
+                                      style={{ marginTop: "10px" }}
+                                      onChange={(event) =>
+                                        handlewaterpumpchange(index, event)
+                                      }
+                                    >
+                                      <option>---select---</option>
+                                      <option>Submersible Motor(15 HP)</option>
+                                      <option>Sumersible Motor(20 HP)</option>
+                                      <option>Monoblock Motor(10HP)</option>
+                                      <option>Diesel Engine Pump</option>
+                                    </select>
+                                  ))
+                                : []}
+                            </div>
+                            <div
+                              className="col-md-1  custom-input"
+                              style={{ marginTop: "90px" }}
                             >
-                              <option>choose</option>
-                              {project.add_size.map((item) => (
-                                <option>{item.size_name}</option>
-                              ))}
-                            </select>
-                          </div>
-                          {units.size && (
-                            <>
-                              <div className="col-md-4 custom-input">
+                              {Array.isArray(units.action6)
+                                ? units.action6.map((item, index) => (
+                                    <div style={{ marginTop: "10px" }}>
+                                      <img
+                                        src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
+                                        alt="delete button"
+                                        onClick={() => deleteall6(index)}
+                                        style={{
+                                          height: "40px",
+                                          cursor: "pointer",
+                                        }}
+                                      />
+                                    </div>
+                                  ))
+                                : []}
+                            </div>
+                            <div className="col-md-1  custom-input">
+                              <label className="form-label">add</label>
+                              <button
+                                className="form-control form-control-sm"
+                                onClick={addFn6}
+                              >
+                                +
+                              </button>
+                            </div>
+
+                            <div
+                              className="col-md-12  custom-input"
+                              style={{ color: "green", fontWeight: "bolder" }}
+                            >
+                              Basic Details<hr></hr>
+                            </div>
+
+                            <div className="col-md-4  custom-input">
+                              <label className="form-label">Facing</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    facing: e.target.value,
+                                  })
+                                }
+                              >
+                                <option>---Select---</option>
+                                <option>Village Link Road</option>
+                                <option>Highway</option>
+                                <option>Expressway</option>
+                                <option>Unconstructed Road</option>
+                              </select>
+                            </div>
+
+                            <div className="col-md-4  custom-input">
+                              <label className="form-label">Side Open</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    side_open: e.target.value,
+                                  })
+                                }
+                              >
+                                <option>---Select---</option>
+                                <option>1 Side Open</option>
+                                <option>2 Side Open</option>
+                                <option>3 Side Open</option>
+                              </select>
+                            </div>
+
+                            <div className="col-md-4  custom-input">
+                              <label className="form-label">Road</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({ ...units, road: e.target.value })
+                                }
+                              >
+                                <option>---Select---</option>
+                                <option>11 Ft wide</option>
+                                <option>22 Ft Wide</option>
+                                <option>33 Ft Wide</option>
+                                <option>60 Ft Wide</option>
+                                <option>100 Ft Wide</option>
+                                <option>200 Ft Wide</option>
+                              </select>
+                            </div>
+
+                            <div className="col-md-4  custom-input">
+                              <label className="form-label">
+                                Front On Road
+                              </label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    front_on_road: e.target.value,
+                                  })
+                                }
+                              >
+                                <option>---Select---</option>
+                                <option>10 ft</option>
+                                <option>20 ft</option>
+                                <option>30 ft</option>
+                                <option>50 ft</option>
+                                <option>70 ft</option>
+                                <option>100 ft</option>
+                                <option>200 ft</option>
+                                <option>500 ft</option>
+                                <option>1000 ft</option>
+                              </select>
+                            </div>
+
+                            <div className="col-md-4  custom-input">
+                              <label className="form-label">Ownership</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    ownership: e.target.value,
+                                  })
+                                }
+                              >
+                                <option>---Select---</option>
+                                <option>Mustraka</option>
+                                <option>Individual</option>
+                              </select>
+                            </div>
+                            <div className="col-md-4  custom-input">
+                              <label className="form-label">No. Of Owner</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    facing: e.target.value,
+                                  })
+                                }
+                              >
+                                <option>---Select---</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                              </select>
+                            </div>
+                          </>
+                        )}
+
+                        {!project.category.includes("Agricultural") && (
+                          <>
+                            <div className="col-md-4  custom-input">
+                              <label className="form-label">Direction</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    direction: e.target.value,
+                                  })
+                                }
+                                onClick={() => {
+                                  if (All_Direction.length === 0) {
+                                    getall_direction();
+                                  }
+                                }}
+                              >
+                                <option>---Select---</option>
+                                {select_loading === "direction" ? (
+                                  <CircularProgress />
+                                ) : (
+                                  All_Direction.map((name) => (
+                                    <option value={name.lookup_value}>
+                                      {name.lookup_value}
+                                    </option>
+                                  ))
+                                )}
+                              </select>
+                            </div>
+                            <div className="col-md-4  custom-input">
+                              <label className="form-label">Facing</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    facing: e.target.value,
+                                  })
+                                }
+                                onClick={() => {
+                                  if (All_Facing.length === 0) {
+                                    getall_facing();
+                                  }
+                                }}
+                              >
+                                <option>---Select---</option>
+                                {select_loading === "facing" ? (
+                                  <CircularProgress />
+                                ) : (
+                                  All_Facing.map((name) => (
+                                    <option value={name.lookup_value}>
+                                      {name.lookup_value}
+                                    </option>
+                                  ))
+                                )}
+                              </select>
+                            </div>
+                            <div className="col-md-4 custom-input">
+                              <label className="form-label">Road</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({ ...units, road: e.target.value })
+                                }
+                                onClick={() => {
+                                  if (All_Road.length === 0) {
+                                    getall_road();
+                                  }
+                                }}
+                              >
+                                <option>---Select---</option>
+                                {select_loading === "road" ? (
+                                  <CircularProgress />
+                                ) : (
+                                  All_Road.map((name) => (
+                                    <option value={name.lookup_value}>
+                                      {name.lookup_value}
+                                    </option>
+                                  ))
+                                )}
+                              </select>
+                            </div>
+                            <div className="col-md-6  custom-input">
+                              <label className="form-label">Ownership</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    ownership: e.target.value,
+                                  })
+                                }
+                              >
+                                <option>---Select---</option>
+                                <option>Freehold</option>
+                                <option>Leasehold</option>
+                                <option>Co-OPerative Society</option>
+                                <option>Sale Agreement(Lal Dora)</option>
+                              </select>
+                            </div>
+                            <div className="col-md-6  custom-input">
+                              <label className="form-label">Stage</label>
+                              <select
+                                className="form-control form-control-sm"
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    stage: e.target.value,
+                                  })
+                                }
+                              >
+                                <option>---Select---</option>
+                                <option>Active</option>
+                                <option>Inactive</option>
+                              </select>
+                            </div>
+                          </>
+                        )}
+
+                        <div
+                          className="col-md-6  custom-input"
+                          style={{ marginTop: "10px" }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={showabuiltup}
+                            onChange={handleCheckboxChange4}
+                          />
+                          <label>Show Builtup Details</label>
+                        </div>
+                        <div className="col-md-6  custom-input"></div>
+                        {showabuiltup && (
+                          <>
+                            <div className="col-md-12  custom-input">
+                              <label className="form-label">
+                                Builtup Details
+                              </label>
+                              <hr></hr>
+                            </div>
+
+                            <div className="col-md-6  custom-input">
+                              <label className="form-label">Builtup Type</label>
+                              <select
+                                className="form-control form-control-sm"
+                                style={{ marginTop: "10px" }}
+                                onChange={(e) =>
+                                  setunits({
+                                    ...units,
+                                    builtup_type: e.target.value,
+                                  })
+                                }
+                                onClick={() => {
+                                  getall_builtup_type();
+                                }}
+                                value={units.builtup_type}
+                              >
+                                <option>---Select---</option>
+                                {select_loading === "builtup-type" ? (
+                                  <CircularProgress />
+                                ) : (
+                                  All_Builtup_Type.map((name) => (
+                                    <option>{name.lookup_value}</option>
+                                  ))
+                                )}
+                              </select>
+                            </div>
+                            <div className="col-md-6  custom-input"></div>
+
+                            <div
+                              className="row mt-2"
+                              style={{
+                                border: "1px dashed black",
+                                margin: "10px",
+                                marginTop: "0",
+                                padding: "10px",
+                                width: "100%",
+                              }}
+                            >
+                              <div className="col-md-2  custom-input">
+                                <label className="form-label">Floor</label>
+                                {Array.isArray(units.floor)
+                                  ? units.floor.map((item, index) => (
+                                      <select
+                                        className="form-control form-control-sm"
+                                        style={{ marginTop: "10px" }}
+                                        onChange={(event) =>
+                                          handlefloorchange(index, event)
+                                        }
+                                      >
+                                        <option>---Select---</option>
+                                        <option>Ground Floor</option>
+                                        <option>First Floor</option>
+                                        <option>Second Floor</option>
+                                        <option>Lower Ground</option>
+                                        <option>Upper Ground</option>
+                                        <option>Third Floor</option>
+                                        <option> Fourth Floor</option>
+                                        <option>Lower Ground</option>
+                                        <option>Lower Ground</option>
+                                      </select>
+                                    ))
+                                  : []}
+                              </div>
+                              <div className="col-md-2  custom-input">
+                                <label
+                                  className="form-label"
+                                  style={{ width: "500px" }}
+                                >
+                                  Cluter Details
+                                </label>
+                                {Array.isArray(units.cluter_details)
+                                  ? units.cluter_details.map((item, index) => (
+                                      <select
+                                        className="form-control form-control-sm"
+                                        style={{ marginTop: "10px" }}
+                                        onChange={(event) =>
+                                          handlecluterdetails(index, event)
+                                        }
+                                      >
+                                        <option>---Select---</option>
+                                        <option>Living Room</option>
+                                        <option>Lobby</option>
+                                        <option>Bedroom</option>
+                                        <option>Master Bedroom</option>
+                                        <option>Kitchen</option>
+                                        <option>Bathroom</option>
+                                        <option>Pooja room,</option>
+                                        <option>Study Room</option>
+                                        <option>Frontward</option>
+                                        <option>Backyard</option>
+                                        <option>Balcony</option>
+                                        <option>Store</option>
+                                        <option>Guest Room</option>
+                                        <option>Servent Room</option>
+                                        <option>Dressing</option>
+                                      </select>
+                                    ))
+                                  : []}
+                              </div>
+                              <div className="col-md-2  custom-input">
                                 <label className="form-label">Length</label>
-                                <p>
-                                  {units.size_length} {units.size_unit}
-                                </p>
+                                {Array.isArray(units.length)
+                                  ? units.length.map((item, index) => (
+                                      <input
+                                        className="form-control form-control-sm"
+                                        style={{ marginTop: "10px" }}
+                                        onChange={(event) =>
+                                          handlelengthchange(index, event)
+                                        }
+                                      />
+                                    ))
+                                  : []}
                               </div>
-                              <div className="col-md-4 custom-input">
+                              <div className="col-md-2  custom-input">
                                 <label className="form-label">Breadth</label>
-                                <p>
-                                  {units.size_breadth} {units.size_unit}
-                                </p>
+                                {Array.isArray(units.bredth)
+                                  ? units.bredth.map((item, index) => (
+                                      <input
+                                        className="form-control form-control-sm"
+                                        style={{ marginTop: "10px" }}
+                                        onChange={(event) =>
+                                          handlebredthchange(index, event)
+                                        }
+                                      />
+                                    ))
+                                  : []}
                               </div>
-                              <div className="col-md-4 custom-input">
+                              <div className="col-md-2  custom-input">
                                 <label className="form-label">Total Area</label>
-                                <p>
-                                  {units.size_total_area}{" "}
-                                  {units.size_total_area_unit}
-                                </p>
-                              </div>
-                            </>
-                          )}
-
-                          {project.category.includes("Agricultural") && (
-                            <>
-                              <div className="col-md-6  custom-input">
-                                <label className="form-label">Land Type</label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      land_type: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option>---Select---</option>
-                                  <option>Crop Land</option>
-                                  <option>Wood Land</option>
-                                  <option>Pasture</option>
-                                </select>
-                              </div>
-                              <div className="col-md-6  custom-input"></div>
-                              <div
-                                className="col-md-12  custom-input"
-                                style={{
-                                  color: "green",
-                                  fontWeight: "bolder",
-                                  marginTop: "10px",
-                                }}
-                              >
-                                Land Details<hr></hr>
-                              </div>
-
-                              <div className="col-md-3  custom-input">
-                                <label className="form-label">Khewat No</label>
-                                {Array.isArray(units.khewat_no)
-                                  ? units.khewat_no.map((item, index) => (
+                                {Array.isArray(units.total_area)
+                                  ? units.total_area.map((item, index) => (
                                       <input
                                         className="form-control form-control-sm"
-                                        style={{ marginTop: "10px" }}
-                                        onChange={(event) =>
-                                          handlekhewatnochange(index, event)
+                                        value={
+                                          units.length[index] &&
+                                          units.bredth[index]
+                                            ? units.length[index] *
+                                              units.bredth[index]
+                                            : ""
                                         }
-                                      />
-                                    ))
-                                  : []}
-                              </div>
-
-                              <div className="col-md-3  custom-input">
-                                <label className="form-label">Killa No</label>
-                                {Array.isArray(units.killa_no)
-                                  ? units.killa_no.map((item, index) => (
-                                      <input
-                                        className="form-control form-control-sm"
                                         style={{ marginTop: "10px" }}
                                         onChange={(event) =>
-                                          handlekillanochange(index, event)
-                                        }
-                                      />
-                                    ))
-                                  : []}
-                              </div>
-
-                              <div className="col-md-3  custom-input">
-                                <label className="form-label">Share</label>
-                                {Array.isArray(units.share)
-                                  ? units.share.map((item, index) => (
-                                      <input
-                                        className="form-control form-control-sm"
-                                        style={{ marginTop: "10px" }}
-                                        onChange={(event) =>
-                                          handlesharenochange(index, event)
+                                          handletotalarea(index, event)
                                         }
                                       />
                                     ))
@@ -8022,124 +7929,13 @@ payload = {
                                 className="col-md-1  custom-input"
                                 style={{ marginTop: "90px" }}
                               >
-                                {Array.isArray(units.action5)
-                                  ? units.action5.map((item, index) => (
+                                {Array.isArray(units.action3)
+                                  ? units.action3.map((item, index) => (
                                       <div style={{ marginTop: "10px" }}>
                                         <img
                                           src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
                                           alt="delete button"
-                                          onClick={() => deleteall5(index)}
-                                          style={{
-                                            height: "40px",
-                                            cursor: "pointer",
-                                          }}
-                                        />
-                                      </div>
-                                    ))
-                                  : []}
-                              </div>
-
-                              <div className="col-md-1  custom-input">
-                                <label className="form-label">add</label>
-                                <button
-                                  className="form-control form-control-sm"
-                                  onClick={addFn5}
-                                >
-                                  +
-                                </button>
-                              </div>
-                              <div className="col-md-12  custom-input">
-                                Total Land Area:-{units.total_land_area}
-                              </div>
-                              <div
-                                className="col-md-12  custom-input"
-                                style={{
-                                  color: "green",
-                                  fontWeight: "bolder",
-                                  marginTop: "10px",
-                                }}
-                              >
-                                Water Details<hr></hr>
-                              </div>
-
-                              <div className="col-md-3  custom-input">
-                                <label className="form-label">
-                                  Water Source
-                                </label>
-                                {Array.isArray(units.water_source)
-                                  ? units.water_source.map((item, index) => (
-                                      <select
-                                        className="form-control form-control-sm"
-                                        style={{ marginTop: "10px" }}
-                                        onChange={(event) =>
-                                          handlewatersourcechange(index, event)
-                                        }
-                                      >
-                                        <option>---select---</option>
-                                        <option>Ground Water</option>
-                                        <option>Canal Water</option>
-                                        <option>Pond Water</option>
-                                        <option>Rain Water</option>
-                                      </select>
-                                    ))
-                                  : []}
-                              </div>
-                              <div className="col-md-3  custom-input">
-                                <label className="form-label">
-                                  Water Level
-                                </label>
-                                {Array.isArray(units.water_level)
-                                  ? units.water_level.map((item, index) => (
-                                      <select
-                                        className="form-control form-control-sm"
-                                        style={{ marginTop: "10px" }}
-                                        onChange={(event) =>
-                                          handlewaterlevelchange(index, event)
-                                        }
-                                      >
-                                        <option>---select---</option>
-                                        <option>100ft.</option>
-                                        <option>200Ft.</option>
-                                      </select>
-                                    ))
-                                  : []}
-                              </div>
-
-                              <div className="col-md-3  custom-input">
-                                <label className="form-label">
-                                  Water Pump Type
-                                </label>
-                                {Array.isArray(units.water_pump_type)
-                                  ? units.water_pump_type.map((item, index) => (
-                                      <select
-                                        className="form-control form-control-sm"
-                                        style={{ marginTop: "10px" }}
-                                        onChange={(event) =>
-                                          handlewaterpumpchange(index, event)
-                                        }
-                                      >
-                                        <option>---select---</option>
-                                        <option>
-                                          Submersible Motor(15 HP)
-                                        </option>
-                                        <option>Sumersible Motor(20 HP)</option>
-                                        <option>Monoblock Motor(10HP)</option>
-                                        <option>Diesel Engine Pump</option>
-                                      </select>
-                                    ))
-                                  : []}
-                              </div>
-                              <div
-                                className="col-md-1  custom-input"
-                                style={{ marginTop: "90px" }}
-                              >
-                                {Array.isArray(units.action6)
-                                  ? units.action6.map((item, index) => (
-                                      <div style={{ marginTop: "10px" }}>
-                                        <img
-                                          src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                          alt="delete button"
-                                          onClick={() => deleteall6(index)}
+                                          onClick={() => deleteall3(index)}
                                           style={{
                                             height: "40px",
                                             cursor: "pointer",
@@ -8153,482 +7949,66 @@ payload = {
                                 <label className="form-label">add</label>
                                 <button
                                   className="form-control form-control-sm"
-                                  onClick={addFn6}
+                                  onClick={addFn3}
                                 >
                                   +
                                 </button>
                               </div>
+                            </div>
+                          </>
+                        )}
 
-                              <div
-                                className="col-md-12  custom-input"
-                                style={{ color: "green", fontWeight: "bolder" }}
-                              >
-                                Basic Details<hr></hr>
-                              </div>
+                        <div className="col-md-6  custom-input">
+                          <label>Occupation Date</label>
+                          <input
+                            type="date"
+                            className="form-control form-control-sm"
+                            onChange={(e) =>
+                              setunits({
+                                ...units,
+                                ocupation_date: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="col-md-6  custom-input">
+                          <label>Age of Construction</label>
+                          <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            onChange={(e) =>
+                              setunits({
+                                ...units,
+                                age_of_construction: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
 
-                              <div className="col-md-4  custom-input">
-                                <label className="form-label">Facing</label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      facing: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option>---Select---</option>
-                                  <option>Village Link Road</option>
-                                  <option>Highway</option>
-                                  <option>Expressway</option>
-                                  <option>Unconstructed Road</option>
-                                </select>
-                              </div>
-
-                              <div className="col-md-4  custom-input">
-                                <label className="form-label">Side Open</label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      side_open: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option>---Select---</option>
-                                  <option>1 Side Open</option>
-                                  <option>2 Side Open</option>
-                                  <option>3 Side Open</option>
-                                </select>
-                              </div>
-
-                              <div className="col-md-4  custom-input">
-                                <label className="form-label">Road</label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({ ...units, road: e.target.value })
-                                  }
-                                >
-                                  <option>---Select---</option>
-                                  <option>11 Ft wide</option>
-                                  <option>22 Ft Wide</option>
-                                  <option>33 Ft Wide</option>
-                                  <option>60 Ft Wide</option>
-                                  <option>100 Ft Wide</option>
-                                  <option>200 Ft Wide</option>
-                                </select>
-                              </div>
-
-                              <div className="col-md-4  custom-input">
-                                <label className="form-label">
-                                  Front On Road
-                                </label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      front_on_road: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option>---Select---</option>
-                                  <option>10 ft</option>
-                                  <option>20 ft</option>
-                                  <option>30 ft</option>
-                                  <option>50 ft</option>
-                                  <option>70 ft</option>
-                                  <option>100 ft</option>
-                                  <option>200 ft</option>
-                                  <option>500 ft</option>
-                                  <option>1000 ft</option>
-                                </select>
-                              </div>
-
-                              <div className="col-md-4  custom-input">
-                                <label className="form-label">Ownership</label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      ownership: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option>---Select---</option>
-                                  <option>Mustraka</option>
-                                  <option>Individual</option>
-                                </select>
-                              </div>
-                              <div className="col-md-4  custom-input">
-                                <label className="form-label">
-                                  No. Of Owner
-                                </label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      facing: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option>---Select---</option>
-                                  <option>1</option>
-                                  <option>2</option>
-                                  <option>3</option>
-                                </select>
-                              </div>
-                            </>
-                          )}
-
-                          {!project.category.includes("Agricultural") && (
-                            <>
-                              <div className="col-md-4  custom-input">
-                                <label className="form-label">Direction</label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      direction: e.target.value,
-                                    })
-                                  }
-                                  onClick={() => {
-                                    if (All_Direction.length === 0) {
-                                      getall_direction();
-                                    }
-                                  }}
-                                >
-                                  <option>---Select---</option>
-                                  {select_loading === "direction" ? (
-                                    <CircularProgress />
-                                  ) : (
-                                    All_Direction.map((name) => (
-                                      <option value={name.lookup_value}>
-                                        {name.lookup_value}
-                                      </option>
-                                    ))
-                                  )}
-                                </select>
-                              </div>
-                              <div className="col-md-4  custom-input">
-                                <label className="form-label">Facing</label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      facing: e.target.value,
-                                    })
-                                  }
-                                  onClick={() => {
-                                    if (All_Facing.length === 0) {
-                                      getall_facing();
-                                    }
-                                  }}
-                                >
-                                  <option>---Select---</option>
-                                  {select_loading === "facing" ? (
-                                    <CircularProgress />
-                                  ) : (
-                                    All_Facing.map((name) => (
-                                      <option value={name.lookup_value}>
-                                        {name.lookup_value}
-                                      </option>
-                                    ))
-                                  )}
-                                </select>
-                              </div>
-                              <div className="col-md-4 custom-input">
-                                <label className="form-label">Road</label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({ ...units, road: e.target.value })
-                                  }
-                                  onClick={() => {
-                                    if (All_Road.length === 0) {
-                                      getall_road();
-                                    }
-                                  }}
-                                >
-                                  <option>---Select---</option>
-                                  {select_loading === "road" ? (
-                                    <CircularProgress />
-                                  ) : (
-                                    All_Road.map((name) => (
-                                      <option value={name.lookup_value}>
-                                        {name.lookup_value}
-                                      </option>
-                                    ))
-                                  )}
-                                </select>
-                              </div>
-                              <div className="col-md-6  custom-input">
-                                <label className="form-label">Ownership</label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      ownership: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option>---Select---</option>
-                                  <option>Freehold</option>
-                                  <option>Leasehold</option>
-                                  <option>Co-OPerative Society</option>
-                                  <option>Sale Agreement(Lal Dora)</option>
-                                </select>
-                              </div>
-                              <div className="col-md-6  custom-input">
-                                <label className="form-label">Stage</label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      stage: e.target.value,
-                                    })
-                                  }
-                                >
-                                  <option>---Select---</option>
-                                  <option>Active</option>
-                                  <option>Inactive</option>
-                                </select>
-                              </div>
-                            </>
-                          )}
-
-                          <div
-                            className="col-md-6  custom-input"
-                            style={{ marginTop: "10px" }}
+                        <div className="col-md-6  custom-input">
+                          <label className="form-label">
+                            Furnishing Details
+                          </label>
+                          <select
+                            id="subcategory"
+                            className="form-control form-control-sm"
+                            onChange={(e) =>
+                              setunits({
+                                ...units,
+                                furnishing_details: e.target.value,
+                              })
+                            }
                           >
-                            <input
-                              type="checkbox"
-                              checked={showabuiltup}
-                              onChange={handleCheckboxChange4}
-                            />
-                            <label>Show Builtup Details</label>
-                          </div>
-                          <div className="col-md-6  custom-input"></div>
-                          {showabuiltup && (
-                            <>
-                              <div className="col-md-12  custom-input">
-                                <label className="form-label">
-                                  Builtup Details
-                                </label>
-                                <hr></hr>
-                              </div>
-
-                              <div className="col-md-6  custom-input">
-                                <label className="form-label">
-                                  Builtup Type
-                                </label>
-                                <select
-                                  className="form-control form-control-sm"
-                                  style={{ marginTop: "10px" }}
-                                  onChange={(e) =>
-                                    setunits({
-                                      ...units,
-                                      builtup_type: e.target.value,
-                                    })
-                                  }
-                                  onClick={() => {
-                                    getall_builtup_type();
-                                  }}
-                                  value={units.builtup_type}
-                                >
-                                  <option>---Select---</option>
-                                  {select_loading === "builtup-type" ? (
-                                    <CircularProgress />
-                                  ) : (
-                                    All_Builtup_Type.map((name) => (
-                                      <option>{name.lookup_value}</option>
-                                    ))
-                                  )}
-                                </select>
-                              </div>
-                              <div className="col-md-6  custom-input"></div>
-
-                              <div
-                                className="row mt-2"
-                                style={{
-                                  border: "1px dashed black",
-                                  margin: "10px",
-                                  marginTop: "0",
-                                  padding: "10px",
-                                  width: "100%",
-                                }}
-                              >
-                                <div className="col-md-2  custom-input">
-                                  <label className="form-label">Floor</label>
-                                  {Array.isArray(units.floor)
-                                    ? units.floor.map((item, index) => (
-                                        <select
-                                          className="form-control form-control-sm"
-                                          style={{ marginTop: "10px" }}
-                                          onChange={(event) =>
-                                            handlefloorchange(index, event)
-                                          }
-                                        >
-                                          <option>---Select---</option>
-                                          <option>Ground Floor</option>
-                                          <option>First Floor</option>
-                                          <option>Second Floor</option>
-                                          <option>Lower Ground</option>
-                                          <option>Upper Ground</option>
-                                          <option>Third Floor</option>
-                                          <option> Fourth Floor</option>
-                                          <option>Lower Ground</option>
-                                          <option>Lower Ground</option>
-                                        </select>
-                                      ))
-                                    : []}
-                                </div>
-                                <div className="col-md-2  custom-input">
-                                  <label
-                                    className="form-label"
-                                    style={{ width: "500px" }}
-                                  >
-                                    Cluter Details
-                                  </label>
-                                  {Array.isArray(units.cluter_details)
-                                    ? units.cluter_details.map(
-                                        (item, index) => (
-                                          <select
-                                            className="form-control form-control-sm"
-                                            style={{ marginTop: "10px" }}
-                                            onChange={(event) =>
-                                              handlecluterdetails(index, event)
-                                            }
-                                          >
-                                            <option>---Select---</option>
-                                            <option>Living Room</option>
-                                            <option>Lobby</option>
-                                            <option>Bedroom</option>
-                                            <option>Master Bedroom</option>
-                                            <option>Kitchen</option>
-                                            <option>Bathroom</option>
-                                            <option>Pooja room,</option>
-                                            <option>Study Room</option>
-                                            <option>Frontward</option>
-                                            <option>Backyard</option>
-                                            <option>Balcony</option>
-                                            <option>Store</option>
-                                            <option>Guest Room</option>
-                                            <option>Servent Room</option>
-                                            <option>Dressing</option>
-                                          </select>
-                                        )
-                                      )
-                                    : []}
-                                </div>
-                                <div className="col-md-2  custom-input">
-                                  <label className="form-label">Length</label>
-                                  {Array.isArray(units.length)
-                                    ? units.length.map((item, index) => (
-                                        <input
-                                          className="form-control form-control-sm"
-                                          style={{ marginTop: "10px" }}
-                                          onChange={(event) =>
-                                            handlelengthchange(index, event)
-                                          }
-                                        />
-                                      ))
-                                    : []}
-                                </div>
-                                <div className="col-md-2  custom-input">
-                                  <label className="form-label">Breadth</label>
-                                  {Array.isArray(units.bredth)
-                                    ? units.bredth.map((item, index) => (
-                                        <input
-                                          className="form-control form-control-sm"
-                                          style={{ marginTop: "10px" }}
-                                          onChange={(event) =>
-                                            handlebredthchange(index, event)
-                                          }
-                                        />
-                                      ))
-                                    : []}
-                                </div>
-                                <div className="col-md-2  custom-input">
-                                  <label className="form-label">
-                                    Total Area
-                                  </label>
-                                  {Array.isArray(units.total_area)
-                                    ? units.total_area.map((item, index) => (
-                                        <input
-                                          className="form-control form-control-sm"
-                                          value={
-                                            units.length[index] &&
-                                            units.bredth[index]
-                                              ? units.length[index] *
-                                                units.bredth[index]
-                                              : ""
-                                          }
-                                          style={{ marginTop: "10px" }}
-                                          onChange={(event) =>
-                                            handletotalarea(index, event)
-                                          }
-                                        />
-                                      ))
-                                    : []}
-                                </div>
-
-                                <div
-                                  className="col-md-1  custom-input"
-                                  style={{ marginTop: "90px" }}
-                                >
-                                  {Array.isArray(units.action3)
-                                    ? units.action3.map((item, index) => (
-                                        <div style={{ marginTop: "10px" }}>
-                                          <img
-                                            src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                            alt="delete button"
-                                            onClick={() => deleteall3(index)}
-                                            style={{
-                                              height: "40px",
-                                              cursor: "pointer",
-                                            }}
-                                          />
-                                        </div>
-                                      ))
-                                    : []}
-                                </div>
-                                <div className="col-md-1  custom-input">
-                                  <label className="form-label">add</label>
-                                  <button
-                                    className="form-control form-control-sm"
-                                    onClick={addFn3}
-                                  >
-                                    +
-                                  </button>
-                                </div>
-                              </div>
-                            </>
-                          )}
-
-                          <div className="col-md-6  custom-input">
-                            <label>Occupation Date</label>
-                            <input
-                              type="date"
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setunits({
-                                  ...units,
-                                  ocupation_date: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                          <div className="col-md-6  custom-input">
-                            <label>Age of Construction</label>
+                            <option>---Select---</option>
+                            <option>Furnished</option>
+                            <option>Unfurnished</option>
+                            <option>Semi Furnished</option>
+                          </select>
+                        </div>
+                        {(units.furnishing_details === "Furnished" ||
+                          units.furnishing_details === "Semi Furnished") && (
+                          <div className="col-md-12  custom-input">
+                            <label>Enter Furnishing Details</label>
                             <input
                               type="text"
                               className="form-control form-control-sm"
@@ -8640,1189 +8020,1142 @@ payload = {
                               }
                             />
                           </div>
+                        )}
+                        <div className="col-md-6  custom-input"></div>
 
-                          <div className="col-md-6  custom-input">
-                            <label className="form-label">
-                              Furnishing Details
-                            </label>
-                            <select
-                              id="subcategory"
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setunits({
-                                  ...units,
-                                  furnishing_details: e.target.value,
-                                })
-                              }
-                            >
-                              <option>---Select---</option>
-                              <option>Furnished</option>
-                              <option>Unfurnished</option>
-                              <option>Semi Furnished</option>
-                            </select>
-                          </div>
-                          {(units.furnishing_details === "Furnished" ||
-                            units.furnishing_details === "Semi Furnished") && (
-                            <div className="col-md-12  custom-input">
-                              <label>Enter Furnishing Details</label>
-                              <input
-                                type="text"
-                                className="form-control form-control-sm"
-                                onChange={(e) =>
-                                  setunits({
-                                    ...units,
-                                    age_of_construction: e.target.value,
-                                  })
-                                }
-                              />
-                            </div>
-                          )}
-                          <div className="col-md-6  custom-input"></div>
-
-                          <div className="col-md-8  custom-input">
-                            <label>Furnished Items</label>
-                            <input
-                              type="text"
-                              className="form-control form-control-sm"
-                              onChange={(e) =>
-                                setunits({
-                                  ...units,
-                                  furnished_item: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
+                        <div className="col-md-8  custom-input">
+                          <label>Furnished Items</label>
+                          <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            onChange={(e) =>
+                              setunits({
+                                ...units,
+                                furnished_item: e.target.value,
+                              })
+                            }
+                          />
                         </div>
                       </div>
-                      <div className="row">
-                        <div
-                          className="col-md-12  custom-input"
-                          id="unitlocation"
-                          style={{ display: "none", lineHeight: "30px" }}
-                        >
-                          <div className="p-3 py-5">
+                    </div>
+                    <div className="row">
+                      <div
+                        className="col-md-12  custom-input"
+                        id="unitlocation"
+                        style={{ display: "none", lineHeight: "30px" }}
+                      >
+                        <div className="p-3 py-5">
+                          <div
+                            className="col-md-12  custom-input"
+                            style={{
+                              border: "1px solid black",
+                              marginTop: "30px",
+                              padding: "10px",
+                            }}
+                          >
                             <div
-                              className="col-md-12  custom-input"
                               style={{
                                 border: "1px solid black",
-                                marginTop: "30px",
-                                padding: "10px",
+                                marginTop: "10px",
                               }}
                             >
-                              <div
-                                style={{
-                                  border: "1px solid black",
-                                  marginTop: "10px",
-                                }}
-                              >
-                                <LoadScript googleMapsApiKey="AIzaSyACfBzaJSVH8eur7U9JxdjI1bAeTLXsUJc">
-                                  <GoogleMap
-                                    mapContainerStyle={mapStyles1}
-                                    zoom={13}
-                                    center={defaultCenter1}
-                                  >
-                                    <Marker
-                                      position={{
-                                        lat: defaultCenter1.lat,
-                                        lng: defaultCenter1.lng,
-                                      }}
-                                      draggable={true}
-                                      onDragEnd={handleMarkerDragEnd1}
-                                    />
-                                  </GoogleMap>
-                                </LoadScript>
-                              </div>
-                              <div className="row">
-                                <div className="col-md-6  custom-input">
-                                  <label className="form-label">Location</label>
-                                  <input
-                                    type="text"
-                                    className="form-control form-control-sm"
-                                    required="true"
-                                    value={units.location}
-                                    onChange={(e) =>
-                                      setunits({
-                                        ...units,
-                                        location: e.target.value,
-                                      })
-                                    }
-                                  />
-                                </div>
-                                {/* <div className='col-md-5 mb-5 custom-input'></div> */}
-                                <div className="col-md-2  custom-input">
-                                  <label
-                                    className="form-label"
-                                    style={{ visibility: "hidden" }}
-                                  >
-                                    .
-                                  </label>
-                                  <button
-                                    className="form-control form-control-sm"
-                                    required="true"
-                                    onClick={handleSubmit1}
-                                  >
-                                    Get
-                                  </button>
-                                </div>
-                                <div className="col-md-4  custom-input"></div>
-                                <div className="col-md-5  custom-input">
-                                  <label className="form-label">
-                                    Lattitude
-                                  </label>
-                                  <input
-                                    type="number"
-                                    className="form-control form-control-sm"
-                                    required="true"
-                                    value={units.lattitude}
-                                    readOnly
-                                  />
-                                </div>
-                                <div className="col-md-5  custom-input">
-                                  <label className="form-label">
-                                    Langitude
-                                  </label>
-                                  <input
-                                    type="number"
-                                    className="form-control form-control-sm"
-                                    required="true"
-                                    value={units.langitude}
-                                    readOnly
-                                  />
-                                </div>
-                                <div className="col-md-12  custom-input">
-                                  <label
-                                    className="form-label"
-                                    style={{
-                                      fontSize: "16px",
-                                      marginTop: "10px",
+                              <LoadScript googleMapsApiKey="AIzaSyACfBzaJSVH8eur7U9JxdjI1bAeTLXsUJc">
+                                <GoogleMap
+                                  mapContainerStyle={mapStyles1}
+                                  zoom={13}
+                                  center={defaultCenter1}
+                                >
+                                  <Marker
+                                    position={{
+                                      lat: defaultCenter1.lat,
+                                      lng: defaultCenter1.lng,
                                     }}
-                                  >
-                                    Address
-                                  </label>
-                                </div>
+                                    draggable={true}
+                                    onDragEnd={handleMarkerDragEnd1}
+                                  />
+                                </GoogleMap>
+                              </LoadScript>
+                            </div>
+                            <div className="row">
+                              <div className="col-md-6  custom-input">
+                                <label className="form-label">Location</label>
+                                <input
+                                  type="text"
+                                  className="form-control form-control-sm"
+                                  required="true"
+                                  value={units.location}
+                                  onChange={(e) =>
+                                    setunits({
+                                      ...units,
+                                      location: e.target.value,
+                                    })
+                                  }
+                                />
+                              </div>
+                              {/* <div className='col-md-5 mb-5 custom-input'></div> */}
+                              <div className="col-md-2  custom-input">
+                                <label
+                                  className="form-label"
+                                  style={{ visibility: "hidden" }}
+                                >
+                                  .
+                                </label>
+                                <button
+                                  className="form-control form-control-sm"
+                                  required="true"
+                                  onClick={handleSubmit1}
+                                >
+                                  Get
+                                </button>
+                              </div>
+                              <div className="col-md-4  custom-input"></div>
+                              <div className="col-md-5  custom-input">
+                                <label className="form-label">Lattitude</label>
+                                <input
+                                  type="number"
+                                  className="form-control form-control-sm"
+                                  required="true"
+                                  value={units.lattitude}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-md-5  custom-input">
+                                <label className="form-label">Langitude</label>
+                                <input
+                                  type="number"
+                                  className="form-control form-control-sm"
+                                  required="true"
+                                  value={units.langitude}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-md-12  custom-input">
+                                <label
+                                  className="form-label"
+                                  style={{
+                                    fontSize: "16px",
+                                    marginTop: "10px",
+                                  }}
+                                >
+                                  Address
+                                </label>
+                              </div>
 
-                                <div className="col-md-8  custom-input">
-                                  <label className="form-label">ADDRESS</label>
-                                  <input
-                                    type="text"
-                                    value={units.uaddress}
-                                    className="form-control form-control-sm"
-                                    onChange={(e) =>
-                                      setunits({
-                                        ...units,
-                                        uaddress: e.target.value,
-                                      })
-                                    }
-                                  />
-                                </div>
-                                <div className="col-md-4  custom-input"></div>
-                                <div className="col-md-8  custom-input">
-                                  <label className="form-label">STREET</label>
-                                  <input
-                                    type="text"
-                                    value={units.ustreet}
-                                    className="form-control form-control-sm"
-                                    onChange={(e) =>
-                                      setunits({
-                                        ...units,
-                                        ustreet: e.target.value,
-                                      })
-                                    }
-                                  />
-                                </div>
-                                <div className="col-md-4  custom-input"></div>
-                                <div className="col-md-4  custom-input">
-                                  <label className="form-label">LOCALITY</label>
-                                  <input
-                                    type="text"
-                                    value={units.ulocality}
-                                    className="form-control form-control-sm"
-                                    onChange={(e) =>
-                                      setunits({
-                                        ...units,
-                                        ulocality: e.target.value,
-                                      })
-                                    }
-                                  />
-                                </div>
-                                <div className="col-md-4  custom-input">
-                                  <label className="form-label">CITY</label>
-                                  <select
-                                    type="text"
-                                    className="form-control form-control-sm"
-                                    onChange={(e) =>
-                                      setunits({
-                                        ...units,
-                                        ucity: e.target.value,
-                                      })
-                                    }
-                                    onClick={() => getall_city_unit()}
-                                  >
-                                    <option>---Select---</option>
-                                    {select_loading === "city-unit" ? (
-                                      <CircularProgress />
-                                    ) : (
-                                      All_City_unit.map((name) => (
-                                        <option value={name.lookup_value}>
-                                          {name.lookup_value}
-                                        </option>
-                                      ))
-                                    )}
-                                  </select>
-                                </div>
-                                <div className="col-md-4  custom-input">
-                                  <label className="form-label">ZIP</label>
-                                  <input
-                                    type="text"
-                                    value={units.uzip}
-                                    className="form-control form-control-sm"
-                                    onChange={(e) =>
-                                      setunits({
-                                        ...units,
-                                        uzip: e.target.value,
-                                      })
-                                    }
-                                  />
-                                </div>
-                                <div className="col-md-6  custom-input">
-                                  <label className="form-label">State</label>
-                                  <select
-                                    className="form-control form-control-sm"
-                                    onChange={(e) =>
-                                      setunits({
-                                        ...units,
-                                        ustate: e.target.value,
-                                      })
-                                    }
-                                    onClick={() => getall_state()}
-                                  >
-                                    <option>---Select---</option>
-                                    {select_loading === "state" ? (
-                                      <CircularProgress />
-                                    ) : (
-                                      All_State.map((name) => (
-                                        <option value={name.lookup_value}>
-                                          {name.lookup_value}
-                                        </option>
-                                      ))
-                                    )}
-                                  </select>
-                                </div>
-                                <div className="col-md-6  custom-input">
-                                  <label className="form-label">Country</label>
-                                  <select
-                                    className="form-control form-control-sm"
-                                    onChange={(e) =>
-                                      setunits({
-                                        ...units,
-                                        ucountry: e.target.value,
-                                      })
-                                    }
-                                  >
-                                    <option>{units.ucountry}</option>
-                                    <option>My Team</option>
-                                    <option>My Self</option>
-                                    <option>All Users</option>
-                                  </select>
-                                </div>
+                              <div className="col-md-8  custom-input">
+                                <label className="form-label">ADDRESS</label>
+                                <input
+                                  type="text"
+                                  value={units.uaddress}
+                                  className="form-control form-control-sm"
+                                  onChange={(e) =>
+                                    setunits({
+                                      ...units,
+                                      uaddress: e.target.value,
+                                    })
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-4  custom-input"></div>
+                              <div className="col-md-8  custom-input">
+                                <label className="form-label">STREET</label>
+                                <input
+                                  type="text"
+                                  value={units.ustreet}
+                                  className="form-control form-control-sm"
+                                  onChange={(e) =>
+                                    setunits({
+                                      ...units,
+                                      ustreet: e.target.value,
+                                    })
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-4  custom-input"></div>
+                              <div className="col-md-4  custom-input">
+                                <label className="form-label">LOCALITY</label>
+                                <input
+                                  type="text"
+                                  value={units.ulocality}
+                                  className="form-control form-control-sm"
+                                  onChange={(e) =>
+                                    setunits({
+                                      ...units,
+                                      ulocality: e.target.value,
+                                    })
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-4  custom-input">
+                                <label className="form-label">CITY</label>
+                                <select
+                                  type="text"
+                                  className="form-control form-control-sm"
+                                  onChange={(e) =>
+                                    setunits({
+                                      ...units,
+                                      ucity: e.target.value,
+                                    })
+                                  }
+                                  onClick={() => getall_city_unit()}
+                                >
+                                  <option>---Select---</option>
+                                  {select_loading === "city-unit" ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    All_City_unit.map((name) => (
+                                      <option value={name.lookup_value}>
+                                        {name.lookup_value}
+                                      </option>
+                                    ))
+                                  )}
+                                </select>
+                              </div>
+                              <div className="col-md-4  custom-input">
+                                <label className="form-label">ZIP</label>
+                                <input
+                                  type="text"
+                                  value={units.uzip}
+                                  className="form-control form-control-sm"
+                                  onChange={(e) =>
+                                    setunits({
+                                      ...units,
+                                      uzip: e.target.value,
+                                    })
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-6  custom-input">
+                                <label className="form-label">State</label>
+                                <select
+                                  className="form-control form-control-sm"
+                                  onChange={(e) =>
+                                    setunits({
+                                      ...units,
+                                      ustate: e.target.value,
+                                    })
+                                  }
+                                  onClick={() => getall_state()}
+                                >
+                                  <option>---Select---</option>
+                                  {select_loading === "state" ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    All_State.map((name) => (
+                                      <option value={name.lookup_value}>
+                                        {name.lookup_value}
+                                      </option>
+                                    ))
+                                  )}
+                                </select>
+                              </div>
+                              <div className="col-md-6  custom-input">
+                                <label className="form-label">Country</label>
+                                <select
+                                  className="form-control form-control-sm"
+                                  onChange={(e) =>
+                                    setunits({
+                                      ...units,
+                                      ucountry: e.target.value,
+                                    })
+                                  }
+                                >
+                                  <option>{units.ucountry}</option>
+                                  <option>My Team</option>
+                                  <option>My Self</option>
+                                  <option>All Users</option>
+                                </select>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                    </div>
 
-                      <div
-                        id="ownerdetails"
-                        style={{ padding: "5px", display: "none" }}
-                      >
-                        <div className="row" style={{ width: "100%" }}>
-                          <div
-                            className="col-md-9  custom-input"
-                            id="suggestion-box"
-                            style={{ position: "relative" }}
+                    <div
+                      id="ownerdetails"
+                      style={{ padding: "5px", display: "none" }}
+                    >
+                      <div className="row" style={{ width: "100%" }}>
+                        <div
+                          className="col-md-9  custom-input"
+                          id="suggestion-box"
+                          style={{ position: "relative" }}
+                        >
+                          <label
+                            className="form-label"
+                            style={{ visibility: "hidden" }}
                           >
-                            <label
-                              className="form-label"
-                              style={{ visibility: "hidden" }}
-                            >
-                              Search
-                            </label>
-                            <input
-                              type="search"
-                              className="form-control form-control-sm"
-                              value={input}
-                              placeholder="Type here For Search in Contact"
-                              required="true"
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          {showSuggestions &&
-                            input &&
-                            filteredSuggestions.length > 0 && (
-                              <ul className="suggestion-list">
-                                {filteredSuggestions.map(
-                                  (suggestion, index) => (
-                                    <li
-                                      key={index}
-                                      onClick={() =>
-                                        handleSuggestionClick(suggestion)
-                                      }
-                                      style={{ fontSize: "12px" }}
-                                    >
-                                      {suggestion.first_name}{" "}
-                                      {suggestion.last_name}
-                                      <br></br>
-                                      {suggestion.mobile_no}
-                                    </li>
-                                  )
-                                )}
-                              </ul>
-                            )}
-                          <div className="col-md-1  custom-input">
-                            <label
-                              className="form-label"
-                              style={{ visibility: "hidden" }}
-                            >
-                              Add
-                            </label>
-                            {/* <button className="form-control form-control-sm" style={{width:"50px"}} onClick={()=>navigate('/sortaddcontact')}>+</button> */}
-                            <button
-                              className="form-control form-control-sm"
-                              onClick={() => navigate("/sortaddcontact")}
-                              style={{
-                                backgroundColor: "#007bff",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "4px",
-                                fontWeight: "500",
-                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                transition: "all 0.2s ease-in-out",
-                              }}
-                              onMouseOver={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                  "#0056b3")
-                              }
-                              onMouseOut={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                  "#007bff")
-                              }
-                            >
-                              +
-                            </button>
-                          </div>
-
-                          <div
-                            className="col-md-12  custom-input"
-                            style={{ marginTop: "20px" }}
+                            Search
+                          </label>
+                          <input
+                            type="search"
+                            className="form-control form-control-sm"
+                            value={input}
+                            placeholder="Type here For Search in Contact"
+                            required="true"
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        {showSuggestions &&
+                          input &&
+                          filteredSuggestions.length > 0 && (
+                            <ul className="suggestion-list">
+                              {filteredSuggestions.map((suggestion, index) => (
+                                <li
+                                  key={index}
+                                  onClick={() =>
+                                    handleSuggestionClick(suggestion)
+                                  }
+                                  style={{ fontSize: "12px" }}
+                                >
+                                  {suggestion.first_name} {suggestion.last_name}
+                                  <br></br>
+                                  {suggestion.mobile_no}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        <div className="col-md-1  custom-input">
+                          <label
+                            className="form-label"
+                            style={{ visibility: "hidden" }}
                           >
-                            <label className="form-label">Owner Contact</label>
-                            <div className="col-md-12  custom-input">
-                              <hr></hr>
-                            </div>
-                            {selectedcontact1.length >= 0 && (
-                              <div className="contact-details">
-                                <table style={{ width: "100%" }}>
-                                  <tbody>
-                                    {selectedcontact1.map((contact) => (
-                                      <StyledTableRow>
-                                        <StyledTableCell
-                                          style={{
-                                            cursor: "pointer",
-                                            fontSize: "12px",
-                                          }}
-                                        >
-                                          <img
-                                            style={{
-                                              height: "40px",
-                                              width: "90px",
-                                            }}
-                                            src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png"
-                                            alt=""
-                                          ></img>
-                                        </StyledTableCell>
-
-                                        <StyledTableCell
-                                          style={{
-                                            cursor: "pointer",
-                                            fontSize: "12px",
-                                          }}
-                                        >
-                                          {contact.title} {contact.first_name}{" "}
-                                          {contact.last_name}
-                                          <br></br>
-                                          <SvgIcon
-                                            component={EmailIcon}
-                                            style={{ fontSize: "10px" }}
-                                          />
-                                          <span>{contact.email}</span>
-                                        </StyledTableCell>
-
-                                        <StyledTableCell
-                                          style={{
-                                            cursor: "pointer",
-                                            fontSize: "12px",
-                                          }}
-                                        >
-                                          {contact.mobile_no.map(
-                                            (number, index) => (
-                                              <span key={index}>
-                                                <SvgIcon
-                                                  component={PhoneIphoneIcon}
-                                                  style={{ fontSize: "10px" }}
-                                                />
-                                                {number}
-                                                <br></br>
-                                              </span>
-                                            )
-                                          )}
-                                        </StyledTableCell>
-
-                                        <StyledTableCell
-                                          style={{
-                                            cursor: "pointer",
-                                            fontSize: "12px",
-                                          }}
-                                        >
-                                          S/W/O <br></br>
-                                          {contact.father_husband_name}
-                                        </StyledTableCell>
-
-                                        <StyledTableCell
-                                          style={{
-                                            cursor: "pointer",
-                                            fontSize: "12px",
-                                          }}
-                                        >
-                                          permanent address: <br></br>
-                                          {contact.h_no}
-                                          <br></br>
-                                          {contact.area1}
-                                          {contact.location1} {contact.city1}{" "}
-                                          {contact.state1} {contact.country1}{" "}
-                                          {contact.pincode1}
-                                        </StyledTableCell>
-
-                                        <StyledTableCell
-                                          style={{
-                                            cursor: "pointer",
-                                            fontSize: "12px",
-                                          }}
-                                        >
-                                          <span
-                                            style={{
-                                              color: "orange",
-                                              fontWeight: "bolder",
-                                            }}
-                                          >
-                                            Owner
-                                          </span>
-                                        </StyledTableCell>
-
-                                        <StyledTableCell>
-                                          {/* <img style={{height:"40px",cursor:"pointer"}} src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png" alt="" onClick={() => removeContact(contact._id)}></img> */}
-                                          <span
-                                            class="material-icons"
-                                            style={{
-                                              color: "red",
-                                              fontSize: "24px",
-                                              cursor: "pointer",
-                                            }}
-                                            onClick={() =>
-                                              removeContact(contact._id)
-                                            }
-                                          >
-                                            delete
-                                          </span>
-                                        </StyledTableCell>
-                                      </StyledTableRow>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            )}
-                          </div>
-
-                          <div
-                            className="col-md-12  custom-input"
-                            style={{ marginTop: "20px" }}
+                            Add
+                          </label>
+                          {/* <button className="form-control form-control-sm" style={{width:"50px"}} onClick={()=>navigate('/sortaddcontact')}>+</button> */}
+                          <button
+                            className="form-control form-control-sm"
+                            onClick={() => navigate("/sortaddcontact")}
+                            style={{
+                              backgroundColor: "#007bff",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "4px",
+                              fontWeight: "500",
+                              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                              transition: "all 0.2s ease-in-out",
+                            }}
+                            onMouseOver={(e) =>
+                              (e.currentTarget.style.backgroundColor =
+                                "#0056b3")
+                            }
+                            onMouseOut={(e) =>
+                              (e.currentTarget.style.backgroundColor =
+                                "#007bff")
+                            }
                           >
-                            <label className="form-label">
-                              Associate Contact
-                            </label>
-                            <div className="col-md-12  custom-input">
-                              <hr></hr>
-                            </div>
-                            {selectedcontact2.length >= 0 && (
-                              <div className="contact-details">
-                                <table style={{ width: "100%" }}>
-                                  <tbody>
-                                    {selectedcontact2.map((contact) => (
-                                      <StyledTableRow>
-                                        <StyledTableCell>
-                                          <img
-                                            style={{
-                                              height: "40px",
-                                              width: "50px",
-                                            }}
-                                            src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png"
-                                            alt="Contact"
-                                          />
-                                        </StyledTableCell>
-
-                                        <StyledTableCell
-                                          style={{
-                                            fontSize: "12px",
-                                            cursor: "pointer",
-                                          }}
-                                        >
-                                          {contact.title} {contact.first_name}{" "}
-                                          {contact.last_name}
-                                          <br />
-                                          <SvgIcon
-                                            component={EmailIcon}
-                                            style={{ fontSize: "10px" }}
-                                          />
-                                          <span>{contact.email}</span>
-                                        </StyledTableCell>
-
-                                        <StyledTableCell
-                                          style={{
-                                            cursor: "pointer",
-                                            fontSize: "12px",
-                                          }}
-                                        >
-                                          {Array.isArray(contact.mobile_no)
-                                            ? contact.mobile_no.map(
-                                                (number, index) => (
-                                                  <span key={index}>
-                                                    <SvgIcon
-                                                      component={
-                                                        PhoneIphoneIcon
-                                                      }
-                                                      style={{
-                                                        fontSize: "10px",
-                                                      }}
-                                                    />
-                                                    {number}
-                                                    <br />
-                                                  </span>
-                                                )
-                                              )
-                                            : []}
-                                        </StyledTableCell>
-
-                                        <StyledTableCell
-                                          style={{
-                                            cursor: "pointer",
-                                            fontSize: "12px",
-                                          }}
-                                        >
-                                          S/W/O <br />
-                                          {contact.father_husband_name}
-                                        </StyledTableCell>
-
-                                        <StyledTableCell
-                                          style={{
-                                            cursor: "pointer",
-                                            fontSize: "12px",
-                                          }}
-                                        >
-                                          permanent address: <br />
-                                          {contact.h_no}
-                                          <br />
-                                          {contact.area1} {contact.location1}{" "}
-                                          {contact.city1} {contact.state1}{" "}
-                                          {contact.country1} {contact.pincode1}
-                                        </StyledTableCell>
-
-                                        <StyledTableCell
-                                          style={{
-                                            cursor: "pointer",
-                                            fontSize: "12px",
-                                          }}
-                                        >
-                                          <span
-                                            style={{
-                                              color: "orange",
-                                              fontWeight: "bolder",
-                                            }}
-                                          >
-                                            {units.relation}
-                                          </span>
-                                        </StyledTableCell>
-
-                                        <StyledTableCell>
-                                          {/* <img style={{ height: "40px", cursor: "pointer" }} src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png" onClick={() => removeContact(contact._id)} alt="Remove" /> */}
-                                          <span
-                                            class="material-icons"
-                                            style={{
-                                              color: "red",
-                                              fontSize: "24px",
-                                              cursor: "pointer",
-                                            }}
-                                            onClick={() =>
-                                              removeContact(contact._id)
-                                            }
-                                          >
-                                            delete
-                                          </span>
-                                        </StyledTableCell>
-                                      </StyledTableRow>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            )}
-                          </div>
+                            +
+                          </button>
                         </div>
-                      </div>
 
-                      <div
-                        id="uploadmedia"
-                        style={{ padding: "5px", display: "none" }}
-                      >
-                        <div className="d-flex justify-content-between align-items-center ">
-                          <h6 className="text-right">Upload Images</h6>
-                        </div>
-                        <hr></hr>
-                        <div className="row mt-2">
-                          <table style={{ marginLeft: "25px" }}>
-                            <thead>
-                              <tr>
-                                <th style={{ width: "100px" }}>#</th>
-                                <th
-                                  style={{
-                                    width: "400px",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Preview
-                                </th>
-                                <th
-                                  style={{
-                                    width: "300px",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Description
-                                </th>
-                                <th
-                                  style={{
-                                    width: "300px",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Category
-                                </th>
-                                <th
-                                  style={{
-                                    width: "150px",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Action
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>
-                                  {Array.isArray(units.s_no)
-                                    ? units.s_no.map((name, index) => (
-                                        <div
-                                          key={index}
-                                          className="col-md-12  custom-input"
-                                          style={{ marginTop: "10px" }}
-                                        >
-                                          <input
-                                            type="text"
-                                            className="form-control form-control-sm"
-                                            onChange={(event) =>
-                                              handlesnochange(index, event)
-                                            }
-                                          />
-                                        </div>
-                                      ))
-                                    : []}
-                                </td>
-                                <td>
-                                  {Array.isArray(units.preview)
-                                    ? units.preview.map((name, index) => (
-                                        <div
-                                          key={index}
-                                          className="col-md-12  custom-input"
-                                          style={{ marginTop: "10px" }}
-                                        >
-                                          <input
-                                            name="preview"
-                                            type="file"
-                                            className="form-control form-control-sm"
-                                            multiple
-                                            onChange={(event) =>
-                                              handlepreviewchange(index, event)
-                                            }
-                                          />
-                                          <div className="d-flex flex-wrap gap-2 mt-2">
-                                            {select_loading ===
-                                            "project_pic_upload" ? (
-                                              <CircularProgress size={24} />
-                                            ) : (
-                                              (name || []).map((obj, i) => (
-                                                <div
-                                                  key={i}
-                                                  style={{
-                                                    position: "relative",
-                                                  }}
-                                                >
-                                                  <img
-                                                    src={obj}
-                                                    alt="Preview"
-                                                    style={{
-                                                      width: "80px",
-                                                      height: "80px",
-                                                      objectFit: "cover",
-                                                      borderRadius: "6px",
-                                                      border: "1px solid #ccc",
-                                                    }}
-                                                  />
-                                                </div>
-                                              ))
-                                            )}
-                                          </div>
-                                        </div>
-                                      ))
-                                    : []}
-                                </td>
-                                <td>
-                                  {Array.isArray(units.descriptions)
-                                    ? units.descriptions.map((name, index) => (
-                                        <div
-                                          key={index}
-                                          className="col-md-12  custom-input"
-                                          style={{ marginTop: "10px" }}
-                                        >
-                                          <input
-                                            type="text"
-                                            className="form-control form-control-sm"
-                                            onChange={(event) =>
-                                              handledescriptionchange(
-                                                index,
-                                                event
-                                              )
-                                            }
-                                          />
-                                        </div>
-                                      ))
-                                    : []}
-                                </td>
-                                <td>
-                                  {Array.isArray(units.category)
-                                    ? units.category.map((name, index) => (
-                                        <div
-                                          key={index}
-                                          className="col-md-12  custom-input"
-                                          style={{ marginTop: "10px" }}
-                                        >
-                                          <select
-                                            className="form-control form-control-sm"
-                                            required="true"
-                                            onChange={(event) =>
-                                              handlecategorychange(index, event)
-                                            }
-                                          >
-                                            <option>select</option>
-                                            <option>Bedroom</option>
-                                            <option>Hall</option>
-                                            <option>Kitchen</option>
-                                            <option>Balcony</option>
-                                            <option>Washroom</option>
-                                            <option>Pooja Room</option>
-                                            <option>Dining Room</option>
-                                            <option>Drawing Room</option>
-                                          </select>
-                                        </div>
-                                      ))
-                                    : []}
-                                </td>
-                                <td>
-                                  {Array.isArray(units.action10)
-                                    ? units.action10.map((name, index) => (
-                                        <div
-                                          key={index}
-                                          className="col-md-12  custom-input"
-                                          style={{ marginTop: "10px" }}
-                                        >
-                                          <div>
-                                            {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit(index)} style={{height:"40px",cursor:"pointer"}}/> */}
-                                            <span
-                                              class="material-icons"
-                                              style={{
-                                                color: "red",
-                                                fontSize: "24px",
-                                                cursor: "pointer",
-                                              }}
-                                              onClick={() =>
-                                                deleteallunit(index)
-                                              }
-                                            >
-                                              delete
-                                            </span>
-                                          </div>
-                                        </div>
-                                      ))
-                                    : []}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="row mt-4">
-                          <div
-                            className="col-md-3  custom-input"
-                            style={{ marginLeft: "70%" }}
-                            onClick={addFnunit}
-                          >
-                            <button className="form-control form-control-sm custom-btn">
-                              Add Image
-                            </button>
-                          </div>
-                        </div>
-                        <div className="d-flex justify-content-between align-items-center ">
-                          <h6 className="text-right">Upload Videos</h6>
-                        </div>
-                        <hr></hr>
-                        <div className="row mt-2">
-                          <table style={{ marginLeft: "25px" }}>
-                            <thead>
-                              <tr>
-                                <th
-                                  style={{
-                                    width: "100px",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  SR.NO.
-                                </th>
-                                <th
-                                  style={{
-                                    width: "950px",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  URL
-                                </th>
-                                <th
-                                  style={{
-                                    width: "150px",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Action
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>
-                                  {Array.isArray(units.s_no1)
-                                    ? units.s_no1.map((name, index) => (
-                                        <div
-                                          key={index}
-                                          className="col-md-12  custom-input"
-                                          style={{ marginTop: "10px" }}
-                                        >
-                                          <input
-                                            type="text"
-                                            className="form-control form-control-sm"
-                                            value={name}
-                                            onChange={(event) =>
-                                              handlesno1change(index, event)
-                                            }
-                                          />
-                                        </div>
-                                      ))
-                                    : []}
-                                </td>
-                                <td>
-                                  {Array.isArray(units.url)
-                                    ? units.url.map((name, index) => (
-                                        <div
-                                          key={index}
-                                          className="col-md-12  custom-input"
-                                          style={{ marginTop: "10px" }}
-                                        >
-                                          <input
-                                            type="text"
-                                            className="form-control form-control-sm"
-                                            value={name}
-                                            onChange={(event) =>
-                                              handleurlChange(index, event)
-                                            }
-                                          />
-                                        </div>
-                                      ))
-                                    : []}
-                                </td>
-                                <td>
-                                  {Array.isArray(units.action11)
-                                    ? units.action11.map((name, index) => (
-                                        <div
-                                          key={index}
-                                          className="col-md-12  custom-input"
-                                          style={{ marginTop: "10px" }}
-                                        >
-                                          <div>
-                                            {/* <img src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
-                                            <span
-                                              class="material-icons"
-                                              style={{
-                                                color: "red",
-                                                fontSize: "24px",
-                                                cursor: "pointer",
-                                              }}
-                                              onClick={() =>
-                                                deleteallunit1(index)
-                                              }
-                                            >
-                                              delete
-                                            </span>
-                                          </div>
-                                        </div>
-                                      ))
-                                    : []}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="row mt-4">
-                          <div
-                            className="col-md-3  custom-input"
-                            style={{ marginLeft: "70%" }}
-                            onClick={addFnunit1}
-                          >
-                            <button className="form-control form-control-sm custom-btn">
-                              Add Video Link
-                            </button>
-                          </div>
-
+                        <div
+                          className="col-md-12  custom-input"
+                          style={{ marginTop: "20px" }}
+                        >
+                          <label className="form-label">Owner Contact</label>
                           <div className="col-md-12  custom-input">
                             <hr></hr>
                           </div>
+                          {selectedcontact1.length >= 0 && (
+                            <div className="contact-details">
+                              <table style={{ width: "100%" }}>
+                                <tbody>
+                                  {selectedcontact1.map((contact) => (
+                                    <StyledTableRow>
+                                      <StyledTableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        <img
+                                          style={{
+                                            height: "40px",
+                                            width: "90px",
+                                          }}
+                                          src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png"
+                                          alt=""
+                                        ></img>
+                                      </StyledTableCell>
 
-                          <div className="col-md-2  custom-input"></div>
+                                      <StyledTableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        {contact.title} {contact.first_name}{" "}
+                                        {contact.last_name}
+                                        <br></br>
+                                        <SvgIcon
+                                          component={EmailIcon}
+                                          style={{ fontSize: "10px" }}
+                                        />
+                                        <span>{contact.email}</span>
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        {contact.mobile_no.map(
+                                          (number, index) => (
+                                            <span key={index}>
+                                              <SvgIcon
+                                                component={PhoneIphoneIcon}
+                                                style={{ fontSize: "10px" }}
+                                              />
+                                              {number}
+                                              <br></br>
+                                            </span>
+                                          )
+                                        )}
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        S/W/O <br></br>
+                                        {contact.father_husband_name}
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        permanent address: <br></br>
+                                        {contact.h_no}
+                                        <br></br>
+                                        {contact.area1}
+                                        {contact.location1} {contact.city1}{" "}
+                                        {contact.state1} {contact.country1}{" "}
+                                        {contact.pincode1}
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        <span
+                                          style={{
+                                            color: "orange",
+                                            fontWeight: "bolder",
+                                          }}
+                                        >
+                                          Owner
+                                        </span>
+                                      </StyledTableCell>
+
+                                      <StyledTableCell>
+                                        {/* <img style={{height:"40px",cursor:"pointer"}} src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png" alt="" onClick={() => removeContact(contact._id)}></img> */}
+                                        <span
+                                          class="material-icons"
+                                          style={{
+                                            color: "red",
+                                            fontSize: "24px",
+                                            cursor: "pointer",
+                                          }}
+                                          onClick={() =>
+                                            removeContact(contact._id)
+                                          }
+                                        >
+                                          delete
+                                        </span>
+                                      </StyledTableCell>
+                                    </StyledTableRow>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+
+                        <div
+                          className="col-md-12  custom-input"
+                          style={{ marginTop: "20px" }}
+                        >
+                          <label className="form-label">
+                            Associate Contact
+                          </label>
+                          <div className="col-md-12  custom-input">
+                            <hr></hr>
+                          </div>
+                          {selectedcontact2.length >= 0 && (
+                            <div className="contact-details">
+                              <table style={{ width: "100%" }}>
+                                <tbody>
+                                  {selectedcontact2.map((contact) => (
+                                    <StyledTableRow>
+                                      <StyledTableCell>
+                                        <img
+                                          style={{
+                                            height: "40px",
+                                            width: "50px",
+                                          }}
+                                          src="https://cdn-icons-png.flaticon.com/512/7084/7084424.png"
+                                          alt="Contact"
+                                        />
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        style={{
+                                          fontSize: "12px",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        {contact.title} {contact.first_name}{" "}
+                                        {contact.last_name}
+                                        <br />
+                                        <SvgIcon
+                                          component={EmailIcon}
+                                          style={{ fontSize: "10px" }}
+                                        />
+                                        <span>{contact.email}</span>
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        {Array.isArray(contact.mobile_no)
+                                          ? contact.mobile_no.map(
+                                              (number, index) => (
+                                                <span key={index}>
+                                                  <SvgIcon
+                                                    component={PhoneIphoneIcon}
+                                                    style={{
+                                                      fontSize: "10px",
+                                                    }}
+                                                  />
+                                                  {number}
+                                                  <br />
+                                                </span>
+                                              )
+                                            )
+                                          : []}
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        S/W/O <br />
+                                        {contact.father_husband_name}
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        permanent address: <br />
+                                        {contact.h_no}
+                                        <br />
+                                        {contact.area1} {contact.location1}{" "}
+                                        {contact.city1} {contact.state1}{" "}
+                                        {contact.country1} {contact.pincode1}
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontSize: "12px",
+                                        }}
+                                      >
+                                        <span
+                                          style={{
+                                            color: "orange",
+                                            fontWeight: "bolder",
+                                          }}
+                                        >
+                                          {units.relation}
+                                        </span>
+                                      </StyledTableCell>
+
+                                      <StyledTableCell>
+                                        {/* <img style={{ height: "40px", cursor: "pointer" }} src="https://cdn-icons-png.flaticon.com/512/6861/6861362.png" onClick={() => removeContact(contact._id)} alt="Remove" /> */}
+                                        <span
+                                          class="material-icons"
+                                          style={{
+                                            color: "red",
+                                            fontSize: "24px",
+                                            cursor: "pointer",
+                                          }}
+                                          onClick={() =>
+                                            removeContact(contact._id)
+                                          }
+                                        >
+                                          delete
+                                        </span>
+                                      </StyledTableCell>
+                                    </StyledTableRow>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
                         </div>
                       </div>
+                    </div>
 
-                      <div
-                        id="documentform"
-                        style={{ padding: "5px", display: "none" }}
-                      >
-                        <div className="d-flex justify-content-between align-items-center "></div>
-                        <hr></hr>
+                    <div
+                      id="uploadmedia"
+                      style={{ padding: "5px", display: "none" }}
+                    >
+                      <div className="d-flex justify-content-between align-items-center ">
+                        <h6 className="text-right">Upload Images</h6>
+                      </div>
+                      <hr></hr>
+                      <div className="row mt-2">
+                        <table style={{ marginLeft: "25px" }}>
+                          <thead>
+                            <tr>
+                              <th style={{ width: "100px" }}>#</th>
+                              <th
+                                style={{
+                                  width: "400px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                Preview
+                              </th>
+                              <th
+                                style={{
+                                  width: "300px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                Description
+                              </th>
+                              <th
+                                style={{
+                                  width: "300px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                Category
+                              </th>
+                              <th
+                                style={{
+                                  width: "150px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                Action
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                {Array.isArray(units.s_no)
+                                  ? units.s_no.map((name, index) => (
+                                      <div
+                                        key={index}
+                                        className="col-md-12  custom-input"
+                                        style={{ marginTop: "10px" }}
+                                      >
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-sm"
+                                          onChange={(event) =>
+                                            handlesnochange(index, event)
+                                          }
+                                        />
+                                      </div>
+                                    ))
+                                  : []}
+                              </td>
+                              <td>
+                                {Array.isArray(units.preview)
+                                  ? units.preview.map((name, index) => (
+                                      <div
+                                        key={index}
+                                        className="col-md-12  custom-input"
+                                        style={{ marginTop: "10px" }}
+                                      >
+                                        <input
+                                          name="preview"
+                                          type="file"
+                                          className="form-control form-control-sm"
+                                          multiple
+                                          onChange={(event) =>
+                                            handlepreviewchange(index, event)
+                                          }
+                                        />
+                                        <div className="d-flex flex-wrap gap-2 mt-2">
+                                          {select_loading ===
+                                          "project_pic_upload" ? (
+                                            <CircularProgress size={24} />
+                                          ) : (
+                                            (name || []).map((obj, i) => (
+                                              <div
+                                                key={i}
+                                                style={{
+                                                  position: "relative",
+                                                }}
+                                              >
+                                                <img
+                                                  src={obj}
+                                                  alt="Preview"
+                                                  style={{
+                                                    width: "80px",
+                                                    height: "80px",
+                                                    objectFit: "cover",
+                                                    borderRadius: "6px",
+                                                    border: "1px solid #ccc",
+                                                  }}
+                                                />
+                                              </div>
+                                            ))
+                                          )}
+                                        </div>
+                                      </div>
+                                    ))
+                                  : []}
+                              </td>
+                              <td>
+                                {Array.isArray(units.descriptions)
+                                  ? units.descriptions.map((name, index) => (
+                                      <div
+                                        key={index}
+                                        className="col-md-12  custom-input"
+                                        style={{ marginTop: "10px" }}
+                                      >
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-sm"
+                                          onChange={(event) =>
+                                            handledescriptionchange(
+                                              index,
+                                              event
+                                            )
+                                          }
+                                        />
+                                      </div>
+                                    ))
+                                  : []}
+                              </td>
+                              <td>
+                                {Array.isArray(units.category)
+                                  ? units.category.map((name, index) => (
+                                      <div
+                                        key={index}
+                                        className="col-md-12  custom-input"
+                                        style={{ marginTop: "10px" }}
+                                      >
+                                        <select
+                                          className="form-control form-control-sm"
+                                          required="true"
+                                          onChange={(event) =>
+                                            handlecategorychange(index, event)
+                                          }
+                                        >
+                                          <option>select</option>
+                                          <option>Bedroom</option>
+                                          <option>Hall</option>
+                                          <option>Kitchen</option>
+                                          <option>Balcony</option>
+                                          <option>Washroom</option>
+                                          <option>Pooja Room</option>
+                                          <option>Dining Room</option>
+                                          <option>Drawing Room</option>
+                                        </select>
+                                      </div>
+                                    ))
+                                  : []}
+                              </td>
+                              <td>
+                                {Array.isArray(units.action10)
+                                  ? units.action10.map((name, index) => (
+                                      <div
+                                        key={index}
+                                        className="col-md-12  custom-input"
+                                        style={{ marginTop: "10px" }}
+                                      >
+                                        <div>
+                                          {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit(index)} style={{height:"40px",cursor:"pointer"}}/> */}
+                                          <span
+                                            class="material-icons"
+                                            style={{
+                                              color: "red",
+                                              fontSize: "24px",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() => deleteallunit(index)}
+                                          >
+                                            delete
+                                          </span>
+                                        </div>
+                                      </div>
+                                    ))
+                                  : []}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="row mt-4">
+                        <div
+                          className="col-md-3  custom-input"
+                          style={{ marginLeft: "70%" }}
+                          onClick={addFnunit}
+                        >
+                          <button className="form-control form-control-sm custom-btn">
+                            Add Image
+                          </button>
+                        </div>
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center ">
+                        <h6 className="text-right">Upload Videos</h6>
+                      </div>
+                      <hr></hr>
+                      <div className="row mt-2">
+                        <table style={{ marginLeft: "25px" }}>
+                          <thead>
+                            <tr>
+                              <th
+                                style={{
+                                  width: "100px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                SR.NO.
+                              </th>
+                              <th
+                                style={{
+                                  width: "950px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                URL
+                              </th>
+                              <th
+                                style={{
+                                  width: "150px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                Action
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                {Array.isArray(units.s_no1)
+                                  ? units.s_no1.map((name, index) => (
+                                      <div
+                                        key={index}
+                                        className="col-md-12  custom-input"
+                                        style={{ marginTop: "10px" }}
+                                      >
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-sm"
+                                          value={name}
+                                          onChange={(event) =>
+                                            handlesno1change(index, event)
+                                          }
+                                        />
+                                      </div>
+                                    ))
+                                  : []}
+                              </td>
+                              <td>
+                                {Array.isArray(units.url)
+                                  ? units.url.map((name, index) => (
+                                      <div
+                                        key={index}
+                                        className="col-md-12  custom-input"
+                                        style={{ marginTop: "10px" }}
+                                      >
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-sm"
+                                          value={name}
+                                          onChange={(event) =>
+                                            handleurlChange(index, event)
+                                          }
+                                        />
+                                      </div>
+                                    ))
+                                  : []}
+                              </td>
+                              <td>
+                                {Array.isArray(units.action11)
+                                  ? units.action11.map((name, index) => (
+                                      <div
+                                        key={index}
+                                        className="col-md-12  custom-input"
+                                        style={{ marginTop: "10px" }}
+                                      >
+                                        <div>
+                                          {/* <img src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteallunit1(index)} style={{height:"40px",cursor:"pointer"}}/> */}
+                                          <span
+                                            class="material-icons"
+                                            style={{
+                                              color: "red",
+                                              fontSize: "24px",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() =>
+                                              deleteallunit1(index)
+                                            }
+                                          >
+                                            delete
+                                          </span>
+                                        </div>
+                                      </div>
+                                    ))
+                                  : []}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="row mt-4">
+                        <div
+                          className="col-md-3  custom-input"
+                          style={{ marginLeft: "70%" }}
+                          onClick={addFnunit1}
+                        >
+                          <button className="form-control form-control-sm custom-btn">
+                            Add Video Link
+                          </button>
+                        </div>
 
-                        <div className="row mt-2">
-                          <div className="col-md-3  custom-input">
-                            <label className="form-label">Document Name</label>
-                            {Array.isArray(units.document_name)
-                              ? units.document_name.map((item, index) => (
-                                  <select
-                                    className="form-control form-control-sm"
-                                    onChange={(event) =>
-                                      handledocumentnamechange(index, event)
-                                    }
-                                    style={{ marginTop: "5px" }}
+                        <div className="col-md-12  custom-input">
+                          <hr></hr>
+                        </div>
+
+                        <div className="col-md-2  custom-input"></div>
+                      </div>
+                    </div>
+
+                    <div
+                      id="documentform"
+                      style={{ padding: "5px", display: "none" }}
+                    >
+                      <div className="d-flex justify-content-between align-items-center "></div>
+                      <hr></hr>
+
+                      <div className="row mt-2">
+                        <div className="col-md-3  custom-input">
+                          <label className="form-label">Document Name</label>
+                          {Array.isArray(units.document_name)
+                            ? units.document_name.map((item, index) => (
+                                <select
+                                  className="form-control form-control-sm"
+                                  onChange={(event) =>
+                                    handledocumentnamechange(index, event)
+                                  }
+                                  style={{ marginTop: "5px" }}
+                                >
+                                  <option>Choose</option>
+                                  <option>Aadhar Card</option>
+                                  <option>Pan Card</option>
+                                  <option>Voter Id</option>
+                                  <option>Passport</option>
+                                  <option>Driving Licence</option>
+                                  <option>Other</option>
+                                </select>
+                              ))
+                            : []}
+                        </div>
+
+                        <div className="col-md-2  custom-input">
+                          <label className="form-label">Document No</label>
+                          {Array.isArray(units.document_no)
+                            ? units.document_no.map((item, index) => (
+                                <input
+                                  type="text"
+                                  className="form-control form-control-sm"
+                                  onChange={(event) =>
+                                    handledocumentnochange(index, event)
+                                  }
+                                  style={{ marginTop: "5px" }}
+                                />
+                              ))
+                            : []}
+                        </div>
+
+                        <div className="col-md-2  custom-input">
+                          <label className="form-label">Date</label>
+                          {Array.isArray(units.document_Date)
+                            ? units.document_Date.map((item, index) => (
+                                <input
+                                  type="date"
+                                  className="form-control form-control-sm"
+                                  onChange={(event) =>
+                                    handledocumentdatechange(index, event)
+                                  }
+                                  style={{ marginTop: "5px" }}
+                                />
+                              ))
+                            : []}
+                        </div>
+
+                        <div
+                          className="col-md-3 custom-input"
+                          id="suggestion-box"
+                          style={{ position: "relative" }}
+                        >
+                          <label className="form-label">Pic</label>
+
+                          {Array.isArray(units.image) &&
+                            units.image.map((item, index) => (
+                              <div key={index} style={{ marginTop: "6px" }}>
+                                <input
+                                  type="file"
+                                  className="form-control form-control-sm"
+                                  onChange={(event) =>
+                                    handlepicchange1(index, event)
+                                  }
+                                />
+
+                                {/* Loader */}
+                                {select_loading === "project_pic_upload" && (
+                                  <div
+                                    style={{
+                                      marginTop: "6px",
+                                      textAlign: "center",
+                                    }}
                                   >
-                                    <option>Choose</option>
-                                    <option>Aadhar Card</option>
-                                    <option>Pan Card</option>
-                                    <option>Voter Id</option>
-                                    <option>Passport</option>
-                                    <option>Driving Licence</option>
-                                    <option>Other</option>
-                                  </select>
-                                ))
-                              : []}
-                          </div>
-
-                          <div className="col-md-2  custom-input">
-                            <label className="form-label">Document No</label>
-                            {Array.isArray(units.document_no)
-                              ? units.document_no.map((item, index) => (
-                                  <input
-                                    type="text"
-                                    className="form-control form-control-sm"
-                                    onChange={(event) =>
-                                      handledocumentnochange(index, event)
-                                    }
-                                    style={{ marginTop: "5px" }}
-                                  />
-                                ))
-                              : []}
-                          </div>
-
-                          <div className="col-md-2  custom-input">
-                            <label className="form-label">Date</label>
-                            {Array.isArray(units.document_Date)
-                              ? units.document_Date.map((item, index) => (
-                                  <input
-                                    type="date"
-                                    className="form-control form-control-sm"
-                                    onChange={(event) =>
-                                      handledocumentdatechange(index, event)
-                                    }
-                                    style={{ marginTop: "5px" }}
-                                  />
-                                ))
-                              : []}
-                          </div>
-
-                          <div
-                            className="col-md-3 custom-input"
-                            id="suggestion-box"
-                            style={{ position: "relative" }}
-                          >
-                            <label className="form-label">Pic</label>
-
-                            {Array.isArray(units.image) &&
-                              units.image.map((item, index) => (
-                                <div key={index} style={{ marginTop: "6px" }}>
-                                  <input
-                                    type="file"
-                                    className="form-control form-control-sm"
-                                    onChange={(event) =>
-                                      handlepicchange1(index, event)
-                                    }
-                                  />
-
-                                  {/* Loader */}
-                                  {select_loading === "project_pic_upload" && (
-                                    <div
-                                      style={{
-                                        marginTop: "6px",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      <CircularProgress size={24} />
-                                    </div>
-                                  )}
-
-                                  {/* Image Preview */}
-                                  {item && (
-                                    <img
-                                      src={item}
-                                      alt="preview"
-                                      style={{
-                                        width: "100px",
-                                        height: "100px",
-                                        marginTop: "6px",
-                                        objectFit: "cover",
-                                        borderRadius: "6px",
-                                        border: "1px solid #ddd",
-                                      }}
-                                    />
-                                  )}
-                                </div>
-                              ))}
-                          </div>
-
-                          <div
-                            className="col-md-1  custom-input"
-                            style={{ marginTop: "70px" }}
-                          >
-                            {Array.isArray(units.action12)
-                              ? units.action12.map((item, index) => (
-                                  <div style={{ marginTop: "10px" }}>
-                                    <img
-                                      src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
-                                      alt="delete button"
-                                      onClick={() => deleteall12(index)}
-                                      style={{
-                                        height: "40px",
-                                        cursor: "pointer",
-                                      }}
-                                    />
+                                    <CircularProgress size={24} />
                                   </div>
-                                ))
-                              : []}
-                          </div>
+                                )}
 
-                          <div className="col-md-1  custom-input">
-                            <label
-                              className="form-label"
-                              style={{ visibility: "hidden" }}
-                            >
-                              Add
-                            </label>
-                            <button
-                              className="form-control form-control-sm custom-btn"
-                              onClick={addFn12}
-                            >
-                              +
-                            </button>
-                          </div>
+                                {/* Image Preview */}
+                                {item && (
+                                  <img
+                                    src={item}
+                                    alt="preview"
+                                    style={{
+                                      width: "100px",
+                                      height: "100px",
+                                      marginTop: "6px",
+                                      objectFit: "cover",
+                                      borderRadius: "6px",
+                                      border: "1px solid #ddd",
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            ))}
+                        </div>
+
+                        <div
+                          className="col-md-1  custom-input"
+                          style={{ marginTop: "70px" }}
+                        >
+                          {Array.isArray(units.action12)
+                            ? units.action12.map((item, index) => (
+                                <div style={{ marginTop: "10px" }}>
+                                  <img
+                                    src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg"
+                                    alt="delete button"
+                                    onClick={() => deleteall12(index)}
+                                    style={{
+                                      height: "40px",
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                </div>
+                              ))
+                            : []}
+                        </div>
+
+                        <div className="col-md-1  custom-input">
+                          <label
+                            className="form-label"
+                            style={{ visibility: "hidden" }}
+                          >
+                            Add
+                          </label>
+                          <button
+                            className="form-control form-control-sm custom-btn"
+                            onClick={addFn12}
+                          >
+                            +
+                          </button>
                         </div>
                       </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button onClick={addunit} variant="secondary">
-                        Add Unit
-                      </Button>
+                    </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button onClick={addunit} variant="secondary">
+                      Add Unit
+                    </Button>
 
-                      <Button onClick={handleClose3} variant="secondary">
-                        Close
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
+                    <Button onClick={handleClose3} variant="secondary">
+                      Close
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
 
-                  <Modal
-                    show={show6}
-                    onHide={handleClose6}
-                    size="lg"
-                    style={{
-                      transition: "0.5s ease-in",
-                      backgroundColor: "gray",
-                    }}
-                  >
-                    <Modal.Header>
-                      <Modal.Title>Choose Relation</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <div style={{ width: "100%" }}>
-                        <div className="row">
-                          <div className="col-md-4 custom-input">
-                            <label className="form-label">Relation</label>
-                            <select
-                              className="form-control form-control-sm"
-                              required="true"
-                              onChange={handlerelationchange}
-                            >
-                              <option>Select</option>
-                              <option value="Self">Self</option>
-                              <option value="Son">Son</option>
-                              <option value="Father">Father</option>
-                              <option value="Mother">Mother</option>
-                              <option value="Uncle">Uncle</option>
-                              <option value="Other">Other</option>
-                            </select>
-                          </div>
+                <Modal
+                  show={show6}
+                  onHide={handleClose6}
+                  size="lg"
+                  style={{
+                    transition: "0.5s ease-in",
+                    backgroundColor: "gray",
+                  }}
+                >
+                  <Modal.Header>
+                    <Modal.Title>Choose Relation</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <div style={{ width: "100%" }}>
+                      <div className="row">
+                        <div className="col-md-4 custom-input">
+                          <label className="form-label">Relation</label>
+                          <select
+                            className="form-control form-control-sm"
+                            required="true"
+                            onChange={handlerelationchange}
+                          >
+                            <option>Select</option>
+                            <option value="Self">Self</option>
+                            <option value="Son">Son</option>
+                            <option value="Father">Father</option>
+                            <option value="Mother">Mother</option>
+                            <option value="Uncle">Uncle</option>
+                            <option value="Other">Other</option>
+                          </select>
                         </div>
                       </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button variant="secondary" onClick={handleClose6}>
-                        Close
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
-                </div>
+                    </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose6}>
+                      Close
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
               </div>
-         
+            </div>
+
             {/*=======================----------------------------------------- unit details end====================------------------------------ */}
 
             {/* -----------------------=========================aminities details===================----------------------------------------------- */}
 
-             <div
+            <div
               className="col-md-12  custom-input"
               id="aminities"
               style={{
@@ -9833,7 +9166,7 @@ payload = {
             >
               <div className="p-3 py-5">
                 <div className="row ">
-                   <div className="flex justify-between items-center gap-3">
+                  <div className="flex justify-between items-center gap-3">
                     <button
                       id="basicaminities1"
                       className="btn-primary-custom active px-4"
@@ -9856,7 +9189,7 @@ payload = {
                       Nearby
                     </button>
                   </div>
-                 <div
+                  <div
                     id="basicaminities"
                     style={{
                       display: "flex",
@@ -10019,211 +9352,211 @@ payload = {
                       </div>
                     ))}
                   </div>
-                 <div
-                                    className="row"
-                                    id="nearbyaminities"
-                                    style={{ marginTop: "20px", display: "none" }}
+                  <div
+                    className="row"
+                    id="nearbyaminities"
+                    style={{ marginTop: "20px", display: "none" }}
+                  >
+                    <div className="col-md-12  custom-input"></div>
+                    <br></br>
+
+                    <div className="col-md-3  custom-input">
+                      <label className="form-label">Destination</label>
+                      <select
+                        id="choosedestination"
+                        className="form-control form-control-sm"
+                        onChange={(e) =>
+                          setdestinations({
+                            ...destinations,
+                            destination: e.target.value,
+                          })
+                        }
+                        onClick={() => {
+                          if (All_Destination.length === 0) {
+                            getall_destination();
+                          }
+                        }}
+                      >
+                        <option>---Select---</option>
+                        {select_loading === "destination" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_Destination.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
+                      </select>
+                    </div>
+                    <div className="col-md-3  custom-input">
+                      <label className="form-label">Name Of Destination</label>
+                      <input
+                        id="nameofdestination"
+                        type="text"
+                        className="form-control form-control-sm"
+                        onChange={(e) =>
+                          setdestinations((prevprofile) => ({
+                            ...prevprofile,
+                            name_of_destination: e.target.value,
+                          }))
+                        }
+                      />{" "}
+                    </div>
+                    <div className="col-md-2  custom-input">
+                      <label className="form-label">Distance</label>
+                      <input
+                        id="destination"
+                        type="text"
+                        className="form-control form-control-sm"
+                        onChange={(e) =>
+                          setdestinations((prevprofile) => ({
+                            ...prevprofile,
+                            distance: e.target.value,
+                          }))
+                        }
+                      />{" "}
+                    </div>
+                    <div className="col-md-2  custom-input">
+                      <label
+                        className="form-label"
+                        style={{ visibility: "hidden" }}
+                      >
+                        Measurement
+                      </label>
+                      <select
+                        id="measurment"
+                        className="form-control form-control-sm"
+                        onChange={(e) =>
+                          setdestinations((prevprofile) => ({
+                            ...prevprofile,
+                            measurment: e.target.value,
+                          }))
+                        }
+                      >
+                        <option>Select</option>
+                        <option>K.M</option>
+                        <option>Miles</option>
+                        <option>Meter</option>
+                      </select>
+                    </div>
+                    <div className="col-md-1  custom-input">
+                      <label
+                        className="form-label"
+                        style={{ visibility: "hidden" }}
+                      >
+                        Add
+                      </label>
+                      {/* <button className='form-control form-control-sm' onClick={adddestination}>+</button> */}
+                      <button
+                        className="form-control form-control-sm"
+                        onClick={adddestination}
+                        style={{
+                          backgroundColor: "#007bff",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "4px",
+                          fontWeight: "500",
+                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                          transition: "all 0.2s ease-in-out",
+                        }}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.backgroundColor = "#0056b3")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.backgroundColor = "#007bff")
+                        }
+                      >
+                        +
+                      </button>
+                    </div>
+                    <div className="col-md-4  custom-input"></div>
+                    <br></br>
+                    <div className="col-md-12  custom-input">
+                      <label className="form-label">List Of Destinations</label>
+                    </div>
+
+                    {/* Table */}
+                    <div className="mt-6 w-full overflow-x-auto">
+                      <TableContainer
+                        component={Paper}
+                        className="max-h-[400px] overflow-y-scroll"
+                      >
+                        <Table
+                          sx={{ minWidth: 700 }}
+                          aria-label="customized table"
+                        >
+                          <TableHead>
+                            <TableRow>
+                              <StyledTableCell
+                                style={{ backgroundColor: "gray" }}
+                              >
+                                Sr.
+                              </StyledTableCell>
+                              <StyledTableCell
+                                style={{ backgroundColor: "gray" }}
+                              >
+                                Name Of Destination
+                              </StyledTableCell>
+                              <StyledTableCell
+                                style={{ backgroundColor: "gray" }}
+                              >
+                                Type Of Destination
+                              </StyledTableCell>
+                              <StyledTableCell
+                                style={{ backgroundColor: "gray" }}
+                              >
+                                Distance
+                              </StyledTableCell>
+                              <StyledTableCell
+                                style={{ backgroundColor: "gray" }}
+                              >
+                                Action
+                              </StyledTableCell>
+                            </TableRow>
+                          </TableHead>
+                          <tbody>
+                            {project.nearby_aminities.map((item, index) => (
+                              <StyledTableRow
+                                key={index}
+                                style={{ backgroundColor: "white" }}
+                              >
+                                <StyledTableCell
+                                  style={{ padding: "10px", cursor: "pointer" }}
+                                >
+                                  {index + 1}
+                                </StyledTableCell>
+                                <StyledTableCell>
+                                  {item.name_of_destination}{" "}
+                                </StyledTableCell>
+                                <StyledTableCell>
+                                  {item.destination}{" "}
+                                </StyledTableCell>
+                                <StyledTableCell>
+                                  {item.distance}
+                                  {item.measurment}{" "}
+                                </StyledTableCell>
+                                <StyledTableCell>
+                                  {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletedestination(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
+                                  <span
+                                    class="material-icons"
+                                    style={{
+                                      color: "red",
+                                      fontSize: "24px",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() => deletedestination(index)}
                                   >
-                                    <div className="col-md-12  custom-input"></div>
-                                    <br></br>
-                
-                                    <div className="col-md-3  custom-input">
-                                      <label className="form-label">Destination</label>
-                                      <select
-                                        id="choosedestination"
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setdestinations({
-                                            ...destinations,
-                                            destination: e.target.value,
-                                          })
-                                        }
-                                        onClick={() => {
-                                          if (All_Destination.length === 0) {
-                                            getall_destination();
-                                          }
-                                        }}
-                                      >
-                                        <option>---Select---</option>
-                                        {select_loading === "destination" ? (
-                                          <CircularProgress />
-                                        ) : (
-                                          All_Destination.map((name) => (
-                                            <option value={name.lookup_value}>
-                                              {name.lookup_value}
-                                            </option>
-                                          ))
-                                        )}
-                                      </select>
-                                    </div>
-                                    <div className="col-md-3  custom-input">
-                                      <label className="form-label">Name Of Destination</label>
-                                      <input
-                                        id="nameofdestination"
-                                        type="text"
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setdestinations((prevprofile) => ({
-                                            ...prevprofile,
-                                            name_of_destination: e.target.value,
-                                          }))
-                                        }
-                                      />{" "}
-                                    </div>
-                                    <div className="col-md-2  custom-input">
-                                      <label className="form-label">Distance</label>
-                                      <input
-                                        id="destination"
-                                        type="text"
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setdestinations((prevprofile) => ({
-                                            ...prevprofile,
-                                            distance: e.target.value,
-                                          }))
-                                        }
-                                      />{" "}
-                                    </div>
-                                    <div className="col-md-2  custom-input">
-                                      <label
-                                        className="form-label"
-                                        style={{ visibility: "hidden" }}
-                                      >
-                                        Measurement
-                                      </label>
-                                      <select
-                                        id="measurment"
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setdestinations((prevprofile) => ({
-                                            ...prevprofile,
-                                            measurment: e.target.value,
-                                          }))
-                                        }
-                                      >
-                                        <option>Select</option>
-                                        <option>K.M</option>
-                                        <option>Miles</option>
-                                        <option>Meter</option>
-                                      </select>
-                                    </div>
-                                    <div className="col-md-1  custom-input">
-                                      <label
-                                        className="form-label"
-                                        style={{ visibility: "hidden" }}
-                                      >
-                                        Add
-                                      </label>
-                                      {/* <button className='form-control form-control-sm' onClick={adddestination}>+</button> */}
-                                      <button
-                                        className="form-control form-control-sm"
-                                        onClick={adddestination}
-                                        style={{
-                                          backgroundColor: "#007bff",
-                                          color: "#fff",
-                                          border: "none",
-                                          borderRadius: "4px",
-                                          fontWeight: "500",
-                                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                          transition: "all 0.2s ease-in-out",
-                                        }}
-                                        onMouseOver={(e) =>
-                                          (e.currentTarget.style.backgroundColor = "#0056b3")
-                                        }
-                                        onMouseOut={(e) =>
-                                          (e.currentTarget.style.backgroundColor = "#007bff")
-                                        }
-                                      >
-                                        +
-                                      </button>
-                                    </div>
-                                    <div className="col-md-4  custom-input"></div>
-                                    <br></br>
-                                    <div className="col-md-12  custom-input">
-                                      <label className="form-label">List Of Destinations</label>
-                                    </div>
-                
-                                    {/* Table */}
-                                    <div className="mt-6 w-full overflow-x-auto">
-                                      <TableContainer
-                                        component={Paper}
-                                        className="max-h-[400px] overflow-y-scroll"
-                                      >
-                                        <Table
-                                          sx={{ minWidth: 700 }}
-                                          aria-label="customized table"
-                                        >
-                                          <TableHead>
-                                            <TableRow>
-                                              <StyledTableCell
-                                                style={{ backgroundColor: "gray" }}
-                                              >
-                                                Sr.
-                                              </StyledTableCell>
-                                              <StyledTableCell
-                                                style={{ backgroundColor: "gray" }}
-                                              >
-                                                Name Of Destination
-                                              </StyledTableCell>
-                                              <StyledTableCell
-                                                style={{ backgroundColor: "gray" }}
-                                              >
-                                                Type Of Destination
-                                              </StyledTableCell>
-                                              <StyledTableCell
-                                                style={{ backgroundColor: "gray" }}
-                                              >
-                                                Distance
-                                              </StyledTableCell>
-                                              <StyledTableCell
-                                                style={{ backgroundColor: "gray" }}
-                                              >
-                                                Action
-                                              </StyledTableCell>
-                                            </TableRow>
-                                          </TableHead>
-                                          <tbody>
-                                            {project.nearby_aminities.map((item, index) => (
-                                              <StyledTableRow
-                                                key={index}
-                                                style={{ backgroundColor: "white" }}
-                                              >
-                                                <StyledTableCell
-                                                  style={{ padding: "10px", cursor: "pointer" }}
-                                                >
-                                                  {index + 1}
-                                                </StyledTableCell>
-                                                <StyledTableCell>
-                                                  {item.name_of_destination}{" "}
-                                                </StyledTableCell>
-                                                <StyledTableCell>
-                                                  {item.destination}{" "}
-                                                </StyledTableCell>
-                                                <StyledTableCell>
-                                                  {item.distance}
-                                                  {item.measurment}{" "}
-                                                </StyledTableCell>
-                                                <StyledTableCell>
-                                                  {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletedestination(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
-                                                  <span
-                                                    class="material-icons"
-                                                    style={{
-                                                      color: "red",
-                                                      fontSize: "24px",
-                                                      cursor: "pointer",
-                                                    }}
-                                                    onClick={() => deletedestination(index)}
-                                                  >
-                                                    delete
-                                                  </span>
-                                                </StyledTableCell>
-                                              </StyledTableRow>
-                                            ))}
-                                          </tbody>
-                                        </Table>
-                                      </TableContainer>
-                                    </div>
-                                  </div>
+                                    delete
+                                  </span>
+                                </StyledTableCell>
+                              </StyledTableRow>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </TableContainer>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -10231,745 +9564,745 @@ payload = {
 
             {/* -------------------=====================================price start==================================---------------------------------- */}
 
-              <div
-                        className="col-md-12  custom-input"
-                        id="price"
-                        style={{
-                          display: "none",
-                          marginTop: "-80px",
-                          lineHeight: "30px",
-                        }}
+            <div
+              className="col-md-12  custom-input"
+              id="price"
+              style={{
+                display: "none",
+                marginTop: "-80px",
+                lineHeight: "30px",
+              }}
+            >
+              <div id="price" className="w-full mt-0">
+                <div className="w-full bg-white rounded-lg shadow-sm p-4">
+                  <div className="col-md-12  custom-input"></div>
+                  <br></br>
+
+                  <div className="col-md-10  custom-input">
+                    <label className="form-label">Price List</label>
+                  </div>
+                  <div className="col-md-1  custom-input">
+                    {/* <button className='form-control form-control-sm' onClick={handleShow4}>Add</button> */}
+                    <button
+                      className="form-control form-control-sm btn-add"
+                      onClick={handleShow4}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="col-md-12  custom-input">
+                    <hr></hr>
+                  </div>
+                  {/* Table */}
+                  <div className="mt-6 w-full overflow-x-auto">
+                    <TableContainer
+                      component={Paper}
+                      className="max-h-[400px] overflow-y-scroll"
+                    >
+                      <Table
+                        sx={{ minWidth: 700 }}
+                        aria-label="customized table"
                       >
-                        <div id="price" className="w-full mt-0">
-                          <div className="w-full bg-white rounded-lg shadow-sm p-4">
-                            <div className="col-md-12  custom-input"></div>
-                            <br></br>
-          
-                            <div className="col-md-10  custom-input">
-                              <label className="form-label">Price List</label>
-                            </div>
-                            <div className="col-md-1  custom-input">
-                              {/* <button className='form-control form-control-sm' onClick={handleShow4}>Add</button> */}
-                              <button
-                                className="form-control form-control-sm btn-add"
-                                onClick={handleShow4}
+                        <TableHead>
+                          <TableRow>
+                            <StyledTableCell
+                              style={{ backgroundColor: "gray" }}
+                            >
+                              Block Name
+                            </StyledTableCell>
+                            <StyledTableCell
+                              style={{ backgroundColor: "gray" }}
+                            >
+                              Sub Category
+                            </StyledTableCell>
+                            <StyledTableCell
+                              style={{ backgroundColor: "gray" }}
+                            >
+                              Size
+                            </StyledTableCell>
+                            <StyledTableCell
+                              style={{ backgroundColor: "gray" }}
+                            >
+                              Charge
+                            </StyledTableCell>
+                            <StyledTableCell
+                              style={{ backgroundColor: "gray" }}
+                            >
+                              Taxes
+                            </StyledTableCell>
+                            <StyledTableCell
+                              style={{ backgroundColor: "gray" }}
+                            >
+                              Total Price
+                            </StyledTableCell>
+                          </TableRow>
+                        </TableHead>
+                        <tbody>
+                          {project.price_list.map((item, index) => (
+                            <StyledTableRow
+                              key={index}
+                              style={{ backgroundColor: "white" }}
+                            >
+                              <StyledTableCell
+                                style={{ padding: "10px", fontSize: "10px" }}
                               >
-                                +
-                              </button>
-                            </div>
-                            <div className="col-md-12  custom-input">
-                              <hr></hr>
-                            </div>
-                            {/* Table */}
-                            <div className="mt-6 w-full overflow-x-auto">
-                              <TableContainer
-                                component={Paper}
-                                className="max-h-[400px] overflow-y-scroll"
-                              >
-                                <Table
-                                  sx={{ minWidth: 700 }}
-                                  aria-label="customized table"
+                                {item.block}
+                              </StyledTableCell>
+                              <StyledTableCell>
+                                {item.sub_category}{" "}
+                              </StyledTableCell>
+                              <StyledTableCell>{item.size} </StyledTableCell>
+                              <StyledTableCell>{item.blank1}</StyledTableCell>
+                              <StyledTableCell>{item.blank4}</StyledTableCell>
+                              <StyledTableCell>
+                                {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteprice(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
+                                <span
+                                  class="material-icons"
+                                  style={{
+                                    color: "red",
+                                    fontSize: "24px",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() => deleteprice(index)}
                                 >
-                                  <TableHead>
-                                    <TableRow>
-                                      <StyledTableCell
-                                        style={{ backgroundColor: "gray" }}
-                                      >
-                                        Block Name
-                                      </StyledTableCell>
-                                      <StyledTableCell
-                                        style={{ backgroundColor: "gray" }}
-                                      >
-                                        Sub Category
-                                      </StyledTableCell>
-                                      <StyledTableCell
-                                        style={{ backgroundColor: "gray" }}
-                                      >
-                                        Size
-                                      </StyledTableCell>
-                                      <StyledTableCell
-                                        style={{ backgroundColor: "gray" }}
-                                      >
-                                        Charge
-                                      </StyledTableCell>
-                                      <StyledTableCell
-                                        style={{ backgroundColor: "gray" }}
-                                      >
-                                        Taxes
-                                      </StyledTableCell>
-                                      <StyledTableCell
-                                        style={{ backgroundColor: "gray" }}
-                                      >
-                                        Total Price
-                                      </StyledTableCell>
-                                    </TableRow>
-                                  </TableHead>
-                                  <tbody>
-                                    {project.price_list.map((item, index) => (
-                                      <StyledTableRow
-                                        key={index}
-                                        style={{ backgroundColor: "white" }}
-                                      >
-                                        <StyledTableCell
-                                          style={{ padding: "10px", fontSize: "10px" }}
-                                        >
-                                          {item.block}
-                                        </StyledTableCell>
-                                        <StyledTableCell>
-                                          {item.sub_category}{" "}
-                                        </StyledTableCell>
-                                        <StyledTableCell>{item.size} </StyledTableCell>
-                                        <StyledTableCell>{item.blank1}</StyledTableCell>
-                                        <StyledTableCell>{item.blank4}</StyledTableCell>
-                                        <StyledTableCell>
-                                          {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteprice(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
-                                          <span
-                                            class="material-icons"
-                                            style={{
-                                              color: "red",
-                                              fontSize: "24px",
-                                              cursor: "pointer",
-                                            }}
-                                            onClick={() => deleteprice(index)}
-                                          >
-                                            delete
-                                          </span>
-                                        </StyledTableCell>
-                                      </StyledTableRow>
-                                    ))}
-                                  </tbody>
-                                </Table>
-                              </TableContainer>
-                            </div>
-          
-                            <Modal show={show4} onHide={handleClose4} size="lg">
-                              <Modal.Header>
-                                <Modal.Title>Price Details</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                <div className="row">
-                                  <div
-                                    className="col-md-12  custom-input"
-                                    style={{
-                                      marginTop: "20px",
-                                      display: "flex",
-                                      gap: "30px",
-                                    }}
-                                  >
-                                    {" "}
-                                    <u
-                                      id="baseprice1"
-                                      onClick={baseprice}
-                                      style={{ cursor: "pointer", fontWeight: "bold" }}
-                                    >
-                                      Base Price
-                                    </u>
-                                    <u
-                                      id="charges1"
-                                      onClick={charges}
-                                      style={{ cursor: "pointer", fontWeight: "bold" }}
-                                    >
-                                      Charges
-                                    </u>
-                                    <u
-                                      id="taxes1"
-                                      onClick={taxes}
-                                      style={{ cursor: "pointer", fontWeight: "bold" }}
-                                    >
-                                      Taxes
-                                    </u>
-                                  </div>
-                                  <div
-                                    className="row"
-                                    id="baseprice"
-                                    style={{ marginTop: "20px", padding: "30px" }}
-                                  >
-                                    <hr></hr>
-                                    <div className="col-md-4  custom-input">
-                                      <label className="form-label">Block</label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({ ...prices, block: e.target.value })
-                                        }
-                                      >
-                                        <option>---Select---</option>
-                                        {project.add_block.map((item) => (
-                                          <option>{item.block_name}</option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                    <div className="col-md-4  custom-input">
-                                      <label className="form-label">Category</label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({
-                                            ...prices,
-                                            category: e.target.value,
-                                          })
-                                        }
-                                      >
-                                        <option>---Select---</option>
-                                        {project.category.map((type) => (
-                                          <option>{type}</option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                    <div className="col-md-4  custom-input">
-                                      <label className="form-label">Sub Category</label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({
-                                            ...prices,
-                                            sub_category: e.target.value,
-                                          })
-                                        }
-                                      >
-                                        <option>---Select---</option>
-                                        {project.sub_category.map((item) => (
-                                          <option>{item}</option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                    <div className="col-md-8  custom-input">
-                                      <label className="form-label">Size</label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({ ...prices, size: e.target.value })
-                                        }
-                                      >
-                                        <option>---Select---</option>
-                                        {project.add_size.map((item) => (
-                                          <option>{item.size_name}</option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                    <div className="col-md-4  custom-input">
-                                      <label className="form-label">Covered Area</label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({
-                                            ...prices,
-                                            covered_area: e.target.value,
-                                          })
-                                        }
-                                      >
-                                        <option>---Select---</option>
-                                        <option>Covered Area</option>
-                                        <option> Carpet Area</option>
-                                        <option>Total Area</option>
-                                      </select>
-                                    </div>
-                                    <div className="col-md-6  custom-input">
-                                      <label className="form-label">Base Rate</label>
-                                      <input
-                                        type="text"
-                                        className="form-control form-control-sm"
-                                      ></input>
-                                    </div>
-                                    <br></br>
-                                    <div className="col-md-6  custom-input"></div>
-                                  </div>
-          
-                                  <div
-                                    className="row"
-                                    id="charges"
-                                    style={{
-                                      marginTop: "20px",
-                                      padding: "30px",
-                                      display: "none",
-                                    }}
-                                  >
-                                    <div className="col-md-12  custom-input">
-                                      <hr></hr>
-                                    </div>
-                                    <div className="col-md-4  custom-input">
-                                      <label className="form-label">Name</label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={handlechargenamechange}
-                                      >
-                                        <option>---Select---</option>
-                                        <option>Preferred Location Charges</option>
-                                        <option>Amenities Charges</option>
-                                        <option>Govt. Charges</option>
-                                      </select>
-                                    </div>
-                                    <div className="col-md-4  custom-input">
-                                      <label className="form-label">Type</label>
-                                      {prices.chargename && (
-                                        <select
-                                          className="form-control form-control-sm"
-                                          onChange={(e) =>
-                                            setprices({
-                                              ...prices,
-                                              chargetype: e.target.value,
-                                            })
-                                          }
-                                        >
-                                          <option>Select</option>
-                                          {chargeCategories[prices.chargename].map(
-                                            (charge, index) => (
-                                              <option key={index} value={charge}>
-                                                {charge}
-                                              </option>
-                                            )
-                                          )}
-                                        </select>
-                                      )}
-                                    </div>
-                                    <div className="col-md-4  custom-input"></div>
-          
-                                    <div className="col-md-4  custom-input">
-                                      <label className="form-label">
-                                        Calculation ype
-                                      </label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({
-                                            ...prices,
-                                            calculation_type: e.target.value,
-                                          })
-                                        }
-                                      >
-                                        <option>Select</option>
-                                        <option>Calculate</option>
-                                        <option>Absolute</option>
-                                      </select>
-                                    </div>
-                                    <div className="col-md-2  custom-input">
-                                      <label
-                                        className="form-label"
-                                        style={{ visibility: "hidden" }}
-                                      >
-                                        blank1
-                                      </label>
-                                      <input
-                                        type="text"
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({ ...prices, blank1: e.target.value })
-                                        }
-                                      ></input>
-                                    </div>
-                                    <br></br>
-                                    <div className="col-md-3  custom-input">
-                                      <label
-                                        className="form-label"
-                                        style={{ visibility: "hidden" }}
-                                      >
-                                        blank2
-                                      </label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({ ...prices, blank2: e.target.value })
-                                        }
-                                      >
-                                        <option>Select</option>
-                                        <option>My Team</option>
-                                        <option>My Self</option>
-                                        <option>All Users</option>
-                                      </select>
-                                    </div>
-                                    <div className="col-md-3  custom-input">
-                                      <label
-                                        className="form-label"
-                                        style={{ visibility: "hidden" }}
-                                      >
-                                        blank3
-                                      </label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({ ...prices, blank3: e.target.value })
-                                        }
-                                      >
-                                        <option>Select</option>
-                                        <option>My Team</option>
-                                        <option>My Self</option>
-                                        <option>All Users</option>
-                                      </select>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="row"
-                                    id="taxes"
-                                    style={{
-                                      marginTop: "20px",
-                                      padding: "30px",
-                                      display: "none",
-                                    }}
-                                  >
-                                    <div className="col-md-12  custom-input">
-                                      <hr></hr>
-                                    </div>
-                                    <div className="col-md-5  custom-input">
-                                      <label className="form-label">Name</label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({ ...prices, name1: e.target.value })
-                                        }
-                                      >
-                                        <option>Select</option>
-                                        <option>Goods and Service Tax(GST)</option>
-                                        <option>Registration Charges</option>
-                                        <option>Stamp Duty</option>
-                                      </select>
-                                    </div>
-                                    <div className="col-md-5  custom-input">
-                                      <label className="form-label">Type</label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({ ...prices, type1: e.target.value })
-                                        }
-                                      >
-                                        <option>Select</option>
-                                        <option>My Team</option>
-                                        <option>My Self</option>
-                                        <option>All Users</option>
-                                      </select>
-                                    </div>
-                                    <div className="col-md-2  custom-input"></div>
-          
-                                    <div className="col-md-4  custom-input">
-                                      <label className="form-label">
-                                        Calculation ype
-                                      </label>
-                                      <select
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({
-                                            ...prices,
-                                            calculation_type1: e.target.value,
-                                          })
-                                        }
-                                      >
-                                        <option>---Select---</option>
-                                        <option>Calculate</option>
-                                        <option>Absolute</option>
-                                      </select>
-                                    </div>
-                                    <div className="col-md-4  custom-input">
-                                      <label
-                                        className="form-label"
-                                        style={{ visibility: "hidden" }}
-                                      >
-                                        blank4
-                                      </label>
-                                      <input
-                                        type="text"
-                                        className="form-control form-control-sm"
-                                        onChange={(e) =>
-                                          setprices({ ...prices, blank4: e.target.value })
-                                        }
-                                      ></input>
-                                    </div>
-                                    <br></br>
-                                  </div>
-                                </div>
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button variant="secondary" onClick={addprice}>
-                                  Add Price
-                                </Button>
-                                <Button variant="secondary" onClick={handleClose4}>
-                                  Close
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
-          
-                            <div
-                              className="col-md-10  custom-input"
-                              style={{ marginTop: "10px" }}
+                                  delete
+                                </span>
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </TableContainer>
+                  </div>
+
+                  <Modal show={show4} onHide={handleClose4} size="lg">
+                    <Modal.Header>
+                      <Modal.Title>Price Details</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <div className="row">
+                        <div
+                          className="col-md-12  custom-input"
+                          style={{
+                            marginTop: "20px",
+                            display: "flex",
+                            gap: "30px",
+                          }}
+                        >
+                          {" "}
+                          <u
+                            id="baseprice1"
+                            onClick={baseprice}
+                            style={{ cursor: "pointer", fontWeight: "bold" }}
+                          >
+                            Base Price
+                          </u>
+                          <u
+                            id="charges1"
+                            onClick={charges}
+                            style={{ cursor: "pointer", fontWeight: "bold" }}
+                          >
+                            Charges
+                          </u>
+                          <u
+                            id="taxes1"
+                            onClick={taxes}
+                            style={{ cursor: "pointer", fontWeight: "bold" }}
+                          >
+                            Taxes
+                          </u>
+                        </div>
+                        <div
+                          className="row"
+                          id="baseprice"
+                          style={{ marginTop: "20px", padding: "30px" }}
+                        >
+                          <hr></hr>
+                          <div className="col-md-4  custom-input">
+                            <label className="form-label">Block</label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({ ...prices, block: e.target.value })
+                              }
                             >
-                              <label className="form-label">Payment Plan</label>
-                            </div>
-                            <div
-                              className="col-md-1  custom-input"
-                              style={{ marginTop: "10px" }}
+                              <option>---Select---</option>
+                              {project.add_block.map((item) => (
+                                <option>{item.block_name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-md-4  custom-input">
+                            <label className="form-label">Category</label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({
+                                  ...prices,
+                                  category: e.target.value,
+                                })
+                              }
                             >
-                              {/* <button className='form-control form-control-sm' onClick={handleShow5}>Add</button> */}
-                              <button
+                              <option>---Select---</option>
+                              {project.category.map((type) => (
+                                <option>{type}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-md-4  custom-input">
+                            <label className="form-label">Sub Category</label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({
+                                  ...prices,
+                                  sub_category: e.target.value,
+                                })
+                              }
+                            >
+                              <option>---Select---</option>
+                              {project.sub_category.map((item) => (
+                                <option>{item}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-md-8  custom-input">
+                            <label className="form-label">Size</label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({ ...prices, size: e.target.value })
+                              }
+                            >
+                              <option>---Select---</option>
+                              {project.add_size.map((item) => (
+                                <option>{item.size_name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-md-4  custom-input">
+                            <label className="form-label">Covered Area</label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({
+                                  ...prices,
+                                  covered_area: e.target.value,
+                                })
+                              }
+                            >
+                              <option>---Select---</option>
+                              <option>Covered Area</option>
+                              <option> Carpet Area</option>
+                              <option>Total Area</option>
+                            </select>
+                          </div>
+                          <div className="col-md-6  custom-input">
+                            <label className="form-label">Base Rate</label>
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                            ></input>
+                          </div>
+                          <br></br>
+                          <div className="col-md-6  custom-input"></div>
+                        </div>
+
+                        <div
+                          className="row"
+                          id="charges"
+                          style={{
+                            marginTop: "20px",
+                            padding: "30px",
+                            display: "none",
+                          }}
+                        >
+                          <div className="col-md-12  custom-input">
+                            <hr></hr>
+                          </div>
+                          <div className="col-md-4  custom-input">
+                            <label className="form-label">Name</label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={handlechargenamechange}
+                            >
+                              <option>---Select---</option>
+                              <option>Preferred Location Charges</option>
+                              <option>Amenities Charges</option>
+                              <option>Govt. Charges</option>
+                            </select>
+                          </div>
+                          <div className="col-md-4  custom-input">
+                            <label className="form-label">Type</label>
+                            {prices.chargename && (
+                              <select
                                 className="form-control form-control-sm"
-                                onClick={handleShow5}
-                                style={{
-                                  backgroundColor: "#007bff",
-                                  color: "#fff",
-                                  border: "none",
-                                  borderRadius: "4px",
-                                  fontWeight: "500",
-                                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                  transition: "all 0.2s ease-in-out",
-                                }}
-                                onMouseOver={(e) =>
-                                  (e.currentTarget.style.backgroundColor = "#0056b3")
-                                }
-                                onMouseOut={(e) =>
-                                  (e.currentTarget.style.backgroundColor = "#007bff")
+                                onChange={(e) =>
+                                  setprices({
+                                    ...prices,
+                                    chargetype: e.target.value,
+                                  })
                                 }
                               >
-                                +
-                              </button>
-                            </div>
-                            <div className="col-md-12  custom-input">
-                              <hr></hr>
-                            </div>
-                            <div className="mt-6 w-full overflow-x-auto">
-                              <TableContainer
-                                component={Paper}
-                                className="max-h-[400px] overflow-y-scroll"
-                              >
-                                <Table
-                                  sx={{ minWidth: 700 }}
-                                  aria-label="customized table"
-                                >
-                                  <TableHead>
-                                    <TableRow>
-                                      <StyledTableCell
-                                        style={{ backgroundColor: "gray" }}
-                                      >
-                                        Serial
-                                      </StyledTableCell>
-                                      <StyledTableCell
-                                        style={{ backgroundColor: "gray" }}
-                                      >
-                                        Plan Name
-                                      </StyledTableCell>
-                                      <StyledTableCell
-                                        style={{ backgroundColor: "gray" }}
-                                      >
-                                        Action
-                                      </StyledTableCell>
-                                    </TableRow>
-                                  </TableHead>
-                                  <tbody>
-                                    {project.Payment_plan.map((item, index) => (
-                                      <StyledTableRow
-                                        key={index}
-                                        style={{ backgroundColor: "white" }}
-                                      >
-                                        <StyledTableCell
-                                          style={{
-                                            padding: "10px",
-                                            cursor: "pointer",
-                                            fontSize: "10px",
-                                          }}
-                                        >
-                                          {index + 1}
-                                        </StyledTableCell>
-                                        <StyledTableCell>
-                                          {item.payment_planname}{" "}
-                                        </StyledTableCell>
-                                        <StyledTableCell>
-                                          {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletepayment(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
-                                          <span
-                                            class="material-icons"
-                                            style={{
-                                              color: "red",
-                                              fontSize: "24px",
-                                              cursor: "pointer",
-                                            }}
-                                            onClick={() => deletepayment(index)}
-                                          >
-                                            delete
-                                          </span>
-                                        </StyledTableCell>
-                                      </StyledTableRow>
-                                    ))}
-                                  </tbody>
-                                </Table>
-                              </TableContainer>
-                            </div>
-                            <Modal
-                              show={show5}
-                              onHide={handleClose5}
-                              size="xl"
-                              style={{ zIndex: 99999 }}
+                                <option>Select</option>
+                                {chargeCategories[prices.chargename].map(
+                                  (charge, index) => (
+                                    <option key={index} value={charge}>
+                                      {charge}
+                                    </option>
+                                  )
+                                )}
+                              </select>
+                            )}
+                          </div>
+                          <div className="col-md-4  custom-input"></div>
+
+                          <div className="col-md-4  custom-input">
+                            <label className="form-label">
+                              Calculation ype
+                            </label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({
+                                  ...prices,
+                                  calculation_type: e.target.value,
+                                })
+                              }
                             >
-                              <Modal.Header>
-                                <Modal.Title>Add Payment Plan</Modal.Title>
-                              </Modal.Header>
-                              <Modal.Body>
-                                <div className="row">
-                                  <div className="col-md-6  custom-input">
-                                    <label className="form-label">
-                                      Payment Plan Name
-                                    </label>
-                                    <input
-                                      type="text"
-                                      className="form-control form-control-sm"
-                                      onChange={(e) =>
-                                        setpayments({
-                                          ...payments,
-                                          payment_planname: e.target.value,
-                                        })
-                                      }
-                                    ></input>
-                                  </div>
-                                  <div className="col-md-6  custom-input"></div>
-          
-                                  <div className="col-md-4  custom-input">
-                                    <label className="form-label">Step Name</label>
-                                    {payments.step_name.map((item, index) => (
-                                      <input
-                                        type="text"
-                                        className="form-control form-control-sm"
-                                        style={{ marginTop: "10px" }}
-                                        onChange={(event) =>
-                                          handlestepnamechange(index, event)
-                                        }
-                                      ></input>
-                                    ))}
-                                  </div>
-                                  <div className="col-md-2  custom-input">
-                                    <label
-                                      className="form-label"
-                                      style={{ width: "200px" }}
-                                    >
-                                      Calculation Type
-                                    </label>
-                                    {payments.calculation_type.map((item, index) => (
-                                      <select
-                                        className="form-control form-control-sm"
-                                        style={{ marginTop: "10px" }}
-                                        onChange={(event) =>
-                                          handlecalculationtypechange(index, event)
-                                        }
-                                      >
-                                        <option>---Select---</option>
-                                        <option>Calculate</option>
-                                        <option>Absolute</option>
-                                      </select>
-                                    ))}
-                                  </div>
-          
-                                  <div className="col-md-1  custom-input">
-                                    <label
-                                      className="form-label"
-                                      style={{ visibility: "hidden" }}
-                                    >
-                                      Blank1
-                                    </label>
-                                    {payments.blank1.map((item, index) => (
-                                      <input
-                                        type="text"
-                                        style={{ marginTop: "10px" }}
-                                        className="form-control form-control-sm"
-                                        onChange={(event) =>
-                                          handleblank1change(index, event)
-                                        }
-                                      ></input>
-                                    ))}
-                                  </div>
-          
-                                  <div className="col-md-1  custom-input">
-                                    <label
-                                      className="form-label"
-                                      style={{ visibility: "hidden" }}
-                                    >
-                                      Blank2
-                                    </label>
-                                    {payments.blank2.map((item, index) => (
-                                      <input
-                                        type="text"
-                                        style={{ marginTop: "10px" }}
-                                        className="form-control form-control-sm"
-                                        onChange={(event) =>
-                                          handleblank2change(index, event)
-                                        }
-                                      ></input>
-                                    ))}
-                                  </div>
-          
-                                  <div className="col-md-2  custom-input">
-                                    <label
-                                      className="form-label"
-                                      style={{ visibility: "hidden" }}
-                                    >
-                                      Blank3
-                                    </label>
-                                    {payments.blank3.map((item, index) => (
-                                      <select
-                                        className="form-control form-control-sm"
-                                        style={{ marginTop: "10px" }}
-                                        onChange={(event) =>
-                                          handleblank3change(index, event)
-                                        }
-                                      >
-                                        <option>Select</option>
-                                        <option>My Team</option>
-                                        <option>My Self</option>
-                                        <option>All Users</option>
-                                      </select>
-                                    ))}
-                                  </div>
-          
-                                  <div
-                                    className="col-md-1  custom-input"
-                                    style={{ marginTop: "90px" }}
-                                  >
-                                    {payments.action4.map((item, index) => (
-                                      //  <img src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall4(index)} style={{height:"40px",cursor:"pointer"}}/>
-                                      <span
-                                        class="material-icons"
-                                        style={{
-                                          color: "red",
-                                          fontSize: "24px",
-                                          cursor: "pointer",
-                                        }}
-                                        onClick={() => deleteall4(index)}
-                                      >
-                                        delete
-                                      </span>
-                                    ))}
-                                  </div>
-                                  <div className="col-md-1  custom-input">
-                                    <label
-                                      className="form-label"
-                                      style={{ visibility: "hidden" }}
-                                    >
-                                      add
-                                    </label>
-                                    <button
-                                      className="form-control form-control-sm custom-btn"
-                                      onClick={addFn4}
-                                    >
-                                      +
-                                    </button>
-                                  </div>
-          
-                                  <div className="col-md-8 custom-input">
-                                    <label className="form-label">
-                                      Terms & Condition
-                                    </label>
-                                    <textarea
-                                      className="form-control form-control-sm"
-                                      style={{ height: "100px" }}
-                                    />
-                                  </div>
-                                  <div className="col-md-4 custom-input"></div>
-                                </div>
-                              </Modal.Body>
-                              <Modal.Footer>
-                                <Button variant="secondary" onClick={addpayment}>
-                                  Add Payment
-                                </Button>
-                                <Button variant="secondary" onClick={handleClose5}>
-                                  Close
-                                </Button>
-                              </Modal.Footer>
-                            </Modal>
+                              <option>Select</option>
+                              <option>Calculate</option>
+                              <option>Absolute</option>
+                            </select>
+                          </div>
+                          <div className="col-md-2  custom-input">
+                            <label
+                              className="form-label"
+                              style={{ visibility: "hidden" }}
+                            >
+                              blank1
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({ ...prices, blank1: e.target.value })
+                              }
+                            ></input>
+                          </div>
+                          <br></br>
+                          <div className="col-md-3  custom-input">
+                            <label
+                              className="form-label"
+                              style={{ visibility: "hidden" }}
+                            >
+                              blank2
+                            </label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({ ...prices, blank2: e.target.value })
+                              }
+                            >
+                              <option>Select</option>
+                              <option>My Team</option>
+                              <option>My Self</option>
+                              <option>All Users</option>
+                            </select>
+                          </div>
+                          <div className="col-md-3  custom-input">
+                            <label
+                              className="form-label"
+                              style={{ visibility: "hidden" }}
+                            >
+                              blank3
+                            </label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({ ...prices, blank3: e.target.value })
+                              }
+                            >
+                              <option>Select</option>
+                              <option>My Team</option>
+                              <option>My Self</option>
+                              <option>All Users</option>
+                            </select>
                           </div>
                         </div>
+                        <div
+                          className="row"
+                          id="taxes"
+                          style={{
+                            marginTop: "20px",
+                            padding: "30px",
+                            display: "none",
+                          }}
+                        >
+                          <div className="col-md-12  custom-input">
+                            <hr></hr>
+                          </div>
+                          <div className="col-md-5  custom-input">
+                            <label className="form-label">Name</label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({ ...prices, name1: e.target.value })
+                              }
+                            >
+                              <option>Select</option>
+                              <option>Goods and Service Tax(GST)</option>
+                              <option>Registration Charges</option>
+                              <option>Stamp Duty</option>
+                            </select>
+                          </div>
+                          <div className="col-md-5  custom-input">
+                            <label className="form-label">Type</label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({ ...prices, type1: e.target.value })
+                              }
+                            >
+                              <option>Select</option>
+                              <option>My Team</option>
+                              <option>My Self</option>
+                              <option>All Users</option>
+                            </select>
+                          </div>
+                          <div className="col-md-2  custom-input"></div>
+
+                          <div className="col-md-4  custom-input">
+                            <label className="form-label">
+                              Calculation ype
+                            </label>
+                            <select
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({
+                                  ...prices,
+                                  calculation_type1: e.target.value,
+                                })
+                              }
+                            >
+                              <option>---Select---</option>
+                              <option>Calculate</option>
+                              <option>Absolute</option>
+                            </select>
+                          </div>
+                          <div className="col-md-4  custom-input">
+                            <label
+                              className="form-label"
+                              style={{ visibility: "hidden" }}
+                            >
+                              blank4
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              onChange={(e) =>
+                                setprices({ ...prices, blank4: e.target.value })
+                              }
+                            ></input>
+                          </div>
+                          <br></br>
+                        </div>
                       </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button variant="secondary" onClick={addprice}>
+                        Add Price
+                      </Button>
+                      <Button variant="secondary" onClick={handleClose4}>
+                        Close
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+
+                  <div
+                    className="col-md-10  custom-input"
+                    style={{ marginTop: "10px" }}
+                  >
+                    <label className="form-label">Payment Plan</label>
+                  </div>
+                  <div
+                    className="col-md-1  custom-input"
+                    style={{ marginTop: "10px" }}
+                  >
+                    {/* <button className='form-control form-control-sm' onClick={handleShow5}>Add</button> */}
+                    <button
+                      className="form-control form-control-sm"
+                      onClick={handleShow5}
+                      style={{
+                        backgroundColor: "#007bff",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "4px",
+                        fontWeight: "500",
+                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                        transition: "all 0.2s ease-in-out",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#0056b3")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#007bff")
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="col-md-12  custom-input">
+                    <hr></hr>
+                  </div>
+                  <div className="mt-6 w-full overflow-x-auto">
+                    <TableContainer
+                      component={Paper}
+                      className="max-h-[400px] overflow-y-scroll"
+                    >
+                      <Table
+                        sx={{ minWidth: 700 }}
+                        aria-label="customized table"
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <StyledTableCell
+                              style={{ backgroundColor: "gray" }}
+                            >
+                              Serial
+                            </StyledTableCell>
+                            <StyledTableCell
+                              style={{ backgroundColor: "gray" }}
+                            >
+                              Plan Name
+                            </StyledTableCell>
+                            <StyledTableCell
+                              style={{ backgroundColor: "gray" }}
+                            >
+                              Action
+                            </StyledTableCell>
+                          </TableRow>
+                        </TableHead>
+                        <tbody>
+                          {project.Payment_plan.map((item, index) => (
+                            <StyledTableRow
+                              key={index}
+                              style={{ backgroundColor: "white" }}
+                            >
+                              <StyledTableCell
+                                style={{
+                                  padding: "10px",
+                                  cursor: "pointer",
+                                  fontSize: "10px",
+                                }}
+                              >
+                                {index + 1}
+                              </StyledTableCell>
+                              <StyledTableCell>
+                                {item.payment_planname}{" "}
+                              </StyledTableCell>
+                              <StyledTableCell>
+                                {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deletepayment(index)}   style={{height:"40px",cursor:"pointer"}}/> */}
+                                <span
+                                  class="material-icons"
+                                  style={{
+                                    color: "red",
+                                    fontSize: "24px",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() => deletepayment(index)}
+                                >
+                                  delete
+                                </span>
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </TableContainer>
+                  </div>
+                  <Modal
+                    show={show5}
+                    onHide={handleClose5}
+                    size="xl"
+                    style={{ zIndex: 99999 }}
+                  >
+                    <Modal.Header>
+                      <Modal.Title>Add Payment Plan</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <div className="row">
+                        <div className="col-md-6  custom-input">
+                          <label className="form-label">
+                            Payment Plan Name
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            onChange={(e) =>
+                              setpayments({
+                                ...payments,
+                                payment_planname: e.target.value,
+                              })
+                            }
+                          ></input>
+                        </div>
+                        <div className="col-md-6  custom-input"></div>
+
+                        <div className="col-md-4  custom-input">
+                          <label className="form-label">Step Name</label>
+                          {payments.step_name.map((item, index) => (
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              style={{ marginTop: "10px" }}
+                              onChange={(event) =>
+                                handlestepnamechange(index, event)
+                              }
+                            ></input>
+                          ))}
+                        </div>
+                        <div className="col-md-2  custom-input">
+                          <label
+                            className="form-label"
+                            style={{ width: "200px" }}
+                          >
+                            Calculation Type
+                          </label>
+                          {payments.calculation_type.map((item, index) => (
+                            <select
+                              className="form-control form-control-sm"
+                              style={{ marginTop: "10px" }}
+                              onChange={(event) =>
+                                handlecalculationtypechange(index, event)
+                              }
+                            >
+                              <option>---Select---</option>
+                              <option>Calculate</option>
+                              <option>Absolute</option>
+                            </select>
+                          ))}
+                        </div>
+
+                        <div className="col-md-1  custom-input">
+                          <label
+                            className="form-label"
+                            style={{ visibility: "hidden" }}
+                          >
+                            Blank1
+                          </label>
+                          {payments.blank1.map((item, index) => (
+                            <input
+                              type="text"
+                              style={{ marginTop: "10px" }}
+                              className="form-control form-control-sm"
+                              onChange={(event) =>
+                                handleblank1change(index, event)
+                              }
+                            ></input>
+                          ))}
+                        </div>
+
+                        <div className="col-md-1  custom-input">
+                          <label
+                            className="form-label"
+                            style={{ visibility: "hidden" }}
+                          >
+                            Blank2
+                          </label>
+                          {payments.blank2.map((item, index) => (
+                            <input
+                              type="text"
+                              style={{ marginTop: "10px" }}
+                              className="form-control form-control-sm"
+                              onChange={(event) =>
+                                handleblank2change(index, event)
+                              }
+                            ></input>
+                          ))}
+                        </div>
+
+                        <div className="col-md-2  custom-input">
+                          <label
+                            className="form-label"
+                            style={{ visibility: "hidden" }}
+                          >
+                            Blank3
+                          </label>
+                          {payments.blank3.map((item, index) => (
+                            <select
+                              className="form-control form-control-sm"
+                              style={{ marginTop: "10px" }}
+                              onChange={(event) =>
+                                handleblank3change(index, event)
+                              }
+                            >
+                              <option>Select</option>
+                              <option>My Team</option>
+                              <option>My Self</option>
+                              <option>All Users</option>
+                            </select>
+                          ))}
+                        </div>
+
+                        <div
+                          className="col-md-1  custom-input"
+                          style={{ marginTop: "90px" }}
+                        >
+                          {payments.action4.map((item, index) => (
+                            //  <img src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall4(index)} style={{height:"40px",cursor:"pointer"}}/>
+                            <span
+                              class="material-icons"
+                              style={{
+                                color: "red",
+                                fontSize: "24px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => deleteall4(index)}
+                            >
+                              delete
+                            </span>
+                          ))}
+                        </div>
+                        <div className="col-md-1  custom-input">
+                          <label
+                            className="form-label"
+                            style={{ visibility: "hidden" }}
+                          >
+                            add
+                          </label>
+                          <button
+                            className="form-control form-control-sm custom-btn"
+                            onClick={addFn4}
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <div className="col-md-8 custom-input">
+                          <label className="form-label">
+                            Terms & Condition
+                          </label>
+                          <textarea
+                            className="form-control form-control-sm"
+                            style={{ height: "100px" }}
+                          />
+                        </div>
+                        <div className="col-md-4 custom-input"></div>
+                      </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button variant="secondary" onClick={addpayment}>
+                        Add Payment
+                      </Button>
+                      <Button variant="secondary" onClick={handleClose5}>
+                        Close
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+                </div>
+              </div>
+            </div>
 
             <Modal show={show7} onHide={handleClose7} size="lg">
               <Modal.Header>

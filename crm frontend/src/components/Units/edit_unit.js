@@ -77,8 +77,8 @@ function EditUnit() {
   const [units, setunits] = useState({
     unit_no: "",
     unit_type: "",
-    category: [],
-    sub_category: [],
+    category: "",
+    sub_category: "",
     block: "",
     size: "",
     land_type: "",
@@ -187,6 +187,11 @@ function EditUnit() {
 
   const [loading, setloading] = useState(false);
 
+  const toIdArray = (arr) =>
+    Array.isArray(arr)
+      ? arr.map((i) => (typeof i === "object" ? i._id : i)).filter(Boolean)
+      : [];
+
   const updateinventories = async () => {
     const project = item.project_name;
     const block = item.block;
@@ -207,14 +212,20 @@ function EditUnit() {
         return; // Stop execution if user cancels
       }
       setloading(true);
-      // ✅ Run both updates in parallel
-      const [resp, resp1] = await Promise.all([
-        api.put(
-          `updateprojectforinventories/${project}/${unit}/${block}`,
-          units,
-          config
-        ),
-      ]);
+
+      const { _id, createdAt, updatedAt, __v, ...unitPayload } = units;
+
+      unitPayload.owner_details = toIdArray(units.owner_details);
+      unitPayload.previousowner_details = toIdArray(
+        units.previousowner_details
+      );
+      unitPayload.associated_contact = toIdArray(units.associated_contact);
+
+      const resp = api.put(
+        `updateprojectforinventories/${project}/${unit}/${block}`,
+        units,
+        config
+      );
 
       toast.success(`units updated successfully`, { autoClose: "2000" });
       setTimeout(() => {
@@ -222,8 +233,8 @@ function EditUnit() {
       }, 2000);
     } catch (error) {
       Swal.fire({
-        title: "not found?",
-        text: "The project is not found plz check !",
+        title: error.response.data.message,
+        text: error.response.data.errors,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -1131,7 +1142,6 @@ function EditUnit() {
       border: 0,
     },
   }));
-
 
   return (
     <div>

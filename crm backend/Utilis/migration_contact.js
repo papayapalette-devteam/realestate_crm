@@ -101,4 +101,175 @@ async function removeUnitsWithoutProjectName() {
   }
 }
 
-removeUnitsWithoutProjectName()
+// removeUnitsWithoutProjectName()
+
+const normalizeAllProjectUnitStages = async () => {
+  const projects = await addproject.find({});
+
+  for (const project of projects) {
+    let updated = false;
+
+    project.add_unit.forEach((unit) => {
+      const stage = unit.stage?.toString().toLowerCase();
+
+      if (stage === "active") {
+        if (unit.stage !== "Active") {
+          unit.stage = "Active";
+          updated = true;
+        }
+      } else {
+        if (unit.stage !== "Inactive") {
+          unit.stage = "Inactive";
+          updated = true;
+        }
+      }
+    });
+
+    if (updated) {
+      await project.save();
+    }
+  }
+
+  console.log("✅ All unit stages normalized");
+};
+
+
+async function removeDuplicateUnits() {
+  try {
+    const projects = await addproject.find().lean(); // important: lean()
+
+    for (const proj of projects) {
+      const seen = new Set();
+
+      const cleanedUnits = proj.add_unit.filter(unit => {
+        const key = `${String(unit.project_name)}-${String(unit.block)}-${String(unit.unit_no)}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+      await addproject.updateOne(
+        { _id: proj._id },
+        { $set: { add_unit: cleanedUnits } }
+      );
+    }
+
+    console.log("Duplicate units removed successfully");
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
+
+
+const normalizeAllProjectsUnits = async () => {
+  try {
+    const result = await addproject.updateMany(
+      {},
+      [
+        {
+          $set: {
+            add_unit: {
+              $map: {
+                input: "$add_unit",
+                as: "unit",
+                in: {
+                  $mergeObjects: [
+                    "$$unit",
+                    {
+                      /* ---------- FIX STAGE ---------- */
+                      stage: {
+                        $cond: [
+                          {
+                            $eq: [
+                              {
+                                $toLower: {
+                                  $ifNull: ["$$unit.stage", ""],
+                                },
+                              },
+                              "active",
+                            ],
+                          },
+                          "Active",
+                          "Inactive",
+                        ],
+                      },
+
+                      /* ---------- FIX CATEGORY ---------- */
+                      category: {
+                        $cond: [
+                          { $isArray: "$$unit.category" },
+                          { $arrayElemAt: ["$$unit.category", 0] },
+                          "$$unit.category",
+                        ],
+                      },
+
+                      /* ---------- FIX SUB CATEGORY ---------- */
+                      sub_category: {
+                        $cond: [
+                          { $isArray: "$$unit.sub_category" },
+                          { $arrayElemAt: ["$$unit.sub_category", 0] },
+                          "$$unit.sub_category",
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      ]
+    );
+
+    console.log("✅ NORMALIZATION COMPLETE");
+    console.log("Matched:", result.matchedCount);
+    console.log("Modified:", result.modifiedCount);
+  } catch (error) {
+    console.error("❌ NORMALIZATION FAILED:", error.message);
+  }
+};
+
+
+const normalizeProjectLandArea = async () => {
+  try {
+    const result = await addproject.updateMany(
+      {},
+      [
+        {
+          $set: {
+            land_area: {
+              $cond: [
+                { $isArray: "$land_area" },
+                { $arrayElemAt: ["$land_area", 0] },
+                "$land_area",
+              ],
+            },
+          },
+        },
+      ]
+    );
+
+    console.log("✅ land_area normalized successfully");
+    console.log("Matched:", result.matchedCount);
+    console.log("Modified:", result.modifiedCount);
+  } catch (error) {
+    console.error("❌ land_area normalization failed:", error.message);
+  }
+};
+
+const deleteTestUnit = async () => {
+  try {
+    const result = await addproject.updateOne(
+      { name: "Sector 3 Chandigarh" },
+      {
+        $pull: {
+          add_unit: { unit_no: "test" }, // ✅ remove only this unit
+        },
+      }
+    );
+
+       console.log("unit removed  successfully");
+  } catch (error) {
+     console.error("❌ units deleted  failed:", error.message);
+  }
+};

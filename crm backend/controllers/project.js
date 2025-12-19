@@ -6,7 +6,9 @@ const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
 const Joi = require("joi");
 const { log } = require("console");
-const projectValidator =require("../Validation/project.js")
+const {projectValidator} =require("../Validation/project.js")
+const { unitSchema } = require("../Validation/project.js");
+
 
 
 require("dotenv").config();
@@ -1185,8 +1187,8 @@ const view_projectforinventories = async (req, res) => {
 
 const update_projectforinventories = async (req, res) => {
   try {
-    // ------------------ HELPER: NORMALIZE ID ARRAY ------------------
-    function normalizeIdArray(arr) {
+    // ------------------ HELPER ------------------
+    const normalizeIdArray = (arr) => {
       if (!Array.isArray(arr)) return [];
       return arr
         .map((item) => {
@@ -1196,158 +1198,99 @@ const update_projectforinventories = async (req, res) => {
           return null;
         })
         .filter(Boolean);
-    }
+    };
 
     // ------------------ PARAMS ------------------
     const { project_name, unit_no, block } = req.params;
 
-    // ------------------ CHECK PROJECT EXISTS ------------------
+    // ------------------ FIND PROJECT ------------------
     const project = await addproject.findOne({ name: project_name });
 
     if (!project) {
-      return res.status(404).send("project not found");
+      return res.status(404).json({ message: "Project not found" });
     }
 
-    // ------------------ FIND UNIT INSIDE THIS PROJECT ------------------
+    // ------------------ FIND UNIT ------------------
     const unitIndex = project.add_unit.findIndex(
       (u) => u.block === block && u.unit_no === unit_no
     );
 
     if (unitIndex === -1) {
-      return res.status(404).send({ message: "Unit not found in this project" });
+      return res
+        .status(404)
+        .json({ message: "Unit not found in this project" });
     }
 
     const existingUnit = project.add_unit[unitIndex];
-    const unit = req.body;
+
+    // ------------------ CLEAN REQUEST BODY ------------------
+    const {
+      _id,
+      __v,
+      createdAt,
+      updatedAt,
+      owner_details,
+      associated_contact,
+      previousowner_details, // ignore client value
+      ...restUnit
+    } = req.body;
+
+    // ------------------ BUILD CLEAN UNIT ------------------
+    const updatedUnit = {
+      ...restUnit,
+
+      owner_details: normalizeIdArray(owner_details),
+      associated_contact: normalizeIdArray(associated_contact),
+
+      // take previous owner from DB only
+      previousowner_details: normalizeIdArray(
+        existingUnit.owner_details
+      ),
+
+    };
+
+    // ------------------ JOI VALIDATION ------------------
+    const { error } = unitSchema.validate(updatedUnit, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      return res.status(400).json({
+        message: "Validation error",
+        errors: error.details.map((e) => e.message),
+      });
+    }
+
+    // ------------------ DIRECT SET ------------------
+    project.add_unit[unitIndex] = updatedUnit;
 
     // ------------------ UPDATE DEAL OWNER ------------------
     await adddeal.updateMany(
-      { project: project_name, block: block, unit_number: unit_no },
+      { project: project_name, block:block, unit_number: unit_no },
       {
         $set: {
-          owner_details:
-            unit.owner_details !== undefined ? unit.owner_details : [],
-          associated_contact:
-            unit.associated_contact !== undefined
-              ? unit.associated_contact
-              : [],
+          owner_details: updatedUnit.owner_details,
+          associated_contact: updatedUnit.associated_contact,
         },
       }
     );
 
-    // ------------------ OWNER DETAILS CLEANUP ------------------
-    let previousOwnerDetails = normalizeIdArray(existingUnit.owner_details);
-    let ownerDetails = [...new Set(normalizeIdArray(unit.owner_details))];
-    let associatedContact = [
-      ...new Set(normalizeIdArray(unit.associated_contact)),
-    ];
-
-    // ------------------ BUILD UPDATED UNIT OBJECT ------------------
-    let unitDetails = {
-      project_name: unit.project_name,
-      unit_no: unit.unit_no,
-      previousowner_details: previousOwnerDetails,
-      owner_details: ownerDetails,
-      associated_contact: associatedContact,
-      unit_type: unit.unit_type,
-      category: unit.category,
-      sub_category: unit.sub_category,
-      block: unit.block,
-      size: unit.size,
-      direction: unit.direction,
-      facing: unit.facing,
-      road: unit.road,
-      ownership: unit.ownership,
-      stage: unit.stage,
-      builtup_type: unit.builtup_type,
-      floor: unit.floor,
-      cluter_details: unit.cluter_details,
-      length: unit.length,
-      bredth: unit.bredth,
-      total_area: unit.total_area,
-      measurment2: unit.measurment2,
-      ocupation_date: unit.ocupation_date,
-      age_of_construction: unit.age_of_construction,
-      furnishing_details: unit.furnishing_details,
-      furnished_item: unit.furnished_item,
-      remarks: unit.remarks,
-      location: unit.location,
-      lattitude: unit.lattitude,
-      langitude: unit.langitude,
-      uaddress: unit.uaddress,
-      ustreet: unit.ustreet,
-      ulocality: unit.ulocality,
-      ucity: unit.ucity,
-      uzip: unit.uzip,
-      ustate: unit.ustate,
-      ucountry: unit.ucountry,
-      relation: unit.relation,
-      s_no: unit.s_no,
-      descriptions: unit.descriptions,
-      s_no1: unit.s_no1,
-      url: unit.url,
-      document_name: unit.document_name,
-      document_no: unit.document_no,
-      document_Date: unit.document_Date,
-      linkded_contact: unit.linkded_contact,
-      follow_up: unit.follow_up,
-      last_conduct_date_time: unit.last_conduct_date_time,
-      reason: unit.reason,
-      other_reason: unit.other_reason,
-      logged_user: unit.logged_user,
-
-      // Keep previous unless uploaded new files
-      preview: existingUnit.preview,
-      image: existingUnit.image,
-    };
-
-    // ------------------ FILE UPLOAD ------------------
-    const imagefiles = [];
-    const imagefiles1 = [];
-
-    if (req.files) {
-      const previewFiles = req.files.filter((f) =>
-        f.fieldname.includes("preview")
-      );
-      const imageFiles = req.files.filter((f) =>
-        f.fieldname.includes("image")
-      );
-
-      // Upload preview files
-      for (let file of previewFiles) {
-        const result = await cloudinary.uploader.upload(file.path);
-        imagefiles.push(result.secure_url);
-        fs.unlinkSync(file.path);
-      }
-
-      // Upload normal images
-      for (let file of imageFiles) {
-        const result = await cloudinary.uploader.upload(file.path);
-        imagefiles1.push(result.secure_url);
-        fs.unlinkSync(file.path);
-      }
-    }
-
-    if (imagefiles.length > 0) unitDetails.preview = imagefiles;
-    if (imagefiles1.length > 0) unitDetails.image = imagefiles1;
-
-    // ------------------ UPDATE UNIT SAFELY ------------------
-    project.add_unit[unitIndex] = { ...existingUnit.toObject(), ...unitDetails };
-
+    // ------------------ SAVE ------------------
     await project.save();
 
-    res.status(200).send({
-      message: "add_unit updated successfully",
-      project,
+    return res.status(200).json({
+      message: "Unit updated successfully",
+      unit: project.add_unit[unitIndex],
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      message: "Error updating project details",
+    console.error(error);
+    return res.status(500).json({
+      message: "Error updating unit",
       error: error.message,
     });
   }
 };
+
 
 
 
@@ -2039,31 +1982,11 @@ const getGroupedUnitData = async (req, res) => {
 };
 
 
-async function removeDuplicateUnits() {
-  try {
-    const projects = await addproject.find().lean(); // important: lean()
 
-    for (const proj of projects) {
-      const seen = new Set();
 
-      const cleanedUnits = proj.add_unit.filter(unit => {
-        const key = `${String(unit.project_name)}-${String(unit.block)}-${String(unit.unit_no)}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
 
-      await addproject.updateOne(
-        { _id: proj._id },
-        { $set: { add_unit: cleanedUnits } }
-      );
-    }
 
-    console.log("Duplicate units removed successfully");
-  } catch (err) {
-    console.error("Error:", err);
-  }
-}
+
 
 
 

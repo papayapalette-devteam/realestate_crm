@@ -1291,73 +1291,77 @@ function Allunits() {
     Payment_plan: [],
   });
 
-  const [unit, setunit] = useState([]);
-  const [units, setunits] = useState({
-    unit_no: "",
-    unit_type: "",
-    category: [],
-    sub_category: [],
-    block: "",
-    size: "",
-    land_type: "",
-    khewat_no: [""],
-    killa_no: [""],
-    share: [""],
-    action5: [],
-    total_land_area: "",
-    water_source: [""],
-    water_level: [""],
-    water_pump_type: [""],
-    action6: [],
-    direction: "",
-    side_open: "",
-    fornt_on_road: "",
-    total_owner: "",
-    facing: "",
-    road: "",
-    ownership: "",
-    stage: "",
-    builtup_type: "",
-    floor: [""],
-    cluter_details: [""],
-    length: [""],
-    bredth: [""],
-    total_area: [""],
-    measurment2: ["sqfeet"],
-    action3: [],
-    ocupation_date: "",
-    age_of_construction: "",
-    furnishing_details: "",
-    enter_furnishing_details: "",
-    furnished_item: "",
-    remarks: "",
-    location: "",
-    lattitude: "",
-    langitude: "",
-    uaddress: "",
-    ustreet: "",
-    ulocality: "",
-    ucity: "",
-    uzip: "",
-    ustate: "",
-    ucountry: "",
-    owner_details: [],
-    associated_contact: [],
-    relation: "",
-    s_no: [],
-    preview: [],
-    descriptions: [],
-    action10: [],
-    s_no1: [],
-    url: [],
-    action11: [],
-    document_name: [""],
-    document_no: [""],
-    document_Date: [""],
-    linkded_contact: [""],
-    image: [""],
-    action12: [],
-  });
+   const [units,setunits] = useState({
+     project_name: project?.name || "",
+     unit_no: "",
+     unit_type: "",
+     category: "",
+     sub_category: "",
+     block: "",
+     size: "",
+     size_length: "",
+     size_breadth: "",
+     size_unit: "",
+     size_total_area: "",
+     size_total_area_unit: "",
+     land_type: "",
+     khewat_no: [""],
+     killa_no: [""],
+     share: [""],
+     action5: [],
+     total_land_area: "",
+     water_source: [""],
+     water_level: [""],
+     water_pump_type: [""],
+     action6: [],
+     direction: "",
+     side_open: "",
+     front_on_road: "",
+     total_owner: "",
+     facing: "",
+     road: "",
+     ownership: "",
+     stage: "Inactive",
+     builtup_type: "",
+     floor: [""],
+     cluter_details: [""],
+     length: [""],
+     bredth: [""],
+     total_area: [""],
+     measurment2: ["sqfeet"],
+     action3: [],
+     ocupation_date: "",
+     age_of_construction: "",
+     furnishing_details: "",
+     enter_furnishing_details: "",
+     furnished_item: "",
+     location: "",
+     lattitude: "",
+     langitude: "",
+     uaddress: "",
+     ustreet: "",
+     ulocality: "",
+     ucity: "",
+     uzip: "",
+     ustate: "",
+     ucountry: "",
+     owner_details: [],
+     associated_contact: [],
+     relation: "",
+     s_no: [],
+     preview: [],
+     descriptions: [],
+     action10: [],
+     s_no1: [],
+     url: [],
+     action11: [],
+     document_name: [""],
+     document_no: [""],
+     document_Date: [""],
+     linkded_contact: [""],
+     image: [""],
+     action12: [],
+   });
 
   const config = {
     headers: {
@@ -1365,6 +1369,12 @@ function Allunits() {
     },
   };
 
+const toIdArray = (arr) =>
+  Array.isArray(arr)
+    ? arr.map((i) => (typeof i === "object" ? i._id : i)).filter(Boolean)
+    : [];
+
+  
   const updateinventories = async () => {
     
     const project = selectedItems3[0].project_name;
@@ -1388,15 +1398,25 @@ function Allunits() {
       }
       setIsLoading4(true);
 
-      // ✅ Run both updates in parallel
-      const [resp, resp1] = await Promise.all([
-        api.put(
+      const {
+  _id,
+  createdAt,
+  updatedAt,
+  __v,
+  ...unitPayload
+} = units;
+
+unitPayload.owner_details = toIdArray(units.owner_details);
+unitPayload.previousowner_details = toIdArray(units.previousowner_details);
+unitPayload.associated_contact = toIdArray(units.associated_contact);
+
+
+
+      const resp=await api.put(
           `updateprojectforinventories/${project}/${unit}/${block}`,
-          units,
+          unitPayload,
           config
-        ),
-        // api.put(`updatedealowner/${project}/${block}/${unit}`, units, config),
-      ]);
+        )
 
       toast.success(`units updated successfully`, { autoClose: "2000" });
       setTimeout(() => {
@@ -1404,8 +1424,8 @@ function Allunits() {
       }, 2000);
     } catch (error) {
       Swal.fire({
-        title: "not found?",
-        text: "The project is not found plz check !",
+        title: error.response.data.message,
+        text: error.response.data.errors,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -2762,7 +2782,7 @@ function handleCheckbox(idx, val) {
               🔴Inactive
             </h6>
             <p className="text-xl font-bold text-red-900 text-center">
-              {status_count?.InActive}
+              {status_count?.Inactive}
             </p>
           </div>
         </div>

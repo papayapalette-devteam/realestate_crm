@@ -45,12 +45,12 @@ const sizeSchema = Joi.object({
 
 /* ---------- Unit ---------- */
 const unitSchema = Joi.object({
-  project_name: Joi.string().allow(""),
-  unit_no: Joi.string().allow(""),
+  project_name: Joi.string().required(),
+  unit_no: Joi.string().required(),
   unit_type: Joi.string().allow(""),
   category: Joi.string().allow(""),
   sub_category: Joi.string().allow(""),
-  block: Joi.string().allow(""),
+  block: Joi.string().required(),
   size: Joi.string().allow(""),
   size_length: Joi.string().allow(""),
   size_breadth: Joi.string().allow(""),
@@ -217,5 +217,9 @@ const projectValidator = Joi.object({
   Payment_plan: Joi.array().items(paymentSchema),
 });
 
-module.exports =   projectValidator
+module.exports = {
+  projectValidator,
+  unitSchema,
+};
+
 
