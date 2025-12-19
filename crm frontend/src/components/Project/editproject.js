@@ -36,6 +36,8 @@ import { saveAs } from "file-saver";
 import Tooltip from "@mui/material/Tooltip";
 import Swal from "sweetalert2";
 import UniqueLoader from "../loader";
+import { error } from "jquery";
+import { text } from "@fortawesome/fontawesome-svg-core";
 
 function EditProjectform() {
   const location = useLocation();
@@ -114,7 +116,8 @@ function EditProjectform() {
     price_list: [],
     Payment_plan: [],
   });
-  console.log(project);
+console.log(project);
+
 
   const config = {
     headers: {
@@ -187,17 +190,45 @@ function EditProjectform() {
 
       setIsLoading(true);
 
-      const resp = await api.put(`updateproject/${id}`, project, config);
-      console.log(resp);
+    // remove top-level mongo fields
+let { _id, __v, createdAt, updatedAt, ...payload } = project;
+
+// fix populated + nested arrays
+payload = {
+  ...payload,
+
+  // populated object → ObjectId
+  developer_name: payload.developer_name?._id || payload.developer_name,
+
+  // remove _id from nested arrays
+  add_block: payload.add_block?.map(({ _id, ...rest }) => rest),
+  add_size: payload.add_size?.map(({ _id, ...rest }) => rest),
+  price_list: payload.price_list?.map(({ _id, ...rest }) => rest),
+  Payment_plan: payload.Payment_plan?.map(({ _id, ...rest }) => rest),
+};
+
+
+
+
+      const resp = await api.put(`updateproject/${id}`, payload);
+   
 
       if (resp.status === 200) {
-        toast.success("Project Saved", { autoClose: 2000 });
+          Swal.fire({
+          icon: "success",
+          title: "Project Updated",
+          text: resp.data.message
+        });
         setTimeout(() => {
           navigate("/project");
         }, 2000);
       }
     } catch (error) {
-      toast.error(error.response.data.message, { autoClose: 2000 });
+          Swal.fire({
+          icon: "error",
+          title: error.response.data.message,
+          text: error.response.data.errors
+        });
     } finally {
       setIsLoading(false);
     }
@@ -1413,24 +1444,31 @@ function EditProjectform() {
   //==========================------------------------------- size toggle end--------------------------=================================
 
   // ======================------------------- both check boxes code start ---------------===============================================
-  const checkboxItems = [
-    "Car Parking",
-    "Intercom",
-    "Multi-Purpose Hall",
-    "24x7 Water Supply",
-    "Municipal Water Supply",
-    "Garbage Management System",
-    "Fire Fighting System",
-    "Visitor Car Parking",
-    "Earthquake Resistance",
-    "Lift",
-    "Maintenance Staff",
-    "Power Supply",
-    "Air Condition",
-    "Security",
-    "Bike Parking",
-    "Others",
-  ];
+  const [checkboxItems, setcheckboxItems] = useState([]);
+
+  const getall_basic_aminities = async () => {
+    try {
+      setselect_loading("basic-aminities");
+      const params = new URLSearchParams();
+      params.append("lookup_type", "basic_aminities");
+      const resp = await api.get(`api/LookupList?${params.toString()}`);
+
+      const list = resp.data.data;
+
+      // 👇 set only lookup_value in checkboxItems state
+      const onlyValues = list.map((item) => item.lookup_value);
+      setcheckboxItems(onlyValues);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setselect_loading("");
+    }
+  };
+
+  useEffect(() => {
+    getall_basic_aminities();
+  }, []);
+
   const [checkedItems, setCheckedItems] = useState(
     Array(checkboxItems.length).fill(false)
   );
@@ -1483,73 +1521,31 @@ function EditProjectform() {
     }));
   };
 
-  const checkboxItems1 = [
-    "Seniour Citizen Corner",
-    "Worship Place",
-    "HAVC System",
-    "Cricket Pitch",
-    "Two Tier Security",
-    "Cafeteria",
-    "Car Washing Area",
-    "No Common Wall",
-    "Driver Dormitory",
-    "EPABX System",
-    "CCTV",
-    "Gymaasium",
-    "Garden",
-    "Power Back Up",
-    "Party Lawn",
-    "Gazebo",
-    "Cold Storage",
-    "Solar Water Heater",
-    "Jogging Track",
-    "DTH Connection",
-    "Three Tier Security",
-    "Smoking Area",
-    "Spa & Saloon",
-    "Solar Power",
-    "Video Door Phone",
-    "Utility Shop",
-    "Steam Room",
-    "Amphi Theatre",
-    "Private Car Parking",
-    "Guest Room",
-    "Internet",
-    "Kids Play area",
-    "Barbeque Facility",
-    "Basket Ball Court",
-    "Skating Rink",
-    "Socity Office",
-    "Squash Court",
-    "Waiting Longue",
-    "Yoga And Meditation Center",
-    "Water Softener",
-    "Swipe Card Entry",
-    "Health Facilities",
-    "Library",
-    "Day Care Center",
-    "Reception",
-    "Shiping Stores",
-    "Laundry Room",
-    "Indoor Games",
-    "Piped Lpg Connection",
-    "Confrence Or Meeting Room",
-    "Badminton Court",
-    "Sauna Bath",
-    "Rain Water Harvesting",
-    "Jacuzzi",
-    "Massage Parlor",
-    "Tution Room",
-    "Restaurant",
-    "Tennis Court",
-    "Club House",
-    "Swimming Pool",
-    "Wi-Fi",
-    "Mini Theater",
-    "Modular Kitchen",
-    "Cycliing Track",
-    "Outdoor Games",
-  ];
+   const [checkboxItems1, setcheckboxItems1] = useState([]);
+ 
+   const getall_featured_aminities = async () => {
+     try {
+       setselect_loading("basic-aminities");
+       const params = new URLSearchParams();
+       params.append("lookup_type", "featured_aminities");
+       const resp = await api.get(`api/LookupList?${params.toString()}`);
+ 
+       const list = resp.data.data;
+ 
+       // 👇 set only lookup_value in checkboxItems state
+       const onlyValues = list.map((item) => item.lookup_value);
+       setcheckboxItems1(onlyValues);
+     } catch (error) {
+       console.log(error);
+     } finally {
+       setselect_loading("");
+     }
+   };
+ 
+   useEffect(() => {
+     getall_featured_aminities();
+   }, []);
+   
   const [checkedItems1, setCheckedItems1] = useState(
     Array(checkboxItems1.length).fill(false)
   );
@@ -2213,9 +2209,13 @@ function EditProjectform() {
       } else {
         Swal.fire("Error", res.data.message, "error");
       }
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Error", "Something went wrong", "error");
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+          icon: "error",
+          title: error.response.data.message,
+          text: error.response.data.errors
+        });
     } finally {
       setloading_unit(false);
     }
@@ -2241,6 +2241,8 @@ function EditProjectform() {
   //               toast.error("Please fill out all fields.");
   //           }
   //         };
+
+  
   const deleteunit = (index) => {
     // Filter out the destination at the given index
     const newunit = project.add_unit.filter((_, i) => i !== index);
@@ -7669,7 +7671,7 @@ function EditProjectform() {
                                 >
                                   delete
                                 </span>
-                                {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteunit(index)}  style={{height:"40px",cursor:"pointer"}}/> */}
+                                
                               </div>
                             </StyledTableCell>
                           </StyledTableRow>

@@ -8,6 +8,7 @@ const Joi = require("joi");
 const { log } = require("console");
 const projectValidator =require("../Validation/project.js")
 
+
 require("dotenv").config();
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -743,6 +744,19 @@ const remove_project = async (req, res) => {
 
 const update_project = async (req, res) => {
   try {
+
+        const { error } = projectValidator.validate(req.body, {
+          abortEarly: false,
+        });
+
+        if (error) {
+          return res.status(400).json({
+            message: "Validation error",
+            errors: error.details.map(e => e.message),
+          });
+        }
+
+
     const id = req.params._id;
     const user = await addproject.findOne({ _id: id });
     if (!user) {
@@ -751,27 +765,27 @@ const update_project = async (req, res) => {
 
     let existingUnits = user.add_unit || [];
 
-    const imagefiles = [];
+    // const imagefiles = [];
 
-    if (req.files) {
-      const imagefield = req.files.filter((file) =>
-        file.fieldname.includes("pic")
-      );
+    // if (req.files) {
+    //   const imagefield = req.files.filter((file) =>
+    //     file.fieldname.includes("pic")
+    //   );
 
-      if (imagefield.length > 0) {
-        for (let file of imagefield) {
-          const result = await cloudinary.uploader.upload(file.path);
-          imagefiles.push(result.secure_url);
-          fs.unlink(file.path, (err) => {
-            if (err) {
-              console.error(`Failed to delete file: ${file.path}`, err);
-            } else {
-              console.log(`Successfully deleted file: ${file.path}`);
-            }
-          });
-        }
-      }
-    }
+    //   if (imagefield.length > 0) {
+    //     for (let file of imagefield) {
+    //       const result = await cloudinary.uploader.upload(file.path);
+    //       imagefiles.push(result.secure_url);
+    //       fs.unlink(file.path, (err) => {
+    //         if (err) {
+    //           console.error(`Failed to delete file: ${file.path}`, err);
+    //         } else {
+    //           console.log(`Successfully deleted file: ${file.path}`);
+    //         }
+    //       });
+    //     }
+    //   }
+    // }
 
     // const addunit_details = [];
     // let u = 0;
@@ -901,14 +915,14 @@ const update_project = async (req, res) => {
 
     const updatedFields = {
       ...req.body,
-      pic: imagefiles,
+      // pic: imagefiles,
       // add_unit: addunit_details,
       add_unit: existingUnits,
     };
     const resp = await addproject.findByIdAndUpdate(id, updatedFields, {
       new: true,
     });
-    res.status(200).send({ message: "lead update successfully" });
+    res.status(200).send({ message: "Porject Update Successfully" });
   } catch (error) {
     console.log(error);
   }
@@ -1341,7 +1355,25 @@ const update_projectforinventories = async (req, res) => {
 
 const addUnitsToProject = async (req, res) => {
   try {
+
+
+
     let { project_id, pendingContacts } = req.body;
+        // 2️⃣ remove from req.body before Joi validation
+    delete req.body.project_id;
+    delete req.body.pendingContacts;
+
+
+            const { error } = projectValidator.validate(req.body, {
+    abortEarly: false,
+  });
+
+  if (error) {
+    return res.status(400).json({
+      message: "Validation error",
+      errors: error.details.map(e => e.message),
+    });
+  }
 
       // ✅ Always convert to array if it's a single object
     if (!Array.isArray(pendingContacts)) {

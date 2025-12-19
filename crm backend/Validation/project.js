@@ -160,7 +160,7 @@ const paymentSchema = Joi.object({
 
 /* ---------- Project ---------- */
 const projectValidator = Joi.object({
-  name: Joi.string().required(),
+  name: Joi.string().allow(""),
   developer_name: Joi.string().hex().length(24).optional(),
   joint_venture: Joi.string().allow(""),
   secondary_developer: Joi.string().allow(""),
