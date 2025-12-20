@@ -28,6 +28,8 @@ function Allunits() {
   const logged_user = JSON.parse(localStorage.getItem("user"));
 
   const [flattenedUnits, setFlattenedUnits] = useState([]);
+  console.log(flattenedUnits);
+  
 
   const [isLoading4, setIsLoading4] = useState(false);
 

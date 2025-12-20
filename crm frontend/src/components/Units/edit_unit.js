@@ -11,7 +11,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
-import { SvgIcon } from "@mui/material";
+import { SvgIcon,CircularProgress} from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import api from "../../api";
 import Swal from "sweetalert2";
@@ -141,6 +141,86 @@ function EditUnit() {
     image: [""],
     action12: [],
   });
+
+    const [All_Sub_Category, setAll_Sub_Category] = useState([]);
+  
+    const getall_sub_category = async () => {
+      try {
+   
+  
+        const params = new URLSearchParams();
+            params.append("lookup_type", "property_sub_type");
+            params.append("parent_lookup_value", units.category);
+
+          const resp = await api.get(`api/LookupList?${params.toString()}`);
+    
+  
+       
+  
+        setAll_Sub_Category(resp.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+    useEffect(() => {
+      getall_sub_category();
+    }, [units.category]);
+
+      // get all direction
+    
+      const [All_Direction, setAll_Direction] = useState([]);
+      const getall_direction = async () => {
+        try {
+          setselect_loading("direction");
+          const params = new URLSearchParams();
+          params.append("lookup_type", "direction");
+          const resp = await api.get(`api/LookupList?${params.toString()}`);
+    
+          setAll_Direction(resp.data.data);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setselect_loading("");
+        }
+      };
+    
+      // get all facing
+    
+      const [All_Facing, setAll_Facing] = useState([]);
+      const getall_facing = async () => {
+        try {
+          setselect_loading("facing");
+          const params = new URLSearchParams();
+          params.append("lookup_type", "facing");
+          const resp = await api.get(`api/LookupList?${params.toString()}`);
+    
+          setAll_Facing(resp.data.data);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setselect_loading("");
+        }
+      };
+    
+      // get all road
+    
+      const [All_Road, setAll_Road] = useState([]);
+      const getall_road = async () => {
+        try {
+          setselect_loading("road");
+          const params = new URLSearchParams();
+          params.append("lookup_type", "road");
+          const resp = await api.get(`api/LookupList?${params.toString()}`);
+    
+          setAll_Road(resp.data.data);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setselect_loading("");
+        }
+      };
+
 
   const [loadingCategory, setLoadingCategory] = useState(true);
   const fetchdatabyprojectname = async (projectNames) => {
@@ -1331,10 +1411,10 @@ function EditUnit() {
                             setunits({ ...units, sub_category: e.target.value })
                           }
                         >
-                          <option value="">Select</option>
-                          {project?.sub_category?.map((subCategory) => (
-                            <option key={subCategory} value={subCategory}>
-                              {subCategory}
+                          <option value="">---Select---</option>
+                          {All_Sub_Category?.map((subCategory) => (
+                            <option key={subCategory._id} value={subCategory.lookup_value}>
+                              {subCategory.lookup_value}
                             </option>
                           ))}
                         </select>
@@ -1713,66 +1793,63 @@ function EditUnit() {
                             onChange={(e) =>
                               setunits({ ...units, direction: e.target.value })
                             }
+                            onClick={()=>getall_direction()}
                           >
                             <option>{units.direction}</option>
                             <option>---Select---</option>
-                            <option>East</option>
-                            <option>West</option>
-                            <option>North</option>
-                            <option>South</option>
-                            <option>North East</option>
-                            <option>South East</option>
-                            <option>South West</option>
-                            <option>North West</option>
+                            {select_loading === "direction" ? (
+                            <CircularProgress />
+                          ) : (
+                            All_Direction.map((name) => (
+                              <option value={name.lookup_value}>
+                                {name.lookup_value}
+                              </option>
+                            ))
+                          )}
                           </select>
                         </div>
-                        <div className="col-md-4 custom-input">
+                        <div className="col-md-6 custom-input">
                           <label className="labels">Facing</label>
                           <select
                             className="form-control form-control-sm"
                             onChange={(e) =>
                               setunits({ ...units, facing: e.target.value })
                             }
+                            onClick={()=>getall_facing()}
                           >
                             <option>{units.facing}</option>
-                            <option>---Select---</option>
-                            <option>Park</option>
-                            <option>Green Belt</option>
-                            <option>Highway</option>
-                            <option>Commercial</option>
-                            <option>School</option>
-                            <option>Hospital</option>
-                            <option>Mandir</option>
-                            <option>Gurudwara</option>
-                            <option>Crech</option>
-                            <option>Clinic</option>
-                            <option>Community Centre</option>
-                            <option>1 Kanal</option>
-                            <option>14m Marla</option>
-                            <option>10 Marla</option>
-                            <option>8 Marla</option>
-                            <option>6 Marla</option>
-                            <option>4 Marla</option>
-                            <option>2 Marla</option>
-                            <option> 3 Marla</option>
-                            <option> 2 Kanal</option>
+                        <option>---Select---</option>
+                        {select_loading === "facing" ? (
+                          <CircularProgress />
+                        ) : (
+                          All_Facing.map((name) => (
+                            <option value={name.lookup_value}>
+                              {name.lookup_value}
+                            </option>
+                          ))
+                        )}
                           </select>
                         </div>
-                        <div className="col-md-4 custom-input">
+                        <div className="col-md-6 custom-input">
                           <label className="labels">Road</label>
                           <select
                             className="form-control form-control-sm"
                             onChange={(e) =>
                               setunits({ ...units, road: e.target.value })
                             }
+                            onClick={()=>getall_road()}
                           >
                             <option>{units.road}</option>
                             <option>---Select---</option>
-                            <option>9 Mtr Wide</option>
-                            <option>12 Mtr Wide</option>
-                            <option> 18 Mtr Wide</option>
-                            <option>24 Mtr Wide</option>
-                            <option> 60 Mtr Wide</option>
+                           {select_loading === "road" ? (
+                              <CircularProgress />
+                            ) : (
+                              All_Road.map((name) => (
+                                <option value={name.lookup_value}>
+                                  {name.lookup_value}
+                                </option>
+                              ))
+                            )}
                           </select>
                         </div>
                         <div className="col-md-6 custom-input">

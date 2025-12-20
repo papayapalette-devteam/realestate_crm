@@ -273,3 +273,42 @@ const deleteTestUnit = async () => {
      console.error("❌ units deleted  failed:", error.message);
   }
 };
+
+const deleteIssueUnits = async () => {
+  try {
+    const projects = await addproject.find(
+      { add_unit: { $exists: true } },
+      { project_name: 1, add_unit: 1 }
+    ).lean();
+
+    let deletedCount = 0;
+
+    for (const project of projects) {
+      for (const unit of project.add_unit) {
+        if (
+          Array.isArray(unit.category) ||
+          Array.isArray(unit.sub_category)
+        ) {
+          await addproject.updateOne(
+            { _id: project._id },
+            {
+              $pull: {
+                add_unit: { unit_no: unit.unit_no }
+              }
+            }
+          );
+
+          console.log(
+            `Deleted unit_no ${unit.unit_no} from project ${project.project_name}`
+          );
+
+          deletedCount++;
+        }
+      }
+    }
+
+    console.log("Total deleted units:", deletedCount);
+  } catch (error) {
+    console.error(error);
+  }
+};

@@ -91,8 +91,8 @@ const unitSchema = Joi.object({
   remarks: Joi.string().allow(""),
 
   location: Joi.string().allow(""),
-  lattitude: Joi.number().allow(""),
-  langitude: Joi.number().allow(""),
+  lattitude: Joi.string().allow(""),
+  langitude: Joi.string().allow(""),
 
   uaddress: Joi.string().allow(""),
   ustreet: Joi.string().allow(""),

@@ -11,6 +11,7 @@ const { unitSchema } = require("../Validation/project.js");
 
 
 
+
 require("dotenv").config();
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -1229,8 +1230,8 @@ const update_projectforinventories = async (req, res) => {
       __v,
       createdAt,
       updatedAt,
-      owner_details,
-      associated_contact,
+      // owner_details,
+      // associated_contact,
       previousowner_details, // ignore client value
       ...restUnit
     } = req.body;
@@ -1239,8 +1240,8 @@ const update_projectforinventories = async (req, res) => {
     const updatedUnit = {
       ...restUnit,
 
-      owner_details: normalizeIdArray(owner_details),
-      associated_contact: normalizeIdArray(associated_contact),
+      // owner_details: normalizeIdArray(owner_details),
+      // associated_contact: normalizeIdArray(associated_contact),
 
       // take previous owner from DB only
       previousowner_details: normalizeIdArray(
@@ -1261,6 +1262,8 @@ const update_projectforinventories = async (req, res) => {
       });
     }
 
+
+    
     // ------------------ DIRECT SET ------------------
     project.add_unit[unitIndex] = updatedUnit;
 
@@ -1980,14 +1983,6 @@ const getGroupedUnitData = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
-
-
-
-
-
-
-
-
 
 
 
