@@ -1003,7 +1003,7 @@ function EditContact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn1}
                       >
                         +
@@ -1071,7 +1071,7 @@ function EditContact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn2}
                       >
                         +
@@ -1832,7 +1832,7 @@ function EditContact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn4}
                       >
                         +
@@ -1984,7 +1984,7 @@ function EditContact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn5}
                       >
                         +
@@ -2051,7 +2051,7 @@ function EditContact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn6}
                       >
                         +
@@ -2114,7 +2114,7 @@ function EditContact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn7}
                       >
                         +
@@ -2251,7 +2251,7 @@ function EditContact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn8}
                       >
                         +
@@ -2283,23 +2283,9 @@ function EditContact() {
                       style={{ marginTop: "20px" }}
                     >
                       <button
-                        className="btn btn-outline-danger btn-sm form-control"
+                        className="btn-global-danger form-control"
                         onClick={() => navigate(-1)}
-                        style={{
-                          fontWeight: "600",
-                          borderRadius: "8px",
-                          transition: "all 0.3s ease",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = "#dc3545";
-                          e.currentTarget.style.color = "white";
-                          e.currentTarget.style.borderColor = "#dc3545";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = "transparent";
-                          e.currentTarget.style.color = "#dc3545";
-                          e.currentTarget.style.borderColor = "#dc3545";
-                        }}
+                       
                       >
                         Cancel
                       </button>
@@ -2311,20 +2297,8 @@ function EditContact() {
                     >
                       <button
                         onClick={updatecontact}
-                        className="btn btn-primary btn-sm form-control"
-                        style={{
-                          fontWeight: "600",
-                          borderRadius: "8px",
-                          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-                          transition: "all 0.3s ease",
-                          backgroundColor: "lightblue",
-                        }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#0056b3")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#0d6efd")
-                        }
+                        className="btn-global-primary form-control"
+                        
                       >
                         Update
                       </button>

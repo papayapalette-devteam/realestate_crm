@@ -94,3 +94,33 @@ code {
 .btn-primary-custom:active {
   transform: scale(1);
 }
+
+
+/* Primary button */
+.btn-global-primary {
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  background-color: lightblue;
+  border: none;
+}
+
+.btn-global-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Danger outline button */
+.btn-global-danger {
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.btn-global-danger:hover {
+  background-color: #dc3545;
+  color: #ffffff;
+}

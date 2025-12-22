@@ -1201,6 +1201,8 @@ const update_projectforinventories = async (req, res) => {
         .filter(Boolean);
     };
 
+ 
+    
     // ------------------ PARAMS ------------------
     const { project_name, unit_no, block } = req.params;
 
@@ -1230,8 +1232,8 @@ const update_projectforinventories = async (req, res) => {
       __v,
       createdAt,
       updatedAt,
-      // owner_details,
-      // associated_contact,
+      owner_details,
+      associated_contact,
       previousowner_details, // ignore client value
       ...restUnit
     } = req.body;
@@ -1240,8 +1242,8 @@ const update_projectforinventories = async (req, res) => {
     const updatedUnit = {
       ...restUnit,
 
-      // owner_details: normalizeIdArray(owner_details),
-      // associated_contact: normalizeIdArray(associated_contact),
+      owner_details: normalizeIdArray(owner_details),
+      associated_contact: normalizeIdArray(associated_contact),
 
       // take previous owner from DB only
       previousowner_details: normalizeIdArray(
@@ -1250,6 +1252,7 @@ const update_projectforinventories = async (req, res) => {
 
     };
 
+     
     // ------------------ JOI VALIDATION ------------------
     const { error } = unitSchema.validate(updatedUnit, {
       abortEarly: false,

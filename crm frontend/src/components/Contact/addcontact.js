@@ -302,370 +302,6 @@ function Addcontact() {
     }
   };
 
-  const professtiondetails = {
-    designation: {
-      Illustrator: ["Proprietor"],
-      Writer: ["Proprietor"],
-      "Digital Content Creator": ["Proprietor"],
-      "Social Media Influencer": ["Proprietor"],
-      Podcaster: ["Proprietor"],
-      "Music Producer": ["Proprietor"],
-      "Management Consultant": ["Proprietor"],
-      "Financial Advisor": ["Proprietor"],
-      "IT Consultant": ["Proprietor"],
-      "Business Strategist": ["Proprietor"],
-      "Marketing Consultant": ["Proprietor"],
-      "Life Coach": ["Proprietor"],
-      "Career Counselor": ["Proprietor"],
-      "Freelance Software Developer": ["Proprietor"],
-      "Web Developer": ["Proprietor"],
-      "Data Analyst": ["Proprietor"],
-      "App Developer": ["Proprietor"],
-      "UX/UI Designer": ["Proprietor"],
-      "Cybersecurity Consultant": ["Proprietor"],
-      "Private Practitioner (Doctor)": ["Proprietor"],
-      Physiotherapist: ["Proprietor"],
-      "Dietitian or Nutritionist": ["Proprietor"],
-      "Yoga Instructor": ["Proprietor"],
-      "Personal Trainer": ["Proprietor"],
-      "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)": [
-        "Proprietor",
-      ],
-      "Private Tutor": ["Proprietor"],
-      "Test Preparation Coach": ["Proprietor"],
-      "Online Educator": ["Proprietor"],
-      "Language Trainer": ["Proprietor"],
-      "Corporate Trainer": ["Proprietor"],
-      "Independent Lawyer": ["Proprietor"],
-      "Chartered Accountant (CA)": ["Proprietor"],
-      "Tax Consultant": ["Proprietor"],
-      Auditor: ["Proprietor"],
-      "Financial Planner": ["Proprietor"],
-      Tailor: ["Proprietor"],
-      Carpenter: ["Proprietor"],
-      Blacksmith: ["Proprietor"],
-      "Jewelry Maker": ["Proprietor"],
-      "Ceramic Artist": ["Proprietor"],
-      "Real Estate Agent": ["Proprietor"],
-      Broker: ["Proprietor"],
-      "Sales Representative": ["Proprietor"],
-      "Freelance Chef": ["Proprietor"],
-      "Event Planner": ["Proprietor"],
-      "Makeup Artist": ["Proprietor"],
-      Hairstylist: ["Proprietor"],
-      "Wedding Photographer": ["Proprietor"],
-      "Independent Farmer": ["Proprietor"],
-      "Organic Produce Supplier": ["Proprietor"],
-      Horticulturist: ["Proprietor"],
-
-      "Software Developer": ["Software Developer"],
-
-      "Human Resources (HR)": [
-        "HR Executives",
-        "Talent Acquisition Specialists",
-        "Employee Relations Managers",
-        "Training and Development Specialists",
-        "HR Business Partners",
-        "HR Executives",
-        "Talent Acquisition Specialists",
-        "Employee Relations Managers",
-        "Training and Development Specialists",
-        "HR Business Partners",
-      ],
-      Manager: [
-        "Marketing Managers",
-        "Brand Managers",
-        "Business Development Managers",
-        "Digital Marketing Specialists",
-        "Logistics Coordinators",
-        "Procurement Specialists",
-        "Inventory Managers",
-        "Client Relationship Managers",
-        "Social Media Managers",
-        "Event Planners",
-        "Facility Managers",
-        "Hotel Managers",
-        "Front Desk Executives",
-        "Event Coordinators",
-        "Start-up Employees",
-        "Team Manager",
-        "Operations Manager",
-        "General Manager",
-        "Operations Managers",
-        "Logistics Coordinators",
-        "Procurement Specialists",
-        "Inventory Managers",
-        "Innovation Managers",
-        "Customer Support Executives",
-        "Sales Manager",
-        "Public Relations Specialists",
-        "Office Managers",
-        "Executive Assistants",
-        "Receptionists",
-        "Innovation Managers",
-        "Customer Support Executives",
-        "Plant Managers",
-        "Quality Inspectors",
-        "Fleet Managers",
-        "Marketing Managers",
-        "Brand Managers",
-        "Business Development Managers",
-        "Digital Marketing Specialists",
-      ],
-
-      Technicians: [
-        "Technical Support Specialists",
-        "Maintenance Technicians",
-        "Lab Technicians",
-        "Technical Lead",
-        "Laboratory Technicians",
-      ],
-      Hospitality: ["Housekeeping Staff"],
-
-      Artist: ["Creative Artists", "Musicians"],
-      Engineer: [
-        "Junior Engineer",
-        "Project Engineer",
-        "Senior Engineer",
-        "Engineering Manager",
-      ],
-      "Freelance Graphic Designer": ["Proprietor"],
-      Photographer: ["Proprietor"],
-      Videographer: ["Proprietor"],
-      "Independent Artist": ["Proprietor"],
-      Illustrator: ["Proprietor"],
-      "Writer (Author, Blogger, or Copywriter)": ["Proprietor"],
-      "Digital Content Creator": ["Proprietor"],
-      "Social Media Influencer": ["Proprietor"],
-      Podcaster: ["Proprietor"],
-      "Music Producer": ["Proprietor"],
-      "Management Consultant": ["Proprietor"],
-      "Financial Advisor": ["Proprietor"],
-      "IT Consultant": ["Proprietor"],
-      "Business Strategist": ["Proprietor"],
-      "Marketing Consultant": ["Proprietor"],
-      "Life Coach": ["Proprietor"],
-      "Career Counselor": ["Proprietor"],
-      "Freelance Software Developer": ["Proprietor"],
-      "Web Developer": ["Proprietor"],
-      "Data Analyst": ["Proprietor"],
-      "App Developer": ["Proprietor"],
-      "UX/UI Designer": ["Proprietor"],
-      "Cybersecurity Consultant": ["Proprietor"],
-      "Private Practitioner (Doctor)": ["Proprietor"],
-      Physiotherapist: ["Proprietor"],
-      "Dietitian or Nutritionist": ["Proprietor"],
-      "Yoga Instructor": ["Proprietor"],
-      "Personal Trainer": ["Proprietor"],
-      "Alternative Medicine Practitioner (e.g., Homeopath, Naturopath)": [
-        "Proprietor",
-      ],
-      "Private Tutor": ["Proprietor"],
-      "Test Preparation Coach": ["Proprietor"],
-      "Online Educator": ["Proprietor"],
-      "Language Trainer": ["Proprietor"],
-      "Corporate Trainer": ["Proprietor"],
-      "Independent Lawyer": ["Proprietor"],
-      "Chartered Accountant (CA)": ["Proprietor"],
-      "Tax Consultant": ["Proprietor"],
-      Auditor: [
-        "Proprietor",
-        "Internal Auditor",
-        "Risk Auditor",
-        "Audit Manager",
-      ],
-      "Financial Planner": ["Proprietor"],
-      Tailor: ["Proprietor"],
-      Carpenter: ["Proprietor"],
-      Blacksmith: ["Proprietor"],
-      "Jewelry Maker": ["Proprietor"],
-      "Ceramic Artist": ["Proprietor"],
-      "Real Estate Agent": ["Proprietor"],
-      "Property Consultant": ["Proprietor"],
-      Broker: ["Proprietor"],
-      "Sales Representative": ["Proprietor"],
-      "Freelance Chef": ["Proprietor"],
-      "Event Planner": ["Proprietor"],
-      "Makeup Artist": ["Proprietor"],
-      Hairstylist: ["Proprietor"],
-      "Wedding Photographer": ["Proprietor"],
-      "Independent Farmer": ["Proprietor"],
-      "Organic Produce Supplier": ["Proprietor"],
-      Horticulturist: ["Proprietor"],
-      Investor: ["Angel Investor", "Venture Capitalist", "Portfolio Manager"],
-      Entrepreneurs: ["Founder", "Co-Founder", "CEO", "Managing Director"],
-      "Start-up Founders": ["Founder", "Co-Founder, CEO", "Visionary Leader"],
-      Retailer: [
-        "Shop Owner",
-        "Retail Manager",
-        "Proprietor",
-        "Franchise Owner",
-      ],
-      Wholesaler: [
-        "Wholesale Business Owner",
-        "Distribution Head",
-        "Supply Chain Owner",
-      ],
-      "Importer/Exporter": [
-        "Import/Export Manager",
-        "Trade Consultant",
-        "Supply Chain Owner",
-      ],
-      Distributor: [
-        "Chief Trading Officer",
-        "Trading Business Owner",
-        "Independent Trader",
-      ],
-      Trader: [
-        "Wholesale Business Owner",
-        "Distribution Head",
-        "Supply Chain Owner",
-      ],
-      "Real Estate Developer": [
-        "Real Estate Developer",
-        "Managing Partner",
-        "Property Consultant",
-      ],
-      "Real Eastate Investor": [
-        "Property Investor",
-        "Real Estate Strategist",
-        "Investment Manager",
-      ],
-      "Real Estate Agent": [
-        "Real Estate Consultant",
-        "Real Estate Advisor",
-        "Realtor",
-      ],
-      Manufacturer: [
-        "Factory Owner",
-        "Production Head",
-        "Chief Manufacturing Officer",
-      ],
-      Industrialist: [
-        "Business Tycoon",
-        "Industry Leader",
-        "Managing Director",
-      ],
-      Financer: [
-        "Chief Financial Officer (CFO)",
-        "Financial Advisor",
-        "Investment Consultant",
-      ],
-      "Stock Trader": ["Equity Investor", "Day Trader", "Portfolio Manager"],
-      "Hotel Owner": [
-        "Hospitality Owner",
-        "General Manager (GM)",
-        "Managing Director",
-      ],
-      "Resort Owner": [
-        "Resort Manager",
-        "Owner and Operator",
-        "Hospitality Director",
-      ],
-      "Travel Agency": [
-        "Travel Consultant",
-        "Tourism Business Owner",
-        "Founder",
-      ],
-      "Restaurant Owner": [
-        "Restaurant Manager",
-        "Food Entrepreneur",
-        "Culinary Director",
-      ],
-      Agriculturist: [
-        "Farm Owner",
-        "Agriculture Consultant",
-        "Rural Entrepreneur",
-      ],
-      "Dairy Business Owner": [
-        "Dairy Farmer",
-        "Milk Processing Entrepreneur",
-        "Managing Partner",
-      ],
-      "IT Person": [
-        "IT Consultant",
-        "Software Solutions Owner",
-        "IT Entrepreneur",
-        "Software Developers",
-        "System Administrators",
-        "IT Support Specialists",
-        "Data Scientists",
-        "Cybersecurity Analysts",
-        "Junior Developer",
-        "Full Stack Developer",
-        "Senior Software Engineer",
-        "Technical Lead",
-      ],
-      "Coaching Centre Owner": [
-        "Education Entrepreneur",
-        "Coaching Director",
-        "Academic Manager",
-      ],
-      "Training Institute Owner": [
-        "Training Consultant",
-        "Institute Director",
-        "Founder",
-      ],
-      "Online Tutor": ["Founder and Educator", "Academic Content Creator"],
-      "Private Tutor": ["Independent Tutor", "Education Consultant"],
-      "Hospital Owner": [
-        "Healthcare Entrepreneur",
-        "Medical Director",
-        "Hospital Administrator",
-      ],
-      "Wellness Centre Owner": [
-        "Wellness Consultant",
-        "Health and Fitness Director",
-        "Gym Owner",
-      ],
-      "Fitness Centre Owner": [
-        "Gym Owner",
-        "Fitness Director",
-        "Health Entrepreneur",
-      ],
-      "Advertising Agency Owner": [
-        "Creative Director",
-        "Marketing Strategist",
-        "Founder",
-      ],
-      "Film Producer": ["Producer", "Film Studio Owner", "Creative Producer"],
-      "Media House Owner": ["Media Entrepreneur", "Chief Editor", "Publisher"],
-      Designer: ["Creative Director", "Fashion Entrepreneur"],
-      Transporter: ["Logistics Manager", "Transport Business Owner"],
-      "Courier Servicer": ["Courier Business Owner", "Operations Manager"],
-      "Renewable Energy and Environment": [
-        "Renewable Energy Consultant",
-        "Sustainable Entrepreneur",
-      ],
-      Boutique: ["Fashion Boutique Owner", "Creative Head"],
-      "Salon Owner": ["Salon Manager", "Beauty Entrepreneur"],
-      "Security Service Provider": ["Security Agency Owner", "Operations Head"],
-      "Legal Firm Owner": ["Advocate and Owner", "Managing Partner"],
-      "Digital Business": ["Founder", "Digital Marketing Consultant"],
-      "Infrastructure Developer": [
-        "Real Estate Developer",
-        "Project Consultant",
-      ],
-      Agriculturist: ["Agribusiness Entrepreneur", "Food Processing Director"],
-      "Poultry Farm Owner": ["Poultry Business Owner", "Farm Manager"],
-      "Handicrafts Business Owner": [
-        "Artisan Entrepreneur",
-        "Creative Entrepreneur",
-      ],
-      "Investment Banker": ["Investment Advisor", "Wealth Manager"],
-      "Loan Cosultant": ["Financial Consultant", "Loan Advisor"],
-      "IT Company Owner": ["IT Entrepreneur", "Chief Technology Officer (CTO)"],
-      "Cloud Service Provider": [
-        "Cloud Solutions Architect",
-        "IT Entrepreneur",
-      ],
-      Emigration: ["Immigration Consultant", "Visa Solutions Provider"],
-      Catering: ["Catering Business Owner", "Culinary Director"],
-    },
-  };
-
-  const [availableSubcategories, setAvailableSubcategories] = useState([]);
-  const [availableDesignations, setAvailableDesignations] = useState([]);
 
   // Handle profession category change
   const handleProfessionCategoryChange = (event) => {
@@ -678,10 +314,7 @@ function Addcontact() {
       designation: "", // Reset designation when category changes
     }));
 
-    // Update available subcategories based on selected profession category
-    setAvailableSubcategories(
-      professtiondetails.profession_subcategory[selectedCategory] || []
-    );
+
   };
 
   // Handle profession subcategory change
@@ -694,10 +327,7 @@ function Addcontact() {
       designation: "", // Reset designation when subcategory changes
     }));
 
-    // Update available designations based on selected profession subcategory
-    setAvailableDesignations(
-      professtiondetails.designation[selectedSubcategory] || []
-    );
+ 
   };
 
   // Handle designation change
@@ -1313,7 +943,7 @@ function Addcontact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn1}
                       >
                         +
@@ -1365,7 +995,7 @@ function Addcontact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn2}
                       >
                         +
@@ -1706,7 +1336,7 @@ function Addcontact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn1}
                       >
                         +
@@ -1763,7 +1393,7 @@ function Addcontact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn2}
                       >
                         +
@@ -2432,7 +2062,7 @@ function Addcontact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn4}
                       >
                         +
@@ -2569,7 +2199,7 @@ function Addcontact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn5}
                       >
                         +
@@ -2621,7 +2251,7 @@ function Addcontact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn6}
                       >
                         +
@@ -2670,7 +2300,7 @@ function Addcontact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn7}
                       >
                         +
@@ -2777,7 +2407,7 @@ function Addcontact() {
                     <div className="col-md-1">
                       <label className="form-label">add</label>
                       <button
-                        className="form-control form-control-sm"
+                        className="form-control form-control-sm btn-add"
                         onClick={addFn8}
                       >
                         +
@@ -2809,23 +2439,9 @@ function Addcontact() {
                       style={{ marginTop: "20px" }}
                     >
                       <button
-                        className="btn btn-outline-danger btn-sm form-control"
+                        className="form-control btn-global-danger"
                         onClick={() => navigate(-1)}
-                        style={{
-                          fontWeight: "600",
-                          borderRadius: "8px",
-                          transition: "all 0.3s ease",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = "#dc3545";
-                          e.currentTarget.style.color = "white";
-                          e.currentTarget.style.borderColor = "#dc3545";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = "transparent";
-                          e.currentTarget.style.color = "#dc3545";
-                          e.currentTarget.style.borderColor = "#dc3545";
-                        }}
+                        
                       >
                         Cancel
                       </button>
@@ -2836,21 +2452,9 @@ function Addcontact() {
                       style={{ marginTop: "20px" }}
                     >
                       <button
-                        className="btn btn-primary btn-sm form-control"
+                        className="form-control btn-global-primary"
                         onClick={addcontact}
-                        style={{
-                          fontWeight: "600",
-                          borderRadius: "8px",
-                          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-                          transition: "all 0.3s ease",
-                          backgroundColor: "lightblue",
-                        }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#0056b3")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#0d6efd")
-                        }
+                       
                       >
                         Save
                       </button>

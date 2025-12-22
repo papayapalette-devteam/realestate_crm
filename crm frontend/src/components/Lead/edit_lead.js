@@ -12,13 +12,16 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Swal from "sweetalert2";
 import Lottie from "lottie-react";
-import { icon } from "@fortawesome/fontawesome-svg-core";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
-function Leadinfo() {
-  const location = useLocation(); // Get location object
-  const leadData = location.state?.leaddata; // Access lead data passed as state
+function Editlead() {
+
+
+   const location = useLocation(); // Get location object
+  const leadData = location?.state; // Access lead data passed as state
+  console.log(leadData);
+  
 
   // console.log(leadData);
   const [animationData, setAnimationData] = useState(null);
@@ -143,10 +146,27 @@ function Leadinfo() {
     matchingdeal: "",
   });
 
-  const [select_loading, setselect_loading] = useState("");
+    const getlead_byid = async () => {
+        try {
+          const resp = await api.get(`viewbyid/${leadData}`); 
+          setleadinfo(resp.data.lead[0]);
+        } catch (error) {
+          console.log(error);
+        }
+    };
+
+  useEffect(()=>
+  {
+    getlead_byid()
+
+  },[])
+
+  // console.log(leadinfo);
+  
+
 
    // =============================get all title==========================================
-
+    const [select_loading, setselect_loading] = useState("");
   
     const [All_Form_Title, setAll_Form_Title] = useState([]);
     const getall_form_title = async () => {
@@ -898,7 +918,7 @@ function Leadinfo() {
       country_code: [...leadinfo.country_code, ""],
       mobile_no: [...leadinfo.mobile_no, ""],
       mobile_type: [...leadinfo.mobile_type, ""],
-      action11: [...leadinfo.action11, ""],
+      action11: [...(leadinfo.action11 || []), ""], // ✅ safe
     });
   }
 
@@ -906,7 +926,7 @@ function Leadinfo() {
     const newcountry_code = leadinfo.country_code.filter((_, i) => i !== index);
     const newmobile_no = leadinfo.mobile_no.filter((_, i) => i !== index);
     const newmobile_type = leadinfo.mobile_type.filter((_, i) => i !== index);
-    const newaction11 = leadinfo.action11.filter((_, i) => i !== index);
+    const newaction11 = leadinfo?.action11?.filter((_, i) => i !== index);
 
     setleadinfo({
       ...leadinfo,
@@ -946,14 +966,14 @@ function Leadinfo() {
       ...leadinfo,
       email: [...leadinfo.email, ""],
       email_type: [...leadinfo.email_type, ""],
-      action22: [...leadinfo.action22, ""],
+      action22: [...(leadinfo.action22 || []), ""],
     });
   }
 
   const deleteall22 = (index) => {
     const newemail = leadinfo.email.filter((_, i) => i !== index);
     const newemail_type = leadinfo.email_type.filter((_, i) => i !== index);
-    const newaction22 = leadinfo.action22.filter((_, i) => i !== index);
+    const newaction22 = leadinfo?.action22?.filter((_, i) => i !== index);
 
     setleadinfo({
       ...leadinfo,
@@ -985,7 +1005,7 @@ function Leadinfo() {
       education: [...leadinfo.education, ""],
       degree: [...leadinfo.degree, ""],
       school_college: [...leadinfo.school_college, ""],
-      action4: [...leadinfo.action4, ""],
+      action4: [...(leadinfo.action22 || []), ""],
     });
   }
   const deleteall4 = (index) => {
@@ -1866,10 +1886,11 @@ function Leadinfo() {
     }
   }, [leadinfo.requirment]); // Trigger this effect whenever `data2` or `deals` changes
 
-  // ================================================matched deals code end===========================================================
+
+
 
   return (
-    <div>
+  <div>
       <div id="h">
         <Header1 />
       </div>
@@ -1888,7 +1909,7 @@ function Leadinfo() {
                     style={{ cursor: "pointer" }}
                     onClick={() => window.location.reload()}
                   >
-                    Add Lead
+                    Update Lead
                   </h1>
                 </div>
                 <hr></hr>
@@ -1939,14 +1960,14 @@ function Leadinfo() {
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, title: e.target.value })
                       }
-                      onClick={() => {
+                       onClick={() => {
                           if (All_Form_Title.length === 0) {
                             getall_form_title();
                           }
                         }}
                     >
-                      <option>{leadData?.title || "Mr."}</option>
-                       {select_loading === "title" ? (
+                      <option>{leadinfo?.title || "Mr."}</option>
+                    {select_loading === "title" ? (
                           <option>⏳ Loading...</option>
                         ) : (
                           <>
@@ -1966,7 +1987,7 @@ function Leadinfo() {
                     <label className="form-label">Name</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.first_name || ""}
+                      defaultValue={leadinfo?.first_name || ""}
                       required="true"
                       className="form-control form-control-sm"
                       onChange={(e) =>
@@ -1978,7 +1999,7 @@ function Leadinfo() {
                     <label className="form-label">Surname</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.last_name || ""}
+                      defaultValue={leadinfo?.last_name || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, last_name: e.target.value })
@@ -2009,6 +2030,7 @@ function Leadinfo() {
                           <option>⏳ Loading...</option>
                         ) : (
                           <>
+                          <option>{leadinfo?.country_code[index]}</option>
                             <option value="">-- Select Country Code --</option>
 
                             {/* Dynamic Fetched List */}
@@ -2030,6 +2052,7 @@ function Leadinfo() {
                         required="true"
                         style={{ marginTop: "1px" }}
                         className="form-control form-control-sm"
+                        value={leadinfo?.mobile_no[index]}
                         placeholder="enter phone number"
                         onChange={(event) =>
                           handlemobile_nochange1(index, event)
@@ -2047,6 +2070,7 @@ function Leadinfo() {
                           handlemobile_typechange1(index, event)
                         }
                       >
+                        <option>{leadinfo?.mobile_type[index] || "---Select---"}</option>
                         <option>Personal</option>
                         <option>Official</option>
                         <option>Home</option>
@@ -2056,9 +2080,9 @@ function Leadinfo() {
                   </div>
                   <div
                     className="col-md-1  custom-input"
-                    style={{ marginTop: "70px" }}
+                    style={{ marginTop: "50px" }}
                   >
-                    {leadinfo.action11.map((item, index) => (
+                    {leadinfo?.mobile_no?.map((item, index) => (
                       <div style={{ marginTop: "10px" }}>
                         {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall11(index)} style={{height:"40px",cursor:"pointer"}}/> */}
                         <span
@@ -2094,6 +2118,7 @@ function Leadinfo() {
                         style={{ marginTop: "1px" }}
                         className="form-control form-control-sm"
                         placeholder="enter email-id"
+                        value={leadinfo?.email[index]}
                         onChange={(event) => handleemailchange1(index, event)}
                       />
                     ))}
@@ -2109,6 +2134,7 @@ function Leadinfo() {
                           handleemail_typechange1(index, event)
                         }
                       >
+                        <option>{leadinfo?.email_type[index] || "---Select---"}</option>
                         <option>Personal</option>
                         <option>Official</option>
                         <option>Business</option>
@@ -2118,9 +2144,9 @@ function Leadinfo() {
 
                   <div
                     className="col-md-1  custom-input"
-                    style={{ marginTop: "70px" }}
+                    style={{ marginTop: "50px" }}
                   >
-                    {leadinfo.action22.map((item, index) => (
+                    {leadinfo?.email?.map((item, index) => (
                       <div style={{ marginTop: "10px" }}>
                         {/* <img  src="https://t4.ftcdn.net/jpg/03/46/38/39/360_F_346383913_JQecl2DhpHy2YakDz1t3h0Tk3Ov8hikq.jpg" alt="delete button" onClick={()=>deleteall22(index)} style={{height:"40px",cursor:"pointer"}}/> */}
                         <span
@@ -2152,7 +2178,7 @@ function Leadinfo() {
                     <label className="form-label">Tags</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.tags || ""}
+                      defaultValue={leadinfo?.tags || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, tags: e.target.value })
@@ -2162,7 +2188,7 @@ function Leadinfo() {
                   <div className="col-md-10  custom-input">
                     <label className="form-label">Descriptions</label>
                     <textarea
-                      defaultValue={leadData?.descriptions || ""}
+                      defaultValue={leadinfo?.descriptions || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({
@@ -2191,7 +2217,7 @@ function Leadinfo() {
                         setleadinfo({ ...leadinfo, stage: e.target.value })
                       }
                     >
-                      <option>{leadData?.stage || "---Select---"}</option>
+                      <option>{leadinfo?.stage || "---Select---"}</option>
                       <option>Incoming</option>
                       <option>Prospect</option>
                       <option>Negotiation</option>
@@ -2215,7 +2241,7 @@ function Leadinfo() {
                         setleadinfo({ ...leadinfo, lead_type: e.target.value })
                       }
                     >
-                      <option>{leadData?.lead_type || "---Select---"}</option>
+                      <option>{leadinfo?.lead_type || "---Select---"}</option>
                       <option>Hot</option>
                       <option>Warm</option>
                       <option>Cold</option>
@@ -2223,14 +2249,7 @@ function Leadinfo() {
                   </div>
                   <div className="col-md-6 custom-input">
                     <label className="form-label">Owner</label>
-                    {/* <select className="form-control form-control-sm"onChange={(e)=>setleadinfo({...leadinfo,owner:e.target.value})}>
-                              <option>{leadData?.owner[0] || '---select---'}</option>
-                              <option>Suraj</option> 
-                              <option>Suresh Kumar</option>
-                              <option>Ramesh Singh</option>
-                              <option>Maanav Sharma</option>
-                              <option>Sukram</option>
-                        </select> */}
+            
                     <Select
                       className="form-control form-control-sm"
                       style={{ border: "none" }}
@@ -2240,7 +2259,7 @@ function Leadinfo() {
                       renderValue={(selected) => selected.join(", ")}
                     >
                       <MenuItem disabled value="---select---">
-                        {leadData?.owner || "---select---"}
+                        {leadinfo?.owner || "---select---"}
                       </MenuItem>
                       {ownersList.map((name) => (
                         <MenuItem key={name} value={name}>
@@ -2258,7 +2277,7 @@ function Leadinfo() {
                         setleadinfo({ ...leadinfo, team: e.target.value })
                       }
                     >
-                      <option>{leadData?.team || "---select---"}</option>
+                      <option>{leadinfo?.team || "---select---"}</option>
                       <option>Sales</option>
                       <option>Marketing</option>
                       <option> Post Sales</option>
@@ -2273,7 +2292,7 @@ function Leadinfo() {
                         setleadinfo({ ...leadinfo, visible_to: e.target.value })
                       }
                     >
-                      <option>{leadData?.visible_to || "---Select---"}</option>
+                      <option>{leadinfo?.visible_to || "---Select---"}</option>
                       <option>My Team</option>
                       <option>My Self</option>
                       <option>All Users</option>
@@ -2299,7 +2318,7 @@ function Leadinfo() {
                         setleadinfo({ ...leadinfo, campaign: e.target.value })
                       }
                     >
-                      <option>{leadData?.campaign || "---Select---"}</option>
+                      <option>{leadinfo?.campaign || "---Select---"}</option>
                       <option>Online Campaign</option>
                       <option>Offline Campaign</option>
                       <option>Organic Campaign</option>
@@ -2313,7 +2332,7 @@ function Leadinfo() {
                         setleadinfo({ ...leadinfo, source: e.target.value })
                       }
                     >
-                      <option>{leadData?.source || "---Select---"}</option>
+                      <option>{leadinfo?.source || "---Select---"}</option>
                       {getSourceOptions().map((source, index) => (
                         <option key={index} value={source}>
                           {source}
@@ -2329,7 +2348,7 @@ function Leadinfo() {
                         setleadinfo({ ...leadinfo, sub_source: e.target.value })
                       }
                     >
-                      <option>{leadData?.sub_source || "---Select---"}</option>
+                      <option>{leadinfo?.sub_source || "---Select---"}</option>
                       <option>Call</option>
                       <option>Sms</option>
                       <option>Email</option>
@@ -2345,7 +2364,7 @@ function Leadinfo() {
                         <select className="form-control form-control-sm" onChange={(e) => setleadinfo({ ...leadinfo, channel_partner: e.target.value })}
                           value={leadinfo.channel_partner || ''}
                          >
-                          <option value="">{leadData?.channel_partner || '---Select---'}</option>
+                          <option value="">{leadinfo?.channel_partner || '---Select---'}</option>
                        {
                         contactdata
                         .map((item)=>
@@ -2425,7 +2444,7 @@ function Leadinfo() {
                         setleadinfo({ ...leadinfo, requirment: e.target.value })
                       }
                     >
-                      <option>Select</option>
+                     <option>{leadinfo?.requirment || "---Select---"}</option>
                       {requirment.map((item) => (
                         <option>{item}</option>
                       ))}
@@ -3156,12 +3175,12 @@ function Leadinfo() {
                       renderValue={(selected) => selected.join(", ")}
                     >
                       {/* <MenuItem disabled value="---select---">
-                    {leadData?.facing || '---select---'}
+                    {leadinfo?.facing || '---select---'}
                 </MenuItem> */}
                       <MenuItem value="select-all">
                         <Checkbox checked={facings.length === facing.length} />
                         <ListItemText
-                          primary={leadData?.facing || "---select all---"} // Display leadData.matched_deal or fallback to '---select---'
+                          primary={leadinfo?.facing || "---select all---"} // Display leadinfo.matched_deal or fallback to '---select---'
                         />
                       </MenuItem>
                       {facing.map((name) => (
@@ -3183,12 +3202,12 @@ function Leadinfo() {
                       renderValue={(selected) => selected.join(", ")}
                     >
                       {/* <MenuItem disabled value="---select---">
-                    {leadData?.road || '---select---'}
+                    {leadinfo?.road || '---select---'}
                 </MenuItem> */}
                       <MenuItem value="select-all">
                         <Checkbox checked={roads.length === road.length} />
                         <ListItemText
-                          primary={leadData?.road || "---select all---"} // Display leadData.matched_deal or fallback to '---select---'
+                          primary={leadinfo?.road || "---select all---"} // Display leadinfo.matched_deal or fallback to '---select---'
                         />
                       </MenuItem>
                       {road.map((name) => (
@@ -3210,14 +3229,14 @@ function Leadinfo() {
                       renderValue={(selected) => selected.join(", ")}
                     >
                       {/* <MenuItem disabled value="---select---">
-                    {leadData?.road || '---select---'}
+                    {leadinfo?.road || '---select---'}
                 </MenuItem> */}
                       <MenuItem value="select-all">
                         <Checkbox
                           checked={directions.length === direction.length}
                         />
                         <ListItemText
-                          primary={leadData?.direction || "---select all---"} // Display leadData.matched_deal or fallback to '---select---'
+                          primary={leadinfo?.direction || "---select all---"} // Display leadinfo.matched_deal or fallback to '---select---'
                         />
                       </MenuItem>
                       {direction.map((name) => (
@@ -3316,7 +3335,7 @@ function Leadinfo() {
                       renderValue={(selected) => selected.join(", ")}
                     >
                       {/* <MenuItem disabled value="---select---">
-                    {leadData?.road || '---select---'}
+                    {leadinfo?.road || '---select---'}
                 </MenuItem> */}
                       <MenuItem value="select-all">
                         <Checkbox
@@ -3326,7 +3345,7 @@ function Leadinfo() {
                           }
                         />
                         <ListItemText
-                          primary={leadData?.unit_type2 || "---select all---"} // Display leadData.matched_deal or fallback to '---select---'
+                          primary={leadinfo?.unit_type2 || "---select all---"} // Display leadinfo.matched_deal or fallback to '---select---'
                         />
                       </MenuItem>
                       {propertyunittype.map((name) => (
@@ -3402,7 +3421,7 @@ function Leadinfo() {
                           checked={matchdeals.length === matchdeal.length}
                         />
                         <ListItemText
-                          primary={leadData?.matched_deal || "---select all---"} // Display leadData.matched_deal or fallback to '---select---'
+                          primary={leadinfo?.matched_deal || "---select all---"} // Display leadinfo.matched_deal or fallback to '---select---'
                         />
                       </MenuItem>
                       {matchdeal.map((name) => (
@@ -3509,7 +3528,7 @@ function Leadinfo() {
                       }
                     >
                       <option>
-                        {leadData?.company_name || "---Select---"}
+                        {leadinfo?.company_name || "---Select---"}
                       </option>
                       <option>---Select company---</option>
                       {cdata.map((item) => (
@@ -3561,7 +3580,7 @@ function Leadinfo() {
                     <label className="form-label">Father/Husband name</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.father_husband_name || ""}
+                      defaultValue={leadinfo?.father_husband_name || ""}
                       className="form-control form-control-sm"
                     />
                   </div>
@@ -3570,7 +3589,7 @@ function Leadinfo() {
                     <label className="form-label">H.No</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.h_no || ""}
+                      defaultValue={leadinfo?.h_no || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, h_no: e.target.value })
@@ -3581,7 +3600,7 @@ function Leadinfo() {
                     <label className="form-label">Area(area1)</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.area1 || ""}
+                      defaultValue={leadinfo?.area1 || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, area1: e.target.value })
@@ -3593,7 +3612,7 @@ function Leadinfo() {
                     <label className="form-label">Location(location1)</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.location1 || ""}
+                      defaultValue={leadinfo?.location1 || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, location1: e.target.value })
@@ -3604,7 +3623,7 @@ function Leadinfo() {
                     <label className="form-label">City(city1)</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.city1 || ""}
+                      defaultValue={leadinfo?.city1 || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, city1: e.target.value })
@@ -3615,7 +3634,7 @@ function Leadinfo() {
                     <label className="form-label">Pin Code(pincode1)</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.pincode1 || ""}
+                      defaultValue={leadinfo?.pincode1 || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, pincode1: e.target.value })
@@ -3627,7 +3646,7 @@ function Leadinfo() {
                     <label className="form-label">State(state1)</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.state1 || ""}
+                      defaultValue={leadinfo?.state1 || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, state1: e.target.value })
@@ -3638,7 +3657,7 @@ function Leadinfo() {
                     <label className="form-label">Country(country1)</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.country1 || ""}
+                      defaultValue={leadinfo?.country1 || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, country1: e.target.value })
@@ -3664,7 +3683,7 @@ function Leadinfo() {
                         setleadinfo({ ...leadinfo, gender: e.target.value })
                       }
                     >
-                      <option>{leadData?.gender || "---Select---"}</option>
+                      <option>{leadinfo?.gender || "---Select---"}</option>
                       <option>Male</option>
                       <option>Female</option>
                       <option>Others</option>
@@ -3682,7 +3701,7 @@ function Leadinfo() {
                       }
                     >
                       <option>
-                        {leadData?.maritial_status || "---Select---"}
+                        {leadinfo?.maritial_status || "---Select---"}
                       </option>
                       <option>Married</option>
                       <option>Unmarried</option>
@@ -3694,7 +3713,7 @@ function Leadinfo() {
                     <label className="form-label">Birth Date</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.birth_date || ""}
+                      defaultValue={leadinfo?.birth_date || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({ ...leadinfo, birth_date: e.target.value })
@@ -3705,7 +3724,7 @@ function Leadinfo() {
                     <label className="form-label">Anniversary Date</label>
                     <input
                       type="text"
-                      defaultValue={leadData?.anniversary_date || ""}
+                      defaultValue={leadinfo?.anniversary_date || ""}
                       className="form-control form-control-sm"
                       onChange={(e) =>
                         setleadinfo({
@@ -3729,7 +3748,7 @@ function Leadinfo() {
                               }
                             >
                               <option>
-                                {leadData?.education[index] || "---select---"}
+                                {leadinfo?.education[index] || "---select---"}
                               </option>
                               <option>Kindergaren</option>
                               <option>School</option>
@@ -3755,7 +3774,7 @@ function Leadinfo() {
                               }
                             >
                               <option>
-                                {leadData?.degree[index] || "---Select---"}
+                                {leadinfo?.degree[index] || "---Select---"}
                               </option>
                               <optgroup label="Bachelor’s ">
                                 <option>Bachelor of Arts (BA) </option>
@@ -3863,7 +3882,7 @@ function Leadinfo() {
                               type="text"
                               className="form-control form-control-sm"
                               defaultValue={
-                                leadData?.school_college[index] || ""
+                                leadinfo?.school_college[index] || ""
                               }
                               onChange={(event) =>
                                 handleschool_collegeChange(index, event)
@@ -3918,7 +3937,7 @@ function Leadinfo() {
                             onChange={(event) => handleloanchange(index, event)}
                           >
                             <option>
-                              {leadData?.loan[index] || "---Select---"}
+                              {leadinfo?.loan[index] || "---Select---"}
                             </option>
                             <option>Home Loan </option>
                             <option>Auto Loan</option>
@@ -3941,7 +3960,7 @@ function Leadinfo() {
                             onChange={(event) => handlebankchange(index, event)}
                           >
                             <option>
-                              {leadData?.bank[index] || "---Select---"}
+                              {leadinfo?.bank[index] || "---Select---"}
                             </option>
                             <option>State Bank of India (SBI) </option>
                             <option>Punjab National Bank (PNB)</option>
@@ -4023,7 +4042,7 @@ function Leadinfo() {
                       ? leadinfo.amount.map((item, index) => (
                           <input
                             type="text"
-                            defaultValue={leadData?.amount[index] || ""}
+                            defaultValue={leadinfo?.amount[index] || ""}
                             style={{ marginTop: "1px" }}
                             className="form-control form-control-sm"
                             onCanPlay={(event) =>
@@ -4079,7 +4098,7 @@ function Leadinfo() {
                             }
                           >
                             <option>
-                              {leadData?.social_media[index] || "---Select---"}
+                              {leadinfo?.social_media[index] || "---Select---"}
                             </option>
                             <option>Facebook</option>
                             <option>Twitter</option>
@@ -4096,7 +4115,7 @@ function Leadinfo() {
                       ? leadinfo.url.map((item, index) => (
                           <input
                             type="text"
-                            defaultValue={leadData?.url[index] || ""}
+                            defaultValue={leadinfo?.url[index] || ""}
                             className="form-control form-control-sm"
                             style={{ marginTop: "1px" }}
                             onChange={(event) => handleurlChange(index, event)}
@@ -4150,7 +4169,7 @@ function Leadinfo() {
                             }
                           >
                             <option>
-                              {leadData?.income[index] || "---Select---"}
+                              {leadinfo?.income[index] || "---Select---"}
                             </option>
                             <option>Personal Income</option>
                             <option>Business Income</option>
@@ -4164,7 +4183,7 @@ function Leadinfo() {
                       ? leadinfo.amount1.map((item, index) => (
                           <input
                             type="text"
-                            defaultValue={leadData?.amount1[index] || ""}
+                            defaultValue={leadinfo?.amount1[index] || ""}
                             style={{ marginTop: "1px" }}
                             className="form-control form-control-sm"
                             onChange={(event) =>
@@ -4214,7 +4233,7 @@ function Leadinfo() {
                       ? leadinfo.document_no.map((item, index) => (
                           <input
                             type="text"
-                            defaultValue={leadData?.document_no[index] || ""}
+                            defaultValue={leadinfo?.document_no[index] || ""}
                             style={{ marginTop: "1px" }}
                             className="form-control form-control-sm"
                             onChange={(event) =>
@@ -4236,7 +4255,7 @@ function Leadinfo() {
                             }
                           >
                             <option>
-                              {leadData?.document_name[index] || "---Select---"}
+                              {leadinfo?.document_name[index] || "---Select---"}
                             </option>
                             <option>Adhar Card </option>
                             <option>Pan Card </option>
@@ -4759,4 +4778,4 @@ function Leadinfo() {
   );
 }
 
-export default Leadinfo;
+export default Editlead;

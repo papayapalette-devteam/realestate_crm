@@ -5,6 +5,7 @@ import AuthGuard from "./components/Others/autguard.js";
 
 
 
+
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -81,9 +82,7 @@ const FeaturedAminities = lazy(() => import("./components/Settings/Configuration
 const Destination = lazy(() => import("./components/Settings/Configuration/destination.js"));
 const Funding = lazy(() => import("./components/Settings/Configuration/funding.js"));
 const Timeline = lazy(() => import("./components/Settings/Configuration/timeline.js"));
-
-
-
+const Editlead = lazy(() => import("./components/Lead/edit_lead.js"));
 
 
 
@@ -100,6 +99,7 @@ function App() {
             <Route path="/addcontact" element={<Addcontact />} />
             <Route path="/edit-contact" element={<EditContact />} />
             <Route path="/leadinfo" element={<Leadinfo />} />
+            <Route path="/edit-lead" element={<Editlead/>} />
             <Route path="/leadinfo-personal" element={<Leadinfo_personal />} />
             <Route path="/leadinfo-requirment" element={<Leadinfo_requirment />} />
             <Route path="/calltaskform" element={<Call_task_form />} />

@@ -1790,6 +1790,8 @@ unitPayload.associated_contact = toIdArray(units.associated_contact);
         logged_user: logged_user?.name ? logged_user.name : logged_user.Name,
       };
       const resp = await api.post("addfeedback", feedbackform);
+      console.log(resp);
+      
       if (resp.status === 200) {
         let htmlContent = "<p>Feedback submitted successfully!</p>";
 
