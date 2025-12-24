@@ -16,7 +16,8 @@ import {
   mdiHeadset,
   mdiBullhorn,
   mdiCogOutline,
-  mdiLogoutVariant
+  mdiLogoutVariant,
+  mdiRulerSquare 
 } from '@mdi/js';
 import '../css/mystyle.css';
 
@@ -105,6 +106,12 @@ function Sidebar1() {
                   <Link to="/allunits" className="sidebar__sublink">
                     <Icon path={mdiDomain} size={1} className="sidebar__icon" />
                     Units
+                  </Link>
+                </li>
+                 <li>
+                  <Link to="/allsizes" className="sidebar__sublink">
+                    <Icon path={mdiRulerSquare } size={1} className="sidebar__icon" />
+                    Sizes
                   </Link>
                 </li>
                 <li>

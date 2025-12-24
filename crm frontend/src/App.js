@@ -4,8 +4,6 @@ import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
 
 
-
-
 // Lazy imports
 const Addcontact = lazy(() => import("./components/Contact/addcontact"));
 const EditContact = lazy(() => import("./components/Contact/edit_contact.js"));
@@ -83,6 +81,8 @@ const Destination = lazy(() => import("./components/Settings/Configuration/desti
 const Funding = lazy(() => import("./components/Settings/Configuration/funding.js"));
 const Timeline = lazy(() => import("./components/Settings/Configuration/timeline.js"));
 const Editlead = lazy(() => import("./components/Lead/edit_lead.js"));
+const AllSizes = lazy(() => import("./components/Sizes/all_size.js"));
+
 
 
 
@@ -144,6 +144,7 @@ function App() {
             <Route path="/allprojects" element={<Allprojects />} />
             <Route path="/allunits" element={<Allunits />} />
             <Route path="/edit-unit" element={<EditUnit />} />
+            <Route path="/allsizes" element={<AllSizes />} />
             <Route path="/add-sub-admin" element={<AddSubAdmin />} />
 
             <Route path="/configuration-form-title" element={<FormTitle/>} />

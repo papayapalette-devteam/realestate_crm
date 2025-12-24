@@ -492,6 +492,172 @@ statusCounts.forEach((item) => {
   }
 };
 
+const view_sizes = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const search = req.query.search ? req.query.search.trim() : "";
+
+
+    
+
+    let activeFilters = [];
+    if (req.query.activeFilters) {
+      try {
+        activeFilters = JSON.parse(req.query.activeFilters);
+      } catch (e) {
+        console.error("Invalid activeFilters JSON:", e);
+      }
+    }
+
+    let matchStage = {};
+
+    const loginUser = req.query.login_user;
+    if (loginUser) {
+      matchStage.owner = { $in: [loginUser] }; // owner is an array
+    }
+
+
+    
+    // 🔹 Search
+    if (search) {
+      matchStage.$or = [
+        { "add_size.size_name": { $regex: search, $options: "i" } },
+        { "add_size.block1": { $regex: search, $options: "i" } },
+        { "add_size.unit_type": { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // 🔹 Filters
+    if (activeFilters.length > 0) {
+      activeFilters.forEach((filter) => {
+        const fieldPath = `add_unit.${filter.field}`;
+
+        if (
+          filter.field &&
+          Array.isArray(filter.checked) &&
+          filter.checked.length > 0
+        ) {
+          const cleanValues = filter.checked.filter(
+            (v) => v !== null && v !== undefined && v !== ""
+          );
+          if (cleanValues.length > 0) {
+            if (filter.radio === "with") {
+              matchStage[fieldPath] = { $in: cleanValues };
+            } else if (filter.radio === "without") {
+              matchStage[fieldPath] = { $nin: cleanValues };
+            }
+          }
+        }
+
+        if (filter.field && filter.input && filter.input.trim() !== "") {
+          if (filter.radio === "with") {
+            matchStage[fieldPath] = {
+              $regex: filter.input.trim(),
+              $options: "i",
+            };
+          } else if (filter.radio === "without") {
+            matchStage[fieldPath] = {
+              $not: new RegExp(filter.input.trim(), "i"),
+            };
+          }
+        }
+      });
+    }
+
+
+    
+    const sizes = await addproject.aggregate(
+      [
+        { $unwind: "$add_size" },
+        Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
+
+        // ✅ Safe numeric extraction from unit_no
+        // {
+        //   $addFields: {
+        //     numericSize: {
+        //       $toInt: {
+        //         $ifNull: [
+        //           {
+        //             $getField: {
+        //               field: "match",
+        //               input: {
+        //                 $regexFind: {
+        //                   input: { $ifNull: ["$add_size.size_name", ""] },
+        //                   regex: "\\d+",
+        //                 },
+        //               },
+        //             },
+        //           },
+        //           "0",
+        //         ],
+        //       },
+        //     },
+        //   },
+        // },
+
+        // // ✅ Sort by numeric part only
+        // { $sort: { numericSize: 1 } },
+
+        // Pagination
+        { $skip: skip },
+        { $limit: limit },
+
+      ].filter(Boolean)
+    );
+
+    // Count total
+    const totalCount = await addproject.aggregate(
+      [
+        { $unwind: "$add_size" },
+        Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
+        { $count: "count" },
+      ].filter(Boolean)
+    );
+
+    const total = totalCount[0]?.count || 0;
+    const totalPages = Math.ceil(total / limit);
+
+    // Category Count
+let pipeline = [
+  { $unwind: "$add_size" },
+  Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
+  { $unwind: "$add_size.category" },
+  {
+    $group: {
+      _id: "$add_size.category",
+      count: { $sum: 1 }
+    }
+  }
+];
+
+// Remove null entries
+pipeline = pipeline.filter(Boolean);
+
+const categoryCount = await addproject.aggregate(pipeline);
+
+
+let categoryResult = {};
+categoryCount.forEach((item) => {
+  categoryResult[item._id] = item.count;
+});
+
+
+    res.status(200).json({
+      message: "Sizes fetched successfully",
+      sizes: sizes.map((u) => u.add_size),
+      total,
+      page,
+      totalPages,
+      categoryCount: categoryResult,
+    });
+  } catch (error) {
+    console.error("view sizes error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 const view_project_Byid = async (req, res) => {
   try {
     const _id = req.params._id;
@@ -2004,6 +2170,7 @@ module.exports = {
   delete_projectforinventories,
   update_projectforinventoriesbulk,
   view_units,
+  view_sizes,
   view_projectforadddeal,
   getGroupedDataproject,
   getGroupedUnitData,

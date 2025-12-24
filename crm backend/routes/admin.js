@@ -118,6 +118,7 @@ const {
   view_project_units,
   checkDuplicatesController,
   addUnitsToProject,
+  view_sizes,
 } = require("../controllers/project");
 const {
   add_deal,
@@ -262,6 +263,7 @@ router.post("/add-units",  addUnitsToProject);
 router.get("/viewproject", view_project);
 router.get("/viewprojectforadddeal", view_projectforadddeal);
 router.get("/viewallunits", view_units);
+router.get("/view-all-size", view_sizes);
 router.get("/viewprojectbyid/:_id", view_project_Byid);
 router.get("/viewprojectunits/:_id",view_project_units);
 router.get("/viewprojectbyname/:name", view_projectbyname);
