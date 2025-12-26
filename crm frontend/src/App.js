@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "../src/App.css";
 import AuthGuard from "./components/Others/autguard.js";
+import EditSize from "./components/Sizes/edit_size.js";
 
 
 // Lazy imports
@@ -145,6 +146,7 @@ function App() {
             <Route path="/allunits" element={<Allunits />} />
             <Route path="/edit-unit" element={<EditUnit />} />
             <Route path="/allsizes" element={<AllSizes />} />
+            <Route path="/edit-size" element={<EditSize />} />
             <Route path="/add-sub-admin" element={<AddSubAdmin />} />
 
             <Route path="/configuration-form-title" element={<FormTitle/>} />

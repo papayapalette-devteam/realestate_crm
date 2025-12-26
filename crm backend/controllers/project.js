@@ -1,4 +1,5 @@
 const addproject = require("../models/project");
+const mongoose=require('mongoose')
 const adddeal = require("../models/deal.js");
 const add_contact = require("../models/add_contact");
 const path = require("path");
@@ -573,32 +574,7 @@ const view_sizes = async (req, res) => {
         { $unwind: "$add_size" },
         Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
 
-        // ✅ Safe numeric extraction from unit_no
-        // {
-        //   $addFields: {
-        //     numericSize: {
-        //       $toInt: {
-        //         $ifNull: [
-        //           {
-        //             $getField: {
-        //               field: "match",
-        //               input: {
-        //                 $regexFind: {
-        //                   input: { $ifNull: ["$add_size.size_name", ""] },
-        //                   regex: "\\d+",
-        //                 },
-        //               },
-        //             },
-        //           },
-        //           "0",
-        //         ],
-        //       },
-        //     },
-        //   },
-        // },
-
-        // // ✅ Sort by numeric part only
-        // { $sort: { numericSize: 1 } },
+       
 
         // Pagination
         { $skip: skip },
@@ -657,6 +633,93 @@ categoryCount.forEach((item) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+
+const getProjectDataBySizeId = async (req, res) => {
+  try {
+    const { _id } = req.params;
+
+    // ✅ Convert string to ObjectId
+    const sizeObjectId = new mongoose.Types.ObjectId(_id);
+ 
+    // if (!mongoose.Types.ObjectId.isValid(_id)) {
+    //   return res.status(400).json({ message: "Invalid size id" });
+    // }
+
+
+    const pipeline = [
+      // 1️⃣ Unwind sizes
+      { $unwind: "$add_size" },
+
+      // 2️⃣ Match size _id
+      {
+        $match: {
+          "add_size._id": sizeObjectId,
+        },
+      },
+
+      // 3️⃣ Project required project fields
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          add_block: 1,
+          category: 1,
+          sub_category: 1,
+        },
+      },
+    ];
+
+    const result = await addproject.aggregate(pipeline);
+
+    if (!result.length) {
+      return res.status(404).json({ message: "Size not found in any project" });
+    }
+
+    res.status(200).json({
+      success: true,
+      project: result[0],
+    });
+
+  } catch (error) {
+    console.error("getProjectDataBySizeId error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+const updateSize = async (req, res) => {
+  try {
+    const { _id, ...updateData } = req.body; // _id = add_size._id
+
+    const updateFields = {};
+    Object.keys(updateData).forEach((key) => {
+      updateFields[`add_size.$.${key}`] = updateData[key];
+    });
+
+    const result = await addproject.findOneAndUpdate(
+      { "add_size._id": _id },     // 🔑 identify project + size
+      { $set: updateFields },
+      { new: true }
+    );
+
+    if (!result) {
+      return res.status(404).json({ message: "Size not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Size updated successfully",
+    });
+  } catch (error) {
+    console.error("updateSize error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
 
 const view_project_Byid = async (req, res) => {
   try {
@@ -2176,7 +2239,9 @@ module.exports = {
   getGroupedUnitData,
   view_project_units,
   checkDuplicatesController,
-  addUnitsToProject
+  addUnitsToProject,
+  getProjectDataBySizeId,
+  updateSize
 };
 
 

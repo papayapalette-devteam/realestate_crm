@@ -2803,7 +2803,7 @@ function handleCheckbox(idx, val) {
                 }
                 // onClick={handleShow9}
                 onClick={() =>
-                  navigate("/edit-unit", { state: selectedItems3[0] })
+                  navigate("/edit-size", { state: selectedItems3[0] })
                 }
                 onMouseEnter={() => setIsHoveringEdit(true)}
                 onMouseLeave={() => setIsHoveringEdit(false)}
