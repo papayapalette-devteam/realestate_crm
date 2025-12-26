@@ -501,6 +501,7 @@ const view_sizes = async (req, res) => {
     const search = req.query.search ? req.query.search.trim() : "";
 
 
+    console.log(activeFilters);
     
 
     let activeFilters = [];
@@ -643,9 +644,7 @@ const getProjectDataBySizeId = async (req, res) => {
     // ✅ Convert string to ObjectId
     const sizeObjectId = new mongoose.Types.ObjectId(_id);
  
-    // if (!mongoose.Types.ObjectId.isValid(_id)) {
-    //   return res.status(400).json({ message: "Invalid size id" });
-    // }
+
 
 
     const pipeline = [
@@ -997,153 +996,7 @@ const update_project = async (req, res) => {
 
     let existingUnits = user.add_unit || [];
 
-    // const imagefiles = [];
-
-    // if (req.files) {
-    //   const imagefield = req.files.filter((file) =>
-    //     file.fieldname.includes("pic")
-    //   );
-
-    //   if (imagefield.length > 0) {
-    //     for (let file of imagefield) {
-    //       const result = await cloudinary.uploader.upload(file.path);
-    //       imagefiles.push(result.secure_url);
-    //       fs.unlink(file.path, (err) => {
-    //         if (err) {
-    //           console.error(`Failed to delete file: ${file.path}`, err);
-    //         } else {
-    //           console.log(`Successfully deleted file: ${file.path}`);
-    //         }
-    //       });
-    //     }
-    //   }
-    // }
-
-    // const addunit_details = [];
-    // let u = 0;
-
-    // while (u < req.body.add_unit?.length) {
-    //   const unit = req.body.add_unit[u];
-
-    //   unitDetails = {
-    //     project_name: unit.project_name,
-    //     unit_no: unit.unit_no,
-    //     owner_details: unit.owner_details,
-    //     associated_contact: unit.associated_contact,
-    //     unit_type: unit.unit_type,
-    //     category: unit.category,
-    //     sub_category: unit.sub_category,
-    //     block: unit.block,
-    //     size: unit.size,
-    //     direction: unit.direction,
-    //     facing: unit.facing,
-    //     road: unit.road,
-    //     ownership: unit.ownership,
-    //     stage: unit.stage,
-    //     builtup_type: unit.builtup_type,
-    //     floor: unit.floor,
-    //     cluter_details: unit.cluter_details,
-    //     length: unit.length,
-    //     bredth: unit.bredth,
-    //     total_area: unit.total_area,
-    //     measurment2: unit.measurment2,
-    //     ocupation_date: unit.ocupation_date,
-    //     age_of_construction: unit.age_of_construction,
-    //     furnishing_details: unit.furnishing_details,
-    //     furnished_item: unit.furnished_item,
-    //     remarks: unit.remarks,
-    //     location: unit.location,
-    //     lattitude: unit.lattitude,
-    //     langitude: unit.langitude,
-    //     uaddress: unit.uaddress,
-    //     ustreet: unit.ustreet,
-    //     ulocality: unit.ulocality,
-    //     ucity: unit.ucity,
-    //     uzip: unit.uzip,
-    //     ustate: unit.ustate,
-    //     ucountry: unit.ucountry,
-    //     relation: unit.relation,
-    //     s_no: unit.s_no,
-    //     descriptions: unit.descriptions,
-    //     category: unit.category,
-    //     s_no1: unit.s_no1,
-    //     url: unit.url,
-    //     document_name: unit.document_name,
-    //     document_no: unit.document_no,
-    //     document_Date: unit.document_Date,
-    //     linkded_contact: unit.linkded_contact,
-    //   };
-
-    //   // Prepare for file upload
-    //   const imagefiles = [];
-    //   const imagefiles1 = [];
-
-    //   if (req.files) {
-    //     const imagefield = req.files.filter((file) =>
-    //       file.fieldname.includes(`add_unit[${u}][preview]`)
-    //     );
-    //     const imagefield1 = req.files.filter((file) =>
-    //       file.fieldname.includes(`add_unit[${u}][image]`)
-    //     );
-
-    //     for (let file of imagefield) {
-    //       try {
-    //         const result = await cloudinary.uploader.upload(file.path);
-    //         imagefiles.push(result.secure_url);
-
-    //         // Delete file after upload
-    //         fs.unlink(file.path, (err) => {
-    //           if (err) {
-    //             console.error(`Failed to delete file: ${file.path}`, err);
-    //           } else {
-    //             console.log(`Successfully deleted file: ${file.path}`);
-    //           }
-    //         });
-    //       } catch (error) {
-    //         console.error("Error uploading file:", error);
-    //       }
-    //     }
-
-    //     for (let file of imagefield1) {
-    //       try {
-    //         const result = await cloudinary.uploader.upload(file.path);
-    //         imagefiles1.push(result.secure_url);
-
-    //         // Delete file after upload
-    //         fs.unlink(file.path, (err) => {
-    //           if (err) {
-    //             console.error(`Failed to delete file: ${file.path}`, err);
-    //           } else {
-    //             console.log(`Successfully deleted file: ${file.path}`);
-    //           }
-    //         });
-    //       } catch (error) {
-    //         console.error("Error uploading file:", error);
-    //       }
-    //     }
-    //   }
-    //   if (imagefiles.length > 0) {
-    //     unitDetails.preview = imagefiles; // Attach preview images
-    //   }
-    //   if (imagefiles1.length > 0) {
-    //     unitDetails.image = imagefiles1; // Attach main images
-    //   }
-
-    //   // Find if the unit_no already exists in the existing units
-    //   const existingUnitIndex = existingUnits.findIndex(
-    //     (existingUnit) => existingUnit.unit_no === unit.unit_no
-    //   );
-
-    //   // If the unit already exists, keep the existing data
-    //   if (existingUnitIndex !== -1) {
-    //     addunit_details.push(existingUnits[existingUnitIndex]); // Push the existing unit data
-    //   } else {
-    //     // If unit doesn't exist, add the new unit
-    //     addunit_details.push(unitDetails);
-    //   }
-
-    //   u++;
-    // }
+   
 
     const updatedFields = {
       ...req.body,
@@ -2216,6 +2069,43 @@ const getGroupedUnitData = async (req, res) => {
   }
 };
 
+const getGroupedSizeData = async (req, res) => {
+  try {
+
+
+
+    const groupedData = await addproject.aggregate([
+      { $unwind: { path: "$add_size", preserveNullAndEmptyArrays: true } }, // Flatten size
+
+
+      {
+        $group: {
+          _id: null,
+          allblock: { $addToSet: "$add_size.block1" },
+          allcategory: { $addToSet: "$add_size.category" },
+          allsubcategory: { $addToSet: "$add_size.sub_category" },
+          allunittype: { $addToSet: "$add_size.unit_type" },
+    
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          allblock: 1,
+          allcategory: 1,
+          allsubcategory: 1,
+          allunittype: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json(groupedData[0] || {});
+  } catch (err) {
+    console.error("Error fetching grouped unit data:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 
 
 
@@ -2241,7 +2131,8 @@ module.exports = {
   checkDuplicatesController,
   addUnitsToProject,
   getProjectDataBySizeId,
-  updateSize
+  updateSize,
+  getGroupedSizeData
 };
 
 

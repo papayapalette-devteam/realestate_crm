@@ -121,6 +121,7 @@ const {
   view_sizes,
   getProjectDataBySizeId,
   updateSize,
+  getGroupedSizeData,
 } = require("../controllers/project");
 const {
   add_deal,
@@ -280,6 +281,8 @@ router.get(
 router.get("/project-getgroupdata", getGroupedDataproject);
 
 router.get("/unit-getgroupdata", getGroupedUnitData);
+
+router.get("/size-getgroupdata", getGroupedSizeData);
 
 router.put(
   "/updateprojectforinventories/:project_name/:unit_no/:block",
