@@ -500,10 +500,6 @@ const view_sizes = async (req, res) => {
     const skip = (page - 1) * limit;
     const search = req.query.search ? req.query.search.trim() : "";
 
-
-    console.log(activeFilters);
-    
-
     let activeFilters = [];
     if (req.query.activeFilters) {
       try {
