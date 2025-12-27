@@ -39,7 +39,7 @@ const sizeSchema = Joi.object({
   yard1: Joi.string().allow(""),
   bredth: Joi.string().allow(""),
   yard2: Joi.string().allow(""),
-  total_area: Joi.string().allow(""),
+  total_area: Joi.number().allow(""),
   yard3: Joi.string().allow(""),
 });
 

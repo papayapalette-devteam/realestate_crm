@@ -509,6 +509,8 @@ const view_sizes = async (req, res) => {
       }
     }
 
+
+    
     let matchStage = {};
 
     const loginUser = req.query.login_user;
@@ -530,7 +532,34 @@ const view_sizes = async (req, res) => {
     // 🔹 Filters
     if (activeFilters.length > 0) {
       activeFilters.forEach((filter) => {
-        const fieldPath = `add_unit.${filter.field}`;
+        const fieldPath = `add_size.${filter.field}`;
+
+         // ✅ RANGE FILTER (Min / Max)
+    if (
+      filter.type === "range" &&
+      filter.field &&
+      (filter.minValue !== undefined || filter.maxValue !== undefined)
+    ) {
+      // const fieldPath = `add_size.${filter.field}`;
+
+      matchStage[fieldPath] = {};
+
+      if (filter.minValue !== undefined && filter.minValue !== "") {
+        matchStage[fieldPath].$gte = Number(filter.minValue);
+      }
+
+      if (filter.maxValue !== undefined && filter.maxValue !== "") {
+        matchStage[fieldPath].$lte = Number(filter.maxValue);
+      }
+
+      // remove empty object
+      if (Object.keys(matchStage[fieldPath]).length === 0) {
+        delete matchStage[fieldPath];
+      }
+
+      return;
+    }
+
 
         if (
           filter.field &&
@@ -565,14 +594,12 @@ const view_sizes = async (req, res) => {
     }
 
 
+
     
     const sizes = await addproject.aggregate(
       [
         { $unwind: "$add_size" },
         Object.keys(matchStage).length > 0 ? { $match: matchStage } : null,
-
-       
-
         // Pagination
         { $skip: skip },
         { $limit: limit },

@@ -37,7 +37,7 @@ const blockSchema = new mongoose.Schema({
     yard1: {type: String},
     bredth: {type: String},
     yard2: {type: String},
-    total_area: {type: String},
+    total_area: {type: Number},
     yard3: {type: String}
   })
 

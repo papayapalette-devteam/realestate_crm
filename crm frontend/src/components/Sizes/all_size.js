@@ -124,8 +124,6 @@ function AllSizes() {
 
   const totalPages2 = total_page;
 
-
-
   const currentItems3 = all_sizes.slice(indexOfFirstItem2, indexOfLastItem2);
 
   // Handle items per page change
@@ -393,7 +391,7 @@ function AllSizes() {
   console.log(groupdata);
 
   const unitfields = [
-    { label: "Block/Tower", field: "block", values: groupdata.allblock },
+    { label: "Block/Tower", field: "block1", values: groupdata.allblock },
     { label: "Category", field: "category", values: groupdata.allcategory },
     {
       label: "Sub Category",
@@ -401,16 +399,16 @@ function AllSizes() {
       values: groupdata.allsubcategory,
     },
     { label: "Unit Type", field: "unit_type", values: groupdata.allunittype },
-     {
+    {
       label: "Size (Total Area)",
-      field: "size",
+      field: "total_area",
       type: "range",
       min: 0,
       max: 10000,
     },
   ];
 
-    // ===================== HELPERS =====================
+  // ===================== HELPERS =====================
   const createFilterState = (fieldObj) => ({
     ...fieldObj,
     radio: "with",
@@ -419,8 +417,6 @@ function AllSizes() {
     minValue: fieldObj.type === "range" ? fieldObj.min : null,
     maxValue: fieldObj.type === "range" ? fieldObj.max : null,
   });
-
-
 
   const defaultFields = [unitfields.find((f) => f.field === "unit_type")];
 
@@ -437,14 +433,23 @@ function AllSizes() {
 
   // Open filter panel, regenerating the defaults (with current city list)
   function openFilterWithDefaults() {
-    setTempFilters(
-      defaultFields.map((f) => ({
-        ...f,
-        radio: "with",
-        input: "",
-        checked: [],
-      }))
-    );
+    if (activeFilters.length > 0) {
+      // show previously applied filters
+      setTempFilters(activeFilters);
+    } else {
+      // first time open
+      setTempFilters(
+        defaultFields.map((f) => ({
+          ...f,
+          radio: "with",
+          input: "",
+          checked: [],
+          minValue: f.type === "range" ? f.min : null,
+          maxValue: f.type === "range" ? f.max : null,
+        }))
+      );
+    }
+    setOpenDropdownIdx(null);
     setShowunit(true);
   }
 
@@ -452,24 +457,25 @@ function AllSizes() {
 
   // Add new filter row
   function handleAddField(fieldObj) {
-    setTempFilters([
-      ...tempFilters,
+    setTempFilters((prev) => [
+      ...prev,
       {
         ...fieldObj,
         radio: "with",
         input: "",
         checked: [],
+        minValue: fieldObj.type === "range" ? fieldObj.min : null,
+        maxValue: fieldObj.type === "range" ? fieldObj.max : null,
       },
     ]);
+
     setShowFieldDropdown(false);
-    setOpenDropdownIdx(activeFilters.length);
+    setOpenDropdownIdx(null); // ❌ don't auto-open
   }
 
   // Remove filter
   function handleRemoveFilter(idx) {
-    setTempFilters((tempFilters) =>
-      tempFilters.filter((_, i) => i !== idx)
-    );
+    setTempFilters((tempFilters) => tempFilters.filter((_, i) => i !== idx));
     if (openDropdownIdx === idx) setOpenDropdownIdx(null);
   }
 
@@ -521,11 +527,9 @@ function AllSizes() {
     );
   }
 
-    const handleRangeChange = (idx, key, value) => {
+  const handleRangeChange = (idx, key, value) => {
     setTempFilters((filters) =>
-      filters.map((f, i) =>
-        i === idx ? { ...f, [key]: Number(value) } : f
-      )
+      filters.map((f, i) => (i === idx ? { ...f, [key]: Number(value) } : f))
     );
   };
 
@@ -616,7 +620,7 @@ function AllSizes() {
           </ul>
         </div>
 
-       <div
+        <div
           ref={toastRefunit}
           className={`feedback-toast ${
             showunit ? (isClosingunit ? "hide" : "show") : ""
@@ -664,7 +668,7 @@ function AllSizes() {
           </h3>
 
           {/* Active Filter Rows */}
-          {[...activeFilters,...tempFilters].map((item, idx) => (
+          {tempFilters.map((item, idx) => (
             <div
               key={item.field}
               style={{
@@ -714,150 +718,149 @@ function AllSizes() {
 
               {/* Dropdown contents */}
               {openDropdownIdx === idx && (
-            <div
-  style={{
-    background: "#fff",
-    border: "1px solid #eee",
-    borderRadius: 8,
-    marginTop: 8,
-    padding: 12,
-  }}
->
-  {/* RADIO BUTTONS */}
-  <div style={{ display: "flex", gap: 18, marginBottom: 10 }}>
-    <label>
-      <input
-        type="radio"
-        checked={item.radio === "with"}
-        onChange={() => handleRadio(idx, "with")}
-      />{" "}
-      With
-    </label>
+                <div
+                  style={{
+                    background: "#fff",
+                    border: "1px solid #eee",
+                    borderRadius: 8,
+                    marginTop: 8,
+                    padding: 12,
+                  }}
+                >
+                  {/* RADIO BUTTONS */}
+                  <div style={{ display: "flex", gap: 18, marginBottom: 10 }}>
+                    <label>
+                      <input
+                        type="radio"
+                        checked={item.radio === "with"}
+                        onChange={() => handleRadio(idx, "with")}
+                      />{" "}
+                      With
+                    </label>
 
-    <label>
-      <input
-        type="radio"
-        checked={item.radio === "without"}
-        onChange={() => handleRadio(idx, "without")}
-      />{" "}
-      Without
-    </label>
-  </div>
+                    <label>
+                      <input
+                        type="radio"
+                        checked={item.radio === "without"}
+                        onChange={() => handleRadio(idx, "without")}
+                      />{" "}
+                      Without
+                    </label>
+                  </div>
 
-  {/* TEXT INPUT */}
-  <input
-    type="text"
-    value={item.input}
-    onChange={(e) => handleInput(idx, e.target.value)}
-    placeholder={`Type for ${item.label}`}
-    style={{
-      width: "98%",
-      marginBottom: 10,
-      padding: "6px 8px",
-      border: "1px solid #ccd",
-      borderRadius: 6,
-      fontSize: "12px",
-    }}
-  />
+                  {/* TEXT INPUT */}
+                  <input
+                    type="text"
+                    value={item.input}
+                    onChange={(e) => handleInput(idx, e.target.value)}
+                    placeholder={`Type for ${item.label}`}
+                    style={{
+                      width: "98%",
+                      marginBottom: 10,
+                      padding: "6px 8px",
+                      border: "1px solid #ccd",
+                      borderRadius: 6,
+                      fontSize: "12px",
+                    }}
+                  />
 
-  {/* CHECKBOX VALUES */}
-  {Array.isArray(item.values) && item.values.length > 0 && (
-    <>
-      {item.values.length > 500 ? (
-        <p
-          style={{
-            fontSize: "12px",
-            color: "red",
-            marginTop: "6px",
-          }}
-        >
-          ⚠️ Too many options. Please select a project first.
-        </p>
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "6px",
-            marginTop: "6px",
-          }}
-        >
-          {item.values.map((val) => (
-            <label
-              key={val}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                padding: "4px 10px",
-                background: item.checked.includes(val)
-                  ? "#e7f1ff"
-                  : "#f4f5f7",
-                borderRadius: "20px",
-                border: "1px solid #d6d6d6",
-                cursor: "pointer",
-                fontSize: "12px",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={item.checked.includes(val)}
-                onChange={() => handleCheckbox(idx, val)}
-                style={{ marginRight: 6 }}
-              />
-              {val}
-            </label>
-          ))}
-        </div>
-      )}
-    </>
-  )}
+                  {/* CHECKBOX VALUES */}
+                  {Array.isArray(item.values) && item.values.length > 0 && (
+                    <>
+                      {item.values.length > 500 ? (
+                        <p
+                          style={{
+                            fontSize: "12px",
+                            color: "red",
+                            marginTop: "6px",
+                          }}
+                        >
+                          ⚠️ Too many options. Please select a project first.
+                        </p>
+                      ) : (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "6px",
+                            marginTop: "6px",
+                          }}
+                        >
+                          {item.values.map((val) => (
+                            <label
+                              key={val}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                padding: "4px 10px",
+                                background: item.checked.includes(val)
+                                  ? "#e7f1ff"
+                                  : "#f4f5f7",
+                                borderRadius: "20px",
+                                border: "1px solid #d6d6d6",
+                                cursor: "pointer",
+                                fontSize: "12px",
+                              }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={item.checked.includes(val)}
+                                onChange={() => handleCheckbox(idx, val)}
+                                style={{ marginRight: 6 }}
+                              />
+                              {val}
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
 
-  {/* RANGE TYPE */}
-  {item.type === "range" && (
-    <>
-      <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
-        <input
-          type="number"
-          value={item.minValue}
-          onChange={(e) =>
-            handleRangeChange(idx, "minValue", e.target.value)
-          }
-        />
-        <span>to</span>
-        <input
-          type="number"
-          value={item.maxValue}
-          onChange={(e) =>
-            handleRangeChange(idx, "maxValue", e.target.value)
-          }
-        />
-      </div>
+                  {/* RANGE TYPE */}
+                  {item.type === "range" && (
+                    <>
+                      <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+                        <input
+                          type="number"
+                          value={item.minValue}
+                          onChange={(e) =>
+                            handleRangeChange(idx, "minValue", e.target.value)
+                          }
+                        />
+                        <span>to</span>
+                        <input
+                          type="number"
+                          value={item.maxValue}
+                          onChange={(e) =>
+                            handleRangeChange(idx, "maxValue", e.target.value)
+                          }
+                        />
+                      </div>
 
-      <input
-        type="range"
-        min={item.min}
-        max={item.max}
-        value={item.minValue}
-        onChange={(e) =>
-          handleRangeChange(idx, "minValue", e.target.value)
-        }
-        style={{ width: "100%", marginTop: 6 }}
-      />
+                      <input
+                        type="range"
+                        min={item.min}
+                        max={item.max}
+                        value={item.minValue}
+                        onChange={(e) =>
+                          handleRangeChange(idx, "minValue", e.target.value)
+                        }
+                        style={{ width: "100%", marginTop: 6 }}
+                      />
 
-      <input
-        type="range"
-        min={item.min}
-        max={item.max}
-        value={item.maxValue}
-        onChange={(e) =>
-          handleRangeChange(idx, "maxValue", e.target.value)
-        }
-        style={{ width: "100%", marginTop: 6 }}
-      />
-    </>
-  )}
-</div>
-
+                      <input
+                        type="range"
+                        min={item.min}
+                        max={item.max}
+                        value={item.maxValue}
+                        onChange={(e) =>
+                          handleRangeChange(idx, "maxValue", e.target.value)
+                        }
+                        style={{ width: "100%", marginTop: 6 }}
+                      />
+                    </>
+                  )}
+                </div>
               )}
             </div>
           ))}
@@ -908,21 +911,23 @@ function AllSizes() {
             </div>
           )}
 
-           {/* APPLY */}
-        <button
-          onClick={() => { setActiveFilters(tempFilters); setCurrentPage2(1); }}
-          style={{
-            marginTop: 12,
-            width: "100%",
-            padding: 10,
-            background: "#28a745",
-            color: "#fff",
-            borderRadius: 8,
-          }}
-        >
-          ✅ Apply Filters
-        </button>
-
+          {/* APPLY */}
+          <button
+            onClick={() => {
+              setActiveFilters(tempFilters);
+              setCurrentPage2(1);
+            }}
+            style={{
+              marginTop: 12,
+              width: "100%",
+              padding: 10,
+              background: "#28a745",
+              color: "#fff",
+              borderRadius: 8,
+            }}
+          >
+            ✅ Apply Filters
+          </button>
         </div>
 
         <div
@@ -946,7 +951,7 @@ function AllSizes() {
             id="unitsearch"
             type="text"
             className="form-control form-control-sm"
-            placeholder="Search for project via project name, block or unit no"
+            placeholder="Search for size via size name, block or unit type"
             style={{ width: "25%" }}
             value={searchTermunits}
             onChange={(e) => handleSearchChangeunit(e)}
