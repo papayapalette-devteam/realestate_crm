@@ -785,62 +785,35 @@ function Editlead() {
       "Content-Type": "multipart/form-data", // Set the Content-Type here
     },
   };
-  const leadinfodetails = async (e) => {
-    e.preventDefault();
-    try {
-      setIsLoading(true);
-      const resp = await api.post("leadinfo", leadinfo, config);
-      const resp1 = await api.post("addcontact", leadinfo, config);
-      if (resp.status === 200) {
-        Swal.fire({
-          icon: "success",
-          title: "🎉 Lead created successfully...!",
-          html: `
-                    <img src="https://cdn.vectorstock.com/i/500p/63/50/thumbs-up-smiley-face-icon-vector-10176350.jpg"
-                    alt="Thumbs up" 
-                    width="80" 
-                    style="margin-bottom: 0px;"/>`,
-          width: "400px", // makes it small
-          padding: "1.2em",
-          showConfirmButton: true,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/leaddetails");
-          }
-        });
-      }
-    } catch (error) {
-      console.log(error);
-
-      Swal.fire({
-        icon: "error",
-        title: "Oops creating lead failed!",
-        html: `
-                  <img src="https://i.pinimg.com/originals/53/3f/f7/533ff77ef582abbfa00ccf9080137304.gif"
-                  alt="Sad face" 
-                  width="80" 
-                  style="margin-bottom: 0px;" />
-                  <p style="font-size: 14px; margin: 0;">
-                  ${
-                    error.response?.data?.message ||
-                    "Something went wrong. Please try again."
-                  }
-                  </p>
-                  `,
-        width: "400px", // makes it small
-        padding: "1.2em",
-        showConfirmButton: true,
-        confirmButtonText: "Okay",
-        confirmButtonColor: "#d33",
-        background: "#fff",
-        customClass: {
-          popup: "small-swal",
-        },
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const updatelead = async () => {
+     try {
+      
+ 
+       // Show confirmation message
+       const result = await Swal.fire({
+         title: "Are you sure?",
+         text: "You won't be able to revert this!",
+         icon: "warning",
+         showCancelButton: true,
+         confirmButtonColor: "#d33",
+         cancelButtonColor: "#3085d6",
+         confirmButtonText: "Yes, update it!",
+       });
+ 
+       if (!result.isConfirmed) {
+         return; // Stop execution if user cancels
+       }
+ 
+       const resp = await api.put(`updatelead/${leadData}`, leadinfo, config);
+       toast.success("lead updated", { autoClose: 2000 });
+ 
+       setTimeout(() => {
+         window.location.reload();
+       }, 2000);
+     } catch (error) {
+       console.log(error);
+     }
+   };
 
   useEffect(() => {
     // Check if leadData exists and update the state accordingly
@@ -4386,10 +4359,10 @@ function Editlead() {
                   <div className="col-md-2  custom-input">
                     <button
                       className="btn-global-primary form-control"
-                      onClick={leadinfodetails}
+                      onClick={updatelead}
                       
                     >
-                      Save
+                      Update
                     </button>
                   </div>
                   <div className="col-md-2  custom-input">
