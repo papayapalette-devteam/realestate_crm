@@ -8,6 +8,7 @@ import Modal from 'react-bootstrap/Modal';
 import lead from '../icons/lead.jpg'
 import deal from '../icons/deal.jpg'
 import project from '../icons/project.jpg'
+import AddContactModal from './Contact/AddContactModal';
 
 
 function Header1() {
@@ -47,6 +48,11 @@ function Header1() {
 
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
+
+  const [modal_open, setmodal_open] = useState(false);
+
+	const handlemodalClose = () => setmodal_open(false);
+	const handlemodalShow = () => setmodal_open(true);
 	  
     return ( 
         <div>
@@ -86,9 +92,9 @@ function Header1() {
             }}
           >
            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-  <li>
+  <li onClick={()=>handlemodalShow()}>
     <Link
-      to={"/addcontact"}
+      // to={"/addcontact"}
       className="dropdown-item"
       style={{ display: "flex", alignItems: "center", padding: "5px 10px" }}
     >
@@ -100,6 +106,12 @@ function Header1() {
       Contact
     </Link>
   </li>
+
+  {
+    modal_open &&(
+      <AddContactModal isOpen={modal_open} onClose={handlemodalClose}/>
+    )
+  }
 
   <li>
     <Link
