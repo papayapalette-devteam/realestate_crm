@@ -43,7 +43,7 @@ function Sidebar1({ sidebarOpen, setSidebarOpen, collapsed, setCollapsed }) {
       {!sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(true)}
-          className="fixed top-4 left-4 z-[60] md:hidden p-2 bg-slate-900 text-white rounded shadow"
+          className="fixed top-14 left-4 z-[60] md:hidden p-2 bg-slate-900 text-white rounded shadow"
         >
           <Icon path={mdiMenu} size={1} />
         </button>
@@ -68,6 +68,7 @@ function Sidebar1({ sidebarOpen, setSidebarOpen, collapsed, setCollapsed }) {
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           flex flex-col
           overflow-auto
+          
         `}
       >
         {/* HEADER */}

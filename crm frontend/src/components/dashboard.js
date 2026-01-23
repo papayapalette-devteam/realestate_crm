@@ -29,6 +29,7 @@ import {
 
 import Sidebar1 from "./sidebar1";
 import Header1 from "./header1";
+import Layout from "../Layout/layout";
 
 // Register Chart.js components
 ChartJS.register(
@@ -180,11 +181,11 @@ const TopDeals = ({ deals }) => (
   }
 
   return (
-    <div>
+    <Layout>
      
-      <Sidebar1 />
-       <Header1 />
-      <div className="space-y-6 ml-20 mt-20 p-6">
+      {/* <Sidebar1 /> */}
+       {/* <Header1 /> */}
+      <div>
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg text-white p-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -350,7 +351,7 @@ const TopDeals = ({ deals }) => (
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
 
