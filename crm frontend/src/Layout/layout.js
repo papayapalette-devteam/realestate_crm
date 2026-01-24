@@ -9,7 +9,7 @@ const Layout = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
-      <Sidebar1 sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} collapsed={collapsed} setCollapsed={setCollapsed} />
+      <Sidebar1  />
 
       {/* Main content area */}
       <div className="flex flex-col flex-1 overflow-hidden">

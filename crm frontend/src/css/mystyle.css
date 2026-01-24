@@ -1,4 +1,4 @@
-.sidebar {
+/* .sidebar {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,9 +11,9 @@
   overflow-x: hidden;
 }
 
-.sidebar:hover {
+ .sidebar:hover {
   width: 250px;
-}
+} 
 
 .sidebar__brand {
   display: flex;
@@ -93,7 +93,7 @@
   z-index: 10;
   min-width: 170px;
   animation: fadeIn 0.2s;
-  /* visually indent submenu */
+
   margin-left: 28px;
 }
 
@@ -112,7 +112,7 @@
   font-size: 1.01rem;
   border-radius: 6px;
   transition: background 0.16s, color 0.16s;
-  margin-left: 10px; /* extra left margin for submenu */
+  margin-left: 10px; 
 }
 
 .sidebar__sublink:hover {
@@ -166,19 +166,19 @@
 }
 
 
-/* Hide sidebar text when collapsed, show on hover/expand */
+
 .sidebar:not(:hover) .sidebar__link span,
 .sidebar:not(:hover) .sidebar__dropdown-toggle span:not(.sidebar__chevron),
 .sidebar:not(:hover) .sidebar__sublink span {
   display: none;
 }
 
-/* Always show icons */
+
 .sidebar__icon {
   display: inline-block;
 }
 
-/* On mobile, always show text (since sidebar is full width) */
+
 @media (max-width: 600px) {
   .sidebar,
   .sidebar:hover {
@@ -216,7 +216,7 @@
     margin: 0 0 0 18px;
     background: #8fd2e9;
   }
-  /* Show text on mobile */
+ 
   .sidebar__link span,
   .sidebar__dropdown-toggle span,
   .sidebar__sublink span {
@@ -224,4 +224,4 @@
   }
 }
 
-
+ */

@@ -672,7 +672,7 @@ const AddContactModal = ({ isOpen, onClose, onAdd, initialData, mode = 'add', en
     };
 
     const modalStyle = {
-        width: '90%', maxWidth: '1050px', height: '90vh', backgroundColor: '#fff',
+        width: '90%', maxWidth: '1100px', height: '90vh', backgroundColor: '#fff',
         borderRadius: '16px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         display: 'flex',  overflow: 'auto', clipPath: 'inset(0 round 16px)',
     };
