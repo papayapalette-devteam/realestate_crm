@@ -22,6 +22,7 @@ const {
   view_contact_for_editproject,
   getGroupedData,
 } = require("../../controllers/Contact/contact_details");
+const { create_contact, getAll_contact } = require("../../controllers/Contacts/contact");
 
 
 
@@ -68,7 +69,9 @@ router.get("/contact-getgroupdata", getGroupedData);
 
 
 
+router.post("/add-contact",  create_contact);
 
+router.get("/get-all-contact",  getAll_contact);
 
 
 module.exports=router

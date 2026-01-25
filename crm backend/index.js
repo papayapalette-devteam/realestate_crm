@@ -1,56 +1,94 @@
-
-const express=require('express')
-const cors=require('cors');
+const express = require('express');
+const cors = require('cors');
 const path = require('path');
-const connect = require('./connectdb');
 const bodyParser = require('body-parser');
+const connect = require('./connectdb');
 require('dotenv').config();
-const nodemailer = require('nodemailer');
 
-const app=express();
+const app = express();
 
-// app.use(bodyParser.json())
-// Increase request body size limit
-app.use(bodyParser.json({ limit: "50mb" })); // Increase limit for JSON payloads
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true })); // Increase limit for form data
-// Allow up to 50MB of JSON data (adjust as needed)
-app.use(express.json({ limit: '50mb' }));
+/* ================================
+   🔥 CORS CONFIG (MUST BE FIRST)
+================================ */
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://crm.bharatproperties.co'
+];
 
-// app.use('/images', express.static('images'));
-app.use('/images', express.static(path.join(__dirname, 'images')));
-// app.use(cors())
-// app.use(cors({ origin: 'https://ln-bird-project-px3u.vercel.app/' }));
 app.use(cors({
-    origin: ['https://ln-bird-project-px3u.vercel.app', 'https://crm.bharatproperties.co','http://localhost:3000'], // Allow both domains
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-    credentials: true
+  origin: function (origin, callback) {
+    // Allow server-to-server & Postman
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
+
+// 🔥 Handle preflight requests
+app.options('*', cors());
+
+/* ================================
+   BODY PARSER (LARGE PAYLOADS)
+================================ */
+app.use(express.json({ limit: '50mb' }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({
+  limit: '50mb',
+  extended: true
+}));
+
+/* ================================
+   STATIC FILES
+================================ */
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+/* ================================
+   DATABASE
+================================ */
 connect();
-app.get('/',(req,res)=>
-{
-    res.send("welcome")
-})
 
+/* ================================
+   ROUTES
+================================ */
+app.get('/', (req, res) => {
+  res.send('Welcome to Bharat Properties API');
+});
 
-app.use('/',require('./routes/admin'));
+app.use('/', require('./routes/admin'));
+app.use('/', require('./routes/Contacts/contact'));
+app.use('/api/settings', require('./routes/Settings/settings'));
+app.use('/api', require('./routes/Others/other'));
+app.use('/api/upload', require('./routes/upload'));
 
-// contacts route
-app.use('/',require('./routes/Contacts/contact'));
+/* ================================
+   ERROR HANDLING (CORS SAFE)
+================================ */
+app.use((err, req, res, next) => {
+  if (err.message === 'CORS not allowed') {
+    return res.status(403).json({
+      success: false,
+      message: 'CORS blocked: Origin not allowed'
+    });
+  }
+  next(err);
+});
 
-// settings route
-app.use('/api/settings',require('./routes/Settings/settings'));
+/* ================================
+   SERVER START
+================================ */
+const PORT = process.env.PORT || 5000;
 
-// others route
-app.use('/api',require('./routes/Others/other'));
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
 
-// upload route
-app.use('/api/upload',require('./routes/upload'));
-
-
-const server=app.listen(process.env.PORT,()=>
-{
-    console.log(`server is running on port:${process.env.PORT}`);
-})
-server.setTimeout(5 * 60 * 1000); // 300000 ms = 5 minutes
-
+// 🔥 Prevent timeout on big uploads
+server.setTimeout(5 * 60 * 1000); // 5 minutes
