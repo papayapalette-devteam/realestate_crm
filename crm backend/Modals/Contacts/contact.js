@@ -47,6 +47,10 @@ const IncomeSchema = new mongoose.Schema({
 
 const DocumentSchema = new mongoose.Schema({
   documentName: String,
+  documentType:String,
+  projectName:String,
+  block:String,
+  unitNumber:String,
   documentNo: String,
   documentPicture: String // store file URL
 }, { _id: false });

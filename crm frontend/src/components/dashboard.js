@@ -181,11 +181,11 @@ const TopDeals = ({ deals }) => (
   }
 
   return (
-    // <Layout>
-    <div>
+    <Layout>
+     <div>
      
-      <Sidebar1 /> */}
-       {/* <Header1 />
+      {/* <Sidebar1 /> 
+       <Header1 /> */}
       <div>
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg text-white p-6">
@@ -352,8 +352,9 @@ const TopDeals = ({ deals }) => (
           </div>
         </div>
       </div>
-    // </Layout>
-    </div>
+    
+     </div>
+      </Layout>
   );
 }
 

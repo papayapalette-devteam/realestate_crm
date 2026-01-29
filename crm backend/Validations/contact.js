@@ -90,6 +90,10 @@ anniversaryDate: Joi.date().allow(null, "").optional(),
   documents: Joi.array().items(
     Joi.object({
       documentName: Joi.string().allow(""),
+      documentType: Joi.string().allow(""),
+      projectName: Joi.string().allow(""),
+      block: Joi.string().allow(""),
+      unitNumber: Joi.string().allow(""),
       documentNo: Joi.string().allow(""),
       documentPicture: Joi.string().allow(null)
     })

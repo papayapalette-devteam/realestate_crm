@@ -6,7 +6,7 @@ const {
   add_contact,
   view_contact,
   view_contact_Byid,
-  remove_contact,
+  // remove_contact,
   update_contact,
   view_contact_Byemail,
   view_contact_Bymobile,
@@ -22,7 +22,7 @@ const {
   view_contact_for_editproject,
   getGroupedData,
 } = require("../../controllers/Contact/contact_details");
-const { create_contact, getAll_contact } = require("../../controllers/Contacts/contact");
+const { create_contact, getAll_contact,remove_contact } = require("../../controllers/Contacts/contact");
 
 
 
@@ -72,6 +72,8 @@ router.get("/contact-getgroupdata", getGroupedData);
 router.post("/add-contact",  create_contact);
 
 router.get("/get-all-contact",  getAll_contact);
+
+router.delete("/delete-contact/:id",  remove_contact);
 
 
 module.exports=router

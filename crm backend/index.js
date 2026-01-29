@@ -68,6 +68,8 @@ app.use('/api/settings', require('./routes/Settings/settings'));
 app.use('/api', require('./routes/Others/other'));
 app.use('/api/upload', require('./routes/upload'));
 
+app.use('/api/lead', require('./routes/Leads/lead'));
+
 /* ================================
    ERROR HANDLING (CORS SAFE)
 ================================ */

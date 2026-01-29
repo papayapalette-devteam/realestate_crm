@@ -79,6 +79,7 @@ exports.update_contact = async (req, res) => {
 };
 
 exports.remove_contact = async (req, res) => {
+
   await Contact.findByIdAndDelete(req.params.id);
   res.json({ success: true, message: "Deleted successfully" });
 };

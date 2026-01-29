@@ -3673,10 +3673,10 @@ const [isHoveringEdit, setIsHoveringEdit] = useState(false);
 const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
 
     return ( 
-        // <Layout>
+        <Layout>
         <div>
-            <Header1/>
-            <Sidebar1/>
+            {/* <Header1/>
+            <Sidebar1/> */}
             <div className={`flip-container ${isFlipped ? 'flipped' : ''}`}>
             <div id="contactlistview" className="flip-card-front">
       <div style={{marginTop:"52px",paddingLeft:"80px",backgroundColor:"white",display:"flex",paddingTop:"10px",paddingBottom:"10px"}}>
@@ -6071,7 +6071,7 @@ const [isHoveringaddtotask, setIsHoveringaddtotask] = useState(false);
                  </>
 
 </div>
-        {/* </Layout> */}
+          </Layout> 
      );
 }
 
