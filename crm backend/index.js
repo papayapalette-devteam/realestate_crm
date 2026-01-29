@@ -12,6 +12,7 @@ const app = express();
 ================================ */
 const allowedOrigins = [
   'http://localhost:5173',
+  'https://bharat-properties-crm.vercel.app'
   'http://localhost:3000',
   'https://crm.bharatproperties.co'
 ];
